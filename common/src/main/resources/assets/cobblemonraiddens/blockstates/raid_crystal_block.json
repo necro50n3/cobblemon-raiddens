@@ -1,25 +1,24 @@
 {
-  "variants": {
-    "raid_type=normal,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_normal" },
-    "raid_type=fighting,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_fighting" },
-    "raid_type=flying,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_flying" },
-    "raid_type=poison,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_poison" },
-    "raid_type=ground,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_ground" },
-    "raid_type=rock,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_rock" },
-    "raid_type=bug,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_bug" },
-    "raid_type=ghost,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_ghost" },
-    "raid_type=steel,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_steel" },
-    "raid_type=fire,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_fire" },
-    "raid_type=water,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_water" },
-    "raid_type=grass,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_grass" },
-    "raid_type=electric,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_electric" },
-    "raid_type=psychic,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_psychic" },
-    "raid_type=ice,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_ice" },
-    "raid_type=dragon,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_dragon" },
-    "raid_type=dark,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_dark" },
-    "raid_type=fairy,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_fairy" },
-    "raid_type=stellar,is_active=true": { "model": "cobblemonraiddens:block/raid_crystal_block_stellar" },
-    "is_active=false": { "model": "cobblemonraiddens:block/raid_crystal_block" },
-    "raid_type=none": { "model": "cobblemonraiddens:block/raid_crystal_block" }
-  }
+  "multipart": [
+    {"when": {"raid_type": "normal", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_normal" }},
+    {"when": {"raid_type": "fighting", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_fighting" }},
+    {"when": {"raid_type": "flying", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_flying" }},
+    {"when": {"raid_type": "poison", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_poison" }},
+    {"when": {"raid_type": "ground", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_ground" }},
+    {"when": {"raid_type": "rock", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_rock" }},
+    {"when": {"raid_type": "bug", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_bug" }},
+    {"when": {"raid_type": "ghost", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_ghost" }},
+    {"when": {"raid_type": "steel", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_steel" }},
+    {"when": {"raid_type": "fire", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_fire" }},
+    {"when": {"raid_type": "water", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_water" }},
+    {"when": {"raid_type": "grass", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_grass" }},
+    {"when": {"raid_type": "electric", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_electric" }},
+    {"when": {"raid_type": "psychic", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_psychic" }},
+    {"when": {"raid_type": "ice", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_ice" }},
+    {"when": {"raid_type": "dragon", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_dragon" }},
+    {"when": {"raid_type": "dark", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_dark" }},
+    {"when": {"raid_type": "fairy", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_fairy" }},
+    {"when": {"raid_type": "stellar", "is_active": true}, "apply": { "model": "cobblemonraiddens:block/raid_crystal_block_stellar" }},
+    {"apply": { "model": "cobblemonraiddens:block/raid_crystal_block" }}
+  ]
 }
