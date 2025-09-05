@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
@@ -21,13 +20,14 @@ import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
 import com.necro.raid.dens.common.network.SyncHealthPacket;
 import com.necro.raid.dens.common.raids.RaidBuilder;
-import com.necro.raid.dens.common.util.DimensionHelper;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.events.ModEvents;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -39,12 +39,10 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
-import javax.swing.text.html.Option;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
@@ -67,6 +65,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidAdminCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidRequestCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidRewardCommands::register);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(DimensionHelper::onDimensionChange);
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
             @Override

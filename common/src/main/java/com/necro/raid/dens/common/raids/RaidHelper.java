@@ -21,6 +21,7 @@ public class RaidHelper extends SavedData {
     public static final Set<UUID> RAID_HOSTS = new HashSet<>();
     public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
     public static final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
+    public static final Set<UUID> WAS_SURVIVAL = new HashSet<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
     public static final Map<BlockPos, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
     public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
@@ -37,6 +38,14 @@ public class RaidHelper extends SavedData {
 
     public static void addParticipant(Player player) {
         RAID_PARTICIPANTS.add(player.getUUID());
+    }
+
+    public static void addSurvivalPlayer(Player player) {
+        WAS_SURVIVAL.add(player.getUUID());
+    }
+
+    public static boolean playerWasSurvival(Player player) {
+        return WAS_SURVIVAL.remove(player.getUUID());
     }
 
     public static void clearRaid(BlockPos blockPos, Collection<UUID> players) {
@@ -150,7 +159,10 @@ public class RaidHelper extends SavedData {
             ((ListTag) compoundTag.get("raid_hosts")).forEach(host -> RAID_HOSTS.add(UUID.fromString(host.getAsString())));
         }
         if (compoundTag.contains("raid_participants")) {
-            ((ListTag) compoundTag.get("raid_participants")).forEach(host -> RAID_PARTICIPANTS.add(UUID.fromString(host.getAsString())));
+            ((ListTag) compoundTag.get("raid_participants")).forEach(p -> RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
+        }
+        if (compoundTag.contains("was_survival")) {
+            ((ListTag) compoundTag.get("was_survival")).forEach(s -> WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
         }
 
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
@@ -184,6 +196,10 @@ public class RaidHelper extends SavedData {
         ListTag raidParticipantsTag = new ListTag();
         RAID_PARTICIPANTS.forEach(uuid -> raidParticipantsTag.add(StringTag.valueOf(uuid.toString())));
         compoundTag.put("raid_participants", raidParticipantsTag);
+
+        ListTag wasSurvivalTag = new ListTag();
+        WAS_SURVIVAL.forEach(uuid -> wasSurvivalTag.add(StringTag.valueOf(uuid.toString())));
+        compoundTag.put("was_survival", wasSurvivalTag);
 
         ListTag clearedRaidsTag = new ListTag();
         for (Map.Entry<BlockPos, Set<UUID>> entry : CLEARED_RAIDS.entrySet()) {

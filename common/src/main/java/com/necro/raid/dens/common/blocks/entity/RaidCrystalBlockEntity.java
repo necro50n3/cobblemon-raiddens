@@ -5,7 +5,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
-import com.necro.raid.dens.common.util.DimensionHelper;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;

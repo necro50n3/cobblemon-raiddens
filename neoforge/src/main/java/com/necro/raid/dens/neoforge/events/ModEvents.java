@@ -3,7 +3,7 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.util.DimensionHelper;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
