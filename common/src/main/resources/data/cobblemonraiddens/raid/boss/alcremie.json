@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "alcremie",
+        "moves": [
+            "dazzlinggleam",
+            "drainingkiss",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY"
+}

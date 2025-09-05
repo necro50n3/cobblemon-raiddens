@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "roselia",
+        "moves": [
+            "gigadrain",
+            "magicalleaf",
+            "megadrain",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

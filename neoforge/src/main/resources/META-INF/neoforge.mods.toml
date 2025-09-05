@@ -1,0 +1,44 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT License"
+
+[[mods]]
+modId = "${archives_name}"
+version = "${version}"
+displayName = "${display_name}"
+authors = "NecroSo1"
+description = "${description}"
+
+[[dependencies.cobblemonraiddens]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.cobblemonraiddens]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.cobblemonraiddens]]
+modId = "cobblemon"
+mandatory = true
+versionRange = "[${cobblemon_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.cobblemonraiddens]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[4.7.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "${archives_name}-common.mixins.json"
+
+[[mixins]]
+config = "${archives_name}-neoforge.mixins.json"

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pincurchin",
+        "moves": [
+            "poisonjab",
+            "bubblebeam",
+            "spark",
+            "furyattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

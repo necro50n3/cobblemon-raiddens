@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "aipom",
+        "moves": [
+            "doublehit",
+            "swift",
+            "furyswipes",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

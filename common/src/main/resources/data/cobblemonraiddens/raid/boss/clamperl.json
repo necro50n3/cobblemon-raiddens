@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "clamperl",
+        "moves": [
+            "watergun",
+            "clamp",
+            "whirlpool"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

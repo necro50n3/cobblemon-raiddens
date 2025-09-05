@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gligar",
+        "moves": [
+            "crabhammer",
+            "skyuppercut",
+            "xscissor",
+            "uturn"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

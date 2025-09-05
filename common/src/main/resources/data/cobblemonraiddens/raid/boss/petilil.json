@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "petilil",
+        "moves": [
+            "magicalleaf",
+            "megadrain",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cubone",
+        "moves": [
+            "retaliate",
+            "headbutt",
+            "falseswipe",
+            "boneclub"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GROUND"
+}

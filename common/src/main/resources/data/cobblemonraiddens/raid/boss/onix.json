@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "onix",
+        "moves": [
+            "sandtomb",
+            "rockslide",
+            "rage",
+            "dragonbreath"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

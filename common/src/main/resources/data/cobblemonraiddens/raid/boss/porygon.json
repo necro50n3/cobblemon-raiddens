@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "porygon",
+        "moves": [
+            "signalbeam",
+            "psybeam",
+            "thundershock",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dondozo",
+        "moves": [
+            "wavecrash",
+            "doubleedge",
+            "orderup",
+            "aquatail"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

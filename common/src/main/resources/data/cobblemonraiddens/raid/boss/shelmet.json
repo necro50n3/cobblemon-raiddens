@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shelmet",
+        "moves": [
+            "strugglebug",
+            "megadrain",
+            "acid",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

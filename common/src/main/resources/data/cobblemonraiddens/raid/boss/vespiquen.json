@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "vespiquen",
+        "moves": [
+            "attackorder",
+            "powergem",
+            "airslash",
+            "furyswipes"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

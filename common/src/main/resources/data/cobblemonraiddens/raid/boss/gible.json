@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gible",
+        "moves": [
+            "bulldoze",
+            "dragonbreath",
+            "tackle",
+            "sandtomb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DRAGON"
+}

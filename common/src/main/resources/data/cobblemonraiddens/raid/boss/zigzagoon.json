@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "zigzagoon",
+        "moves": [
+            "headbutt",
+            "covet",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL"
+}

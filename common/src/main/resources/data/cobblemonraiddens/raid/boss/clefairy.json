@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "clefairy",
+        "moves": [
+            "meteormash",
+            "wakeupslap",
+            "doubleslap",
+            "storedpower"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY"
+}

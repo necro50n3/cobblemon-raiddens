@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "popplio",
+        "moves": [
+            "icywind",
+            "aquajet",
+            "disarmingvoice",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

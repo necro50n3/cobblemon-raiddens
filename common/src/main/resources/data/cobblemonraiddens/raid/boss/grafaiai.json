@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grafaiai",
+        "moves": [
+            "knockoff",
+            "poisonjab",
+            "uturn",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

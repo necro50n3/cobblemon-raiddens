@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "weezing",
+        "moves": [
+            "belch",
+            "sludgebomb",
+            "selfdestruct",
+            "sludge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

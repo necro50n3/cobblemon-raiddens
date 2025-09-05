@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "clawitzer",
+        "moves": [
+            "aurasphere",
+            "waterpulse",
+            "bubblebeam",
+            "smackdown"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

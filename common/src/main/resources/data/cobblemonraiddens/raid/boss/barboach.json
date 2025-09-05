@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "barboach",
+        "moves": [
+            "mudbomb",
+            "waterpulse",
+            "snore",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

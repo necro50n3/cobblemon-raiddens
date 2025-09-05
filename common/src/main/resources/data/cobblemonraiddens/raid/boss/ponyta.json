@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ponyta",
+        "moves": [
+            "firespin",
+            "stomp",
+            "flamewheel",
+            "flamecharge"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

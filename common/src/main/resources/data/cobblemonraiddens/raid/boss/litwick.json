@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "litwick",
+        "moves": [
+            "flameburst",
+            "hex",
+            "ember",
+            "smog"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "zorua",
+        "moves": [
+            "knockoff",
+            "feintattack",
+            "furyswipes",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK"
+}

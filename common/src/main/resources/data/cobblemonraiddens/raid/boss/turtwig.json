@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "turtwig",
+        "moves": [
+            "razorleaf",
+            "absorb",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "flabebe",
+        "moves": [
+            "razorleaf",
+            "fairywind",
+            "vinewhip",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FAIRY"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pupitar",
+        "moves": [
+            "earthquake",
+            "crunch",
+            "smackdown",
+            "stompingtantrum"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "greninja",
+        "moves": [
+            "hydropump",
+            "extrasensory",
+            "feintattack",
+            "aerialace"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

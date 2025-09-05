@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "omastar",
+        "moves": [
+            "brine",
+            "ancientpower",
+            "mudshot",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

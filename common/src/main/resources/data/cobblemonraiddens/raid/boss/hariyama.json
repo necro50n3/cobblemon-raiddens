@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hariyama",
+        "moves": [
+            "focuspunch",
+            "wakeupslap",
+            "smellingsalts",
+            "vitalthrow"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

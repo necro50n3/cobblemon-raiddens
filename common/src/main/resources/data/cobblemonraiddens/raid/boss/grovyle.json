@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grovyle",
+        "moves": [
+            "slam",
+            "gigadrain",
+            "assurance",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

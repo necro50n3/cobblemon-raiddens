@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "torchic",
+        "moves": [
+            "aerialace",
+            "flamecharge",
+            "quickattack",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

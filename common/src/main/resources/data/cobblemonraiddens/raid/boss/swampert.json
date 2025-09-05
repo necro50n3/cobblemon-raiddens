@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "swampert",
+        "moves": [
+            "hydropump",
+            "muddywater",
+            "takedown",
+            "rockslide"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

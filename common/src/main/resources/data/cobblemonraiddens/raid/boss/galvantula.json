@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "galvantula",
+        "moves": [
+            "discharge",
+            "signalbeam",
+            "slash",
+            "suckerpunch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

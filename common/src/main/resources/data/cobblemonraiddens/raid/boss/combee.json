@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "combee",
+        "moves": [
+            "gust",
+            "bugbite",
+            "strugglebug"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG"
+}

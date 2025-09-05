@@ -1,0 +1,6 @@
+{
+  "keys": ["raid"],
+  "type": "flag",
+  "isAspect": true,
+  "default": false
+}

@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "bellsprout",
+        "moves": [
+            "wrap",
+            "vinewhip"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

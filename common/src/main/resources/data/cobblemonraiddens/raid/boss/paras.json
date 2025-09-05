@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "paras",
+        "moves": [
+            "furycutter",
+            "absorb",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

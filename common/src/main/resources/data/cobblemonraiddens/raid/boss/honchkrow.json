@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "honchkrow",
+        "moves": [
+            "foulplay",
+            "wingattack",
+            "pursuit",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

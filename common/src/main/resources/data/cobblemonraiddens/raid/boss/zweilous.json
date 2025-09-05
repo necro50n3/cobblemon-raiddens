@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "zweilous",
+        "moves": [
+            "crunch",
+            "slam",
+            "headbutt",
+            "assurance"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK"
+}

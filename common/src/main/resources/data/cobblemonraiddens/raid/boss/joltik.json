@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "joltik",
+        "moves": [
+            "bugbite",
+            "electroweb",
+            "absorb",
+            "furycutter"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

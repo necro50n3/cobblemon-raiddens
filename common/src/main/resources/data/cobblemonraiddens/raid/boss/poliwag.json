@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "poliwag",
+        "moves": [
+            "bubblebeam",
+            "doubleslap",
+            "mudshot",
+            "bubble"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

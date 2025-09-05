@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "corphish",
+        "moves": [
+            "doublehit",
+            "knockoff",
+            "bubblebeam",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

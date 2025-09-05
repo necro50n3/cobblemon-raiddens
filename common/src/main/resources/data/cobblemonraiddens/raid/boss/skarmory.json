@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "skarmory",
+        "moves": [
+            "drillpeck",
+            "payback",
+            "steelwing",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

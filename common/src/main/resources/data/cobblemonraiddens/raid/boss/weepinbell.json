@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "weepinbell",
+        "moves": [
+            "knockoff",
+            "acid",
+            "vinewhip",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

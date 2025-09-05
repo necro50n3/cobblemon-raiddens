@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "impidimp",
+        "moves": [
+            "assurance",
+            "bite",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DARK"
+}

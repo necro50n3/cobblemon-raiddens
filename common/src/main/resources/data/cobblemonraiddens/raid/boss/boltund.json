@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "boltund",
+        "moves": [
+            "crunch",
+            "spark",
+            "tackle",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

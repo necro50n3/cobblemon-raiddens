@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "annihilape",
+        "moves": [
+            "outrage",
+            "stompingtantrum",
+            "closecombat",
+            "ragefist"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIGHTING"
+}

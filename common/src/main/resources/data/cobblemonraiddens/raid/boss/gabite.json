@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gabite",
+        "moves": [
+            "slash",
+            "bite",
+            "bulldoze",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DRAGON"
+}

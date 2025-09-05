@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hypno",
+        "moves": [
+            "psychic",
+            "synchronoise",
+            "zenheadbutt",
+            "wakeupslap"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC"
+}

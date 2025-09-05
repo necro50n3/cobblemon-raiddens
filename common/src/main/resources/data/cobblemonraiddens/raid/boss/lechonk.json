@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lechonk",
+        "moves": [
+            "mudshot",
+            "echoedvoice",
+            "disarmingvoice",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "monferno",
+        "moves": [
+            "feint",
+            "flamewheel",
+            "furyswipes",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

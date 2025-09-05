@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kangaskhan",
+        "moves": [
+            "crunch",
+            "dizzypunch",
+            "doublehit",
+            "chipaway"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

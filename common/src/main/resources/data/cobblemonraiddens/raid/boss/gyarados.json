@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gyarados",
+        "moves": [
+            "hyperbeam",
+            "thrash",
+            "hurricane",
+            "hydropump"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

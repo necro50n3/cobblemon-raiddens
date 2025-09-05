@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lileep",
+        "moves": [
+            "brine",
+            "megadrain",
+            "ancientpower",
+            "acid"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

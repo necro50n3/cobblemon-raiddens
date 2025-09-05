@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "marowak",
+        "moves": [
+            "bonerush",
+            "stompingtantrum",
+            "rage",
+            "retaliate"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

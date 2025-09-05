@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "corsola",
+        "moves": [
+            "bubblebeam",
+            "spikecannon",
+            "ancientpower",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bellossom",
+        "moves": [
+            "acid",
+            "absorb",
+            "megadrain",
+            "petaldance"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

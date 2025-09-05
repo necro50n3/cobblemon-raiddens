@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "flaaffy",
+        "moves": [
+            "powergem",
+            "takedown",
+            "thundershock",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pikachu",
+        "moves": [
+            "spark",
+            "feint",
+            "thundershock",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tangrowth",
+        "moves": [
+            "powerwhip",
+            "slam",
+            "gigadrain",
+            "knockoff"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

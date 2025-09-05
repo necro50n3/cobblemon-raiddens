@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "frillish",
+        "moves": [
+            "shadowball",
+            "ominouswind",
+            "brine",
+            "hex"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

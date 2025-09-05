@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "buneary",
+        "moves": [
+            "headbutt",
+            "jumpkick",
+            "doublekick",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

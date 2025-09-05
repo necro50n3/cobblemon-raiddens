@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "graveler",
+        "moves": [
+            "rockblast",
+            "selfdestruct",
+            "smackdown",
+            "rockthrow"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

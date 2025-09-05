@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "blaziken",
+        "moves": [
+            "bravebird",
+            "skyuppercut",
+            "flareblitz",
+            "bounce"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

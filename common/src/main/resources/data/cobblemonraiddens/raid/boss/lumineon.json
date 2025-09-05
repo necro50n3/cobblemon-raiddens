@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lumineon",
+        "moves": [
+            "whirlpool",
+            "waterpulse",
+            "pound",
+            "gust"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

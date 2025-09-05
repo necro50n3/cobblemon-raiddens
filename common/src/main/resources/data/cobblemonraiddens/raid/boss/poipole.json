@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "poipole",
+        "moves": [
+            "venoshock",
+            "fellstinger",
+            "furyattack",
+            "acid"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "POISON"
+}

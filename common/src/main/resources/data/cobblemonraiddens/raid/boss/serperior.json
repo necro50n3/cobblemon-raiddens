@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "serperior",
+        "moves": [
+            "leafstorm",
+            "gigadrain",
+            "leafblade",
+            "slam"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

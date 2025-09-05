@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "krokorok",
+        "moves": [
+            "foulplay",
+            "crunch",
+            "dig",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND"
+}

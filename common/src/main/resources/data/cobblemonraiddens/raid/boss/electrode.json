@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "electrode",
+        "moves": [
+            "discharge",
+            "selfdestruct",
+            "swift",
+            "chargebeam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

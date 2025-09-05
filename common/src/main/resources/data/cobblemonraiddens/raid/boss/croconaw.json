@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "croconaw",
+        "moves": [
+            "slash",
+            "chipaway",
+            "crunch",
+            "icefang"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "vibrava",
+        "moves": [
+            "bugbuzz",
+            "dragontail",
+            "sandtomb",
+            "mudslap"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND"
+}

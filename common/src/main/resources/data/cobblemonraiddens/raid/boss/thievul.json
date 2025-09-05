@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "thievul",
+        "moves": [
+            "tailslap",
+            "nightslash",
+            "suckerpunch",
+            "assurance"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ducklett",
+        "moves": [
+            "bubblebeam",
+            "aerialace",
+            "waterpulse",
+            "wingattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

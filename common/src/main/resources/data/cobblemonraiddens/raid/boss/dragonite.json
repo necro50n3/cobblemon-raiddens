@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dragonite",
+        "moves": [
+            "outrage",
+            "dragonrush",
+            "aquatail",
+            "slam"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DRAGON"
+}

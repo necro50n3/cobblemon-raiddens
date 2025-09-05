@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pidgeot",
+        "moves": [
+            "wingattack",
+            "twister",
+            "gust",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

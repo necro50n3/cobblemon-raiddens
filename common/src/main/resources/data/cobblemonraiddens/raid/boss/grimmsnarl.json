@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grimmsnarl",
+        "moves": [
+            "darkpulse",
+            "suckerpunch",
+            "assurance",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "yamper",
+        "moves": [
+            "spark",
+            "bite",
+            "nuzzle",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC"
+}

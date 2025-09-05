@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "donphan",
+        "moves": [
+            "earthquake",
+            "stompingtantrum",
+            "slam",
+            "knockoff"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

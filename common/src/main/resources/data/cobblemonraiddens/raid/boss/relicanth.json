@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "relicanth",
+        "moves": [
+            "hydropump",
+            "aquatail",
+            "takedown",
+            "dive"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "rookidee",
+        "moves": [
+            "furyattack",
+            "powertrip",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "FLYING"
+}

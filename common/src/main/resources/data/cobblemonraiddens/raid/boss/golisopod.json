@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "golisopod",
+        "moves": [
+            "liquidation",
+            "pinmissile",
+            "razorshell",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "BUG"
+}

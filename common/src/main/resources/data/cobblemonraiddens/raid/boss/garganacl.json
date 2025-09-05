@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "garganacl",
+        "moves": [
+            "rockslide",
+            "saltcure",
+            "headbutt",
+            "rocktomb"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

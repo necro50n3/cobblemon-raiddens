@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ekans",
+        "moves": [
+            "acid",
+            "bite",
+            "poisonsting",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON"
+}

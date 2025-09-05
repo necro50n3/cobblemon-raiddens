@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "gimmighoul",
+        "moves": [
+            "tackle",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST"
+}

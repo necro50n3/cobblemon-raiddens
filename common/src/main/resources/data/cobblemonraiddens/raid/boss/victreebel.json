@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "victreebel",
+        "moves": [
+            "leafblade",
+            "vinewhip",
+            "razorleaf",
+            "leafstorm"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

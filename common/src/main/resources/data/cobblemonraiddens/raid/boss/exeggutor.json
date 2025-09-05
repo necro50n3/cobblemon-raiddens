@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "exeggutor",
+        "moves": [
+            "eggbomb",
+            "absorb",
+            "megadrain",
+            "solarbeam"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

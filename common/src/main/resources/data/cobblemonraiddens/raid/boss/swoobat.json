@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "swoobat",
+        "moves": [
+            "psychic",
+            "airslash",
+            "assurance",
+            "aircutter"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC"
+}

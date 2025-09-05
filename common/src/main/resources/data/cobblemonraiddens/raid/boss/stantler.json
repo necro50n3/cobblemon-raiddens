@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "stantler",
+        "moves": [
+            "jumpkick",
+            "zenheadbutt",
+            "takedown",
+            "stomp"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

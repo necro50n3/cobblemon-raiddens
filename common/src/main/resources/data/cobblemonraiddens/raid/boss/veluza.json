@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "veluza",
+        "moves": [
+            "liquidation",
+            "psychocut",
+            "nightslash",
+            "aquacutter"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

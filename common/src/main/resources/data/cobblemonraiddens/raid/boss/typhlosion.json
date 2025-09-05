@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "typhlosion",
+        "moves": [
+            "overheat",
+            "burnup",
+            "rollout",
+            "inferno"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

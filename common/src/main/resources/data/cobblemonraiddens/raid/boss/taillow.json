@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "taillow",
+        "moves": [
+            "wingattack",
+            "quickattack",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

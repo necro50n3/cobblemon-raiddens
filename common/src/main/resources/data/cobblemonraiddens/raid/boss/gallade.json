@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gallade",
+        "moves": [
+            "closecombat",
+            "psychocut",
+            "falseswipe",
+            "aerialace"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "PSYCHIC"
+}

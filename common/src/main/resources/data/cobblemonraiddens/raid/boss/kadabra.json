@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kadabra",
+        "moves": [
+            "psychic",
+            "psyshock",
+            "psychocut",
+            "psybeam"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC"
+}

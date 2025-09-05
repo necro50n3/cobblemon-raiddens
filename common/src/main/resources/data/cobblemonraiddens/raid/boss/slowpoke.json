@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "slowpoke",
+        "moves": [
+            "waterpulse",
+            "confusion",
+            "watergun",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

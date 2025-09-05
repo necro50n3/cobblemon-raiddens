@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "stufful",
+        "moves": [
+            "hammerarm",
+            "takedown",
+            "strength",
+            "brutalswing"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

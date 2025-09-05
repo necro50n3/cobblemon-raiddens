@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "barbaracle",
+        "moves": [
+            "nightslash",
+            "razorshell",
+            "slash",
+            "clamp"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

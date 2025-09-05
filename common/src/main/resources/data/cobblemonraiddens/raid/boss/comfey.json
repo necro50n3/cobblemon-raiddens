@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "comfey",
+        "moves": [
+            "petaldance",
+            "playrough",
+            "bind",
+            "petalblizzard"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY"
+}

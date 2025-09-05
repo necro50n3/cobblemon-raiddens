@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sizzlipede",
+        "moves": [
+            "bugbite",
+            "flamewheel",
+            "bite",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

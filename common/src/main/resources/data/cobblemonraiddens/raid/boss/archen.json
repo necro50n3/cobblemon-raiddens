@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "archen",
+        "moves": [
+            "crunch",
+            "rockslide",
+            "uturn",
+            "pluck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

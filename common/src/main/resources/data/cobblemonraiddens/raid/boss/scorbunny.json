@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "scorbunny",
+        "moves": [
+            "flamecharge",
+            "doublekick",
+            "quickattack",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

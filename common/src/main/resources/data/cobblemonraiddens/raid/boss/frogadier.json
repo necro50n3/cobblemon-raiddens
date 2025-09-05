@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "frogadier",
+        "moves": [
+            "smackdown",
+            "round",
+            "waterpulse",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

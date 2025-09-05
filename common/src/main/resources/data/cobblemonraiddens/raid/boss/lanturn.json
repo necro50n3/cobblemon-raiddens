@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lanturn",
+        "moves": [
+            "discharge",
+            "signalbeam",
+            "spark",
+            "bubblebeam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grimer",
+        "moves": [
+            "sludgewave",
+            "sludgebomb",
+            "mudshot",
+            "mudbomb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "POISON"
+}

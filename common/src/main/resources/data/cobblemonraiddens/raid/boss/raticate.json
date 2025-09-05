@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "raticate",
+        "moves": [
+            "suckerpunch",
+            "crunch",
+            "assurance",
+            "hyperfang"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

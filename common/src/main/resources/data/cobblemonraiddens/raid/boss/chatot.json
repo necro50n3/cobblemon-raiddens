@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chatot",
+        "moves": [
+            "round",
+            "furyattack",
+            "peck",
+            "hypervoice"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

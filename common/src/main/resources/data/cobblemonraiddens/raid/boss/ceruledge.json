@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ceruledge",
+        "moves": [
+            "flareblitz",
+            "psychocut",
+            "bitterblade",
+            "lavaplume"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

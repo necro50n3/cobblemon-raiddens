@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "infernape",
+        "moves": [
+            "ragingfury",
+            "acrobatics",
+            "flareblitz",
+            "firespin"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

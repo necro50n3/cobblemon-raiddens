@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "baltoy",
+        "moves": [
+            "ancientpower",
+            "psybeam",
+            "rocktomb",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GROUND"
+}

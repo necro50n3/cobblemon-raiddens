@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "beheeyem",
+        "moves": [
+            "zenheadbutt",
+            "headbutt",
+            "psybeam",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC"
+}

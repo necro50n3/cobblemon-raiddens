@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "umbreon",
+        "moves": [
+            "lastresort",
+            "darkpulse",
+            "assurance",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DARK"
+}

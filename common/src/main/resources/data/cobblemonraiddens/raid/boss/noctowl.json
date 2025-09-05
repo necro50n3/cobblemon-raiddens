@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "noctowl",
+        "moves": [
+            "moonblast",
+            "uproar",
+            "takedown",
+            "extrasensory"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shuckle",
+        "moves": [
+            "rockslide",
+            "bugbite",
+            "rockthrow",
+            "strugglebug"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "wartortle",
+        "moves": [
+            "aquatail",
+            "waterpulse",
+            "bubble",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

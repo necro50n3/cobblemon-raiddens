@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rufflet",
+        "moves": [
+            "aerialace",
+            "wingattack",
+            "furyattack",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

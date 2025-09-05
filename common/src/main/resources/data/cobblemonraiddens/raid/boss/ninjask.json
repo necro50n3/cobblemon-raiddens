@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ninjask",
+        "moves": [
+            "furyswipes",
+            "bugbite",
+            "absorb",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

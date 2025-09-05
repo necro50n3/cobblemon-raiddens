@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "whirlipede",
+        "moves": [
+            "takedown",
+            "venoshock",
+            "bugbite",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

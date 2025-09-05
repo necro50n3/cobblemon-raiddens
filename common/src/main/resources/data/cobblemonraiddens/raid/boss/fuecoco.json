@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "fuecoco",
+        "moves": [
+            "incinerate",
+            "bite",
+            "round",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

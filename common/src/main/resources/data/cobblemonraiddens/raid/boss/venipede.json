@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "venipede",
+        "moves": [
+            "bugbite",
+            "pursuit",
+            "poisontail",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

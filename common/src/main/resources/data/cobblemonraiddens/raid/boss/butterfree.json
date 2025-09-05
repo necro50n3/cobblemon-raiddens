@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "butterfree",
+        "moves": [
+            "bugbuzz",
+            "airslash",
+            "silverwind",
+            "psybeam"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

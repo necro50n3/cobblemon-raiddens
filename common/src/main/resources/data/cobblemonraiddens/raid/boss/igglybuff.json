@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "igglybuff",
+        "moves": [
+            "disarmingvoice",
+            "pound"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL"
+}

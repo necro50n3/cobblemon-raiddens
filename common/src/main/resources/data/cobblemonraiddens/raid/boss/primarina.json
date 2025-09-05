@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "primarina",
+        "moves": [
+            "hydropump",
+            "moonblast",
+            "hypervoice",
+            "doubleslap"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

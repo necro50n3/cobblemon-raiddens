@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ribombee",
+        "moves": [
+            "covet",
+            "strugglebug",
+            "drainingkiss",
+            "silverwind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

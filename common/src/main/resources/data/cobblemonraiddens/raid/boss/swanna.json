@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "swanna",
+        "moves": [
+            "airslash",
+            "bubblebeam",
+            "aerialace",
+            "waterpulse"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

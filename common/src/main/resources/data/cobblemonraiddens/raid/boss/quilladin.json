@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "quilladin",
+        "moves": [
+            "mudshot",
+            "takedown",
+            "pinmissile",
+            "seedbomb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

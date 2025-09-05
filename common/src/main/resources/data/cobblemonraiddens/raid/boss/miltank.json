@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "miltank",
+        "moves": [
+            "playrough",
+            "bodyslam",
+            "zenheadbutt",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "wugtrio",
+        "moves": [
+            "suckerpunch",
+            "dig",
+            "tripledive",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

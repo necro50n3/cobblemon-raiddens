@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dugtrio",
+        "moves": [
+            "earthpower",
+            "dig",
+            "mudbomb",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lapras",
+        "moves": [
+            "hydropump",
+            "icebeam",
+            "bodyslam",
+            "brine"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

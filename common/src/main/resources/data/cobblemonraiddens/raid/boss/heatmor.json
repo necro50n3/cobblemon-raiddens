@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "heatmor",
+        "moves": [
+            "firelash",
+            "flameburst",
+            "bind",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE"
+}

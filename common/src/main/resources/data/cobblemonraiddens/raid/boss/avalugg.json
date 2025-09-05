@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "avalugg",
+        "moves": [
+            "skullbash",
+            "iciclecrash",
+            "doubleedge",
+            "blizzard"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ICE"
+}

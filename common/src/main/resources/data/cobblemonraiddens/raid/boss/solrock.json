@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "solrock",
+        "moves": [
+            "solarbeam",
+            "stoneedge",
+            "psychic",
+            "zenheadbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

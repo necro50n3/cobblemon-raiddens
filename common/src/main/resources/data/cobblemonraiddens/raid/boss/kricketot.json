@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "kricketot",
+        "moves": [
+            "strugglebug",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG"
+}

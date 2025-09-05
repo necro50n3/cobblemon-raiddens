@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "raboot",
+        "moves": [
+            "headbutt",
+            "flamecharge",
+            "doublekick",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

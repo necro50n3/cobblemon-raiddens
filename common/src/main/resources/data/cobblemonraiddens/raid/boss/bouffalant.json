@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bouffalant",
+        "moves": [
+            "headcharge",
+            "throatchop",
+            "hornattack",
+            "revenge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

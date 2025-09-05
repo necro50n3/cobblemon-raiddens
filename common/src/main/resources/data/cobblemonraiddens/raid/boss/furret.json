@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "furret",
+        "moves": [
+            "slam",
+            "furyswipes",
+            "scratch",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "nidoking",
+        "moves": [
+            "thrash",
+            "chipaway",
+            "doublekick",
+            "hornattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

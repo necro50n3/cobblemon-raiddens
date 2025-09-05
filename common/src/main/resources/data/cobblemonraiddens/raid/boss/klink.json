@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "klink",
+        "moves": [
+            "chargebeam",
+            "bind",
+            "thundershock"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "STEEL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shroomish",
+        "moves": [
+            "headbutt",
+            "megadrain",
+            "tackle",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

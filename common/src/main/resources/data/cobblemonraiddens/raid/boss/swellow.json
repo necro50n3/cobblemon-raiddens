@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "swellow",
+        "moves": [
+            "aerialace",
+            "wingattack",
+            "peck",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

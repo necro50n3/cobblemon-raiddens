@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mudkip",
+        "moves": [
+            "waterpulse",
+            "rockthrow",
+            "rocksmash",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

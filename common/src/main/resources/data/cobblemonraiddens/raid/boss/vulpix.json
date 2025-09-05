@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "vulpix",
+        "moves": [
+            "incinerate",
+            "quickattack",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

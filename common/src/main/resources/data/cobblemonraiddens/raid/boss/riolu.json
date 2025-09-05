@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "riolu",
+        "moves": [
+            "rocksmash",
+            "metalclaw",
+            "feint",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIGHTING"
+}

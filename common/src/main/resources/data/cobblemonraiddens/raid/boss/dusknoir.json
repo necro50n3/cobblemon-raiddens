@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dusknoir",
+        "moves": [
+            "futuresight",
+            "shadowball",
+            "hex",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GHOST"
+}

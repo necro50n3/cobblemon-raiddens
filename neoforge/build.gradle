@@ -1,0 +1,109 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+architectury {
+    platformSetupLoomIde()
+    neoForge()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentNeoForge.extendsFrom common
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+loom {
+    enableTransitiveAccessWideners.set(true)
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+repositories {
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
+    }
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+dependencies {
+    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    modImplementation "com.cobblemon:neoforge:$rootProject.cobblemon_version"
+    forgeRuntimeLibrary("thedarkcolour:kotlinforforge-neoforge:$rootProject.kotlin_for_forge_version") {
+        exclude group: "net.neoforged.fancymodloader", module: "loader"
+    }
+    modImplementation "software.bernie.geckolib:geckolib-neoforge-$rootProject.geckolib_version"
+    include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
+
+    modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+}
+
+processResources {
+    var replaceProperties = [
+        display_name: rootProject.display_name,
+        description: rootProject.mod_description,
+        archives_name: rootProject.archives_name,
+        version: project.version,
+        minecraft_version: rootProject.minecraft_version,
+        cobblemon_version: rootProject.cobblemon_dependency,
+        neoforge_version: rootProject.neoforge_version
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand replaceProperties
+    }
+
+    filesMatching('pack.mcmeta') {
+        expand  display_name: rootProject.display_name
+    }
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    // atAccessWideners.add("modid.accesswidener")
+
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier = null
+}
+
+jar {
+    archiveClassifier = "dev"
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}

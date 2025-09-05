@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "flareon",
+        "moves": [
+            "lastresort",
+            "flareblitz",
+            "lavaplume",
+            "firespin"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

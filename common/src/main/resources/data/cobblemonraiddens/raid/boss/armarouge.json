@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "armarouge",
+        "moves": [
+            "armorcannon",
+            "expandingforce",
+            "flamethrower",
+            "lavaplume"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

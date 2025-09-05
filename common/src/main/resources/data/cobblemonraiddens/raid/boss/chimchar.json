@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chimchar",
+        "moves": [
+            "flamewheel",
+            "furyswipes",
+            "ember",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

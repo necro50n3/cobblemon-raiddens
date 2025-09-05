@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "volcarona",
+        "moves": [
+            "fireblast",
+            "hurricane",
+            "silverwind",
+            "heatwave"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "BUG"
+}

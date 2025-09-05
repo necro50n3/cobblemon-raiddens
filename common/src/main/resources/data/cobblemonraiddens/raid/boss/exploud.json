@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "exploud",
+        "moves": [
+            "uproar",
+            "stomp",
+            "pound",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

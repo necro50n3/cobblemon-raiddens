@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cryogonal",
+        "moves": [
+            "solarbeam",
+            "icebeam",
+            "freezedry",
+            "nightslash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ICE"
+}

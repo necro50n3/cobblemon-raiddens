@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mankey",
+        "moves": [
+            "pursuit",
+            "karatechop",
+            "furyswipes",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIGHTING"
+}

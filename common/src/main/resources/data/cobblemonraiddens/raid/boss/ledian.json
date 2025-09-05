@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ledian",
+        "moves": [
+            "cometpunch",
+            "silverwind",
+            "machpunch",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

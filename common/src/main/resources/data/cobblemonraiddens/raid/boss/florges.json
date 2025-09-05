@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "florges",
+        "moves": [
+            "moonblast",
+            "solarbeam",
+            "petaldance",
+            "magicalleaf"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FAIRY"
+}

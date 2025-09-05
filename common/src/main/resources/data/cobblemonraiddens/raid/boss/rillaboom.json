@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rillaboom",
+        "moves": [
+            "boomburst",
+            "woodhammer",
+            "uproar",
+            "slam"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sawsbuck",
+        "moves": [
+            "doubleedge",
+            "energyball",
+            "jumpkick",
+            "zenheadbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

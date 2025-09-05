@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "garchomp",
+        "moves": [
+            "takedown",
+            "dig",
+            "dragonclaw",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DRAGON"
+}

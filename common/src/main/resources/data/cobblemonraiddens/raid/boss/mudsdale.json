@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mudsdale",
+        "moves": [
+            "earthquake",
+            "highhorsepower",
+            "strength",
+            "stomp"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

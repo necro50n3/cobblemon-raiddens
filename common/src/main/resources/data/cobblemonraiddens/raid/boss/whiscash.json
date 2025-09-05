@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "whiscash",
+        "moves": [
+            "earthquake",
+            "muddywater",
+            "aquatail",
+            "mudbomb"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

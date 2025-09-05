@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "camerupt",
+        "moves": [
+            "takedown",
+            "earthpower",
+            "lavaplume",
+            "flameburst"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE"
+}

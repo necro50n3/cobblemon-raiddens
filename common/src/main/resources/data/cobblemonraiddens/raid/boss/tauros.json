@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tauros",
+        "moves": [
+            "ragingbull",
+            "zenheadbutt",
+            "hornattack",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

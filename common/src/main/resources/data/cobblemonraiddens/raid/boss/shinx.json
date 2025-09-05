@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shinx",
+        "moves": [
+            "spark",
+            "bite",
+            "thundershock",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC"
+}

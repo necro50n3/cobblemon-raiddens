@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lampent",
+        "moves": [
+            "firespin",
+            "flameburst",
+            "hex",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GHOST"
+}

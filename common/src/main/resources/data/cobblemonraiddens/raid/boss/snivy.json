@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "snivy",
+        "moves": [
+            "magicalleaf",
+            "leaftornado",
+            "wrap",
+            "vinewhip"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

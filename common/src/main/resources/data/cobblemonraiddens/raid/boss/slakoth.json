@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "slakoth",
+        "moves": [
+            "headbutt",
+            "feintattack",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

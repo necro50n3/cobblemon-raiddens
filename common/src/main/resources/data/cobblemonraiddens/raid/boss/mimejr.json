@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "mimejr",
+        "moves": [
+            "confusion",
+            "doubleslap",
+            "pound"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "PSYCHIC"
+}

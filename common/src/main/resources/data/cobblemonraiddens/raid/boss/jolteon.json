@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "jolteon",
+        "moves": [
+            "lastresort",
+            "thunder",
+            "discharge",
+            "pinmissile"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ELECTRIC"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "nincada",
+        "moves": [
+            "mudslap",
+            "falseswipe",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

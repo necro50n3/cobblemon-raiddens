@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "machamp",
+        "moves": [
+            "submission",
+            "dualchop",
+            "strength",
+            "wakeupslap"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

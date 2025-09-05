@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lairon",
+        "moves": [
+            "takedown",
+            "ironhead",
+            "rockslide",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

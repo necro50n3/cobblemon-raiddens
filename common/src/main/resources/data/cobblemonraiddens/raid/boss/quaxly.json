@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "quaxly",
+        "moves": [
+            "doublehit",
+            "aquajet",
+            "wingattack",
+            "pound"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

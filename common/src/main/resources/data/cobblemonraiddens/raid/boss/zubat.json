@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "zubat",
+        "moves": [
+            "astonish",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "POISON"
+}

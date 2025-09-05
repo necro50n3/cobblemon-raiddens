@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bunnelby",
+        "moves": [
+            "mudshot",
+            "doubleslap",
+            "quickattack",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL"
+}

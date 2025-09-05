@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "golem",
+        "moves": [
+            "explosion",
+            "earthquake",
+            "rockblast",
+            "selfdestruct"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

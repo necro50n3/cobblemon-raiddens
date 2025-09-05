@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "scyther",
+        "moves": [
+            "xscissor",
+            "airslash",
+            "razorwind",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

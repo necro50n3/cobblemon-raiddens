@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chinchou",
+        "moves": [
+            "signalbeam",
+            "discharge",
+            "spark",
+            "bubblebeam"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

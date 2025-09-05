@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cyndaquil",
+        "moves": [
+            "flamewheel",
+            "quickattack",
+            "ember",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

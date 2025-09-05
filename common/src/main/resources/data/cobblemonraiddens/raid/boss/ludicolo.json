@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "ludicolo",
+        "moves": [
+            "bubblebeam",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

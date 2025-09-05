@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dodrio",
+        "moves": [
+            "jumpkick",
+            "drillpeck",
+            "uproar",
+            "doublehit"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gardevoir",
+        "moves": [
+            "futuresight",
+            "dreameater",
+            "moonblast",
+            "psychic"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "PSYCHIC"
+}

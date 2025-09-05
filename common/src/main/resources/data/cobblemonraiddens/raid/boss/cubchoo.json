@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cubchoo",
+        "moves": [
+            "frostbreath",
+            "brine",
+            "icywind",
+            "furyswipes"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE"
+}

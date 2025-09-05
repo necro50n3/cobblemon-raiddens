@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hitmontop",
+        "moves": [
+            "closecombat",
+            "dig",
+            "suckerpunch",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

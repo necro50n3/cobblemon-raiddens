@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "blastoise",
+        "moves": [
+            "skullbash",
+            "wavecrash",
+            "hydropump",
+            "aquatail"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

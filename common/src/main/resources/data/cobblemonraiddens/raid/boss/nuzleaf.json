@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "nuzleaf",
+        "moves": [
+            "feintattack",
+            "payback",
+            "razorwind",
+            "megadrain"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

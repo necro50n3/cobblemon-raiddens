@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "wooloo",
+        "moves": [
+            "doublekick",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

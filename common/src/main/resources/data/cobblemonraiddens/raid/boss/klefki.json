@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "klefki",
+        "moves": [
+            "playrough",
+            "flashcannon",
+            "mirrorshot",
+            "drainingkiss"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

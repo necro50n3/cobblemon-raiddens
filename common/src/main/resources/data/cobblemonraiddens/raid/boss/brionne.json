@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "brionne",
+        "moves": [
+            "doubleslap",
+            "bubblebeam",
+            "icywind",
+            "aquajet"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

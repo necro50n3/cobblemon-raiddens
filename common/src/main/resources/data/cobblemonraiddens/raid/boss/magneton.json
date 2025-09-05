@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "magneton",
+        "moves": [
+            "discharge",
+            "flashcannon",
+            "mirrorshot",
+            "spark"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

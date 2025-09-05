@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "corviknight",
+        "moves": [
+            "drillpeck",
+            "pluck",
+            "furyattack",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FLYING"
+}

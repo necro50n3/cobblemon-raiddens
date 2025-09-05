@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "machoke",
+        "moves": [
+            "strength",
+            "wakeupslap",
+            "vitalthrow",
+            "knockoff"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING"
+}

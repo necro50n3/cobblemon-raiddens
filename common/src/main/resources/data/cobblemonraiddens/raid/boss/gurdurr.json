@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gurdurr",
+        "moves": [
+            "slam",
+            "chipaway",
+            "rockslide",
+            "wakeupslap"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING"
+}

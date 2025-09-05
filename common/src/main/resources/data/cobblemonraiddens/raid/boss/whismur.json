@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "whismur",
+        "moves": [
+            "echoedvoice",
+            "pound",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL"
+}

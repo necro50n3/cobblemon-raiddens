@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "yanma",
+        "moves": [
+            "ancientpower",
+            "pursuit",
+            "bugbite",
+            "uproar"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

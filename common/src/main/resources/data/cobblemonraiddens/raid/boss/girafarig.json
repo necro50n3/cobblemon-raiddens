@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "girafarig",
+        "moves": [
+            "crunch",
+            "twinbeam",
+            "doublehit",
+            "psybeam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

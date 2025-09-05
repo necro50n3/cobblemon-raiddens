@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "ralts",
+        "moves": [
+            "drainingkiss",
+            "confusion",
+            "disarmingvoice"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "PSYCHIC"
+}

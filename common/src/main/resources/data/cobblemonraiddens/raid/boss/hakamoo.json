@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hakamoo",
+        "moves": [
+            "dragonclaw",
+            "headbutt",
+            "tackle",
+            "dragontail"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DRAGON"
+}

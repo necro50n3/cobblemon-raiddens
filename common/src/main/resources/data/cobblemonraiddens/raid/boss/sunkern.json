@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "sunkern",
+        "moves": [
+            "megadrain",
+            "absorb",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "zoroark",
+        "moves": [
+            "knockoff",
+            "feintattack",
+            "furyswipes",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

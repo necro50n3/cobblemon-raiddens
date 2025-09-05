@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lilligant",
+        "moves": [
+            "magicalleaf",
+            "absorb",
+            "megadrain",
+            "gigadrain"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

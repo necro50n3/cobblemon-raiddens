@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mantyke",
+        "moves": [
+            "airslash",
+            "headbutt",
+            "bubblebeam",
+            "waterpulse"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ferrothorn",
+        "moves": [
+            "selfdestruct",
+            "mirrorshot",
+            "ironhead",
+            "flashcannon"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

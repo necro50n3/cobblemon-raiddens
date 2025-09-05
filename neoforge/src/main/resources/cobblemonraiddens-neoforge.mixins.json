@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.necro.raid.dens.neoforge.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "PartySendBindingMixin"
+  ]
+}

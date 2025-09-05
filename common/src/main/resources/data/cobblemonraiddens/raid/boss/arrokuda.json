@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "arrokuda",
+        "moves": [
+            "bite",
+            "furyattack",
+            "peck",
+            "aquajet"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

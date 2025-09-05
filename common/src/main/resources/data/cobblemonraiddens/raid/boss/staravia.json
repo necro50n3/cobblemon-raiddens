@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "staravia",
+        "moves": [
+            "takedown",
+            "aerialace",
+            "wingattack",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

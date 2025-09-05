@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rampardos",
+        "moves": [
+            "zenheadbutt",
+            "ancientpower",
+            "slam",
+            "chipaway"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

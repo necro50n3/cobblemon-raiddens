@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "golett",
+        "moves": [
+            "shadowpunch",
+            "rollout",
+            "pound",
+            "mudslap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GROUND"
+}

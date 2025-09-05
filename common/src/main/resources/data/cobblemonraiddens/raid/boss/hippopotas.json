@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hippopotas",
+        "moves": [
+            "takedown",
+            "crunch",
+            "dig",
+            "sandtomb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "seel",
+        "moves": [
+            "brine",
+            "aquajet",
+            "aurorabeam",
+            "iceshard"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

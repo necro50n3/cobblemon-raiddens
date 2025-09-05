@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "meowth",
+        "moves": [
+            "bite",
+            "payday",
+            "scratch",
+            "feint"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

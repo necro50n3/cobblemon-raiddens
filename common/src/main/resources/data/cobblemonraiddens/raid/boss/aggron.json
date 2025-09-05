@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "aggron",
+        "moves": [
+            "irontail",
+            "takedown",
+            "ironhead",
+            "rockslide"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "STEEL"
+}

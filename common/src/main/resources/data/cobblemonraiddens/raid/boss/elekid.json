@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "elekid",
+        "moves": [
+            "discharge",
+            "thunderpunch",
+            "shockwave",
+            "swift"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC"
+}

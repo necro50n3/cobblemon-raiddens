@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bibarel",
+        "moves": [
+            "takedown",
+            "crunch",
+            "hyperfang",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

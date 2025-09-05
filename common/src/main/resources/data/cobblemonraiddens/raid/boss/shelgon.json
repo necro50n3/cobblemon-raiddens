@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shelgon",
+        "moves": [
+            "dragonclaw",
+            "crunch",
+            "headbutt",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DRAGON"
+}

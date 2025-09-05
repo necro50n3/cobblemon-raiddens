@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "arctozolt",
+        "moves": [
+            "freezedry",
+            "avalanche",
+            "pluck",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

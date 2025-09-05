@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cacturne",
+        "moves": [
+            "energyball",
+            "pinmissile",
+            "suckerpunch",
+            "payback"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

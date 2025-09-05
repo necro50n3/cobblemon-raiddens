@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "crawdaunt",
+        "moves": [
+            "razorshell",
+            "nightslash",
+            "doublehit",
+            "knockoff"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

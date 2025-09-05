@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ninetales",
+        "moves": [
+            "ember",
+            "flamethrower",
+            "quickattack",
+            "extrasensory"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE"
+}

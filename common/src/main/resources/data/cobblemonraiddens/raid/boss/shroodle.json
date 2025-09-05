@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shroodle",
+        "moves": [
+            "poisonfang",
+            "bite",
+            "furyswipes",
+            "acidspray"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON"
+}

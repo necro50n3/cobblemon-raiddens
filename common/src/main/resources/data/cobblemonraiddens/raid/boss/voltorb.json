@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "voltorb",
+        "moves": [
+            "selfdestruct",
+            "swift",
+            "chargebeam",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC"
+}

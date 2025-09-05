@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "loudred",
+        "moves": [
+            "stomp",
+            "pound",
+            "astonish",
+            "echoedvoice"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

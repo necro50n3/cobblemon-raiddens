@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "bonsly",
+        "moves": [
+            "rocktomb",
+            "feintattack",
+            "rockthrow"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ROCK"
+}

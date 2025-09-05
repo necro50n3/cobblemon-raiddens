@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "copperajah",
+        "moves": [
+            "ironhead",
+            "strength",
+            "dig",
+            "stomp"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

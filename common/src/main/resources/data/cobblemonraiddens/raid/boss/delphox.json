@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "delphox",
+        "moves": [
+            "fireblast",
+            "psychic",
+            "flamethrower",
+            "psyshock"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

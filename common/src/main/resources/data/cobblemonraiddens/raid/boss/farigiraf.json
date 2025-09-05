@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "farigiraf",
+        "moves": [
+            "psychic",
+            "crunch",
+            "twinbeam",
+            "doublehit"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL"
+}

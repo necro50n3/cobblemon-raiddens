@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dwebble",
+        "moves": [
+            "rockblast",
+            "rockslide",
+            "slash",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

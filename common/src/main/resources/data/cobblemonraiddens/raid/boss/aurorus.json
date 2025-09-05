@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "aurorus",
+        "moves": [
+            "hyperbeam",
+            "blizzard",
+            "icebeam",
+            "freezedry"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ROCK"
+}

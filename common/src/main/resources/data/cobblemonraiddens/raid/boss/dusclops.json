@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dusclops",
+        "moves": [
+            "shadowball",
+            "hex",
+            "pursuit",
+            "payback"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST"
+}

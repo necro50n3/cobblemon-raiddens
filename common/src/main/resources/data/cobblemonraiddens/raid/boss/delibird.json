@@ -1,0 +1,10 @@
+{
+    "pokemon": {
+        "species": "delibird",
+        "moves": [
+            "drillpeck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ICE"
+}

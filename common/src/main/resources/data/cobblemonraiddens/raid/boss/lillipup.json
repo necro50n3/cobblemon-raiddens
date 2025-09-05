@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lillipup",
+        "moves": [
+            "playrough",
+            "retaliate",
+            "bite",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

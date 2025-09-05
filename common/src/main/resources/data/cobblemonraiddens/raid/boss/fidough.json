@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "fidough",
+        "moves": [
+            "playrough",
+            "bite",
+            "covet",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FAIRY"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shiinotic",
+        "moves": [
+            "gigadrain",
+            "megadrain",
+            "absorb",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

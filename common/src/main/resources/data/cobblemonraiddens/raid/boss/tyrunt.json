@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tyrunt",
+        "moves": [
+            "crunch",
+            "rockslide",
+            "stomp",
+            "dragontail"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

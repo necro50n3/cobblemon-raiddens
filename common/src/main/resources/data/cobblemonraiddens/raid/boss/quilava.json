@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "quilava",
+        "moves": [
+            "flamecharge",
+            "swift",
+            "flamewheel",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

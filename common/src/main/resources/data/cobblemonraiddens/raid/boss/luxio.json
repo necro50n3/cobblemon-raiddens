@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "luxio",
+        "moves": [
+            "voltswitch",
+            "spark",
+            "bite",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC"
+}

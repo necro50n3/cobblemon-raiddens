@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "salazzle",
+        "moves": [
+            "dragonpulse",
+            "venoshock",
+            "incinerate",
+            "flameburst"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "elgyem",
+        "moves": [
+            "headbutt",
+            "psybeam",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC"
+}

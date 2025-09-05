@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "jigglypuff",
+        "moves": [
+            "rollout",
+            "doubleslap",
+            "round",
+            "covet"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

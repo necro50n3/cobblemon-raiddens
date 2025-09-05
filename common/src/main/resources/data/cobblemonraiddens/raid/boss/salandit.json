@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "salandit",
+        "moves": [
+            "poisonfang",
+            "ember",
+            "smog",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON"
+}

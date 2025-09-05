@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dewpider",
+        "moves": [
+            "headbutt",
+            "bubblebeam",
+            "bite",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

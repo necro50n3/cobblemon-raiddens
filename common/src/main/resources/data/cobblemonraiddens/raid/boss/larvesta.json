@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "larvesta",
+        "moves": [
+            "bugbite",
+            "flamewheel",
+            "strugglebug",
+            "flamecharge"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "com.necro.raid.dens.common.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ActionEffectInstructionMixin",
+    "HolderSetNamedAccessor",
+    "MappedRegistryAccessor",
+    "MappedRegistryMixin",
+    "MinecraftServerAccessor",
+    "MinecraftServerMixin",
+    "PokemonEntityMixin",
+    "PokemonMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

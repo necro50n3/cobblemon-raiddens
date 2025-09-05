@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "${archives_name}",
+  "version": "${version}",
+  "name": "${display_name}",
+  "description": "${description}",
+  "authors": [
+    "NecroSo1"
+  ],
+  "license": "MIT License",
+  "icon": "assets/cobblemonraiddens/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.necro.raid.dens.fabric.CobblemonRaidDensFabric"
+    ],
+    "client": [
+      "com.necro.raid.dens.fabric.CobblemonRaidDensFabricClient"
+    ],
+    "server": [
+      "com.necro.raid.dens.fabric.CobblemonRaidDensFabricServer"
+    ],
+    "jade": [
+      "com.necro.raid.dens.common.compat.jade.RaidDensJadePlugin"
+    ],
+    "modmenu": [
+      "com.necro.raid.dens.fabric.compat.modmenu.RaidDensModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "${archives_name}-common.mixins.json",
+    "${archives_name}-fabric.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "${minecraft_version}",
+    "cobblemon": ">=${cobblemon_version}",
+    "geckolib": ">=4.7.0"
+  }
+}

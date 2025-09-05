@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "pichu",
+        "moves": [
+            "nuzzle",
+            "thundershock"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "ELECTRIC"
+}

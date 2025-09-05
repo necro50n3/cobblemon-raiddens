@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rhyperior",
+        "moves": [
+            "rockwrecker",
+            "megahorn",
+            "stoneedge",
+            "earthquake"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GROUND"
+}

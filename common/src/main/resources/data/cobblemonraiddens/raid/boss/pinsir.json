@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pinsir",
+        "moves": [
+            "submission",
+            "strength",
+            "xscissor",
+            "vitalthrow"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

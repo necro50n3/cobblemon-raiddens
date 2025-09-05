@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "poliwrath",
+        "moves": [
+            "doubleslap",
+            "bodyslam",
+            "bubblebeam",
+            "submission"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

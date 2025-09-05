@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "glaceon",
+        "moves": [
+            "lastresort",
+            "blizzard",
+            "freezedry",
+            "icefang"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ICE"
+}

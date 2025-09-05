@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "nidorino",
+        "moves": [
+            "doublekick",
+            "furyattack",
+            "poisonsting",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "POISON"
+}

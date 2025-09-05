@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "primeape",
+        "moves": [
+            "closecombat",
+            "ragefist",
+            "thrash",
+            "assurance"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

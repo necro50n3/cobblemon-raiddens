@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hitmonlee",
+        "moves": [
+            "highjumpkick",
+            "closecombat",
+            "megakick",
+            "feint"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

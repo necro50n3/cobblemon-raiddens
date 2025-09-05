@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "mareep",
+        "moves": [
+            "takedown",
+            "thundershock",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC"
+}

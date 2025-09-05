@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sunflora",
+        "moves": [
+            "leafstorm",
+            "doubleedge",
+            "solarbeam",
+            "petaldance"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

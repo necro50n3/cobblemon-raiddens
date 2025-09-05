@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "crocalor",
+        "moves": [
+            "flamethrower",
+            "snarl",
+            "incinerate",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

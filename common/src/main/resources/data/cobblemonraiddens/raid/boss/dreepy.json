@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dreepy",
+        "moves": [
+            "bite",
+            "quickattack",
+            "astonish",
+            "infestation"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DRAGON"
+}

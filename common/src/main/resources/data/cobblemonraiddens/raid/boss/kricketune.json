@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kricketune",
+        "moves": [
+            "xscissor",
+            "slash",
+            "absorb",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

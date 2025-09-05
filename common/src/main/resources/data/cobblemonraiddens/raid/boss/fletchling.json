@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "fletchling",
+        "moves": [
+            "acrobatics",
+            "ember",
+            "quickattack",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

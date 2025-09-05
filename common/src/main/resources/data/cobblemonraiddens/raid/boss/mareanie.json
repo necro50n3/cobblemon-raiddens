@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mareanie",
+        "moves": [
+            "venoshock",
+            "bite",
+            "poisonsting",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON"
+}

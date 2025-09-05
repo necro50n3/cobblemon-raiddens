@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rhydon",
+        "moves": [
+            "takedown",
+            "drillrun",
+            "rockblast",
+            "stomp"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND"
+}

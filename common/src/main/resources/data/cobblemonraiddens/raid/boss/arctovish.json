@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "arctovish",
+        "moves": [
+            "freezedry",
+            "bite",
+            "ancientpower",
+            "icywind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

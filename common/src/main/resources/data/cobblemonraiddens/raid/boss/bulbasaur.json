@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bulbasaur",
+        "moves": [
+            "seedbomb",
+            "razorleaf",
+            "vinewhip",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

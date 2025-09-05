@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "wooper",
+        "moves": [
+            "mudshot",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "WATER"
+}

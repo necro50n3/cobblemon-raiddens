@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "exeggcute",
+        "moves": [
+            "gigadrain",
+            "bulletseed",
+            "confusion",
+            "megadrain"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

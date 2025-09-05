@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "floragato",
+        "moves": [
+            "slash",
+            "uturn",
+            "seedbomb",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

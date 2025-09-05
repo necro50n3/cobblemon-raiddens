@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grotle",
+        "moves": [
+            "megadrain",
+            "bite",
+            "razorleaf",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

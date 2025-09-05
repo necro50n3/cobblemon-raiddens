@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "treecko",
+        "moves": [
+            "assurance",
+            "pursuit",
+            "megadrain",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

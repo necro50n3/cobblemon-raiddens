@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "glimmet",
+        "moves": [
+            "rockslide",
+            "selfdestruct",
+            "venoshock",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

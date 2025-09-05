@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "amaura",
+        "moves": [
+            "aurorabeam",
+            "round",
+            "icywind",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

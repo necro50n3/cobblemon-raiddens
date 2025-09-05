@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gholdengo",
+        "moves": [
+            "makeitrain",
+            "powergem",
+            "shadowball",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "STEEL"
+}

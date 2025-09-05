@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "numel",
+        "moves": [
+            "flameburst",
+            "incinerate",
+            "bulldoze",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

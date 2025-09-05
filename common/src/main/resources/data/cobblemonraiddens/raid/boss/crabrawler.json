@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "crabrawler",
+        "moves": [
+            "payback",
+            "slam",
+            "dizzypunch",
+            "brickbreak"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING"
+}

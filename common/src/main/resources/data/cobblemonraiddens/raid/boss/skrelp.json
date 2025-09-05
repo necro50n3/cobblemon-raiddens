@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "skrelp",
+        "moves": [
+            "bubble",
+            "watergun",
+            "acid",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON"
+}

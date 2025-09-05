@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "slaking",
+        "moves": [
+            "hammerarm",
+            "megakick",
+            "chipaway",
+            "throatchop"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL"
+}

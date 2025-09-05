@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "blissey",
+        "moves": [
+            "lastresort",
+            "eggbomb",
+            "doubleedge",
+            "takedown"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL"
+}

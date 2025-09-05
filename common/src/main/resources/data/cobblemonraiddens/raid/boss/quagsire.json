@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "quagsire",
+        "moves": [
+            "muddywater",
+            "aquatail",
+            "mudbomb",
+            "slam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "bayleef",
+        "moves": [
+            "magicalleaf",
+            "tackle",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

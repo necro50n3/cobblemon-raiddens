@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "toxapex",
+        "moves": [
+            "acidspray",
+            "liquidation",
+            "spikecannon",
+            "pinmissile"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

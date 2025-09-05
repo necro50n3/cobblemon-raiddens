@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "ariados",
+        "moves": [
+            "pinmissile",
+            "suckerpunch",
+            "furyswipes",
+            "shadowsneak"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG"
+}

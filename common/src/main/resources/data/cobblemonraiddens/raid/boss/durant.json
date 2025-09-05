@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "durant",
+        "moves": [
+            "ironhead",
+            "crunch",
+            "xscissor",
+            "dig"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

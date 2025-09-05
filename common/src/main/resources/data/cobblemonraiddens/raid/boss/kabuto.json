@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kabuto",
+        "moves": [
+            "brine",
+            "ancientpower",
+            "mudshot",
+            "aquajet"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

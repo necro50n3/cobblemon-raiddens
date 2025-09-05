@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "spinarak",
+        "moves": [
+            "infestation",
+            "absorb",
+            "poisonsting",
+            "constrict"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG"
+}

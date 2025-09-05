@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tepig",
+        "moves": [
+            "smog",
+            "flamecharge",
+            "ember",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

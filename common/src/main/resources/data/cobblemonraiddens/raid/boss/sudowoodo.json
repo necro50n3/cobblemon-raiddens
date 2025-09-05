@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sudowoodo",
+        "moves": [
+            "rockslide",
+            "suckerpunch",
+            "rocktomb",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

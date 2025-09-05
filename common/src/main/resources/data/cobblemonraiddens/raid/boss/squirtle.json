@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "squirtle",
+        "moves": [
+            "waterpulse",
+            "bubble",
+            "bite",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

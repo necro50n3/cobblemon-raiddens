@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "barraskewda",
+        "moves": [
+            "crunch",
+            "dive",
+            "furyattack",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

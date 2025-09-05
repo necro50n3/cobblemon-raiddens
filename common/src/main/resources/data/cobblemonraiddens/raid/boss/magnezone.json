@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "magnezone",
+        "moves": [
+            "zapcannon",
+            "discharge",
+            "flashcannon",
+            "mirrorshot"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ELECTRIC"
+}

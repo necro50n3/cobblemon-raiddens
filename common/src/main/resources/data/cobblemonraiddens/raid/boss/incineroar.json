@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "incineroar",
+        "moves": [
+            "flareblitz",
+            "thrash",
+            "flamethrower",
+            "firefang"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

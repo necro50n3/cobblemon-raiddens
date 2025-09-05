@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "conkeldurr",
+        "moves": [
+            "hammerarm",
+            "dynamicpunch",
+            "slam",
+            "chipaway"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

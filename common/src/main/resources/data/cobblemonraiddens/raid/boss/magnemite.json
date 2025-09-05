@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "magnemite",
+        "moves": [
+            "flashcannon",
+            "mirrorshot",
+            "spark",
+            "magnetbomb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC"
+}

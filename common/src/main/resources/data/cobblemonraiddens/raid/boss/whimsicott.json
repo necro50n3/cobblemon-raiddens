@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "whimsicott",
+        "moves": [
+            "gust",
+            "absorb",
+            "megadrain",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

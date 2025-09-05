@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "drowzee",
+        "moves": [
+            "wakeupslap",
+            "zenheadbutt",
+            "psybeam",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC"
+}

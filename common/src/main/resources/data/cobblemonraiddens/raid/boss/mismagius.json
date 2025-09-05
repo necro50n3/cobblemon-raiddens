@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mismagius",
+        "moves": [
+            "astonish",
+            "magicalleaf",
+            "powergem",
+            "phantomforce"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST"
+}

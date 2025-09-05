@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "scizor",
+        "moves": [
+            "nightslash",
+            "xscissor",
+            "ironhead",
+            "razorwind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

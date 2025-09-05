@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "stoutland",
+        "moves": [
+            "takedown",
+            "crunch",
+            "playrough",
+            "retaliate"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

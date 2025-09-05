@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "hattrem",
+        "moves": [
+            "dazzlinggleam",
+            "psybeam",
+            "confusion",
+            "disarmingvoice"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC"
+}

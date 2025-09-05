@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "varoom",
+        "moves": [
+            "sludge",
+            "assurance",
+            "smog",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "STEEL"
+}

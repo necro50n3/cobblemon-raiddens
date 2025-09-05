@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "purrloin",
+        "moves": [
+            "pursuit",
+            "furyswipes",
+            "fakeout",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DARK"
+}

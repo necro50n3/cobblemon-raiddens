@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "heracross",
+        "moves": [
+            "thrash",
+            "throatchop",
+            "pinmissile",
+            "brickbreak"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "fletchinder",
+        "moves": [
+            "razorwind",
+            "acrobatics",
+            "tackle",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

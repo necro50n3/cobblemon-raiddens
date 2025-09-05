@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "clauncher",
+        "moves": [
+            "waterpulse",
+            "smackdown",
+            "aquajet",
+            "bubble"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

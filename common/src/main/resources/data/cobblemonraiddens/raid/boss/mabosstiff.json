@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mabosstiff",
+        "moves": [
+            "crunch",
+            "payback",
+            "headbutt",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

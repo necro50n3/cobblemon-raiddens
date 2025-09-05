@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "inteleon",
+        "moves": [
+            "hydropump",
+            "liquidation",
+            "uturn",
+            "suckerpunch"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "quaquaval",
+        "moves": [
+            "wavecrash",
+            "closecombat",
+            "liquidation",
+            "acrobatics"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

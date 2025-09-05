@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "decidueye",
+        "moves": [
+            "bravebird",
+            "leafblade",
+            "suckerpunch",
+            "furyattack"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

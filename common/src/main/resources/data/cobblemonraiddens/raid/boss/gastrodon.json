@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gastrodon",
+        "moves": [
+            "earthpower",
+            "muddywater",
+            "bodyslam",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

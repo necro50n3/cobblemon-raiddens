@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "alomomola",
+        "moves": [
+            "brine",
+            "wakeupslap",
+            "waterpulse",
+            "doubleslap"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

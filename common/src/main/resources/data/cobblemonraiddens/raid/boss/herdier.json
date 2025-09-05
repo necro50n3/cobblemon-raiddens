@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "herdier",
+        "moves": [
+            "crunch",
+            "playrough",
+            "retaliate",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

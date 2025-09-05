@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "eldegoss",
+        "moves": [
+            "hypervoice",
+            "leaftornado",
+            "round",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

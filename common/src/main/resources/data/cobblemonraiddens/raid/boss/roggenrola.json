@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "roggenrola",
+        "moves": [
+            "smackdown",
+            "mudslap",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ROCK"
+}

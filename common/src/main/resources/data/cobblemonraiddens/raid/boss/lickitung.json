@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lickitung",
+        "moves": [
+            "stomp",
+            "wrap",
+            "rollout",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

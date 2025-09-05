@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "spinda",
+        "moves": [
+            "suckerpunch",
+            "dizzypunch",
+            "psybeam",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

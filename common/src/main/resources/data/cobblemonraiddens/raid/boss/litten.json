@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "litten",
+        "moves": [
+            "doublekick",
+            "bite",
+            "furyswipes",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chingling",
+        "moves": [
+            "lastresort",
+            "confusion",
+            "astonish",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "PSYCHIC"
+}

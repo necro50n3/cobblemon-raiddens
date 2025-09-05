@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "spiritomb",
+        "moves": [
+            "shadowball",
+            "suckerpunch",
+            "ominouswind",
+            "hex"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST"
+}

@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "bounsweet",
+        "moves": [
+            "razorleaf",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lotad",
+        "moves": [
+            "megadrain",
+            "bubble",
+            "watergun",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "WATER"
+}

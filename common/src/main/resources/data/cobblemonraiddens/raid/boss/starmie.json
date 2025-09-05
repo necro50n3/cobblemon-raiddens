@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "starmie",
+        "moves": [
+            "tackle",
+            "watergun",
+            "hydropump",
+            "surf"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tentacruel",
+        "moves": [
+            "hydropump",
+            "sludgewave",
+            "surf",
+            "poisonjab"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

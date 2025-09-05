@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "spheal",
+        "moves": [
+            "snore",
+            "iceball",
+            "powdersnow",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE"
+}

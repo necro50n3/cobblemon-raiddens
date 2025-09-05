@@ -1,0 +1,10 @@
+{
+    "pokemon": {
+        "species": "beldum",
+        "moves": [
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "STEEL"
+}

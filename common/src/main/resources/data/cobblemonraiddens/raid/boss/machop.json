@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "machop",
+        "moves": [
+            "knockoff",
+            "lowsweep",
+            "revenge",
+            "karatechop"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIGHTING"
+}

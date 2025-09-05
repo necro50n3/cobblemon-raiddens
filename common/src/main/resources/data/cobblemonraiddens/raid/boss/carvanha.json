@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "carvanha",
+        "moves": [
+            "icefang",
+            "bite",
+            "rage",
+            "poisonfang"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

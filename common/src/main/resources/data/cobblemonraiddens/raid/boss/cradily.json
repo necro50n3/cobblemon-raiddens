@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cradily",
+        "moves": [
+            "gigadrain",
+            "brine",
+            "megadrain",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

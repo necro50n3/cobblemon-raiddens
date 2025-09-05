@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mrmime",
+        "moves": [
+            "dazzlinggleam",
+            "suckerpunch",
+            "psybeam",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC"
+}

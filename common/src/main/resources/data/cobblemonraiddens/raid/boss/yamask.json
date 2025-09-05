@@ -1,0 +1,10 @@
+{
+    "pokemon": {
+        "species": "yamask",
+        "moves": [
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST"
+}

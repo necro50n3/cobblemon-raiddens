@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "surskit",
+        "moves": [
+            "bubblebeam",
+            "quickattack",
+            "watergun",
+            "bubble"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

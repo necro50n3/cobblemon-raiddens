@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "linoone",
+        "moves": [
+            "takedown",
+            "furyswipes",
+            "headbutt",
+            "covet"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

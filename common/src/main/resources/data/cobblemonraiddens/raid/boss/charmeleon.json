@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "charmeleon",
+        "moves": [
+            "flameburst",
+            "flamethrower",
+            "slash",
+            "firefang"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

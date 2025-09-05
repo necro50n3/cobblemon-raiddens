@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "dachsbun",
+        "moves": [
+            "doubleedge",
+            "playrough",
+            "bite",
+            "covet"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY"
+}

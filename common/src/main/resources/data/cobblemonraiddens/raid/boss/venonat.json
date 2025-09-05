@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "venonat",
+        "moves": [
+            "psybeam",
+            "confusion",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG"
+}

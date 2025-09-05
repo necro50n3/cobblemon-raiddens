@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "charizard",
+        "moves": [
+            "flareblitz",
+            "inferno",
+            "firespin",
+            "flameburst"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE"
+}

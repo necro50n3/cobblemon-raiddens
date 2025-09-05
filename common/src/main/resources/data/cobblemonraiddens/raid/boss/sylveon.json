@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sylveon",
+        "moves": [
+            "lastresort",
+            "moonblast",
+            "drainingkiss",
+            "swift"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FAIRY"
+}

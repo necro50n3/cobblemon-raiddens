@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "crustle",
+        "moves": [
+            "xscissor",
+            "rockblast",
+            "rockslide",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

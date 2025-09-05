@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lucario",
+        "moves": [
+            "closecombat",
+            "extremespeed",
+            "dragonpulse",
+            "meteormash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIGHTING"
+}

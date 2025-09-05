@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "fennekin",
+        "moves": [
+            "firespin",
+            "psybeam",
+            "flamecharge",
+            "ember"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "stonjourner",
+        "moves": [
+            "bodyslam",
+            "rockslide",
+            "stomp",
+            "rocktomb"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

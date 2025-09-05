@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "wattrel",
+        "moves": [
+            "uproar",
+            "spark",
+            "pluck",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC"
+}

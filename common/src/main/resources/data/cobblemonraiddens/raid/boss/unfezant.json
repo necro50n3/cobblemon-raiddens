@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "unfezant",
+        "moves": [
+            "airslash",
+            "razorwind",
+            "aircutter",
+            "gust"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lurantis",
+        "moves": [
+            "leafblade",
+            "xscissor",
+            "slash",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

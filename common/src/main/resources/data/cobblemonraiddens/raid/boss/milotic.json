@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "milotic",
+        "moves": [
+            "hydropump",
+            "surf",
+            "aquatail",
+            "dragontail"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

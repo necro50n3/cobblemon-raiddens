@@ -1,0 +1,6 @@
+{
+  "parent": "cobblemonraiddens:block/raid_crystal_block",
+  "textures": {
+    "particle": "cobblemonraiddens:block/raid_crystal_block_ghost"
+  }
+}

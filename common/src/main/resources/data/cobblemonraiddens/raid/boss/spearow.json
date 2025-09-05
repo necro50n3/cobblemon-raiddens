@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "spearow",
+        "moves": [
+            "aerialace",
+            "furyattack",
+            "pursuit",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "yanmega",
+        "moves": [
+            "uturn",
+            "slash",
+            "feint",
+            "ancientpower"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "BUG"
+}

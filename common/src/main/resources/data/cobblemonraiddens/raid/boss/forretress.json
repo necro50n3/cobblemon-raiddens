@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "forretress",
+        "moves": [
+            "explosion",
+            "payback",
+            "rollout",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rowlet",
+        "moves": [
+            "razorleaf",
+            "shadowsneak",
+            "peck",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "beartic",
+        "moves": [
+            "blizzard",
+            "thrash",
+            "slash",
+            "frostbreath"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE"
+}

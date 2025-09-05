@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "binacle",
+        "moves": [
+            "clamp",
+            "ancientpower",
+            "furyswipes",
+            "furycutter"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ROCK"
+}

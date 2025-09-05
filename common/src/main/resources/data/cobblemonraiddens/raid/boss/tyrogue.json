@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "tyrogue",
+        "moves": [
+            "tackle",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "FIGHTING"
+}

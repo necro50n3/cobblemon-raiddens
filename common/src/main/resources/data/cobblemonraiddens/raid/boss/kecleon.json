@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kecleon",
+        "moves": [
+            "shadowclaw",
+            "slash",
+            "ancientpower",
+            "psybeam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

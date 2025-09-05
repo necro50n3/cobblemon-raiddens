@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "teddiursa",
+        "moves": [
+            "playrough",
+            "slash",
+            "feintattack",
+            "payback"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

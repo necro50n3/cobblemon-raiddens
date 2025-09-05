@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gigalith",
+        "moves": [
+            "explosion",
+            "stoneedge",
+            "rockblast",
+            "rockslide"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ROCK"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tsareena",
+        "moves": [
+            "stomp",
+            "magicalleaf",
+            "doubleslap",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

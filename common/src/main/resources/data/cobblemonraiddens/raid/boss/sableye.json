@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sableye",
+        "moves": [
+            "shadowclaw",
+            "knockoff",
+            "furyswipes",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK"
+}

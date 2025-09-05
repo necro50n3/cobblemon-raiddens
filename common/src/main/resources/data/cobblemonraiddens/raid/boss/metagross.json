@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "metagross",
+        "moves": [
+            "meteormash",
+            "psychic",
+            "takedown",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "STEEL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "armaldo",
+        "moves": [
+            "rockblast",
+            "crushclaw",
+            "slash",
+            "brine"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

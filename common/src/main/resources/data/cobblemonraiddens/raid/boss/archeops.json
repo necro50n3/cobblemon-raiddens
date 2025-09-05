@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "archeops",
+        "moves": [
+            "thrash",
+            "dragonclaw",
+            "crunch",
+            "rockslide"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ROCK"
+}

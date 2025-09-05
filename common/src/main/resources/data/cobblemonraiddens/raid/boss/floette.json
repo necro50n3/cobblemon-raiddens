@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "floette",
+        "moves": [
+            "petalblizzard",
+            "magicalleaf",
+            "razorleaf",
+            "vinewhip"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY"
+}

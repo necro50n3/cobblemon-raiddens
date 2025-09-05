@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chandelure",
+        "moves": [
+            "ember",
+            "firespin",
+            "smog",
+            "shadowball"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GHOST"
+}

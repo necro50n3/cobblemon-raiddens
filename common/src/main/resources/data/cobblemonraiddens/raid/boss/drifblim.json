@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "drifblim",
+        "moves": [
+            "selfdestruct",
+            "shadowball",
+            "ominouswind",
+            "hex"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST"
+}

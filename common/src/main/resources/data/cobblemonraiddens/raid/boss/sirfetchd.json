@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sirfetchd",
+        "moves": [
+            "brickbreak",
+            "knockoff",
+            "brutalswing",
+            "rocksmash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING"
+}

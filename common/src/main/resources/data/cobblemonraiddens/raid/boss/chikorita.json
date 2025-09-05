@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "chikorita",
+        "moves": [
+            "magicalleaf",
+            "razorleaf",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "caterpie",
+        "moves": [
+            "bugbite",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cranidos",
+        "moves": [
+            "ancientpower",
+            "slam",
+            "chipaway",
+            "assurance"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

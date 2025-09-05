@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kirlia",
+        "moves": [
+            "psybeam",
+            "drainingkiss",
+            "confusion",
+            "disarmingvoice"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "PSYCHIC"
+}

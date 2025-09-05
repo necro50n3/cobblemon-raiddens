@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "volbeat",
+        "moves": [
+            "doubleedge",
+            "playrough",
+            "bugbuzz",
+            "zenheadbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

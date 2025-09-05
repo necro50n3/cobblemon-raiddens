@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "maractus",
+        "moves": [
+            "petalblizzard",
+            "gigadrain",
+            "needlearm",
+            "pinmissile"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

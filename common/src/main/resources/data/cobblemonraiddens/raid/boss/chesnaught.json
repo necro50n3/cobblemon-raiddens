@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chesnaught",
+        "moves": [
+            "woodhammer",
+            "bodyslam",
+            "mudshot",
+            "seedbomb"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "nidoqueen",
+        "moves": [
+            "chipaway",
+            "scratch",
+            "doublekick",
+            "poisonsting"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON"
+}

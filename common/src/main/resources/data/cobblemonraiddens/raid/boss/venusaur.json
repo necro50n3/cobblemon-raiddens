@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "venusaur",
+        "moves": [
+            "solarbeam",
+            "powerwhip",
+            "takedown",
+            "seedbomb"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS"
+}

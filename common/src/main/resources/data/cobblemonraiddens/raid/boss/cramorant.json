@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cramorant",
+        "moves": [
+            "drillpeck",
+            "dive",
+            "pluck",
+            "furyattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FLYING"
+}

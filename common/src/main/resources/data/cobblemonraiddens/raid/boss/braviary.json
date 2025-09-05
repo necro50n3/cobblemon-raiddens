@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "braviary",
+        "moves": [
+            "slash",
+            "aerialace",
+            "wingattack",
+            "furyattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

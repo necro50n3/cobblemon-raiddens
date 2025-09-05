@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bewear",
+        "moves": [
+            "thrash",
+            "hammerarm",
+            "takedown",
+            "strength"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "swinub",
+        "moves": [
+            "powdersnow",
+            "tackle",
+            "mudslap"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "ICE"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "trumbeak",
+        "moves": [
+            "drillpeck",
+            "furyattack",
+            "pluck",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

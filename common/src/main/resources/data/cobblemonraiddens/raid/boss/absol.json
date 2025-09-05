@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "absol",
+        "moves": [
+            "suckerpunch",
+            "nightslash",
+            "slash",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

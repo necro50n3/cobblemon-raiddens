@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "oddish",
+        "moves": [
+            "gigadrain",
+            "megadrain",
+            "acid",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

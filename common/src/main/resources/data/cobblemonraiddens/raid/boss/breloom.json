@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "breloom",
+        "moves": [
+            "seedbomb",
+            "brickbreak",
+            "skyuppercut",
+            "forcepalm"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS"
+}

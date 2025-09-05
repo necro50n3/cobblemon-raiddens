@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cloyster",
+        "moves": [
+            "spikecannon",
+            "razorshell",
+            "tackle",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

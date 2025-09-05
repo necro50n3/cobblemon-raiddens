@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "aerodactyl",
+        "moves": [
+            "gigaimpact",
+            "hyperbeam",
+            "skydrop",
+            "stoneedge"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ROCK"
+}

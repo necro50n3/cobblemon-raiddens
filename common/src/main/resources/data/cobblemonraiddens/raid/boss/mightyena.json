@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mightyena",
+        "moves": [
+            "assurance",
+            "tackle",
+            "bite",
+            "thief"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK"
+}

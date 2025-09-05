@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "espathra",
+        "moves": [
+            "dazzlinggleam",
+            "uproar",
+            "pluck",
+            "psybeam"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC"
+}

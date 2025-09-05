@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "perrserker",
+        "moves": [
+            "slash",
+            "furyswipes",
+            "metalclaw",
+            "payday"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

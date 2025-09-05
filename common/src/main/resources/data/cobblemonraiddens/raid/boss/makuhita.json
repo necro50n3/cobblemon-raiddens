@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "makuhita",
+        "moves": [
+            "fakeout",
+            "armthrust",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "FIGHTING"
+}

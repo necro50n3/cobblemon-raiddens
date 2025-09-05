@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "aron",
+        "moves": [
+            "ironhead",
+            "rockslide",
+            "headbutt",
+            "rocktomb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "STEEL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "drifloon",
+        "moves": [
+            "selfdestruct",
+            "shadowball",
+            "ominouswind",
+            "hex"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GHOST"
+}

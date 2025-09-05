@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "doublade",
+        "moves": [
+            "ironhead",
+            "retaliate",
+            "nightslash",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

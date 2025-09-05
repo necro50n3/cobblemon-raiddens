@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "servine",
+        "moves": [
+            "leafblade",
+            "slam",
+            "megadrain",
+            "magicalleaf"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS"
+}

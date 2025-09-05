@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "salamence",
+        "moves": [
+            "doubleedge",
+            "flamethrower",
+            "zenheadbutt",
+            "dragonclaw"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DRAGON"
+}

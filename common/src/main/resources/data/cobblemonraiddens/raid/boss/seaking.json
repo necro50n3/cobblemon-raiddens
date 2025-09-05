@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "seaking",
+        "moves": [
+            "waterfall",
+            "furyattack",
+            "hornattack",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

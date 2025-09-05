@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "liepard",
+        "moves": [
+            "slash",
+            "suckerpunch",
+            "assurance",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

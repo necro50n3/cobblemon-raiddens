@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "revavroom",
+        "moves": [
+            "poisonjab",
+            "ironhead",
+            "headbutt",
+            "sludge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "obstagoon",
+        "moves": [
+            "doubleedge",
+            "takedown",
+            "furyswipes",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DARK"
+}

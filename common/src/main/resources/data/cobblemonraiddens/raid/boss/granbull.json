@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "granbull",
+        "moves": [
+            "playrough",
+            "rage",
+            "lastresort",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "walkingwake",
+        "moves": [
+            "outrage",
+            "dragonpulse",
+            "hydrosteam",
+            "dragonrush"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER"
+}

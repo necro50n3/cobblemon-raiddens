@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "anorith",
+        "moves": [
+            "crushclaw",
+            "slash",
+            "brine",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK"
+}

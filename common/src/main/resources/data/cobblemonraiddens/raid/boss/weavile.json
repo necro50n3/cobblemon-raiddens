@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "weavile",
+        "moves": [
+            "furyswipes",
+            "icywind",
+            "metalclaw",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "lopunny",
+        "moves": [
+            "dizzypunch",
+            "headbutt",
+            "jumpkick",
+            "doublekick"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

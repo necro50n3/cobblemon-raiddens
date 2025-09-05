@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "phantump",
+        "moves": [
+            "hex",
+            "feintattack",
+            "branchpoke",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST"
+}

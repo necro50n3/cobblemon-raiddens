@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "watchog",
+        "moves": [
+            "crunch",
+            "tackle",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sprigatito",
+        "moves": [
+            "seedbomb",
+            "quickattack",
+            "magicalleaf",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

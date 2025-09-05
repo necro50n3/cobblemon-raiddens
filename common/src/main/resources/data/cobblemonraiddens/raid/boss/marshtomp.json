@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "marshtomp",
+        "moves": [
+            "takedown",
+            "rockslide",
+            "mudbomb",
+            "waterpulse"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER"
+}

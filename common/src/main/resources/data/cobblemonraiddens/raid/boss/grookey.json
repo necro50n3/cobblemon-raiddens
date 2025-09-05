@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grookey",
+        "moves": [
+            "knockoff",
+            "razorleaf",
+            "branchpoke",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

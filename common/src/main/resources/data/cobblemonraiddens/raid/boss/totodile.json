@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "totodile",
+        "moves": [
+            "icefang",
+            "bite",
+            "rage",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "raichu",
+        "moves": [
+            "thunderbolt",
+            "slam",
+            "thundershock",
+            "thunder"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC"
+}

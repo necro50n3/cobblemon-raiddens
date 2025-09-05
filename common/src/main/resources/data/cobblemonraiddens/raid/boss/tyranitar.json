@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tyranitar",
+        "moves": [
+            "gigaimpact",
+            "hyperbeam",
+            "thrash",
+            "stoneedge"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ROCK"
+}

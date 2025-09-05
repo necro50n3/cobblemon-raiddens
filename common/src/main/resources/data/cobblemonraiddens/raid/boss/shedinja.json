@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shedinja",
+        "moves": [
+            "scratch",
+            "dig",
+            "mudslap",
+            "falseswipe"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG"
+}

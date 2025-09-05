@@ -1,0 +1,15 @@
+{
+  "type": "cobblemonraiddens:raid_den_feature",
+  "config": {
+    "state": {
+      "Name": "cobblemonraiddens:raid_crystal_block",
+      "Properties": {
+        "can_cycle": "false",
+        "can_reset": "false",
+        "is_active": "false",
+        "raid_tier": "tier_one",
+        "raid_type": "none"
+      }
+    }
+  }
+}

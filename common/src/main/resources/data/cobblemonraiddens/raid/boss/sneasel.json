@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "sneasel",
+        "moves": [
+            "furyswipes",
+            "icywind",
+            "metalclaw",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK"
+}

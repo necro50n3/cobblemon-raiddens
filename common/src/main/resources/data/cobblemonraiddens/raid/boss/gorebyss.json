@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "gorebyss",
+        "moves": [
+            "aquatail",
+            "psychic",
+            "dive",
+            "waterpulse"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

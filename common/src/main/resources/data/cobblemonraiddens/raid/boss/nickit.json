@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "nickit",
+        "moves": [
+            "snarl",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "DARK"
+}

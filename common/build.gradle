@@ -1,0 +1,37 @@
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/cobblemonraiddens.accesswidener")
+}
+
+repositories {
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+    modImplementation "com.cobblemon:mod:$rootProject.cobblemon_version"
+    modImplementation "com.terraformersmc:modmenu:11.0.3"
+    modImplementation "maven.modrinth:jade:$rootProject.jade_version+neoforge"
+    modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
+
+    include(modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version")
+}
+
+sourceSets {
+    main {
+        resources.srcDir "src/main/generated"
+        resources.exclude ".cache"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "accelgor",
+        "moves": [
+            "bugbuzz",
+            "uturn",
+            "gigadrain",
+            "swift"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

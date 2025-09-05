@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "doduo",
+        "moves": [
+            "doublehit",
+            "pursuit",
+            "pluck",
+            "furyattack"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL"
+}

@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "flittle",
+        "moves": [
+            "disarmingvoice",
+            "confusion",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "PSYCHIC"
+}

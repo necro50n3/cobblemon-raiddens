@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "crobat",
+        "moves": [
+            "leechlife",
+            "airslash",
+            "venoshock",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "POISON"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "scolipede",
+        "moves": [
+            "steamroller",
+            "takedown",
+            "venoshock",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG"
+}

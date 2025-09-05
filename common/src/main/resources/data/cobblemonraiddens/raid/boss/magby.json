@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "magby",
+        "moves": [
+            "lavaplume",
+            "firepunch",
+            "flameburst",
+            "flamewheel"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE"
+}

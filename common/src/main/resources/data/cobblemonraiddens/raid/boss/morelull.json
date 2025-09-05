@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "morelull",
+        "moves": [
+            "megadrain",
+            "absorb",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "komala",
+        "moves": [
+            "woodhammer",
+            "suckerpunch",
+            "slam",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL"
+}

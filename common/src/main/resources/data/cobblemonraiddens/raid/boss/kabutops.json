@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "kabutops",
+        "moves": [
+            "megadrain",
+            "brine",
+            "ancientpower",
+            "mudshot"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK"
+}

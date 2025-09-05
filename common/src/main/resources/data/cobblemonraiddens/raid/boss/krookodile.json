@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "krookodile",
+        "moves": [
+            "outrage",
+            "thrash",
+            "earthquake",
+            "foulplay"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GROUND"
+}

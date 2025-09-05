@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "froakie",
+        "moves": [
+            "waterpulse",
+            "lick",
+            "quickattack",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

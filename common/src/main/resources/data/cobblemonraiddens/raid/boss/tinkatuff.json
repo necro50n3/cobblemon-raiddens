@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "tinkatuff",
+        "moves": [
+            "playrough",
+            "flashcannon",
+            "slam",
+            "brutalswing"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY"
+}

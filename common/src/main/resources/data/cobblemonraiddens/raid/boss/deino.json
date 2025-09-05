@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "deino",
+        "moves": [
+            "headbutt",
+            "assurance",
+            "bite",
+            "dragonbreath"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DARK"
+}

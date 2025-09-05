@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "pelipper",
+        "moves": [
+            "waterpulse",
+            "wingattack",
+            "watergun",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "WATER"
+}

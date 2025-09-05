@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "magmar",
+        "moves": [
+            "lavaplume",
+            "firepunch",
+            "flameburst",
+            "flamewheel"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE"
+}

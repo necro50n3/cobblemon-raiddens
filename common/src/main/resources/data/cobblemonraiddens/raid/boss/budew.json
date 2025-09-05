@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "budew",
+        "moves": [
+            "megadrain",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS"
+}

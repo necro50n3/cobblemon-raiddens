@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "goldeen",
+        "moves": [
+            "hornattack",
+            "waterpulse",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER"
+}

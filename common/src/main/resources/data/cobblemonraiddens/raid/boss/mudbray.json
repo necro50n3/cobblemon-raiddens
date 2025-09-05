@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "mudbray",
+        "moves": [
+            "highhorsepower",
+            "strength",
+            "stomp",
+            "bulldoze"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND"
+}

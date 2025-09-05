@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "jangmoo",
+        "moves": [
+            "headbutt",
+            "dragontail",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DRAGON"
+}

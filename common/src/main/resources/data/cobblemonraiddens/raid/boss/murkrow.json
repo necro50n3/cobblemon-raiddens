@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "murkrow",
+        "moves": [
+            "feintattack",
+            "assurance",
+            "wingattack",
+            "gust"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK"
+}
