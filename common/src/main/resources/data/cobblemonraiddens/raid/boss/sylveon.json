@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_FIVE",
-    "raid_type": "FAIRY"
+    "raid_type": "FAIRY",
+    "weight": 10
 }

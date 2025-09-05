@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "corsola",
+        "moves": [
+            "hex",
+            "ancientpower",
+            "astonish",
+            "tackle"
+        ],
+        "form": "galarian"
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GHOST",
+    "weight": 10
+}

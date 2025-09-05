@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "ditto",
+        "ability": "imposter",
+        "moves": [
+            "transform"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL",
+    "weight": 10
+}

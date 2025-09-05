@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "WATER"
+    "raid_type": "WATER",
+    "weight": 10
 }

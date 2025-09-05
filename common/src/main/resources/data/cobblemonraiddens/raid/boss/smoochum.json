@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "ICE"
+    "raid_type": "ICE",
+    "weight": 10
 }

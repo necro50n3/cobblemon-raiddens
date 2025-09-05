@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "farfetchd",
+        "moves": [
+            "falseswipe",
+            "knockoff",
+            "aerialace",
+            "cut"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL",
+    "weight": 10
+}

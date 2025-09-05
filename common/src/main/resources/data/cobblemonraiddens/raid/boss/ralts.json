@@ -8,5 +8,6 @@
         ]
     },
     "raid_tier": "TIER_ONE",
-    "raid_type": "PSYCHIC"
+    "raid_type": "PSYCHIC",
+    "weight": 10
 }

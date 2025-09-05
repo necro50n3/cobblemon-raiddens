@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_THREE",
-    "raid_type": "STEEL"
+    "raid_type": "STEEL",
+    "weight": 10
 }

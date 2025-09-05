@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "raticate",
+        "moves": [
+            "suckerpunch",
+            "crunch",
+            "assurance",
+            "hyperfang"
+        ],
+        "form": "alolan"
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK",
+    "weight": 10
+}

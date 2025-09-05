@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "mimikyu",
+        "moves": [
+            "shadowclaw",
+            "slash",
+            "feintattack",
+            "shadowsneak"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST",
+    "weight": 10
+}

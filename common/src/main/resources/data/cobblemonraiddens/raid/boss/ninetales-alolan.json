@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "ninetales",
+        "moves": [
+            "blizzard",
+            "aurorabeam",
+            "powdersnow",
+            "icywind"
+        ],
+        "form": "alolan"
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 10
+}

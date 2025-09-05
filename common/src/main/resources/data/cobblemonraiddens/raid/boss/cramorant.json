@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_FOUR",
-    "raid_type": "FLYING"
+    "raid_type": "FLYING",
+    "weight": 10
 }

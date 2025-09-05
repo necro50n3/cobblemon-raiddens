@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "feebas",
+        "moves": [
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER",
+    "weight": 10
+}

@@ -8,5 +8,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "NORMAL"
+    "raid_type": "NORMAL",
+    "weight": 10
 }

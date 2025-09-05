@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "metapod",
+        "moves": [
+            "tackle",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG",
+    "weight": 10
+}

@@ -8,5 +8,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "DRAGON"
+    "raid_type": "DRAGON",
+    "weight": 10
 }

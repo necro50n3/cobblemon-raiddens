@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "golem",
+        "moves": [
+            "explosion",
+            "discharge",
+            "rockblast",
+            "selfdestruct"
+        ],
+        "form": "alolan"
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK",
+    "weight": 10
+}

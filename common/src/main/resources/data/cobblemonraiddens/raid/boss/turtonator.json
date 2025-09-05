@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_FOUR",
-    "raid_type": "FIRE"
+    "raid_type": "FIRE",
+    "weight": 10
 }

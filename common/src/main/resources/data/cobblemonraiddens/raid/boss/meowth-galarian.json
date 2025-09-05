@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "meowth",
+        "moves": [
+            "metalclaw",
+            "payday",
+            "scratch",
+            "fakeout"
+        ],
+        "form": "galarian"
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "STEEL",
+    "weight": 10
+}

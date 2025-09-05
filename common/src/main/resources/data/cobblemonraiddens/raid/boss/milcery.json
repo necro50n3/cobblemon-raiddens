@@ -7,5 +7,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "FAIRY"
+    "raid_type": "FAIRY",
+    "weight": 10
 }

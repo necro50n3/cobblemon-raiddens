@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cascoon",
+        "moves": [
+            "tackle",
+            "poisonsting",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG",
+    "weight": 10
+}

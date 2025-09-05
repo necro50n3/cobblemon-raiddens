@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_FIVE",
-    "raid_type": "GHOST"
+    "raid_type": "GHOST",
+    "weight": 10
 }

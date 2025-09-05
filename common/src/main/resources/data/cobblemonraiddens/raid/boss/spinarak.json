@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_ONE",
-    "raid_type": "BUG"
+    "raid_type": "BUG",
+    "weight": 10
 }

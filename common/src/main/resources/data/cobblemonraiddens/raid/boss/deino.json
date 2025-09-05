@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "DARK"
+    "raid_type": "DARK",
+    "weight": 10
 }

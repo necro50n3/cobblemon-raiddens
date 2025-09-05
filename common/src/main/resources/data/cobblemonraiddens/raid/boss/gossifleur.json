@@ -8,5 +8,6 @@
         ]
     },
     "raid_tier": "TIER_ONE",
-    "raid_type": "GRASS"
+    "raid_type": "GRASS",
+    "weight": 10
 }

@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "graveler",
+        "moves": [
+            "rockblast",
+            "selfdestruct",
+            "thunderpunch",
+            "smackdown"
+        ],
+        "form": "alolan"
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK",
+    "weight": 10
+}

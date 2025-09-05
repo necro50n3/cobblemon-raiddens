@@ -7,5 +7,6 @@
         ]
     },
     "raid_tier": "TIER_ONE",
-    "raid_type": "ELECTRIC"
+    "raid_type": "ELECTRIC",
+    "weight": 10
 }

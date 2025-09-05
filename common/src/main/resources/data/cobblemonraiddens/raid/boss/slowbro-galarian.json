@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "slowbro",
+        "moves": [
+            "psychic",
+            "surf",
+            "zenheadbutt",
+            "headbutt"
+        ],
+        "form": "galarian"
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON",
+    "weight": 10
+}

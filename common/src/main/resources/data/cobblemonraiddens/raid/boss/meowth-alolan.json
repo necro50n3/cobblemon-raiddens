@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "meowth",
+        "moves": [
+            "bite",
+            "payday",
+            "scratch",
+            "feint"
+        ],
+        "form": "alolan"
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DARK",
+    "weight": 10
+}

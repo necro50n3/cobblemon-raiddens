@@ -8,5 +8,6 @@
         ]
     },
     "raid_tier": "TIER_TWO",
-    "raid_type": "STEEL"
+    "raid_type": "STEEL",
+    "weight": 10
 }

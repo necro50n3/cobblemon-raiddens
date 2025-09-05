@@ -9,5 +9,6 @@
         ]
     },
     "raid_tier": "TIER_THREE",
-    "raid_type": "ROCK"
+    "raid_type": "ROCK",
+    "weight": 10
 }
