@@ -38,6 +38,10 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
@@ -50,6 +54,8 @@ dependencies {
     include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
+    modRuntimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
+    modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951007"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

@@ -62,7 +62,7 @@ public enum RaidType implements StringRepresentable {
 
     public static RaidType fromString(String name) {
         try { return valueOf(name); }
-        catch (IllegalArgumentException e) { return null; }
+        catch (IllegalArgumentException e) { return NONE; }
     }
 
     public static Codec<RaidType> codec() {

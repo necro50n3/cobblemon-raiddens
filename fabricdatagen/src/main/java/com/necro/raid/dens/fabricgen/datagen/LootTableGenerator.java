@@ -5,6 +5,9 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.items.ModPredicates;
 import com.necro.raid.dens.common.items.RaidTypePredicate;
+import com.necro.raid.dens.common.loot.function.GemTypeFunction;
+import com.necro.raid.dens.common.loot.function.MaxMushroomsFunction;
+import com.necro.raid.dens.common.loot.function.TeraShardsFunction;
 import com.necro.raid.dens.common.raids.RaidType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
@@ -38,239 +41,9 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
             createKey("raids/types/gems"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                        LootContext.EntityTarget.THIS,
-                        EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                            .mainhand(ItemPredicate.Builder.item()
-                                .of(ModItems.RAID_POUCH.value())
-                                .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.NORMAL))
-                            ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.NORMAL_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.FIGHTING))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.FIGHTING_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.FLYING))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.FLYING_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.POISON))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.POISON_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.GROUND))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.GROUND_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.ROCK))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.ROCK_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.BUG))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.BUG_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.GHOST))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.GHOST_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.STEEL))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.STEEL_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.FIRE))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.FIRE_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.WATER))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.WATER_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.GRASS))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.GRASS_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.ELECTRIC))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.ELECTRIC_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.PSYCHIC))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.PSYCHIC_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.ICE))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.ICE_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.DRAGON))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.DRAGON_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.DARK))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.DARK_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .conditionally(LootItemEntityPropertyCondition.hasProperties(
-                            LootContext.EntityTarget.THIS,
-                            EntityPredicate.Builder.entity().equipment(EntityEquipmentPredicate.Builder.equipment()
-                                .mainhand(ItemPredicate.Builder.item()
-                                    .of(ModItems.RAID_POUCH.value())
-                                    .withSubPredicate(ModPredicates.ITEM_TYPE_PREDICATE.value(), RaidTypePredicate.ofType(RaidType.FAIRY))
-                                ).build()))
-                        .build())
-                    .with(LootItem.lootTableItem(CobblemonItems.FAIRY_GEM)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
-                        .build())
-                    .build())
+                    .add(LootItem.lootTableItem(Items.AIR).apply(GemTypeFunction.apply()))
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -281,11 +54,19 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         consumer.accept(
             createKey("raids/features/tera"),
             new LootTable.Builder()
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .add(LootItem.lootTableItem(Items.AIR).apply(TeraShardsFunction.apply()))
+                    .build()
+                )
         );
 
         consumer.accept(
             createKey("raids/features/dynamax"),
             new LootTable.Builder()
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .add(LootItem.lootTableItem(Items.AIR).apply(MaxMushroomsFunction.apply()))
+                    .build()
+                )
         );
 
         consumer.accept(

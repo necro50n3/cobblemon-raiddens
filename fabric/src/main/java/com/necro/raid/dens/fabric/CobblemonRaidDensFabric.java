@@ -14,6 +14,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
+import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
@@ -23,6 +24,7 @@ import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.events.ModEvents;
+import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
@@ -49,6 +51,12 @@ public class CobblemonRaidDensFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         CobblemonRaidDens.init();
+
+        for (ModCompat mod : ModCompat.values()) {
+            mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
+        }
+        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) FabricMSDCompat.init();
+
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
         FabricItems.registerItems();
@@ -56,6 +64,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricComponents.registerDataComponents();
         FabricPredicates.registerPredicates();
         FabricFeatures.registerFeatures();
+        FabricLootFunctions.registerLootFunctions();
         RaidDenTab.registerItemGroups();
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
@@ -93,10 +102,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
-
-        for (ModCompat mod : ModCompat.values()) {
-            mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
-        }
     }
 
 }

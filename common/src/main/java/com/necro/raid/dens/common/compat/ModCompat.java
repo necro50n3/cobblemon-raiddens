@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.compat;
 
 public enum ModCompat {
-    ;
+    MEGA_SHOWDOWN("mega_showdown");
 
     private final String modid;
     private boolean loaded;

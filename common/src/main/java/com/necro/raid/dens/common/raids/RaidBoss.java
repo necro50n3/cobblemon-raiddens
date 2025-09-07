@@ -2,14 +2,24 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
+import com.cobblemon.mod.common.api.moves.MoveSet;
+import com.cobblemon.mod.common.api.moves.MoveTemplate;
+import com.cobblemon.mod.common.api.moves.Moves;
+import com.cobblemon.mod.common.api.moves.categories.DamageCategories;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
+import kotlin.Pair;
+import kotlin.Unit;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,73 +30,50 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class RaidBoss {
-    private static final String MEGA = "mega_evolution=mega";
-    private static final String MEGA_X = "mega_evolution=mega_x";
-    private static final String MEGA_Y = "mega_evolution=mega_y";
-    private static final String TERA = "tera_form=terastal-form";
-    private static final String STELLAR = "tera_form=stellar-form";
-    private static final String GMAX = "dynamax_form=gmax";
-    private static final String ETERNAMAX = "dynamax_form=eternamax";
-
     private final PokemonProperties baseProperties;
     private final PokemonProperties bossProperties;
-    private String displaySpecies;
+    private Species displaySpecies;
     private Set<String> displayAspects;
     private final RaidTier raidTier;
     private final RaidFeature raidFeature;
-    private RaidType raidType;
+    private final Pair<String, String> raidForm;
+    private final RaidType raidType;
     private final List<ItemStack> bonusItems;
     private final int weight;
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, List<ItemStack> bonusItems, int weight) {
-        this.raidTier = tier;
-        this.raidType = raidType;
-        this.bonusItems = bonusItems;
-        this.weight = weight;
-
-        properties.setLevel(tier.getLevel());
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems, int weight) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
-        if (this.isMega()) this.raidFeature = RaidFeature.MEGA;
-        else if (this.isTera()) this.raidFeature = RaidFeature.TERA;
-        else if (this.isDynamax()) this.raidFeature = RaidFeature.DYNAMAX;
-        else this.raidFeature = RaidFeature.DEFAULT;
-
-        Set<String> baseAspects = new HashSet<>(this.baseProperties.getAspects());
-        baseAspects.remove(MEGA.split("=")[1]);
-        baseAspects.remove(MEGA_X.split("=")[1]);
-        baseAspects.remove(MEGA_Y.split("=")[1]);
-        baseAspects.remove(TERA.split("=")[1]);
-        baseAspects.remove(STELLAR.split("=")[1]);
-        baseAspects.remove(GMAX.split("=")[1]);
-        baseAspects.remove(ETERNAMAX.split("=")[1]);
-        this.baseProperties.setAspects(baseAspects);
-        this.baseProperties.setCustomProperties(new ArrayList<>());
+        this.raidTier = tier;
+        this.raidType = raidType;
+        this.raidFeature = raidFeature;
+        this.raidForm = raidForm;
+        this.bonusItems = bonusItems;
+        this.weight = weight;
     }
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, List<ItemStack> bonusItems) {
-        this(properties, tier, raidType, bonusItems, 10);
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems) {
+        this(properties, tier, raidType, raidFeature, raidForm, bonusItems, 10);
     }
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, int weight) {
-        this(properties, tier, raidType, new ArrayList<>(), weight);
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, int weight) {
+        this(properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), weight);
     }
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType) {
-        this(properties, tier, raidType, new ArrayList<>());
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm) {
+        this(properties, tier, raidType, raidFeature, raidForm, new ArrayList<>());
     }
 
-    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType, List<ItemStack> bonusItems) {
+    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems) {
         this.baseProperties = baseProperties;
         this.bossProperties = bossProperties;
         this.raidTier = tier;
-        if (this.isMega()) this.raidFeature = RaidFeature.MEGA;
-        else if (this.isTera()) this.raidFeature = RaidFeature.TERA;
-        else if (this.isDynamax()) this.raidFeature = RaidFeature.DYNAMAX;
-        else this.raidFeature = RaidFeature.DEFAULT;
         this.raidType = raidType;
+        this.raidFeature = raidFeature;
+        this.raidForm = raidForm;
         this.bonusItems = bonusItems;
         this.weight = 0;
     }
@@ -94,35 +81,91 @@ public class RaidBoss {
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.bossProperties.asString(" ") + " aspect=raid uncatchable");
         properties.setIvs(IVs.createRandomIVs(this.raidTier.getMaxIvs()));
+
         Pokemon pokemon = properties.create();
         ((IHealthSetter) pokemon).setMaxHealth(this.raidTier.getHealth() * pokemon.getMaxHealth());
+        if (!this.raidForm.getFirst().isBlank() && !this.raidForm.getSecond().isBlank()) {
+            new StringSpeciesFeature(this.raidForm.getFirst(), this.raidForm.getSecond()).apply(pokemon);
+        }
+        else if (this.raidFeature == RaidFeature.DYNAMAX) {
+            new StringSpeciesFeature("dynamax_form", "none").apply(pokemon);
+        }
+        else if (this.raidFeature == RaidFeature.MEGA) {
+            new StringSpeciesFeature("mega_evolution", "mega").apply(pokemon);
+        }
+        this.setMoveSet(properties, pokemon, this.isDynamax());
+
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         pokemonEntity.setDrops(new DropTable());
-        if (this.raidType == null) {
-            this.raidType = RaidType.fromString(pokemonEntity.getPokemon().getTeraType().showdownId());
-        }
+
+        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupTera(pokemonEntity, pokemon);
+        else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupDmax(pokemonEntity);
+
         return pokemonEntity;
     }
 
     public void createDisplayAspects() {
         Pokemon displayPokemon = this.baseProperties.create();
-        this.displaySpecies = displayPokemon.getSpecies().toString();
+        this.displaySpecies = displayPokemon.getSpecies();
         this.displayAspects = displayPokemon.getAspects();
     }
 
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
         properties.setIvs(IVs.createRandomIVs(this.raidTier.getMaxIvs()));
-        return properties.create(player);
+        Pokemon pokemon = properties.create(player);
+        if (this.isDynamax()) pokemon.setDmaxLevel(10);
+        if (this.raidForm.getFirst().equals("dynamax_form") && this.raidForm.getSecond().equals("gmax")) pokemon.setGmaxFactor(true);
+        this.setMoveSet(properties, pokemon);
+        return pokemon;
+    }
+
+    private void setMoveSet(PokemonProperties properties, Pokemon pokemon, boolean isDynamax) {
+        List<String> moves = properties.getMoves();
+        if (moves != null) {
+            List<MoveTemplate> learnableMoves = new ArrayList<>(pokemon.getForm().getMoves().getLevelUpMovesUpTo(pokemon.getLevel()));
+            MoveSet moveSet = pokemon.getMoveSet();
+            moveSet.clear();
+            List<MoveTemplate> moveTemplates = moves.stream().map(Moves.INSTANCE::getByName).toList();
+            moveSet.doWithoutEmitting(() -> {
+                for (int i = 0; i < moves.size(); i++) {
+                    MoveTemplate mt = moveTemplates.get(i);
+                    if (!isDynamax) mt = this.checkOrCreateMove(mt, learnableMoves);
+                    if (mt == null) continue;
+                    moveSet.setMove(i, mt.create());
+                    Objects.requireNonNull(moveSet.get(i)).update();
+                }
+                return Unit.INSTANCE;
+            });
+            moveSet.update();
+        }
+    }
+
+    private void setMoveSet(PokemonProperties properties, Pokemon pokemon) {
+        this.setMoveSet(properties, pokemon, false);
+    }
+
+    private MoveTemplate checkOrCreateMove(MoveTemplate move, List<MoveTemplate> learnableMoves) {
+        if (!move.getName().toLowerCase().startsWith("max") && !move.getName().toLowerCase().startsWith("gmax")) return move;
+        Function<MoveTemplate, Boolean> check;
+        if (move.getDamageCategory() == DamageCategories.INSTANCE.getSTATUS()) {
+            check = mt -> mt.getDamageCategory() == DamageCategories.INSTANCE.getSTATUS();
+        }
+        else check = mt -> mt.getElementalType() == move.getElementalType();
+        for (int i = learnableMoves.size() - 1; i >= 0; i--) {
+            MoveTemplate candidate = learnableMoves.get(i);
+            if (check.apply(candidate)) return candidate;
+        }
+        return null;
     }
 
     public PokemonProperties getProperties() {
         return this.bossProperties;
     }
 
-    public String getDisplaySpecies() {
+    public Species getDisplaySpecies() {
         return this.displaySpecies;
     }
 
@@ -134,12 +177,16 @@ public class RaidBoss {
         return this.raidTier;
     }
 
+    public RaidType getType() {
+        return this.raidType;
+    }
+
     public RaidFeature getFeature() {
         return this.raidFeature;
     }
 
-    public RaidType getType() {
-        return this.raidType;
+    public Pair<String, String> getRaidForm() {
+        return this.raidForm;
     }
 
     public List<ItemStack> getBonusItems() {
@@ -151,18 +198,15 @@ public class RaidBoss {
     }
 
     public boolean isMega() {
-        Set<String> aspects = this.bossProperties.getAspects();
-        return aspects.contains(MEGA.split("=")[1]) || aspects.contains(MEGA_X.split("=")[1]) || aspects.contains(MEGA_Y.split("=")[1]);
+        return this.raidFeature == RaidFeature.MEGA;
     }
 
     public boolean isTera() {
-        Set<String> aspects = this.bossProperties.getAspects();
-        return aspects.contains(TERA.split("=")[1]) || aspects.contains(STELLAR.split("=")[1]);
+        return this.raidFeature == RaidFeature.TERA;
     }
 
     public boolean isDynamax() {
-        Set<String> aspects = this.bossProperties.getAspects();
-        return aspects.contains(GMAX.split("=")[1]) || aspects.contains(ETERNAMAX.split("=")[1]);
+        return this.raidFeature == RaidFeature.DYNAMAX;
     }
 
     public CompoundTag saveNbt(CompoundTag tag) {
@@ -170,6 +214,13 @@ public class RaidBoss {
         tag.putString("boss_properties", this.bossProperties.asString(" "));
         tag.putString("raid_tier", this.raidTier.getSerializedName());
         tag.putString("raid_type", this.raidType.getSerializedName());
+        tag.putString("raid_feature", this.raidFeature.getSerializedName());
+
+        CompoundTag raidFormTag = new CompoundTag();
+        raidFormTag.putString("name", this.raidForm.getFirst());
+        raidFormTag.putString("value", this.raidForm.getSecond());
+        tag.put("raid_form", raidFormTag);
+
         ListTag bonusItemsTag = new ListTag();
         this.bonusItems.forEach(item -> {
             CompoundTag itemTag = new CompoundTag();
@@ -182,6 +233,13 @@ public class RaidBoss {
     }
 
     public static RaidBoss loadNbt(CompoundTag tag) {
+        Pair<String, String> raidForm;
+        if (tag.contains("raid_form")) {
+            CompoundTag raidFormTag = tag.getCompound("raid_form");
+            raidForm = new Pair<>(raidFormTag.getString("name"), raidFormTag.getString("value"));
+        }
+        else raidForm = new Pair<>("", "");
+
         List<ItemStack> bonusItems = new ArrayList<>();
         if (tag.contains("bonus_items")) {
             ListTag listTag = tag.getList("bonus_items", Tag.TAG_COMPOUND);
@@ -193,18 +251,34 @@ public class RaidBoss {
                 ));
             }
         }
+
         return new RaidBoss(
             PokemonProperties.Companion.parse(tag.getString("base_properties")),
             PokemonProperties.Companion.parse(tag.getString("boss_properties")),
-            RaidTier.valueOf(tag.getString("raid_tier").toUpperCase()),
-            RaidType.valueOf(tag.getString("raid_type").toUpperCase()),
-            bonusItems
+            RaidTier.fromString(tag.getString("raid_tier").toUpperCase()),
+            RaidType.fromString(tag.getString("raid_type").toUpperCase()),
+            RaidFeature.fromString(tag.getString("raid_feature").toUpperCase()),
+            raidForm, bonusItems
         );
+    }
+
+    public static Optional<Boolean> getShiny(PokemonProperties properties) {
+        return Optional.ofNullable(properties.getShiny());
     }
 
     public static String getGender(PokemonProperties properties) {
         if (properties.getGender() == null) return "";
         else return properties.getGender().getSerializedName();
+    }
+
+    public static String getFormName(Pair<String, String> raidForm) {
+        if (raidForm == null) return "";
+        else return raidForm.getFirst();
+    }
+
+    public static String getFormValue(Pair<String, String> raidForm) {
+        if (raidForm == null) return "";
+        else return raidForm.getSecond();
     }
 
     public static Codec<PokemonProperties> propertiesCodec() {
@@ -214,10 +288,9 @@ public class RaidBoss {
             Codec.STRING.optionalFieldOf("gender", "").forGetter(RaidBoss::getGender),
             Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
             Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
-            Codec.STRING.optionalFieldOf("tera_type", "").forGetter(PokemonProperties::getTeraType),
-            Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves),
-            PokemonProperties.getCUSTOM_PROPERTIES_CODEC().optionalFieldOf("custom_properties", new ArrayList<>()).forGetter(PokemonProperties::getCustomProperties)
-            ).apply(inst, (species, form, gender, ability, nature, tera_type, moves, customProperties) -> {
+            Codec.optionalField("shiny", Codec.BOOL, true).forGetter(RaidBoss::getShiny),
+            Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
+            ).apply(inst, (species, form, gender, ability, nature, shiny, moves) -> {
                 PokemonProperties properties = PokemonProperties.Companion.parse("");
                 properties.setSpecies(species);
                 if (!form.isBlank()) properties.setForm(form);
@@ -225,12 +298,18 @@ public class RaidBoss {
                 catch (IllegalArgumentException ignored) {}
                 if (!ability.isBlank()) properties.setAbility(ability);
                 if (!nature.isBlank()) properties.setNature(nature);
-                if (!tera_type.isBlank()) properties.setTeraType(tera_type);
+                shiny.ifPresent(properties::setShiny);
                 if (!moves.isEmpty()) properties.setMoves(moves);
-                if (!customProperties.isEmpty()) properties.setCustomProperties(customProperties);
                 return properties;
             })
         );
+    }
+
+    public static Codec<Pair<String, String>> raidFormCodec() {
+        return RecordCodecBuilder.create(inst -> inst.group(
+            Codec.STRING.fieldOf("name").forGetter(RaidBoss::getFormName),
+            Codec.STRING.fieldOf("value").forGetter(RaidBoss::getFormValue)
+        ).apply(inst,Pair::new));
     }
 
     public static Codec<RaidBoss> codec() {
@@ -238,9 +317,15 @@ public class RaidBoss {
             propertiesCodec().fieldOf("pokemon").forGetter(RaidBoss::getProperties),
             RaidTier.codec().fieldOf("raid_tier").forGetter(RaidBoss::getTier),
             RaidType.codec().fieldOf("raid_type").forGetter(RaidBoss::getType),
+            RaidFeature.codec().optionalFieldOf("raid_feature", RaidFeature.DEFAULT).forGetter(RaidBoss::getFeature),
+            raidFormCodec().optionalFieldOf("raid_form", new Pair<>("", "")).forGetter(RaidBoss::getRaidForm),
             ItemStack.CODEC.listOf().optionalFieldOf("bonus_items", new ArrayList<>()).forGetter(RaidBoss::getBonusItems),
             Codec.INT.optionalFieldOf("weight", 10).forGetter(RaidBoss::getWeight)
-            ).apply(inst, RaidBoss::new)
+            ).apply(inst, (properties, tier, type, feature, form, bonusItems, weight) -> {
+                properties.setLevel(tier.getLevel());
+                properties.setTeraType(type.getSerializedName());
+                return new RaidBoss(properties, tier, type, feature, form, bonusItems, weight);
+            })
         );
     }
 }

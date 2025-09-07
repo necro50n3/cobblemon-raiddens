@@ -1,8 +1,10 @@
 package com.necro.raid.dens.common.compat.jade;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.cobblemon.mod.common.util.ResourceLocationExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
@@ -36,7 +38,9 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (!serverData.contains("boss_aspects") || !serverData.contains("boss_species")) return currentIcon;
 
         IElementHelper elements = IElementHelper.get();
-        Species species = PokemonSpecies.INSTANCE.getByName(serverData.getString("boss_species"));
+        Species species = PokemonSpecies.INSTANCE.getByIdentifier(ResourceLocationExtensionsKt.asIdentifierDefaultingNamespace(serverData.getString("boss_species"), Cobblemon.MODID));
+        if (species == null) return currentIcon;
+
         Set<String> aspects = new HashSet<>();
         ListTag listTag = serverData.getList("boss_aspects", StringTag.TAG_STRING);
         for (Tag t : listTag) {
@@ -67,14 +71,15 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (blockEntity == null) return;
         RaidBoss raidBoss = blockEntity.getRaidBoss();
         if (raidBoss == null) return;
-        Species species = raidBoss.getRewardPokemon(null).getSpecies();
+        if (raidBoss.getDisplaySpecies() == null) raidBoss.createDisplayAspects();
+
+        Species species = raidBoss.getDisplaySpecies();
         String translatable = String.format("%s.species.%s.name", species.getResourceIdentifier().getNamespace(), species.showdownId());
         compoundTag.putString("raid_boss", translatable);
         compoundTag.putString("raid_feature", raidBoss.getFeature().getTranslatable());
         compoundTag.putString("raid_tier", blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getStars());
 
-        if (raidBoss.getDisplaySpecies() == null) raidBoss.createDisplayAspects();
-        compoundTag.putString("boss_species", raidBoss.getDisplaySpecies());
+        compoundTag.putString("boss_species", species.getResourceIdentifier().toString());
         ListTag bossAspects = new ListTag();
         for (String aspect : raidBoss.getDisplayAspects()) {
             bossAspects.add(StringTag.valueOf(aspect));

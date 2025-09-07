@@ -34,7 +34,7 @@ public class RaidRegistry {
     public static void populateWeightedList() {
         for (RaidTier tier : RaidTier.values()) {
             addWeightedList(tier, RAID_BOSS_COLLECTION.get(tier));
-            RAID_BOSS_COLLECTION.remove(tier);
+            RAID_BOSS_COLLECTION.get(tier).clear();
         }
     }
 

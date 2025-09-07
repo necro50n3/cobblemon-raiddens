@@ -70,7 +70,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         if (pokemon == null) return;
         UUID leadingPokemon = pokemon.getUuid();
 
-        if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance()) && pokemonEntity.canBattle(player)) {
+        if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
             RaidBuilder.build(player, pokemonEntity, leadingPokemon)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);

@@ -15,8 +15,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 public class NeoForgeDimensions {
-
-
     public static ServerLevel createRaidDimension(MinecraftServer server, String uuid, RaidCrystalBlockEntity blockEntity) {
         ResourceKey<Level> levelKey = ModDimensions.createLevelKey(uuid);
 

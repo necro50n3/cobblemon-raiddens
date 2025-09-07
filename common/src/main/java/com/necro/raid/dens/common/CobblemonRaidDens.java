@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.necro.raid.dens.common.config.ClientConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
+import com.necro.raid.dens.common.loot.LootFunctions;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;

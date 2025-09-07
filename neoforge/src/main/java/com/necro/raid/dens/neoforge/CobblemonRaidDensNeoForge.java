@@ -7,9 +7,11 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
+import com.necro.raid.dens.neoforge.compat.megashowdown.NeoForgeMSDCompat;
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
 import com.necro.raid.dens.neoforge.dimensions.NeoForgeChunkGenerator;
 import com.necro.raid.dens.neoforge.events.CommandsRegistrationEvent;
+import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import com.necro.raid.dens.neoforge.items.*;
 import com.necro.raid.dens.common.util.RaidRegistry;
@@ -26,6 +28,11 @@ public class CobblemonRaidDensNeoForge {
     public CobblemonRaidDensNeoForge(IEventBus modBus, ModContainer container) {
         CobblemonRaidDens.init();
 
+        for (ModCompat mod : ModCompat.values()) {
+            mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
+        }
+        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) NeoForgeMSDCompat.init();
+
         NeoForgeBlocks.BLOCKS.register(modBus);
         NeoForgeBlockEntities.BLOCK_ENTITIES.register(modBus);
         NeoForgeItems.registerItems();
@@ -37,6 +44,8 @@ public class CobblemonRaidDensNeoForge {
         NeoForgeChunkGenerator.CHUNK_GENERATORS.register(modBus);
         NeoForgeFeatures.registerFeatures();
         NeoForgeFeatures.FEATURES.register(modBus);
+        NeoForgeLootFunctions.registerLootFunctions();
+        NeoForgeLootFunctions.LOOT_FUNCTION_TYPES.register(modBus);
         RaidDenTab.CREATIVE_TABS.register(modBus);
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
@@ -46,9 +55,5 @@ public class CobblemonRaidDensNeoForge {
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
-
-        for (ModCompat mod : ModCompat.values()) {
-            mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
-        }
     }
 }

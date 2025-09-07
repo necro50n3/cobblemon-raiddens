@@ -1,10 +1,13 @@
 package com.necro.raid.dens.common.dimensions;
 
 import com.google.common.collect.Maps;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import com.necro.raid.dens.common.util.IRegistryRemover;
+import net.minecraft.core.Holder;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -15,9 +18,11 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.storage.PrimaryLevelData;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DimensionHelper {
     public static final HashMap<ResourceKey<Level>, ServerLevel> QUEUED_FOR_REMOVAL = new HashMap<>();
@@ -41,8 +46,11 @@ public class DimensionHelper {
             level.save(null, true, false);
             try { level.close(); }
             catch (IOException ignored) {}
-            Registry<LevelStem> levelStemRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
-            ((IRegistryRemover) levelStemRegistry).removeDimension(key.location());
+            MappedRegistry<LevelStem> levelStemRegistry = (MappedRegistry<LevelStem>) server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+
+            ResourceKey<LevelStem> resourceKey = ResourceKey.create(Registries.LEVEL_STEM, ModDimensions.createLevelKey(key.location().getPath()).location());
+            ((IRegistryRemover<LevelStem>) levelStemRegistry).getById().removeIf(holder -> holder.is(resourceKey));
+            ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(key.location());
             ((ILevelsSetter) server).deleteLevel(key);
         });
         QUEUED_FOR_REMOVAL.clear();

@@ -71,6 +71,7 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, PokemonBattle battle) {
+        // Originally raids were timed before pivoting to one-life system.
         // this.durationTick -= (int) (this.maxDuration * 0.1);
 
         this.battles.remove(battle);
@@ -135,6 +136,10 @@ public class RaidInstance {
             if (raidSuccess) new RewardHandler(this.raidBoss, player).sendRewardMessage();
             else player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
         });
+    }
+
+    public RaidBoss getRaidBoss() {
+        return this.raidBoss;
     }
 
     private static class DelayedRunnable {

@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -14,6 +15,15 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MappedRegistryMixin<T> implements IRegistryRemover {
     @Shadow
     public abstract ResourceKey<? extends Registry<T>> key();
+
+    @Shadow
+    @Final
+    private ObjectList<Holder.Reference<T>> byId;
+
+    @Override
+    public ObjectList<Holder.Reference<T>> getById() {
+        return this.byId;
+    }
 
     @Override
     public void removeDimension(ResourceLocation loc) {

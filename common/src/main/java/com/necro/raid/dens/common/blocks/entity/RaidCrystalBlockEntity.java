@@ -124,9 +124,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         pokemonEntity.moveTo(0.5, 0, -14.5);
         ((IRaidAccessor) pokemonEntity).setRaidBossData(this.raidBoss);
         float height = pokemonEntity.getExposedSpecies().getHeight();
+        CobblemonRaidDens.LOGGER.info(String.valueOf(height));
         float scale;
-        if (height > 100.0f) scale = 1.5f;
-        else if (height > 50.f) scale = 2.0f;
+        if (height > 80.0f) scale = 1.5f;
+        else if (height > 40.f) scale = 2.0f;
         else scale = 2.5f;
         pokemonEntity.getPokemon().setScaleModifier(scale);
         this.dimension.addFreshEntity(pokemonEntity);

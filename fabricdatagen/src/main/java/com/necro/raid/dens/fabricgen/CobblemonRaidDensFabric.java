@@ -2,6 +2,7 @@ package com.necro.raid.dens.fabricgen;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.fabricgen.blocks.FabricBlocks;
+import com.necro.raid.dens.fabricgen.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabricgen.worldgen.FabricFeatures;
 import com.necro.raid.dens.fabricgen.items.FabricItems;
 import com.necro.raid.dens.fabricgen.items.FabricPredicates;
@@ -15,6 +16,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricItems.registerItems();
         FabricPredicates.registerPredicates();
         FabricFeatures.registerFeatures();
+        FabricLootFunctions.registerLootFunctions();
     }
 
 }
