@@ -5,7 +5,6 @@ import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
 import com.cobblemon.mod.common.api.moves.Moves;
-import com.cobblemon.mod.common.api.moves.categories.DamageCategories;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -30,7 +29,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
-import java.util.function.Function;
 
 public class RaidBoss {
     private final PokemonProperties baseProperties;
@@ -93,7 +91,7 @@ public class RaidBoss {
         else if (this.raidFeature == RaidFeature.MEGA) {
             new StringSpeciesFeature("mega_evolution", "mega").apply(pokemon);
         }
-        this.setMoveSet(properties, pokemon, this.isDynamax());
+        this.setMoveSet(properties, pokemon);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setNoAi(true);
@@ -122,18 +120,15 @@ public class RaidBoss {
         return pokemon;
     }
 
-    private void setMoveSet(PokemonProperties properties, Pokemon pokemon, boolean isDynamax) {
+    private void setMoveSet(PokemonProperties properties, Pokemon pokemon) {
         List<String> moves = properties.getMoves();
         if (moves != null) {
-            List<MoveTemplate> learnableMoves = new ArrayList<>(pokemon.getForm().getMoves().getLevelUpMovesUpTo(pokemon.getLevel()));
             MoveSet moveSet = pokemon.getMoveSet();
             moveSet.clear();
             List<MoveTemplate> moveTemplates = moves.stream().map(Moves.INSTANCE::getByName).toList();
             moveSet.doWithoutEmitting(() -> {
                 for (int i = 0; i < moves.size(); i++) {
                     MoveTemplate mt = moveTemplates.get(i);
-                    if (!isDynamax) mt = this.checkOrCreateMove(mt, learnableMoves);
-                    if (mt == null) continue;
                     moveSet.setMove(i, mt.create());
                     Objects.requireNonNull(moveSet.get(i)).update();
                 }
@@ -141,24 +136,6 @@ public class RaidBoss {
             });
             moveSet.update();
         }
-    }
-
-    private void setMoveSet(PokemonProperties properties, Pokemon pokemon) {
-        this.setMoveSet(properties, pokemon, false);
-    }
-
-    private MoveTemplate checkOrCreateMove(MoveTemplate move, List<MoveTemplate> learnableMoves) {
-        if (!move.getName().toLowerCase().startsWith("max") && !move.getName().toLowerCase().startsWith("gmax")) return move;
-        Function<MoveTemplate, Boolean> check;
-        if (move.getDamageCategory() == DamageCategories.INSTANCE.getSTATUS()) {
-            check = mt -> mt.getDamageCategory() == DamageCategories.INSTANCE.getSTATUS();
-        }
-        else check = mt -> mt.getElementalType() == move.getElementalType();
-        for (int i = learnableMoves.size() - 1; i >= 0; i--) {
-            MoveTemplate candidate = learnableMoves.get(i);
-            if (check.apply(candidate)) return candidate;
-        }
-        return null;
     }
 
     public PokemonProperties getProperties() {
