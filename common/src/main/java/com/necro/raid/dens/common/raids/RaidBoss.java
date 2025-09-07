@@ -320,7 +320,7 @@ public class RaidBoss {
             RaidFeature.codec().optionalFieldOf("raid_feature", RaidFeature.DEFAULT).forGetter(RaidBoss::getFeature),
             raidFormCodec().optionalFieldOf("raid_form", new Pair<>("", "")).forGetter(RaidBoss::getRaidForm),
             ItemStack.CODEC.listOf().optionalFieldOf("bonus_items", new ArrayList<>()).forGetter(RaidBoss::getBonusItems),
-            Codec.INT.optionalFieldOf("weight", 10).forGetter(RaidBoss::getWeight)
+            Codec.INT.optionalFieldOf("weight", 19).forGetter(RaidBoss::getWeight)
             ).apply(inst, (properties, tier, type, feature, form, bonusItems, weight) -> {
                 properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
