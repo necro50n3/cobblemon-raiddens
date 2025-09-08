@@ -47,10 +47,10 @@ public class RaidBoss {
     private final RaidType raidType;
     private final String lootTableId;
     private LootTable lootTable;
-    private final int weight;
+    private final double weight;
     private final boolean isCatchable;
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, int weight, boolean isCatchable) {
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight, boolean isCatchable) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
         this.raidTier = tier;
@@ -193,7 +193,7 @@ public class RaidBoss {
         return this.lootTable.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return this.weight;
     }
 
@@ -369,11 +369,12 @@ public class RaidBoss {
             raidFormCodec().listOf().optionalFieldOf("raid_form", new ArrayList<>()).forGetter(RaidBoss::getRaidForm),
             raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
             Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
-            Codec.INT.optionalFieldOf("weight", 19).forGetter(RaidBoss::getWeight),
+            Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
             Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable) -> {
                 properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
+                raidForm = new ArrayList<>(raidForm);
                 raidForm.addAll(baseForm);
                 return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable);
             })

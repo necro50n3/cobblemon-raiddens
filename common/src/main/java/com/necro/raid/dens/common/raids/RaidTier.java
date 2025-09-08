@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.raids;
 
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
@@ -23,8 +24,7 @@ public enum RaidTier implements StringRepresentable {
     private final int level;
     private boolean isPresent;
 
-    private static final NavigableMap<Double, RaidTier> RANDOM_MAP = new TreeMap<>();
-    private static double RANDOM_TOTAL;
+    private static final DoubleWeightedRandomMap<RaidTier> RANDOM_MAP = new DoubleWeightedRandomMap<>();
 
 
     RaidTier(String id, int health, int maxIvs, int level) {
@@ -77,26 +77,25 @@ public enum RaidTier implements StringRepresentable {
     }
 
     public static void updateRandom() {
+        RANDOM_MAP.clear();
+
         List<Double> weights = new ArrayList<>(Arrays.stream(CobblemonRaidDens.CONFIG.tier_weights).boxed().toList());
         while (weights.size() < RaidTier.values().length) {
             weights.add(CobblemonRaidDens.CONFIG.tier_weights[CobblemonRaidDens.CONFIG.tier_weights.length - 1]);
         }
 
-        double total = 0;
         for (int i = 0; i < weights.size(); i++) {
             RaidTier tier = RaidTier.values()[i];
             if (!tier.isPresent()) continue;
-            total += weights.get(i);
-            RANDOM_MAP.put(total, RaidTier.values()[i]);
+            RANDOM_MAP.add(RaidTier.values()[i], weights.get(i));
         }
-        RANDOM_TOTAL = total;
     }
 
     public static RaidTier getWeightedRandom(RandomSource random) {
         if (RANDOM_MAP.isEmpty()) RaidTier.updateRandom();
         if (RANDOM_MAP.isEmpty()) return RaidTier.TIER_ONE;
-        double rand = random.nextDouble() * RANDOM_TOTAL;
-        return RANDOM_MAP.higherEntry(rand).getValue();
+        Optional<RaidTier> raidTier = RANDOM_MAP.getRandom(random);
+        return raidTier.orElse(RaidTier.TIER_ONE);
     }
 
     public static int initHealth(int index) {

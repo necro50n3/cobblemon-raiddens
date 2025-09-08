@@ -6,17 +6,13 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.Weight;
-import net.minecraft.util.random.WeightedEntry;
-import net.minecraft.util.random.WeightedRandomList;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class RaidRegistry {
     public static final ResourceKey<Registry<RaidBoss>> RAID_BOSS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "boss"));
     private static final Map<RaidTier, Set<RaidBoss>> RAID_BOSS_COLLECTION = new HashMap<>();
-    private static final Map<RaidTier, WeightedRandomList<RaidBossEntry>> RAID_BOSSES = new HashMap<>();
+    private static final Map<RaidTier, DoubleWeightedRandomMap<RaidBoss>> RAID_BOSSES = new HashMap<>();
 
     static {
         for (RaidTier tier : RaidTier.values()) {
@@ -39,20 +35,13 @@ public class RaidRegistry {
     }
 
     private static void addWeightedList(RaidTier tier, Set<RaidBoss> raidBosses) {
-        RAID_BOSSES.put(tier, WeightedRandomList.create(
-            raidBosses.stream().map(raidBoss -> new RaidBossEntry(raidBoss, raidBoss.getWeight())).toList())
-        );
+        DoubleWeightedRandomMap<RaidBoss> map = new DoubleWeightedRandomMap<>();
+        raidBosses.forEach(raidBoss -> map.add(raidBoss, raidBoss.getWeight()));
+        RAID_BOSSES.put(tier, map);
     }
 
     public static RaidBoss getRandomRaidBoss(RandomSource random, RaidTier tier) {
-        Optional<RaidBossEntry> raidBossEntry = RaidRegistry.RAID_BOSSES.get(tier).getRandom(random);
-        return raidBossEntry.map(RaidBossEntry::boss).orElse(null);
-    }
-
-    private record RaidBossEntry(RaidBoss boss, int weight) implements WeightedEntry {
-        @Override
-        public @NotNull Weight getWeight() {
-            return Weight.of(this.weight);
-        }
+        Optional<RaidBoss> raidBoss = RaidRegistry.RAID_BOSSES.get(tier).getRandom(random);
+        return raidBoss.orElse(null);
     }
 }
