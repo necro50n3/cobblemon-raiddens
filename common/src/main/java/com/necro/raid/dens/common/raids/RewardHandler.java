@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RewardHandler {
@@ -63,7 +62,7 @@ public class RewardHandler {
 
     public boolean giveItemToPlayer() {
         ItemStack raidPouch = this.buildRaidPouch();
-        List<ItemStack> rewards = new ArrayList<>(this.raidBoss.getBonusItems());
+        List<ItemStack> rewards = this.raidBoss.getRandomRewards(this.player.serverLevel());
         rewards.addFirst(raidPouch);
         for (ItemStack item : rewards) {
             if (!player.getInventory().add(item)) {

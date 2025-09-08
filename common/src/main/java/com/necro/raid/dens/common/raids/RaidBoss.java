@@ -6,27 +6,32 @@ import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
 import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
-import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.feature.*;
+import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
-import kotlin.Pair;
 import kotlin.Unit;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 
 import java.util.*;
 
@@ -37,43 +42,38 @@ public class RaidBoss {
     private Set<String> displayAspects;
     private final RaidTier raidTier;
     private final RaidFeature raidFeature;
-    private final Pair<String, String> raidForm;
+    private final List<SpeciesFeature> raidForm;
+    private final List<SpeciesFeature> baseForm;
     private final RaidType raidType;
-    private final List<ItemStack> bonusItems;
+    private final String lootTableId;
+    private LootTable lootTable;
     private final int weight;
+    private final boolean isCatchable;
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems, int weight) {
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, int weight, boolean isCatchable) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
         this.raidTier = tier;
         this.raidType = raidType;
         this.raidFeature = raidFeature;
         this.raidForm = raidForm;
-        this.bonusItems = bonusItems;
+        this.baseForm = baseForm;
+        this.lootTableId = lootTableId;
         this.weight = weight;
+        this.isCatchable = isCatchable;
     }
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems) {
-        this(properties, tier, raidType, raidFeature, raidForm, bonusItems, 10);
-    }
-
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, int weight) {
-        this(properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), weight);
-    }
-
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm) {
-        this(properties, tier, raidType, raidFeature, raidForm, new ArrayList<>());
-    }
-
-    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, Pair<String, String> raidForm, List<ItemStack> bonusItems) {
+    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, boolean isCatchable) {
         this.baseProperties = baseProperties;
         this.bossProperties = bossProperties;
         this.raidTier = tier;
         this.raidType = raidType;
         this.raidFeature = raidFeature;
         this.raidForm = raidForm;
-        this.bonusItems = bonusItems;
+        this.baseForm = baseForm;
+        this.lootTableId = lootTableId;
         this.weight = 0;
+        this.isCatchable = isCatchable;
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
@@ -82,15 +82,18 @@ public class RaidBoss {
 
         Pokemon pokemon = properties.create();
         ((IHealthSetter) pokemon).setMaxHealth(this.raidTier.getHealth() * pokemon.getMaxHealth());
-        if (!this.raidForm.getFirst().isBlank() && !this.raidForm.getSecond().isBlank()) {
-            new StringSpeciesFeature(this.raidForm.getFirst(), this.raidForm.getSecond()).apply(pokemon);
+
+        for (SpeciesFeature form : this.raidForm) {
+            ((CustomPokemonProperty) form).apply(pokemon);
         }
-        else if (this.raidFeature == RaidFeature.DYNAMAX) {
+
+        if (this.raidFeature == RaidFeature.DYNAMAX && this.raidForm.stream().noneMatch(form -> form.getName().equals("dynamax_form"))) {
             new StringSpeciesFeature("dynamax_form", "none").apply(pokemon);
         }
-        else if (this.raidFeature == RaidFeature.MEGA) {
+        else if (this.raidFeature == RaidFeature.MEGA && this.raidForm.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
             new StringSpeciesFeature("mega_evolution", "mega").apply(pokemon);
         }
+
         this.setMoveSet(properties, pokemon);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
@@ -114,8 +117,15 @@ public class RaidBoss {
         PokemonProperties properties = this.baseProperties.copy();
         properties.setIvs(IVs.createRandomIVs(this.raidTier.getMaxIvs()));
         Pokemon pokemon = properties.create(player);
+
+        for (SpeciesFeature form : this.baseForm) {
+            ((CustomPokemonProperty) form).apply(pokemon);
+        }
+
         if (this.isDynamax()) pokemon.setDmaxLevel(10);
-        if (this.raidForm.getFirst().equals("dynamax_form") && this.raidForm.getSecond().equals("gmax")) pokemon.setGmaxFactor(true);
+        if (this.raidForm.stream().anyMatch(form -> form instanceof StringSpeciesFeature ssf && ssf.getValue().equals("gmax")))
+            pokemon.setGmaxFactor(true);
+
         this.setMoveSet(properties, pokemon);
         return pokemon;
     }
@@ -162,16 +172,33 @@ public class RaidBoss {
         return this.raidFeature;
     }
 
-    public Pair<String, String> getRaidForm() {
+    public List<SpeciesFeature> getRaidForm() {
         return this.raidForm;
     }
 
-    public List<ItemStack> getBonusItems() {
-        return this.bonusItems;
+    public List<SpeciesFeature> getBaseForm() {
+        return this.baseForm;
+    }
+
+    public String getLootTableId() {
+        return this.lootTableId;
+    }
+
+    public List<ItemStack> getRandomRewards(ServerLevel level) {
+        if (this.lootTable == null) {
+            this.lootTable = level.getServer().reloadableRegistries().getLootTable(
+                ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(this.lootTableId))
+            );
+        }
+        return this.lootTable.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
     }
 
     public int getWeight() {
         return this.weight;
+    }
+
+    public boolean isCatchable() {
+        return this.isCatchable;
     }
 
     public boolean isMega() {
@@ -193,41 +220,51 @@ public class RaidBoss {
         tag.putString("raid_type", this.raidType.getSerializedName());
         tag.putString("raid_feature", this.raidFeature.getSerializedName());
 
-        CompoundTag raidFormTag = new CompoundTag();
-        raidFormTag.putString("name", this.raidForm.getFirst());
-        raidFormTag.putString("value", this.raidForm.getSecond());
+        ListTag raidFormTag = new ListTag();
+        for (SpeciesFeature form : this.raidForm) {
+            raidFormTag.add(RaidBoss.encodeFormTag(form));
+        }
         tag.put("raid_form", raidFormTag);
 
-        ListTag bonusItemsTag = new ListTag();
-        this.bonusItems.forEach(item -> {
-            CompoundTag itemTag = new CompoundTag();
-            itemTag.putString("item_name", item.getItem().toString());
-            itemTag.putInt("item_count", item.getCount());
-            bonusItemsTag.add(itemTag);
-        });
-        tag.put("bonus_items", bonusItemsTag);
+        ListTag baseFormTag = new ListTag();
+        for (SpeciesFeature form : this.baseForm) {
+            baseFormTag.add(RaidBoss.encodeFormTag(form));
+        }
+        tag.put("base_form", baseFormTag);
+
+        tag.putString("loot_table", this.lootTableId);
         return tag;
     }
 
-    public static RaidBoss loadNbt(CompoundTag tag) {
-        Pair<String, String> raidForm;
-        if (tag.contains("raid_form")) {
-            CompoundTag raidFormTag = tag.getCompound("raid_form");
-            raidForm = new Pair<>(raidFormTag.getString("name"), raidFormTag.getString("value"));
+    private static CompoundTag encodeFormTag(SpeciesFeature form) {
+        CompoundTag formTag = new CompoundTag();
+        formTag.putString("name", form.getName());
+        if (form instanceof StringSpeciesFeature) {
+            formTag.putString("value", ((StringSpeciesFeature) form).getValue());
+            formTag.putString("type", "string");
         }
-        else raidForm = new Pair<>("", "");
+        else if (form instanceof FlagSpeciesFeature) {
+            formTag.putBoolean("value", ((FlagSpeciesFeature) form).getEnabled());
+            formTag.putString("type", "flag");
+        }
+        else {
+            formTag.putInt("value", ((IntSpeciesFeature) form).getValue());
+            formTag.putString("type", "int");
+        }
+        return formTag;
+    }
 
-        List<ItemStack> bonusItems = new ArrayList<>();
-        if (tag.contains("bonus_items")) {
-            ListTag listTag = tag.getList("bonus_items", Tag.TAG_COMPOUND);
-            for (Tag t : listTag) {
-                CompoundTag itemTag = (CompoundTag) t;
-                bonusItems.add(new ItemStack(
-                    BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemTag.getString("item_name"))),
-                    itemTag.getInt("item_count")
-                ));
-            }
-        }
+    public static RaidBoss loadNbt(CompoundTag tag) {
+        List<SpeciesFeature> raidForm;
+        if (tag.contains("raid_form")) raidForm = RaidBoss.decodeFormTag(tag.getList("raid_form", Tag.TAG_COMPOUND));
+        else raidForm = new ArrayList<>();
+
+        List<SpeciesFeature> baseForm;
+        if (tag.contains("base_form")) baseForm = RaidBoss.decodeFormTag(tag.getList("base_form", Tag.TAG_COMPOUND));
+        else baseForm = new ArrayList<>();
+
+        String lootTableId = tag.contains("loot_table") ? tag.getString("loot_table") : "";
+        boolean isCatchable = !tag.contains("is_catchable") || tag.getBoolean("is_catchable");
 
         return new RaidBoss(
             PokemonProperties.Companion.parse(tag.getString("base_properties")),
@@ -235,8 +272,21 @@ public class RaidBoss {
             RaidTier.fromString(tag.getString("raid_tier").toUpperCase()),
             RaidType.fromString(tag.getString("raid_type").toUpperCase()),
             RaidFeature.fromString(tag.getString("raid_feature").toUpperCase()),
-            raidForm, bonusItems
+            raidForm, baseForm, lootTableId, isCatchable
         );
+    }
+
+    private static List<SpeciesFeature> decodeFormTag(ListTag tag) {
+        List<SpeciesFeature> forms = new ArrayList<>();
+        for (Tag t : tag) {
+            CompoundTag compoundTag = (CompoundTag) t;
+
+            String type = compoundTag.getString("type");
+            if (type.equals("string")) forms.add(new StringSpeciesFeature(compoundTag.getString("name"), compoundTag.getString("value")));
+            else if (type.equals("flag")) forms.add(new FlagSpeciesFeature(compoundTag.getString("name"), compoundTag.getBoolean("value")));
+            else forms.add(new IntSpeciesFeature(compoundTag.getString("name"), compoundTag.getInt("value")));
+        }
+        return forms;
     }
 
     public static Optional<Boolean> getShiny(PokemonProperties properties) {
@@ -248,14 +298,24 @@ public class RaidBoss {
         else return properties.getGender().getSerializedName();
     }
 
-    public static String getFormName(Pair<String, String> raidForm) {
+    public static String getFormName(SpeciesFeature raidForm) {
         if (raidForm == null) return "";
-        else return raidForm.getFirst();
+        else return raidForm.getName();
     }
 
-    public static String getFormValue(Pair<String, String> raidForm) {
+    public static String getFormValue(StringSpeciesFeature raidForm) {
         if (raidForm == null) return "";
-        else return raidForm.getSecond();
+        else return raidForm.getValue();
+    }
+
+    public static Boolean getFormValue(FlagSpeciesFeature raidForm) {
+        if (raidForm == null) return false;
+        else return raidForm.getEnabled();
+    }
+
+    public static Integer getFormValue(IntSpeciesFeature raidForm) {
+        if (raidForm == null) return 0;
+        else return raidForm.getValue();
     }
 
     public static Codec<PokemonProperties> propertiesCodec() {
@@ -282,11 +342,22 @@ public class RaidBoss {
         );
     }
 
-    public static Codec<Pair<String, String>> raidFormCodec() {
+    public static Codec<SpeciesFeature> raidFormCodec() {
         return RecordCodecBuilder.create(inst -> inst.group(
             Codec.STRING.fieldOf("name").forGetter(RaidBoss::getFormName),
-            Codec.STRING.fieldOf("value").forGetter(RaidBoss::getFormValue)
-        ).apply(inst,Pair::new));
+            Codec.either(Codec.STRING, Codec.either(Codec.BOOL, Codec.INT)).fieldOf("value").forGetter(form -> {
+                if (form instanceof StringSpeciesFeature) return Either.left(RaidBoss.getFormValue((StringSpeciesFeature) form));
+                else if (form instanceof FlagSpeciesFeature) return Either.right(Either.left(RaidBoss.getFormValue((FlagSpeciesFeature) form)));
+                else return Either.right(Either.right(RaidBoss.getFormValue((IntSpeciesFeature) form)));
+            })
+        ).apply(inst, (name, either) -> {
+            if (either.left().isPresent()) return new StringSpeciesFeature(name, either.left().get());
+            else {
+                Either<Boolean, Integer> inner = either.right().get();
+                if (inner.left().isPresent()) return new FlagSpeciesFeature(name, inner.left().get());
+                else return new IntSpeciesFeature(name, inner.right().get());
+            }
+        }));
     }
 
     public static Codec<RaidBoss> codec() {
@@ -295,13 +366,16 @@ public class RaidBoss {
             RaidTier.codec().fieldOf("raid_tier").forGetter(RaidBoss::getTier),
             RaidType.codec().fieldOf("raid_type").forGetter(RaidBoss::getType),
             RaidFeature.codec().optionalFieldOf("raid_feature", RaidFeature.DEFAULT).forGetter(RaidBoss::getFeature),
-            raidFormCodec().optionalFieldOf("raid_form", new Pair<>("", "")).forGetter(RaidBoss::getRaidForm),
-            ItemStack.CODEC.listOf().optionalFieldOf("bonus_items", new ArrayList<>()).forGetter(RaidBoss::getBonusItems),
-            Codec.INT.optionalFieldOf("weight", 19).forGetter(RaidBoss::getWeight)
-            ).apply(inst, (properties, tier, type, feature, form, bonusItems, weight) -> {
+            raidFormCodec().listOf().optionalFieldOf("raid_form", new ArrayList<>()).forGetter(RaidBoss::getRaidForm),
+            raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
+            Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
+            Codec.INT.optionalFieldOf("weight", 19).forGetter(RaidBoss::getWeight),
+            Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable) -> {
                 properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
-                return new RaidBoss(properties, tier, type, feature, form, bonusItems, weight);
+                raidForm.addAll(baseForm);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable);
             })
         );
     }

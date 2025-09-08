@@ -1,6 +1,5 @@
 package com.necro.raid.dens.neoforge.compat.megashowdown;
 
-import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.yajatkaul.mega_showdown.event.cobblemon.utils.DynamaxUtils;
@@ -24,10 +23,6 @@ public class NeoForgeMSDCompat extends RaidDensMSDCompat {
             ModSounds.TERASTALLIZATION.get(),
             SoundSource.PLAYERS, 0.2f, 1f
         );
-
-        if (pokemon.getSpecies().getName().equals("Ogerpon")) {
-            new FlagSpeciesFeature("embody-aspect", true).apply(pokemon);
-        }
 
         pokemon.getPersistentData().putBoolean("is_tera", true);
         GlowHandler.applyTeraGlow(pokemonEntity);
