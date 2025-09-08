@@ -2,7 +2,7 @@
     "pokemon": {
         "species": "drifblim",
         "moves": [
-            "selfdestruct",
+            "gust",
             "shadowball",
             "ominouswind",
             "hex"
@@ -10,5 +10,5 @@
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "GHOST",
-    "weight": 19
+    "weight": 20.0
 }

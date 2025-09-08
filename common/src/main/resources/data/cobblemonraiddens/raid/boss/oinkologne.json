@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "oinkologne",
+        "moves": [
+            "doubleedge",
+            "mudshow",
+            "disarmingvoice",
+            "takedown"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

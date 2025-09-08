@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "ursaluna",
+        "moves": [
+            "bloodmoon",
+            "moonblast",
+            "earthpower",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GROUND",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "bloodmoon",
+            "value": true
+        }
+    ]
+}

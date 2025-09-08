@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "eiscue",
+        "moves": [
+            "freezedry",
+            "headbutt",
+            "weatherball",
+            "icywind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

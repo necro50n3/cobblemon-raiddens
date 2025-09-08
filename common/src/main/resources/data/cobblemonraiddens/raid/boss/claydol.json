@@ -2,7 +2,7 @@
     "pokemon": {
         "species": "claydol",
         "moves": [
-            "selfdestruct",
+            "hyperbeam",
             "earthpower",
             "extrasensory",
             "ancientpower"
@@ -10,5 +10,5 @@
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "GROUND",
-    "weight": 19
+    "weight": 20.0
 }

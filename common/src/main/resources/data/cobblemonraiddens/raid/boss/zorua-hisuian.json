@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "zorua",
+        "moves": [
+            "knockoff",
+            "shadowsneak",
+            "scratch"
+        ],
+        "form": "hisuian"
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

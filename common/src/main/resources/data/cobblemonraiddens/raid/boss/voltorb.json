@@ -2,7 +2,7 @@
     "pokemon": {
         "species": "voltorb",
         "moves": [
-            "selfdestruct",
+            "thundershock",
             "swift",
             "chargebeam",
             "rollout"
@@ -10,5 +10,5 @@
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "ELECTRIC",
-    "weight": 19
+    "weight": 20.0
 }

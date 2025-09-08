@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "pumpkaboo",
+        "moves": [
+            "seedbomb",
+            "shadowsneak",
+            "bulletseed",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}

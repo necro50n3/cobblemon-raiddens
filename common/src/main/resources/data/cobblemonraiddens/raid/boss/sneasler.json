@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "sneasler",
+        "moves": [
+            "brickbreak",
+            "direclaw",
+            "metalclaw",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

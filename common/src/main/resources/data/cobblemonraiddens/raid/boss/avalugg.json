@@ -2,7 +2,7 @@
     "pokemon": {
         "species": "avalugg",
         "moves": [
-            "skullbash",
+            "crunch",
             "iciclecrash",
             "doubleedge",
             "blizzard"
@@ -10,5 +10,5 @@
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "ICE",
-    "weight": 19
+    "weight": 20.0
 }

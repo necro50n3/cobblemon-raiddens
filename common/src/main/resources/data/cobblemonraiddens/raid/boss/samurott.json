@@ -2,13 +2,13 @@
     "pokemon": {
         "species": "samurott",
         "moves": [
-            "hydropump",
-            "retaliate",
+            "megahorn",
+            "aerialace",
             "aquatail",
-            "aquajet"
+            "slash"
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "WATER",
-    "weight": 19
+    "weight": 20.0
 }

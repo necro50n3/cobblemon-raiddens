@@ -3,12 +3,12 @@
         "species": "zoroark",
         "moves": [
             "knockoff",
-            "feintattack",
+            "nightslash",
             "furyswipes",
             "scratch"
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "DARK",
-    "weight": 19
+    "weight": 20.0
 }

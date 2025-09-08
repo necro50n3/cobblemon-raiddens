@@ -5,10 +5,10 @@
             "ragingbull",
             "zenheadbutt",
             "hornattack",
-            "pursuit"
+            "assurance"
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "NORMAL",
-    "weight": 19
+    "weight": 20.0
 }

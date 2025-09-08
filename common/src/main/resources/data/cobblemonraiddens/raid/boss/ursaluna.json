@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "ursaluna",
+        "moves": [
+            "highhorsepower",
+            "headlongrush",
+            "playrough",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

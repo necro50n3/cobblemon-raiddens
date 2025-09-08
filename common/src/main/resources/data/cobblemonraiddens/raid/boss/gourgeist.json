@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "gourgeist",
+        "moves": [
+            "seedbomb",
+            "shadowsneak",
+            "moonblast",
+            "shadowball"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}

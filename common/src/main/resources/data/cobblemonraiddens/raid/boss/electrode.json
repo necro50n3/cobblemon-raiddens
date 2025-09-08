@@ -3,12 +3,12 @@
         "species": "electrode",
         "moves": [
             "discharge",
-            "selfdestruct",
+            "rollout",
             "swift",
             "chargebeam"
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "ELECTRIC",
-    "weight": 19
+    "weight": 20.0
 }

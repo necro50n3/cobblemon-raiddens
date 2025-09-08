@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "aegislash",
+        "moves": [
+            "kingsshield",
+            "shadowsneak",
+            "sacredsword",
+            "ironhead"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "STEEL",
+    "weight": 20.0
+}

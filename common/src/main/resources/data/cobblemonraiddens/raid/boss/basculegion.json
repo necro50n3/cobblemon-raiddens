@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "basculegion",
+        "moves": [
+            "headsmash",
+            "doubleedge",
+            "wavecrash",
+            "crunch"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

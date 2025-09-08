@@ -3,7 +3,7 @@
         "species": "graveler",
         "moves": [
             "rockblast",
-            "selfdestruct",
+            "rollout",
             "thunderpunch",
             "smackdown"
         ],
@@ -11,5 +11,5 @@
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "ROCK",
-    "weight": 19
+    "weight": 20.0
 }

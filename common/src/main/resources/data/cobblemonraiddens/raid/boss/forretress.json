@@ -2,7 +2,7 @@
     "pokemon": {
         "species": "forretress",
         "moves": [
-            "explosion",
+            "heavyslam",
             "payback",
             "rollout",
             "rapidspin"
@@ -10,5 +10,5 @@
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "BUG",
-    "weight": 19
+    "weight": 20.0
 }

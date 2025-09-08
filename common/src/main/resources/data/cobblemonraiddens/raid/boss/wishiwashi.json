@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "wishiwashi",
+        "moves": [
+            "hydropump",
+            "doubleedge",
+            "aquatail",
+            "brine"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "WATER",
+    "weight": 20.0,
+    "raid_form": [
+        {
+            "name": "schooling_form",
+            "value": "school"
+        }
+    ]
+}

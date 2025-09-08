@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "arcanine",
+        "moves": [
+            "flareblitz",
+            "extremespeed",
+            "bite",
+            "rockslide"
+        ],
+        "form": "hisuian"
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE",
+    "weight": 20.0
+}

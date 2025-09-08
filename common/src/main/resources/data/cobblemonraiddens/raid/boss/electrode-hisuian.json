@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "electrode",
+        "moves": [
+            "energyball",
+            "discharge",
+            "chloroblast",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

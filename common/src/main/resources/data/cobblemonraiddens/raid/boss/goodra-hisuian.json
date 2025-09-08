@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "goodra",
+        "moves": [
+            "heavyslam",
+            "muddywater",
+            "dragonpulse",
+            "waterpulse"
+        ],
+        "form": "hisuian"
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "STEEL",
+    "weight": 20.0
+}

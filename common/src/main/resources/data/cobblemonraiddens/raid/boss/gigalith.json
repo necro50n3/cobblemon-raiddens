@@ -2,13 +2,13 @@
     "pokemon": {
         "species": "gigalith",
         "moves": [
-            "explosion",
+            "mudslap",
             "stoneedge",
-            "rockblast",
+            "headbutt",
             "rockslide"
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "ROCK",
-    "weight": 19
+    "weight": 20.0
 }

@@ -3,12 +3,12 @@
         "species": "koffing",
         "moves": [
             "sludgebomb",
-            "selfdestruct",
+            "tackle",
             "sludge",
             "assurance"
         ]
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "POISON",
-    "weight": 19
+    "weight": 20.0
 }

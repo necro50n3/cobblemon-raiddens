@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "squawkabilly",
+        "moves": [
+            "facade",
+            "aerialace",
+            "quickattacak",
+            "peck"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

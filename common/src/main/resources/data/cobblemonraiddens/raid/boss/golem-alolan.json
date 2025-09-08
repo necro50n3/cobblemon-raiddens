@@ -2,14 +2,14 @@
     "pokemon": {
         "species": "golem",
         "moves": [
-            "explosion",
+            "heavyslam",
             "discharge",
             "rockblast",
-            "selfdestruct"
+            "thunderpunch"
         ],
         "form": "alolan"
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "ROCK",
-    "weight": 19
+    "weight": 20.0
 }

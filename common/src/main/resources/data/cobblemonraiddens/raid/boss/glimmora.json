@@ -5,10 +5,10 @@
             "sludgewave",
             "powergem",
             "rockslide",
-            "selfdestruct"
+            "venoshock"
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "ROCK",
-    "weight": 19
+    "weight": 20.0
 }

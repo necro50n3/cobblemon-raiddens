@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "overqwil",
+        "moves": [
+            "pinmissile",
+            "fellstinger",
+            "barbbarrage",
+            "brine"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

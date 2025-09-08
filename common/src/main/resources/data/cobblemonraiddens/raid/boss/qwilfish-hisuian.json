@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "qwilfish",
+        "moves": [
+            "pinmissile",
+            "fellstinger",
+            "barbbarrage",
+            "brine"
+        ],
+        "form": "hisuian"
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

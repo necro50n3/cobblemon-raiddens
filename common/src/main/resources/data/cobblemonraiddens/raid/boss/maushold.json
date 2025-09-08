@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "maushold",
+        "moves": [
+            "hypervoice",
+            "playrough",
+            "bulletseed",
+            "doublehit"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

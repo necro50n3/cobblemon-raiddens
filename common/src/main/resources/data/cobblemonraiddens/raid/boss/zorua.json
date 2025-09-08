@@ -3,12 +3,11 @@
         "species": "zorua",
         "moves": [
             "knockoff",
-            "feintattack",
             "furyswipes",
-            "pursuit"
+            "scratch"
         ]
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "DARK",
-    "weight": 19
+    "weight": 20.0
 }

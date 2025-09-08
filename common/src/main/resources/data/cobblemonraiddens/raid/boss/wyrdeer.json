@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "wyrdeer",
+        "moves": [
+            "megahorn",
+            "doubleedge",
+            "psyshieldbash",
+            "takedown"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}
