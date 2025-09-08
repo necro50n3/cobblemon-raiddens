@@ -2,6 +2,9 @@ package com.necro.raid.dens.common.compat.jade;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.util.ResourceLocationExtensionsKt;
@@ -82,6 +85,13 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         compoundTag.putString("boss_species", species.getResourceIdentifier().toString());
         ListTag bossAspects = new ListTag();
         for (String aspect : raidBoss.getDisplayAspects()) {
+            bossAspects.add(StringTag.valueOf(aspect));
+        }
+        for (SpeciesFeature form : raidBoss.getRaidForm()) {
+            String aspect;
+            if (form instanceof StringSpeciesFeature) aspect = ((StringSpeciesFeature) form).getValue();
+            else if (form instanceof FlagSpeciesFeature) aspect = form.getName();
+            else continue;
             bossAspects.add(StringTag.valueOf(aspect));
         }
         compoundTag.put("boss_aspects", bossAspects);

@@ -87,13 +87,6 @@ public class RaidBoss {
             ((CustomPokemonProperty) form).apply(pokemon);
         }
 
-        if (this.raidFeature == RaidFeature.DYNAMAX && this.raidForm.stream().noneMatch(form -> form.getName().equals("dynamax_form"))) {
-            new StringSpeciesFeature("dynamax_form", "none").apply(pokemon);
-        }
-        else if (this.raidFeature == RaidFeature.MEGA && this.raidForm.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
-            new StringSpeciesFeature("mega_evolution", "mega").apply(pokemon);
-        }
-
         this.setMoveSet(properties, pokemon);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
@@ -236,24 +229,6 @@ public class RaidBoss {
         return tag;
     }
 
-    private static CompoundTag encodeFormTag(SpeciesFeature form) {
-        CompoundTag formTag = new CompoundTag();
-        formTag.putString("name", form.getName());
-        if (form instanceof StringSpeciesFeature) {
-            formTag.putString("value", ((StringSpeciesFeature) form).getValue());
-            formTag.putString("type", "string");
-        }
-        else if (form instanceof FlagSpeciesFeature) {
-            formTag.putBoolean("value", ((FlagSpeciesFeature) form).getEnabled());
-            formTag.putString("type", "flag");
-        }
-        else {
-            formTag.putInt("value", ((IntSpeciesFeature) form).getValue());
-            formTag.putString("type", "int");
-        }
-        return formTag;
-    }
-
     public static RaidBoss loadNbt(CompoundTag tag) {
         List<SpeciesFeature> raidForm;
         if (tag.contains("raid_form")) raidForm = RaidBoss.decodeFormTag(tag.getList("raid_form", Tag.TAG_COMPOUND));
@@ -276,7 +251,25 @@ public class RaidBoss {
         );
     }
 
-    private static List<SpeciesFeature> decodeFormTag(ListTag tag) {
+    public static CompoundTag encodeFormTag(SpeciesFeature form) {
+        CompoundTag formTag = new CompoundTag();
+        formTag.putString("name", form.getName());
+        if (form instanceof StringSpeciesFeature) {
+            formTag.putString("value", ((StringSpeciesFeature) form).getValue());
+            formTag.putString("type", "string");
+        }
+        else if (form instanceof FlagSpeciesFeature) {
+            formTag.putBoolean("value", ((FlagSpeciesFeature) form).getEnabled());
+            formTag.putString("type", "flag");
+        }
+        else {
+            formTag.putInt("value", ((IntSpeciesFeature) form).getValue());
+            formTag.putString("type", "int");
+        }
+        return formTag;
+    }
+
+    public static List<SpeciesFeature> decodeFormTag(ListTag tag) {
         List<SpeciesFeature> forms = new ArrayList<>();
         for (Tag t : tag) {
             CompoundTag compoundTag = (CompoundTag) t;
@@ -376,6 +369,14 @@ public class RaidBoss {
                 properties.setTeraType(type.getSerializedName());
                 raidForm = new ArrayList<>(raidForm);
                 raidForm.addAll(baseForm);
+
+                if (feature == RaidFeature.DYNAMAX && raidForm.stream().noneMatch(form -> form.getName().equals("dynamax_form"))) {
+                    raidForm.add(new StringSpeciesFeature("dynamax_form", "none"));
+                }
+                else if (feature == RaidFeature.MEGA && raidForm.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
+                    raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
+                }
+
                 return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable);
             })
         );
