@@ -27,11 +27,11 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - GeckoLib
 
 ## Optional Compatibilities
+- Mega Showdown: Tera, Dynamax and Mega raids supported! (Addons required)
 - Jade: See raid details, including the raid boss!
 ![Jade Compat](https://i.imgur.com/Zw6mWA2.png)
 
 ## Future Updates
-- Mega Showdown compatibility.
 - Raid configuration and spawning commands.
 - Official datapacks with extra raid bosses.
 
