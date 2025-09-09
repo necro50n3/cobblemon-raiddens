@@ -11,29 +11,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "minecraft:iron_ingot",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:copper_ingot",
           "weight": 10
         },
         {
@@ -49,8 +33,8 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:gold_ingot",
-          "weight": 5
+          "name": "minecraft:copper_ingot",
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -61,7 +45,8 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond"
+          "name": "minecraft:gold_ingot",
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -76,7 +61,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:exp_candy_m",
+          "name": "cobblemon:exp_candy_s",
           "weight": 10
         },
         {
@@ -86,13 +71,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 3.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:exp_candy_l",
+          "name": "cobblemon:exp_candy_m",
           "weight": 5
         },
         {
@@ -102,14 +87,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:health_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -118,14 +103,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:muscle_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -134,14 +119,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:resist_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -150,14 +135,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:genius_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -166,14 +151,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:clever_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -182,14 +167,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:swift_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -198,14 +183,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:red_mint_leaf",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -214,14 +199,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:blue_mint_leaf",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -230,14 +215,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:cyan_mint_leaf",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -246,14 +231,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:green_mint_leaf",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -262,14 +247,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:pink_mint_leaf",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -278,97 +263,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 2.0
+                "max": 2.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:white_mint_leaf",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:red_mint_seeds",
           "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:blue_mint_seeds",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:cyan_mint_seeds",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:green_mint_seeds",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:pink_mint_seeds",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:white_mint_seeds",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:ability_capsule"
         },
         {
           "type": "minecraft:loot_table",
@@ -379,14 +281,14 @@
               "function": "minecraft:set_count"
             }
           ],
-          "value": "cobblemonraiddens:raids/types/gems",
-          "weight": 10
+          "value": "cobblemonraiddens:raid/type/gems",
+          "weight": 5
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
         "max": 6.0,
-        "min": 4.0
+        "min": 3.0
       }
     }
   ]

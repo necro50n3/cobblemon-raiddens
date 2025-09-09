@@ -70,7 +70,8 @@ processResources {
         archives_name: rootProject.archives_name,
         version: project.version,
         minecraft_version: rootProject.minecraft_version,
-        cobblemon_version: rootProject.cobblemon_dependency
+        cobblemon_version: rootProject.cobblemon_dependency,
+        geckolib_version: rootProject.geckolib_dependency
     ]
     inputs.properties replaceProperties
 

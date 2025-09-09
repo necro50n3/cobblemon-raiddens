@@ -346,9 +346,11 @@ public class RaidBoss {
         ).apply(inst, (name, either) -> {
             if (either.left().isPresent()) return new StringSpeciesFeature(name, either.left().get());
             else {
+                assert either.right().isPresent();
                 Either<Boolean, Integer> inner = either.right().get();
                 if (inner.left().isPresent()) return new FlagSpeciesFeature(name, inner.left().get());
-                else return new IntSpeciesFeature(name, inner.right().get());
+                else assert inner.right().isPresent();
+                return new IntSpeciesFeature(name, inner.right().get());
             }
         }));
     }

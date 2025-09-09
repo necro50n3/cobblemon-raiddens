@@ -33,7 +33,7 @@ side = "BOTH"
 [[dependencies.cobblemonraiddens]]
 modId = "geckolib"
 mandatory = true
-versionRange = "[4.7.0,)"
+versionRange = "[${geckolib_version},)"
 ordering = "AFTER"
 side = "BOTH"
 

@@ -18,7 +18,7 @@
             }
           ],
           "name": "minecraft:iron_ingot",
-          "weight": 2
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -34,7 +34,7 @@
             }
           ],
           "name": "minecraft:copper_ingot",
-          "weight": 2
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -43,14 +43,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
+                "max": 6.0,
                 "min": 4.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "minecraft:gold_ingot",
-          "weight": 2
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -59,45 +59,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 6.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 1.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "minecraft:diamond",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:netherite_scrap",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:exp_candy_l",
           "weight": 5
         },
         {
@@ -108,12 +76,12 @@
               "count": {
                 "type": "minecraft:uniform",
                 "max": 6.0,
-                "min": 4.0
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:exp_candy_xl",
+          "name": "cobblemon:exp_candy_l",
           "weight": 10
         },
         {
@@ -123,13 +91,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:rare_candy",
+          "name": "cobblemon:exp_candy_xl",
           "weight": 5
         },
         {
@@ -139,14 +107,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:health_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -155,14 +123,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:muscle_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -171,14 +139,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:resist_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -187,14 +155,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:genius_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -203,14 +171,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:clever_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -219,14 +187,14 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "cobblemon:swift_feather",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -406,18 +374,6 @@
             }
           ],
           "name": "cobblemon:ability_capsule",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 1.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "cobblemon:ability_patch",
           "weight": 5
         },
         {
@@ -425,18 +381,18 @@
           "functions": [
             {
               "add": false,
-              "count": 2.0,
+              "count": 1.0,
               "function": "minecraft:set_count"
             }
           ],
-          "value": "cobblemonraiddens:raids/types/gems",
+          "value": "cobblemonraiddens:raid/type/gems",
           "weight": 10
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 10.0,
-        "min": 8.0
+        "max": 8.0,
+        "min": 4.0
       }
     }
   ]

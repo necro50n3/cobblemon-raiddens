@@ -17,7 +17,7 @@ public enum RaidFeature implements StringRepresentable {
     }
 
     public String getLootTableId() {
-        return "raids/features/" + this.id;
+        return "raid/feature/" + this.id;
     }
 
     public String getTranslatable() {

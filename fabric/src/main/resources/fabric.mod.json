@@ -34,6 +34,6 @@
   "depends": {
     "minecraft": "${minecraft_version}",
     "cobblemon": ">=${cobblemon_version}",
-    "geckolib": ">=4.7.0"
+    "geckolib": ">=${geckolib_version}"
   }
 }

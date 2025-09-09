@@ -36,7 +36,7 @@ public enum RaidTier implements StringRepresentable {
     }
 
     public String getLootTableId() {
-        return "raids/tiers/" + this.id;
+        return "raid/tier/" + this.id;
     }
 
     public int getHealth() {

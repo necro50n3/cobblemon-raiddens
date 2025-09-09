@@ -2,29 +2,22 @@ package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.items.ModItems;
-import com.necro.raid.dens.common.items.ModPredicates;
-import com.necro.raid.dens.common.items.RaidTypePredicate;
 import com.necro.raid.dens.common.loot.function.GemTypeFunction;
 import com.necro.raid.dens.common.loot.function.MaxMushroomsFunction;
 import com.necro.raid.dens.common.loot.function.TeraShardsFunction;
-import com.necro.raid.dens.common.raids.RaidType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
-import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.providers.number.*;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +31,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
         consumer.accept(
-            createKey("raids/types/gems"),
+            createKey("raid/type/gems"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
                     .add(LootItem.lootTableItem(Items.AIR).apply(GemTypeFunction.apply()))
@@ -47,12 +40,12 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/features/mega"),
+            createKey("raid/feature/mega"),
             new LootTable.Builder()
         );
 
         consumer.accept(
-            createKey("raids/features/tera"),
+            createKey("raid/feature/tera"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
                     .add(LootItem.lootTableItem(Items.AIR).apply(TeraShardsFunction.apply()))
@@ -61,7 +54,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/features/dynamax"),
+            createKey("raid/feature/dynamax"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
                     .add(LootItem.lootTableItem(Items.AIR).apply(MaxMushroomsFunction.apply()))
@@ -70,7 +63,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_one"),
+            createKey("raid/tier/tier_one"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(2f, 4f))
                     .with(LootItem.lootTableItem(CobblemonItems.RED_APRICORN)
@@ -122,7 +115,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_two"),
+            createKey("raid/tier/tier_two"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(3f, 6f))
                     .with(LootItem.lootTableItem(CobblemonItems.RED_APRICORN)
@@ -210,7 +203,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_three"),
+            createKey("raid/tier/tier_three"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(3f, 6f))
                     .with(LootItem.lootTableItem(Items.IRON_INGOT)
@@ -281,7 +274,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
                         .setWeight(2)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raids/types/gems"))
+                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
@@ -290,7 +283,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_four"),
+            createKey("raid/tier/tier_four"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(4f, 6f))
                     .with(LootItem.lootTableItem(Items.IRON_INGOT)
@@ -393,7 +386,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(1)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raids/types/gems"))
+                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -402,7 +395,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_five"),
+            createKey("raid/tier/tier_five"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(4f, 8f))
                     .with(LootItem.lootTableItem(Items.IRON_INGOT)
@@ -505,7 +498,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raids/types/gems"))
+                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -514,7 +507,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_six"),
+            createKey("raid/tier/tier_six"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(6f, 8f))
                     .with(LootItem.lootTableItem(Items.IRON_INGOT)
@@ -625,7 +618,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(2)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raids/types/gems"))
+                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -634,7 +627,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
         );
 
         consumer.accept(
-            createKey("raids/tiers/tier_seven"),
+            createKey("raid/tier/tier_seven"),
             new LootTable.Builder()
                 .pool(LootPool.lootPool().setRolls(UniformGenerator.between(8f, 10f))
                     .with(LootItem.lootTableItem(Items.IRON_INGOT)
@@ -749,7 +742,7 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raids/types/gems"))
+                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2f)))
                         .setWeight(10)
                         .build())
