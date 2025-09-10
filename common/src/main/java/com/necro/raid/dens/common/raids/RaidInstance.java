@@ -17,7 +17,7 @@ public class RaidInstance {
     private final PokemonEntity bossEntity;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
-    private final ServerBossEvent timer;
+//    private final ServerBossEvent timer;
     private final List<PokemonBattle> battles;
     private final Map<ServerPlayer, Float> damageCache;
     private final List<ServerPlayer> activePlayers;
@@ -26,8 +26,8 @@ public class RaidInstance {
     private float currentHealth;
     private final float maxHealth;
 
-    private final int maxDuration;
-    private int durationTick;
+//    private final int maxDuration;
+//    private int durationTick;
 
     private final List<DelayedRunnable> runQueue;
 
@@ -38,10 +38,10 @@ public class RaidInstance {
             ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
-        this.timer = new ServerBossEvent(
-            Component.empty(),
-            BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS
-        );
+//        this.timer = new ServerBossEvent(
+//            Component.empty(),
+//            BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS
+//        );
         this.battles = new ArrayList<>();
         this.damageCache = new HashMap<>();
 
@@ -51,8 +51,8 @@ public class RaidInstance {
         this.currentHealth = entity.getPokemon().getCurrentHealth();
         this.maxHealth = entity.getPokemon().getMaxHealth();
 
-        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
-        this.durationTick = this.maxDuration;
+//        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
+//        this.durationTick = this.maxDuration;
 
         this.runQueue = new ArrayList<>();
     }
@@ -60,7 +60,7 @@ public class RaidInstance {
     public void addPlayer(ServerPlayer player, PokemonBattle battle) {
         this.battles.add(battle);
         this.bossEvent.addPlayer(player);
-        this.timer.addPlayer(player);
+//        this.timer.addPlayer(player);
         this.damageCache.put(player, this.currentHealth);
         this.activePlayers.add(player);
         RaidBuilder.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
@@ -72,11 +72,11 @@ public class RaidInstance {
 
     public void removePlayer(ServerPlayer player, PokemonBattle battle) {
         // Originally raids were timed before pivoting to one-life system.
-        // this.durationTick -= (int) (this.maxDuration * 0.1);
+//        this.durationTick -= (int) (this.maxDuration * 0.1);
 
         this.battles.remove(battle);
         this.bossEvent.removePlayer(player);
-        this.timer.removePlayer(player);
+//        this.timer.removePlayer(player);
         this.damageCache.remove(player);
         this.failedPlayers.add(player);
     }
@@ -110,8 +110,8 @@ public class RaidInstance {
     }
 
     public void tick() {
-        if (--this.durationTick == 0) this.queueStopRaid(false);
-        if (this.durationTick % 40 == 0) this.timer.setProgress(this.durationTick / (float) this.maxDuration);
+//        if (--this.durationTick == 0) this.queueStopRaid(false);
+//        if (this.durationTick % 40 == 0) this.timer.setProgress(this.durationTick / (float) this.maxDuration);
         this.runQueue.removeIf(DelayedRunnable::tick);
     }
 
@@ -126,8 +126,8 @@ public class RaidInstance {
     public void stopRaid(boolean raidSuccess) {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
-        this.timer.setVisible(false);
-        this.timer.removeAllPlayers();
+//        this.timer.setVisible(false);
+//        this.timer.removeAllPlayers();
         if (raidSuccess) this.bossEntity.setHealth(0f);
         RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) this.bossEntity).getRaidId());
         this.battles.forEach(PokemonBattle::stop);
