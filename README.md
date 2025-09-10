@@ -32,8 +32,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 ![Jade Compat](https://i.imgur.com/Zw6mWA2.png)
 
 ## Future Updates
-- Raid configuration and spawning commands.
-- Official datapacks with extra raid bosses.
+- TBC
 
 ## For Map Makers/Server Owners
 ### Raid Crystals
@@ -43,6 +42,8 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
   - CAN_CYCLE: Whether the raid boss can change between resets.
   - RAID_TYPE: The elemental type of the raid.
   - RAID_TIER: The tier of the raid.
+- Raid crystals can be changed or created using /crd dens.
+- There is an option to require a key to enter a raid using the "cobblemonraiddens:raid_den_key" item tag.
 
 ### Data-Driven
-- Raid bosses are completely data-driven! New raid bosses can be added with custom datapacks.
+- Raid bosses are completely data-driven! New raid bosses can be added with custom data packs.
