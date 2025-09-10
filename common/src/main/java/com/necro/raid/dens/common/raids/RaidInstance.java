@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -55,6 +54,12 @@ public class RaidInstance {
 //        this.durationTick = this.maxDuration;
 
         this.runQueue = new ArrayList<>();
+        this.runQueue.add(new DelayedRunnable(() -> {
+            if (this.bossEntity.isDeadOrDying()) return;
+            for (ServerPlayer player : this.activePlayers) {
+                if (player.level() != this.bossEntity.level()) this.removePlayer(player);
+            }
+        }, 20, true));
     }
 
     public void addPlayer(ServerPlayer player, PokemonBattle battle) {
@@ -83,6 +88,11 @@ public class RaidInstance {
 
     public void removePlayer(PokemonBattle battle) {
         this.removePlayer(battle.getPlayers().getFirst(), battle);
+    }
+
+    public void removePlayer(ServerPlayer player) {
+        this.bossEvent.removePlayer(player);
+        this.damageCache.remove(player);
     }
 
     public void syncHealth(ServerPlayer player, float remainingHealth) {
@@ -146,17 +156,23 @@ public class RaidInstance {
         private final Runnable runnable;
         private final int delay;
         private int tick;
+        private final boolean repeat;
 
-        public DelayedRunnable(Runnable runnable, int delay) {
+        public DelayedRunnable(Runnable runnable, int delay, boolean repeat) {
             this.runnable = runnable;
             this.delay = delay;
             this.tick = 0;
+            this.repeat = repeat;
+        }
+
+        public DelayedRunnable(Runnable runnable, int delay) {
+            this(runnable, delay, false);
         }
 
         public boolean tick() {
             if (++this.tick < this.delay) return false;
             this.runnable.run();
-            return true;
+            return !this.repeat;
         }
     }
 }
