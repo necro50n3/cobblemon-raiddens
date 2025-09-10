@@ -10,7 +10,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RaidRewardCommands {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd_rewards")
             .requires(source -> source.isPlayer() && RaidHelper.REWARD_QUEUE.containsKey(source.getPlayer()))
             .then(Commands.literal("claim")
@@ -23,7 +23,7 @@ public class RaidRewardCommands {
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
-        register(dispatcher, commandBuildContext);
+        register(dispatcher);
     }
 
     private static int claimPokemonAndItems(CommandContext<CommandSourceStack> context) {

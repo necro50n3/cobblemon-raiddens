@@ -2,9 +2,13 @@ package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.RaidTier;
+import com.necro.raid.dens.common.util.RaidRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.server.packs.PackType;
 
 public class ModEvents {
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl serverGamePacketListenerImpl, MinecraftServer minecraftServer) {
@@ -29,5 +33,9 @@ public class ModEvents {
 
     public static void clientTick(Minecraft client) {
         ClientManager.clientTick();
+    }
+
+    public static void initRaidBosses(MinecraftServer server) {
+        RaidRegistry.initRaidBosses(server);
     }
 }

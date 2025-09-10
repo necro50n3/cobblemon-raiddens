@@ -2,9 +2,11 @@ package com.necro.raid.dens.common.util;
 
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidTier;
+import com.necro.raid.dens.common.raids.RaidType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 
 import java.util.*;
@@ -43,5 +45,20 @@ public class RaidRegistry {
     public static RaidBoss getRandomRaidBoss(RandomSource random, RaidTier tier) {
         Optional<RaidBoss> raidBoss = RaidRegistry.RAID_BOSSES.get(tier).getRandom(random);
         return raidBoss.orElse(null);
+    }
+
+    public static RaidBoss getRandomRaidBoss(RandomSource random) {
+        return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random));
+    }
+
+    public static void clear() {
+        for (RaidTier tier : RaidTier.values()) { tier.setPresent(false); }
+        for (RaidType type : RaidType.values()) { type.setPresent(false); }
+    }
+
+    public static void initRaidBosses(MinecraftServer server) {
+        server.registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY).forEach(RaidRegistry::register);
+        RaidRegistry.populateWeightedList();
+        RaidTier.updateRandom();
     }
 }

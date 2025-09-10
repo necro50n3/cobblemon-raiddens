@@ -59,6 +59,10 @@ public enum RaidTier implements StringRepresentable {
         this.isPresent = true;
     }
 
+    public void setPresent(boolean isPresent) {
+        this.isPresent = isPresent;
+    }
+
     public String getStars() {
         return switch (this) {
             case TIER_ONE -> "★";

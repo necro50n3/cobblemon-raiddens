@@ -55,6 +55,10 @@ public enum RaidType implements StringRepresentable {
         this.isPresent = true;
     }
 
+    public void setPresent(boolean isPresent) {
+        this.isPresent = isPresent;
+    }
+
     @Override
     public @NotNull String getSerializedName() {
         return this.id;
