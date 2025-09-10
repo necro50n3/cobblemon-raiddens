@@ -92,11 +92,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static void serverTick() {
-        Collection<JoinRequestInstance> instances = JOIN_QUEUE.values();
-        instances.forEach(instance -> {
-            if (!instance.tick()) instances.remove(instance);
-        });
-
+        JOIN_QUEUE.values().removeIf(instance -> !instance.tick());
     }
 
     public static void commonTick() {
@@ -156,13 +152,13 @@ public class RaidHelper extends SavedData {
         RaidHelper data = create();
 
         if (compoundTag.contains("raid_hosts")) {
-            ((ListTag) compoundTag.get("raid_hosts")).forEach(host -> RAID_HOSTS.add(UUID.fromString(host.getAsString())));
+            compoundTag.getList("raid_hosts", Tag.TAG_STRING).forEach(host -> RAID_HOSTS.add(UUID.fromString(host.getAsString())));
         }
         if (compoundTag.contains("raid_participants")) {
-            ((ListTag) compoundTag.get("raid_participants")).forEach(p -> RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
+            compoundTag.getList("raid_participants", Tag.TAG_STRING).forEach(p -> RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
         }
         if (compoundTag.contains("was_survival")) {
-            ((ListTag) compoundTag.get("was_survival")).forEach(s -> WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
+            compoundTag.getList("was_survival", Tag.TAG_STRING).forEach(s -> WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
         }
 
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
