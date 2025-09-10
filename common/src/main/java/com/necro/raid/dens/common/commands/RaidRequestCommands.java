@@ -64,6 +64,7 @@ public class RaidRequestCommands {
             blockEntity.addPlayer(player);
             player.teleportTo(blockEntity.getDimension(), 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.accepted_request"));
+            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.confirm_accept_request"));
             return 1;
         }
         else {
@@ -82,6 +83,7 @@ public class RaidRequestCommands {
             player.sendSystemMessage(RaidHelper.getSystemMessage(
                 Component.translatable("message.cobblemonraiddens.raid.rejected_request", host.getName()))
             );
+            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.confirm_deny_request"));
             return 1;
         }
         else {

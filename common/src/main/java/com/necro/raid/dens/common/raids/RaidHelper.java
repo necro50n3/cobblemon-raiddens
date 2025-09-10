@@ -103,13 +103,13 @@ public class RaidHelper extends SavedData {
     public static String acceptRaidCommand(Player host, Player player, RaidCrystalBlockEntity blockEntity, BlockPos blockPos) {
         return String.format("/crd_raids acceptrequest %s %s %s %s %s",
             player.getName().getString(),
-            blockEntity.getDimension().dimension().location(),
+            blockEntity.getLevel().dimension().location(),
             blockPos.getX(), blockPos.getY(), blockPos.getZ()
         );
     }
 
     public static String rejectRaidCommand(Player host, Player player) {
-        return String.format("/crd_raids acceptrequest %s", player.getName().getString());
+        return String.format("/crd_raids denyrequest %s", player.getName().getString());
     }
 
     public static Component getSystemMessage(String translatable) {

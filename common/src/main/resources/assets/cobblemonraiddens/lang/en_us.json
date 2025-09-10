@@ -18,6 +18,8 @@
   "message.cobblemonraiddens.raid.already_hosting": "You are already hosting another raid.",
   "message.cobblemonraiddens.raid.already_in_queue": "You are already waiting to join a raid.",
   "message.cobblemonraiddens.raid.already_participating": "You are already participating in another raid.",
+  "message.cobblemonraiddens.raid.confirm_accept_request": "You have accepted the join request.",
+  "message.cobblemonraiddens.raid.confirm_deny_request": "You have rejected the join request.",
   "message.cobblemonraiddens.raid.has_fainted": "You have already fainted!",
   "message.cobblemonraiddens.raid.is_not_active": "The raid den is not active right now.",
   "message.cobblemonraiddens.raid.lobby_is_full": "This lobby is already full!",
