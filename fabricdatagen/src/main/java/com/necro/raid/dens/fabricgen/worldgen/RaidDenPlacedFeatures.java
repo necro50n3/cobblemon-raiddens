@@ -22,7 +22,7 @@ public class RaidDenPlacedFeatures {
 
         register(context, RAID_DEN_PLACED_KEY,
             configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_KEY),
-            RarityFilter.onAverageOnceEvery(128), InSquarePlacement.spread(),
+            RarityFilter.onAverageOnceEvery(256), InSquarePlacement.spread(),
             PlacementUtils.HEIGHTMAP, BiomeFilter.biome()
         );
     }
