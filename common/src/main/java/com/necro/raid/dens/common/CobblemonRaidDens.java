@@ -3,9 +3,10 @@ package com.necro.raid.dens.common;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
+import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.config.ClientConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
-import com.necro.raid.dens.common.loot.LootFunctions;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -40,6 +41,10 @@ public class CobblemonRaidDens {
             raidFailEvent(event.getBattle());
             return Unit.INSTANCE;
         });
+        CobblemonEvents.LOOT_DROPPED.subscribe(Priority.HIGHEST, event -> {
+            cancelLootDrops(event);
+            return Unit.INSTANCE;
+        });
     }
 
     private static void raidFailEvent(PokemonBattle battle) {
@@ -51,5 +56,11 @@ public class CobblemonRaidDens {
             }
         }
         catch (NullPointerException ignored) {}
+    }
+
+    private static void cancelLootDrops(LootDroppedEvent event) {
+        if (!(event.getEntity() instanceof PokemonEntity pokemonEntity)) return;
+        else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
+        event.cancel();
     }
 }
