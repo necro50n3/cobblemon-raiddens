@@ -29,7 +29,7 @@ public abstract class MappedRegistryMixin<T> implements IRegistryRemover {
     public void removeDimension(ResourceLocation loc) {
         MappedRegistryAccessor<T> accessor = ((MappedRegistryAccessor<T>) this);
         T type = accessor.getByLocation().get(loc).value();
-        ObjectList<Holder.Reference<T>> byId = accessor.getById();
+        ObjectList<Holder.Reference<T>> byId = this.getById();
         accessor.getToId().removeInt(loc);
 
         for (int i = 0; i < byId.size(); i++) {

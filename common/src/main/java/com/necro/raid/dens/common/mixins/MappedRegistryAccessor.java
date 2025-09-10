@@ -31,9 +31,6 @@ public interface MappedRegistryAccessor<T> {
     @Nullable
     Map<T, Holder.Reference<T>> getUnregisteredIntrusiveHolders();
 
-    @Accessor("byId")
-    ObjectList<Holder.Reference<T>> getById();
-
     @Accessor("toId")
     Reference2IntMap<T> getToId();
 

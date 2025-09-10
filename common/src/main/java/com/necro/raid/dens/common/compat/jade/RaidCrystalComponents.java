@@ -85,6 +85,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         compoundTag.putString("boss_species", species.getResourceIdentifier().toString());
         ListTag bossAspects = new ListTag();
         for (String aspect : raidBoss.getDisplayAspects()) {
+            if (aspect == null) continue;
             bossAspects.add(StringTag.valueOf(aspect));
         }
         for (SpeciesFeature form : raidBoss.getRaidForm()) {

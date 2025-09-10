@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
+import com.necro.raid.dens.common.commands.RaidDenCommands;
 import com.necro.raid.dens.common.commands.RaidRequestCommands;
 import com.necro.raid.dens.common.commands.RaidRewardCommands;
 import net.minecraft.commands.CommandSourceStack;
@@ -12,6 +13,7 @@ public class CommandsRegistrationEvent {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         RaidAdminCommands.register(dispatcher);
         RaidRequestCommands.register(dispatcher);
-        RaidRewardCommands.register(dispatcher, event.getBuildContext());
+        RaidRewardCommands.register(dispatcher);
+        RaidDenCommands.register(dispatcher);
     }
 }

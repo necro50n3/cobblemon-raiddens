@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Function;
 
-public class FabricBlocks {
+public class FabricBlocks extends ModBlocks {
     public static Block RAID_CRYSTAL_BLOCK;
     public static Block RAID_HOME_BLOCK;
     public static BlockEntityType<RaidCrystalBlockEntityFabric> RAID_CRYSTAL_BLOCK_ENTITY;
@@ -63,5 +63,17 @@ public class FabricBlocks {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_home_block_entity"),
             BlockEntityType.Builder.of(RaidHomeBlockEntityFabric::new, RAID_HOME_BLOCK).build()
         );
+
+        INSTANCE = new FabricBlocks();
+    }
+
+    @Override
+    public Block getRaidCrystalBlock() {
+        return RAID_CRYSTAL_BLOCK;
+    }
+
+    @Override
+    public Block getRaidHomeBlock() {
+        return RAID_HOME_BLOCK;
     }
 }

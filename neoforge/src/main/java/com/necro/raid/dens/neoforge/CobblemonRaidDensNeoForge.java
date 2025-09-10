@@ -33,6 +33,7 @@ public class CobblemonRaidDensNeoForge {
         }
         if (ModCompat.MEGA_SHOWDOWN.isLoaded()) NeoForgeMSDCompat.init();
 
+        NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
         NeoForgeBlockEntities.BLOCK_ENTITIES.register(modBus);
         NeoForgeItems.registerItems();
@@ -50,7 +51,7 @@ public class CobblemonRaidDensNeoForge {
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
         modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), RaidBoss.codec());
+            event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), null);
         });
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->

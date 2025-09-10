@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class NeoForgeBlocks {
+public class NeoForgeBlocks extends ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CobblemonRaidDens.MOD_ID);
     public static final DeferredBlock<?> RAID_CRYSTAL_BLOCK = registerBlock(
         "raid_crystal_block",
@@ -33,5 +33,19 @@ public class NeoForgeBlocks {
         DeferredBlock<?> toReturn = BLOCKS.register(name, block);
         NeoForgeItems.registerBlockItem(name, itemFactory.apply(toReturn));
         return toReturn;
+    }
+
+    public static void registerModBlocks() {
+        INSTANCE = new NeoForgeBlocks();
+    }
+
+    @Override
+    public Block getRaidCrystalBlock() {
+        return RAID_CRYSTAL_BLOCK.get();
+    }
+
+    @Override
+    public Block getRaidHomeBlock() {
+        return RAID_HOME_BLOCK.get();
     }
 }

@@ -3,11 +3,15 @@ package com.necro.raid.dens.common.blocks;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ModBlocks {
+public abstract class ModBlocks {
+    public static ModBlocks INSTANCE;
+
     public static BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.of()
         .sound(SoundType.AMETHYST).strength(50.0f, 1200.0f).noLootTable()
         .noOcclusion().isValidSpawn(ModBlocks::never).isRedstoneConductor(ModBlocks::never)
@@ -26,4 +30,8 @@ public class ModBlocks {
     private static boolean never(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
         return false;
     }
+
+    public abstract Block getRaidCrystalBlock();
+
+    public abstract Block getRaidHomeBlock();
 }
