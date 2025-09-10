@@ -18,8 +18,8 @@ public class RaidConfig implements ConfigData {
     public int reset_time = 7200;
     @Comment("Whether the raid boss changes between resets. Default: true")
     public boolean can_cycle = true;
-    @Comment("How long in seconds a raid battle lasts. Default: 600")
-    public int raid_duration = 600;
+//    @Comment("How long in seconds a raid battle lasts. Default: 600")
+//    public int raid_duration = 600;
     @Comment("Weighted probability of each raid tier from Tier 1 to Tier 7. Default: [9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0]")
     public double[] tier_weights = {9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0};
     @Comment("Raid boss HP multipliers for each raid tier from Tier 1 to Tier 7. Default: [5, 5, 8, 12, 20, 25, 30]")
