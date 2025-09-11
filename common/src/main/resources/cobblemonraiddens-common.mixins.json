@@ -9,6 +9,7 @@
     "MappedRegistryMixin",
     "MinecraftServerAccessor",
     "MinecraftServerMixin",
+    "MoveActionResponseMixin",
     "PokemonBattleMixin",
     "PokemonEntityMixin",
     "PokemonMixin"
