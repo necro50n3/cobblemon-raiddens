@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.blocks.block;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.items.ItemTags;
+import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.raids.RaidHelper;
@@ -39,7 +40,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidTier> RAID_TIER = EnumProperty.create("raid_tier", RaidTier.class);
     public static final BooleanProperty ACTIVE = BooleanProperty.create("is_active");
     public static final BooleanProperty CAN_RESET = BooleanProperty.create("can_reset");
-    public static final BooleanProperty CAN_CYCLE = BooleanProperty.create("can_cycle");
+    public static final EnumProperty<RaidCycleMode> CYCLE_MODE = EnumProperty.create("cycle_mode", RaidCycleMode.class);
 
     public RaidCrystalBlock(Properties settings) {
         super(settings);
@@ -48,7 +49,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(RAID_TYPE, RaidType.NONE)
             .setValue(RAID_TIER, RaidTier.TIER_ONE)
             .setValue(CAN_RESET, false)
-            .setValue(CAN_CYCLE, false)
+            .setValue(CYCLE_MODE, RaidCycleMode.NONE)
         );
     }
 
@@ -155,7 +156,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         builder.add(RAID_TIER);
         builder.add(ACTIVE);
         builder.add(CAN_RESET);
-        builder.add(CAN_CYCLE);
+        builder.add(CYCLE_MODE);
     }
 
     @Override

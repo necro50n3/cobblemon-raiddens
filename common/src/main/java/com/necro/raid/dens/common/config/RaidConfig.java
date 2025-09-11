@@ -24,8 +24,8 @@ public class RaidConfig implements ConfigData {
     public int max_clears = 3;
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")
     public int reset_time = 7200;
-    @Comment("Whether the raid boss changes between resets. Default: true")
-    public boolean can_cycle = true;
+    @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_TIER, ALL). Default: ALL")
+    public String cycle_mode = "ALL";
 //    @Comment("How long in seconds a raid battle lasts. Default: 600")
 //    public int raid_duration = 600;
     @Comment("Raid boss HP multipliers for each raid tier from Tier 1 to Tier 7. Default: [5, 5, 8, 12, 20, 25, 30]")

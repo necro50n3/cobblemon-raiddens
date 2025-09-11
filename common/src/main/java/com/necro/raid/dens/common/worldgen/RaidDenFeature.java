@@ -4,6 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.util.CrystalUtils;
@@ -43,7 +44,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)
             .setValue(RaidCrystalBlock.CAN_RESET, CobblemonRaidDens.CONFIG.reset_time > 0)
-            .setValue(RaidCrystalBlock.CAN_CYCLE, CobblemonRaidDens.CONFIG.can_cycle)
+            .setValue(RaidCrystalBlock.CYCLE_MODE, RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode))
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 

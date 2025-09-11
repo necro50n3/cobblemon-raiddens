@@ -80,7 +80,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (level.isClientSide()) return;
         else if (!this.canTick(blockState)) return;
 
-        if (this.raidBoss == null && blockState.getValue(RaidCrystalBlock.CAN_CYCLE)) {
+        if (this.raidBoss == null) {
             this.generateRaidBoss(level, blockPos, blockState);
         }
 
@@ -102,12 +102,18 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             RaidHelper.resetClearedRaids(blockPos);
             this.clears = 0;
             this.inactiveTicks = 0;
-            if (blockState.getValue(RaidCrystalBlock.CAN_CYCLE)) this.generateRaidBoss(level, blockPos, blockState);
+            this.generateRaidBoss(level, blockPos, blockState);
         }
     }
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
-        RaidTier newRaidTier = RaidTier.getWeightedRandom(level.getRandom(), level);
+        RaidCycleMode cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
+        if (cycleMode == RaidCycleMode.NONE) return;
+
+        RaidTier newRaidTier;
+        if (cycleMode == RaidCycleMode.LOCK_TIER) newRaidTier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
+        else newRaidTier = RaidTier.getWeightedRandom(level.getRandom(), level);
+
         this.raidBoss = RaidRegistry.getRandomRaidBoss(level.getRandom(), newRaidTier);
         if (this.raidBoss == null) return;
         RaidType newRaidType = this.raidBoss.getType();
