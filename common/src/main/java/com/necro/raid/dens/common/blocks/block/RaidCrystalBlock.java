@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import me.shedaniel.cloth.clothconfig.shadowed.org.yaml.snakeyaml.constructor.DuplicateKeyException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -127,9 +128,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private void startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
-        ServerLevel level = this.getOrCreateDimension(blockEntity);
+        ServerLevel level;
+        try { level = this.getOrCreateDimension(blockEntity); }
+        catch (IllegalStateException e) {
+            player.sendSystemMessage(Component.translatable("error.cobblemonraiddens.dimension_exist").withStyle(ChatFormatting.RED));
+            return;
+        }
+
         blockEntity.setDimension(level);
-        // spawn structure in dimension
         blockEntity.spawnRaidBoss();
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
         player.teleportTo(level, 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);

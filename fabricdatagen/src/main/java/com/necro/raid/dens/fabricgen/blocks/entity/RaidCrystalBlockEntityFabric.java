@@ -9,9 +9,4 @@ public class RaidCrystalBlockEntityFabric extends RaidCrystalBlockEntity {
     public RaidCrystalBlockEntityFabric(BlockPos blockPos, BlockState blockState) {
         super(FabricBlocks.RAID_CRYSTAL_BLOCK_ENTITY, blockPos, blockState);
     }
-
-    @Override
-    protected void removeDimension() {
-        super.removeDimension();
-    }
 }
