@@ -7,7 +7,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
-import com.necro.raid.dens.common.util.CrystalUtils;
+import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -35,7 +35,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         if (level.isClientSide()) return false;
         else if (!CobblemonRaidDens.CONFIG.dimension_tier_weights.containsKey(level.getLevel().dimension().location().toString())) return false;
-        else if (!CrystalUtils.hasSkyAccess(level, blockPos)) return false;
+        else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
         RaidBoss raidBoss = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());

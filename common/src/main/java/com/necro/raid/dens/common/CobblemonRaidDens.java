@@ -6,10 +6,12 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.config.ClientConfig;
+import com.necro.raid.dens.common.config.MoveConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
@@ -24,6 +26,7 @@ public class CobblemonRaidDens {
 
     public static RaidConfig CONFIG;
     public static ClientConfig CLIENT_CONFIG;
+    public static MoveConfig MOVE_CONFIG;
 
     public static void init() {
         LOGGER.info("Initialising {}", MOD_ID);
@@ -32,6 +35,10 @@ public class CobblemonRaidDens {
         CONFIG = AutoConfig.getConfigHolder(RaidConfig.class).getConfig();
         AutoConfig.register(ClientConfig.class, JanksonConfigSerializer::new);
         CLIENT_CONFIG = AutoConfig.getConfigHolder(ClientConfig.class).getConfig();
+        AutoConfig.register(MoveConfig.class, JanksonConfigSerializer::new);
+        MOVE_CONFIG = AutoConfig.getConfigHolder(MoveConfig.class).getConfig();
+
+        RaidUtils.init();
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
             raidFailEvent(event.getBattle());

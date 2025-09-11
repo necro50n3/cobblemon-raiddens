@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
-import com.necro.raid.dens.common.util.TeleportUtils;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -42,7 +42,7 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
                 if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
             });
 
-            TeleportUtils.teleportPlayerSafe(player, home, homePos, player.getXRot(), player.getYRot());
+            RaidUtils.teleportPlayerSafe(player, home, homePos, player.getXRot(), player.getYRot());
 
             if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
                 if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {

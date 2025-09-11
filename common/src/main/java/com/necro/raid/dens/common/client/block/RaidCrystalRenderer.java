@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.model.RaidCrystalBlockModel;
-import com.necro.raid.dens.common.util.CrystalUtils;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,7 +32,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
                                MultiBufferSource multiBufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float f, int i,
                                int j, int colour) {
         if (CobblemonRaidDens.CLIENT_CONFIG.show_beam && blockEntity.renderBeacon(blockEntity.getBlockState())
-            && blockEntity.hasLevel() && CrystalUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
+            && blockEntity.hasLevel() && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
             poseStack.pushPose();
             poseStack.scale(0.75f, 1.0f, 0.75f);
             poseStack.translate(-0.5, 0, -0.5);
