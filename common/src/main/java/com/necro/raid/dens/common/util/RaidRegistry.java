@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 
 import java.util.*;
 
@@ -47,8 +48,8 @@ public class RaidRegistry {
         return raidBoss.orElse(null);
     }
 
-    public static RaidBoss getRandomRaidBoss(RandomSource random) {
-        return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random));
+    public static RaidBoss getRandomRaidBoss(RandomSource random, Level level) {
+        return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random, level));
     }
 
     public static void clear() {

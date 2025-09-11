@@ -23,6 +23,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -140,8 +141,8 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, boolean canCycle, boolean canReset) throws CommandSyntaxException {
-        RandomSource random = context.getSource().getLevel().getRandom();
-        return createRaidDen(context, blockPos, canCycle, canReset, RaidRegistry.getRandomRaidBoss(random));
+        Level level = context.getSource().getLevel();
+        return createRaidDen(context, blockPos, canCycle, canReset, RaidRegistry.getRandomRaidBoss(level.getRandom(), level));
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, boolean canCycle) throws CommandSyntaxException {

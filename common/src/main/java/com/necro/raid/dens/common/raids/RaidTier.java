@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -24,8 +25,7 @@ public enum RaidTier implements StringRepresentable {
     private final int level;
     private boolean isPresent;
 
-    private static final DoubleWeightedRandomMap<RaidTier> RANDOM_MAP = new DoubleWeightedRandomMap<>();
-
+    private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
 
     RaidTier(String id, int health, int maxIvs, int level) {
         this.id = id;
@@ -83,23 +83,41 @@ public enum RaidTier implements StringRepresentable {
     public static void updateRandom() {
         RANDOM_MAP.clear();
 
-        List<Double> weights = new ArrayList<>(Arrays.stream(CobblemonRaidDens.CONFIG.tier_weights).boxed().toList());
+        RaidTier.addWeightedMap("default", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0});
+        for (Map.Entry<String, double[]> entry : CobblemonRaidDens.CONFIG.dimension_tier_weights.entrySet()) {
+            RaidTier.addWeightedMap(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static void addWeightedMap(String dimension, double[] tierWeights) {
+        DoubleWeightedRandomMap<RaidTier> weightedMap = new DoubleWeightedRandomMap<>();
+
+        List<Double> weights = new ArrayList<>(Arrays.stream(tierWeights).boxed().toList());
         while (weights.size() < RaidTier.values().length) {
-            weights.add(CobblemonRaidDens.CONFIG.tier_weights[CobblemonRaidDens.CONFIG.tier_weights.length - 1]);
+            weights.add(tierWeights[tierWeights.length - 1]);
         }
 
         for (int i = 0; i < weights.size(); i++) {
             RaidTier tier = RaidTier.values()[i];
             if (!tier.isPresent()) continue;
-            RANDOM_MAP.add(RaidTier.values()[i], weights.get(i));
+            weightedMap.add(RaidTier.values()[i], weights.get(i));
         }
+
+        RANDOM_MAP.put(dimension, weightedMap);
     }
 
-    public static RaidTier getWeightedRandom(RandomSource random) {
+    public static RaidTier getWeightedRandom(RandomSource random, String dimension) {
+        CobblemonRaidDens.LOGGER.info(dimension);
         if (RANDOM_MAP.isEmpty()) RaidTier.updateRandom();
         if (RANDOM_MAP.isEmpty()) return RaidTier.TIER_ONE;
-        Optional<RaidTier> raidTier = RANDOM_MAP.getRandom(random);
+        else if (!RANDOM_MAP.containsKey(dimension)) dimension = "default";
+        Optional<RaidTier> raidTier = RANDOM_MAP.get(dimension).getRandom(random);
         return raidTier.orElse(RaidTier.TIER_ONE);
+    }
+
+    public static RaidTier getWeightedRandom(RandomSource random, Level level) {
+        String levelKey = level.dimension().location().toString();
+        return RaidTier.getWeightedRandom(random, levelKey);
     }
 
     public static int initHealth(int index) {

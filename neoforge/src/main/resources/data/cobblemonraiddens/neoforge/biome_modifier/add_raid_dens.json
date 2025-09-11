@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_overworld",
+  "biomes": "#minecraft:all",
   "features": "cobblemonraiddens:raid_den_placed",
   "step": "vegetal_decoration"
 }

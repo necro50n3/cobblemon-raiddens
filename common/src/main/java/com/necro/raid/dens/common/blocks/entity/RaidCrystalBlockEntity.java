@@ -107,7 +107,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
-        RaidTier newRaidTier = RaidTier.getWeightedRandom(level.getRandom());
+        RaidTier newRaidTier = RaidTier.getWeightedRandom(level.getRandom(), level);
         this.raidBoss = RaidRegistry.getRandomRaidBoss(level.getRandom(), newRaidTier);
         if (this.raidBoss == null) return;
         RaidType newRaidType = this.raidBoss.getType();

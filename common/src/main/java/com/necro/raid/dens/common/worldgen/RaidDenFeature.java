@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.util.CrystalUtils;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -32,11 +33,11 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         BlockState blockState = context.config().state;
 
         if (level.isClientSide()) return false;
-        else if (level.getLevel().canSeeSky(blockPos.above())) return false;
+        else if (!CobblemonRaidDens.CONFIG.dimension_tier_weights.containsKey(level.getLevel().dimension().location().toString())) return false;
+        else if (!CrystalUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
-        RaidTier tier = RaidTier.getWeightedRandom(context.random());
-        RaidBoss raidBoss = RaidRegistry.getRandomRaidBoss(context.random(), tier);
+        RaidBoss raidBoss = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
         if (raidBoss == null) return false;
 
         level.setBlock(blockPos, blockState
@@ -44,7 +45,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
             .setValue(RaidCrystalBlock.CAN_RESET, CobblemonRaidDens.CONFIG.reset_time > 0)
             .setValue(RaidCrystalBlock.CAN_CYCLE, CobblemonRaidDens.CONFIG.can_cycle)
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
-            .setValue(RaidCrystalBlock.RAID_TIER, tier), 2);
+            .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
         ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos)).setRaidBoss(raidBoss);
 
