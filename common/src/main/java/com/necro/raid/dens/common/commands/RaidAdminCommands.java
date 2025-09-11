@@ -3,14 +3,22 @@ package com.necro.raid.dens.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 public class RaidAdminCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -25,6 +33,11 @@ public class RaidAdminCommands {
                 )
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                     .executes(RaidAdminCommands::resetClearsForAll)
+                )
+            )
+            .then(Commands.literal("remove")
+                .then(Commands.argument("dimension", DimensionArgument.dimension())
+                    .executes(RaidAdminCommands::removeDimension)
                 )
             )
         );
@@ -54,9 +67,23 @@ public class RaidAdminCommands {
         return 1;
     }
 
-    private static int resetClearsForAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int resetClearsForAll(CommandContext<CommandSourceStack> context) {
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
         RaidHelper.CLEARED_RAIDS.remove(blockPos);
+        return 1;
+    }
+
+    private static int removeDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerLevel level = DimensionArgument.getDimension(context, "dimension");
+        if (!DimensionHelper.isCustomDimension(level)) {
+            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.invalid_dimension"));
+            return 0;
+        }
+        else if (!level.players().isEmpty()) {
+            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.players_in_dimension"));
+            return 0;
+        }
+        DimensionHelper.queueForRemoval(level.dimension(), level);
         return 1;
     }
 }

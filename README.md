@@ -32,7 +32,8 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 ![Jade Compat](https://i.imgur.com/Zw6mWA2.png)
 
 ## Future Updates
-- TBC
+- Custom UI for raid elements
+- Custom achievements and statistics
 
 ## For Map Makers/Server Owners
 ### Raid Crystals

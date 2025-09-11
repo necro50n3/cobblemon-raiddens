@@ -1,14 +1,11 @@
 package com.necro.raid.dens.common.dimensions;
 
 import com.google.common.collect.Maps;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import com.necro.raid.dens.common.util.IRegistryRemover;
-import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -16,13 +13,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.storage.PrimaryLevelData;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DimensionHelper {
     public static final HashMap<ResourceKey<Level>, ServerLevel> QUEUED_FOR_REMOVAL = new HashMap<>();
@@ -80,8 +74,7 @@ public class DimensionHelper {
         onDimensionChange(player, fromLevel, toLevel);
     }
 
-    private static boolean isCustomDimension(ServerLevel level) {
-        DimensionType type = level.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(ModDimensions.RAIDDIM_TYPE);
-        return type != null && type == level.dimensionType();
+    public static boolean isCustomDimension(ServerLevel level) {
+        return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
     }
 }
