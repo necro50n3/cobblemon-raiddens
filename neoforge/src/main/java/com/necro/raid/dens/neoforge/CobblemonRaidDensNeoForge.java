@@ -2,7 +2,9 @@ package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.SyncHealthPacket;
+import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
@@ -56,5 +58,7 @@ public class CobblemonRaidDensNeoForge {
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
+            NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, create));
     }
 }

@@ -3,10 +3,9 @@ package com.necro.raid.dens.fabric.dimensions;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.dimensions.RaidDenChunkGenerator;
-import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
-import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
@@ -36,7 +35,7 @@ public class FabricDimensions {
         if (level.getBlockEntity(zero) instanceof RaidHomeBlockEntity homeBlockEntity) {
             homeBlockEntity.setHome(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel());
         }
-        NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, true));
+        DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
 
         ServerWorldEvents.LOAD.invoker().onWorldLoad(server, level);
         return level;

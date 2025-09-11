@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.commands.RaidDenCommands;
 import com.necro.raid.dens.common.commands.RaidRequestCommands;
 import com.necro.raid.dens.common.commands.RaidRewardCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -70,6 +71,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
+            NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
     }
 
 }

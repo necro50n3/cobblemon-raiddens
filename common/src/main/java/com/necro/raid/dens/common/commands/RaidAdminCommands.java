@@ -84,6 +84,7 @@ public class RaidAdminCommands {
             return 0;
         }
         DimensionHelper.queueForRemoval(level.dimension(), level);
+        DimensionHelper.SYNC_DIMENSIONS.accept(context.getSource().getServer(), level.dimension(), false);
         return 1;
     }
 }

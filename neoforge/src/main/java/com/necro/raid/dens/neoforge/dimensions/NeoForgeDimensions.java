@@ -2,9 +2,8 @@ package com.necro.raid.dens.neoforge.dimensions;
 
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
-import com.necro.raid.dens.neoforge.network.NetworkMessages;
-import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -24,7 +23,7 @@ public class NeoForgeDimensions {
         if (level.getBlockEntity(zero) instanceof RaidHomeBlockEntity homeBlockEntity) {
             homeBlockEntity.setHome(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel());
         }
-        NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, true));
+        DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
 
         server.markWorldsDirty();
         NeoForge.EVENT_BUS.post(new LevelEvent.Load(level));

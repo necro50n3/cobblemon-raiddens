@@ -14,11 +14,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import java.io.IOException;
 import java.util.*;
 
 public class DimensionHelper {
+    public static TriConsumer<MinecraftServer, ResourceKey<Level>, Boolean> SYNC_DIMENSIONS;
     public static final HashMap<ResourceKey<Level>, ServerLevel> QUEUED_FOR_REMOVAL = new HashMap<>();
 
     public static void queueForRemoval(ResourceKey<Level> key, ServerLevel level) {

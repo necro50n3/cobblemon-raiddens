@@ -13,6 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -169,7 +170,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     protected void removeDimension() {
-        DimensionHelper.queueForRemoval(ModDimensions.createLevelKey(this.raidHost.toString()), this.dimension);
+        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(this.raidHost.toString());
+        DimensionHelper.queueForRemoval(levelKey, this.dimension);
+        DimensionHelper.SYNC_DIMENSIONS.accept(this.getLevel().getServer(), levelKey, false);
     }
 
     public UUID getRaidHost() {
