@@ -39,11 +39,33 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - Raid crystals have the following properties:
   - ACTIVE: Whether the raid is currently active.
   - CAN_RESET: Whether the raid crystal can reset after a configurable amount of time.
-  - CAN_CYCLE: Whether the raid boss can change between resets.
+  - CYCLE_MODE: Whether the raid boss and raid tier can change between resets.
   - RAID_TYPE: The elemental type of the raid.
   - RAID_TIER: The tier of the raid.
 - Raid crystals can be changed or created using /crd dens.
 - There is an option to require a key to enter a raid using the "cobblemonraiddens:raid_den_key" item tag.
+
+### Raid Bosses
+- Raid bosses have the following properties:
+  - pokemon*
+    - species*: The Pokemon species
+    - form: The regional variant name (i.e alolan, galarian, etc.)
+    - gender: The Pokemon gender
+    - ability: The Pokemon ability
+    - nature: The Pokemon nature
+    - shiny: The shiny status of the Pokemon
+    - moves: The list of moves the Pokemon has
+  - raid_form: The list of custom form data for the raid boss only
+    - name*: The name of the form data (i.e. mega_evolution)
+    - value*: The value of the form data (i.e. mega_x)
+  - base_form: The list of custom form data for both the raid boss and reward Pokemon. Same format as raid_form
+  - raid_tier*: The tier of the raid
+  - raid_type*: The type of the raid
+  - raid_feature: Flags the raid as Tera, Dynamax or Mega
+  - loot_table: The loot table location for raid boss-specific loot
+  - weight: The frequency the raid boss appears
+  - is_catchable: Whether the raid boss is catchable
+- *Required fields
 
 ### Data-Driven
 - Raid bosses are completely data-driven! New raid bosses can be added with custom data packs.
