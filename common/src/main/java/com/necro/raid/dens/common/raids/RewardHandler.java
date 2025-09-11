@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.items.ModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -25,15 +26,17 @@ public class RewardHandler {
     }
 
     public void sendRewardMessage() {
-        Component component = Component.translatable("message.cobblemonraiddens.raid.raid_success", player.getName())
-            .append(Component.translatable("message.cobblemonraiddens.raid.raid_catch")
+        MutableComponent component = Component.translatable("message.cobblemonraiddens.raid.raid_success", player.getName());
+        if (this.raidBoss.isCatchable()) {
+            component.append(Component.translatable("message.cobblemonraiddens.raid.raid_catch")
                 .withStyle(Style.EMPTY.applyFormat(ChatFormatting.GREEN).withClickEvent(
                     new ClickEvent(ClickEvent.Action.RUN_COMMAND, this.getPokemonAndItems())
-                )))
-            .append(Component.translatable("message.cobblemonraiddens.raid.raid_leave")
-                .withStyle(Style.EMPTY.applyFormat(ChatFormatting.RED).withClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, this.getItemsOnly())
                 )));
+        }
+        component.append(Component.translatable("message.cobblemonraiddens.raid.raid_leave")
+            .withStyle(Style.EMPTY.applyFormat(ChatFormatting.RED).withClickEvent(
+                new ClickEvent(ClickEvent.Action.RUN_COMMAND, this.getItemsOnly())
+            )));
         this.player.sendSystemMessage(component);
         RaidHelper.REWARD_QUEUE.put(this.player, this);
     }
