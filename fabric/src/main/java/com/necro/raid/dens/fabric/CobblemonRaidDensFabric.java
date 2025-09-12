@@ -23,6 +23,7 @@ import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.events.ModEvents;
 import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
+import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -53,6 +54,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricPredicates.registerPredicates();
         FabricFeatures.registerFeatures();
         FabricLootFunctions.registerLootFunctions();
+        FabricStatistics.registerStatistics();
         RaidDenTab.registerItemGroups();
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);

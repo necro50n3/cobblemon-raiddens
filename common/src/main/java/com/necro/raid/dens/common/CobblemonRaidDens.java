@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.config.MoveConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -39,6 +40,7 @@ public class CobblemonRaidDens {
         MOVE_CONFIG = AutoConfig.getConfigHolder(MoveConfig.class).getConfig();
 
         RaidUtils.init();
+        RaidStatistics.init();
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
             raidFailEvent(event.getBattle());
