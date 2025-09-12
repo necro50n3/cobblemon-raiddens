@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.util;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -25,7 +26,8 @@ public class RaidUtils {
     }
 
     public static void teleportPlayerSafe(Player player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {
-        BlockPos groundPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, targetPos);
+        int groundY = level.getChunk(targetPos).getHeight(Heightmap.Types.MOTION_BLOCKING, targetPos.getX(), targetPos.getZ());
+        BlockPos groundPos = targetPos.atY((int) Mth.absMax(groundY, targetPos.getY()));
 
         if (RaidUtils.isSafe(level, groundPos.north())) {
             player.teleportTo(level, groundPos.getX() + 0.5, groundPos.getY(), groundPos.getZ() - 0.5,
@@ -36,9 +38,11 @@ public class RaidUtils {
         int radius = 1;
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
-                BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, targetPos.offset(dx, 0, dz));
-                if (RaidUtils.isSafe(level, pos)) {
-                    player.teleportTo(level,pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5,
+                BlockPos offset = targetPos.offset(dx, 0, dz);
+                int topY = level.getChunk(offset).getHeight(Heightmap.Types.MOTION_BLOCKING, offset.getX(), offset.getZ());
+                offset = offset.atY((int) Mth.absMax(topY, targetPos.getY()));
+                if (RaidUtils.isSafe(level, offset)) {
+                    player.teleportTo(level,offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5,
                         new HashSet<>(), yaw, pitch);
                     return;
                 }
