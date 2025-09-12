@@ -24,7 +24,7 @@ public class FabricFeatures {
 
     private static void addToBiome() {
         BiomeModifications.addFeature(
-            BiomeSelectors.all(),
+            BiomeSelectors.tag(ModFeatures.RAID_SPAWNABLE),
             GenerationStep.Decoration.VEGETAL_DECORATION,
             ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_placed"))
         );
