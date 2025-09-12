@@ -83,7 +83,12 @@ public enum RaidTier implements StringRepresentable {
     public static void updateRandom() {
         RANDOM_MAP.clear();
 
-        RaidTier.addWeightedMap("default", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0});
+        double[] defaultWeights = CobblemonRaidDens.CONFIG.dimension_tier_weights.getOrDefault(
+            "minecraft:overworld",
+            new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0}
+        );
+        RaidTier.addWeightedMap("default", defaultWeights);
+
         for (Map.Entry<String, double[]> entry : CobblemonRaidDens.CONFIG.dimension_tier_weights.entrySet()) {
             RaidTier.addWeightedMap(entry.getKey(), entry.getValue());
         }
@@ -107,7 +112,6 @@ public enum RaidTier implements StringRepresentable {
     }
 
     public static RaidTier getWeightedRandom(RandomSource random, String dimension) {
-        CobblemonRaidDens.LOGGER.info(dimension);
         if (RANDOM_MAP.isEmpty()) RaidTier.updateRandom();
         if (RANDOM_MAP.isEmpty()) return RaidTier.TIER_ONE;
         else if (!RANDOM_MAP.containsKey(dimension)) dimension = "default";

@@ -34,7 +34,6 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         BlockState blockState = context.config().state;
 
         if (level.isClientSide()) return false;
-        else if (!CobblemonRaidDens.CONFIG.dimension_tier_weights.containsKey(level.getLevel().dimension().location().toString())) return false;
         else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
