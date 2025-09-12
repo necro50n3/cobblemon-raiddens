@@ -1,7 +1,9 @@
 package com.necro.raid.dens.common.dimensions;
 
 import com.google.common.collect.Maps;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
+import com.necro.raid.dens.common.mixins.ServerLevelAccessor;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import com.necro.raid.dens.common.util.IRegistryRemover;
@@ -16,15 +18,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.util.TriConsumer;
 
-import java.io.IOException;
 import java.util.*;
 
 public class DimensionHelper {
     public static TriConsumer<MinecraftServer, ResourceKey<Level>, Boolean> SYNC_DIMENSIONS;
-    public static final HashMap<ResourceKey<Level>, ServerLevel> QUEUED_FOR_REMOVAL = new HashMap<>();
+    private static final Set<PendingDimension> QUEUED_FOR_REMOVAL = new HashSet<>();
 
     public static void queueForRemoval(ResourceKey<Level> key, ServerLevel level) {
-        QUEUED_FOR_REMOVAL.put(key, level);
+        QUEUED_FOR_REMOVAL.add(new PendingDimension(key, level));
     }
 
     public static void removePending(MinecraftServer server) {
@@ -33,22 +34,12 @@ public class DimensionHelper {
         Map<ResourceKey<net.minecraft.world.level.Level>, ServerLevel> levels = ((MinecraftServerAccessor) server).getLevels();
         LinkedHashMap<ResourceKey<net.minecraft.world.level.Level>, ServerLevel> newLevels = Maps.newLinkedHashMap();
         for (Map.Entry<ResourceKey<net.minecraft.world.level.Level>, ServerLevel> entry : levels.entrySet()) {
-            if (QUEUED_FOR_REMOVAL.containsKey(entry.getKey())) continue;
+            if (QUEUED_FOR_REMOVAL.stream().anyMatch(pd -> pd.levelKey == entry.getKey())) continue;
             newLevels.put(entry.getKey(), entry.getValue());
         }
         ((ILevelsSetter) server).setLevels(newLevels);
 
-        QUEUED_FOR_REMOVAL.forEach((key, level) -> {
-            level.save(null, true, false);
-            try { level.close(); }
-            catch (IOException ignored) {}
-            MappedRegistry<LevelStem> levelStemRegistry = (MappedRegistry<LevelStem>) server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
-
-            ResourceKey<LevelStem> resourceKey = ResourceKey.create(Registries.LEVEL_STEM, ModDimensions.createLevelKey(key.location().getPath()).location());
-            ((IRegistryRemover<LevelStem>) levelStemRegistry).getById().removeIf(holder -> holder.is(resourceKey));
-            ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(key.location());
-            ((ILevelsSetter) server).deleteLevel(key);
-        });
+        QUEUED_FOR_REMOVAL.forEach(pd -> { if (!pd.isRunning) pd.saveAndCLose(server); });
         QUEUED_FOR_REMOVAL.clear();
     }
 
@@ -78,5 +69,36 @@ public class DimensionHelper {
 
     public static boolean isCustomDimension(ServerLevel level) {
         return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
+    }
+
+    private static class PendingDimension {
+        private final ResourceKey<Level> levelKey;
+        private final ServerLevel level;
+        private boolean isRunning;
+
+        PendingDimension(ResourceKey<Level> levelKey, ServerLevel level) {
+            this.levelKey = levelKey;
+            this.level = level;
+            this.isRunning = false;
+        }
+
+        void saveAndCLose(MinecraftServer server) {
+            this.isRunning = true;
+            try {
+                ((ServerLevelAccessor) this.level).getEntityManager().close();
+                this.level.getChunkSource().getLightEngine().close();
+                this.level.getChunkSource().chunkMap.close();
+
+                MappedRegistry<LevelStem> levelStemRegistry = (MappedRegistry<LevelStem>) server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+                ResourceKey<LevelStem> resourceKey = ResourceKey.create(Registries.LEVEL_STEM, ModDimensions.createLevelKey(this.levelKey.location().getPath()).location());
+                ((IRegistryRemover<LevelStem>) levelStemRegistry).getById().removeIf(holder -> holder.is(resourceKey));
+                ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(this.levelKey.location());
+
+                ((ILevelsSetter) server).deleteLevel(this.levelKey);
+            }
+            catch (Throwable e) {
+                CobblemonRaidDens.LOGGER.error("Error while closing dimension: ", e);
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -25,4 +26,7 @@ public interface MinecraftServerAccessor {
 
     @Accessor("levels")
     Map<ResourceKey<Level>, ServerLevel> getLevels();
+
+    @Invoker("waitUntilNextTick")
+    void waitUntilNextTickAccessor();
 }

@@ -12,7 +12,8 @@
     "MoveActionResponseMixin",
     "PokemonBattleMixin",
     "PokemonEntityMixin",
-    "PokemonMixin"
+    "PokemonMixin",
+    "ServerLevelAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
