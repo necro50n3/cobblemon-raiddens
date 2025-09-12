@@ -179,11 +179,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.raidHost;
     }
 
-    public boolean setRaidHost(Player player) {
-        if (this.getRaidHost() != null) return false;
+    public boolean canSetRaidHost() {
+        return this.getRaidHost() == null;
+    }
+
+    public void setRaidHost(Player player) {
         this.raidHost = player.getUUID();
         this.playerQueue.add(player.getUUID());
-        return true;
     }
 
     public RaidBoss getRaidBoss() {

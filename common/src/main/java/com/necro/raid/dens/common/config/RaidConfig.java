@@ -13,8 +13,7 @@ public class RaidConfig implements ConfigData {
     public boolean enable_spawning = true;
     @Comment("Weighted probability of each raid tier from Tier 1 to Tier 7 per dimension and whitelists dimensions for generation. Default: {\"minecraft:overworld\": [9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0]}")
     public Map<String, double[]> dimension_tier_weights = new HashMap<>(Map.of(
-        "minecraft:overworld", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0},
-        "minecraft:the_end", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0}
+        "minecraft:overworld", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0}
     ));
     @Comment("Raids require key items to interact with. Default: false")
     public boolean requires_key = false;

@@ -2,6 +2,8 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.necro.raid.dens.common.events.RaidEndEvent;
+import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -145,6 +147,7 @@ public class RaidInstance {
         this.activePlayers.forEach(player -> {
             if (raidSuccess) new RewardHandler(this.raidBoss, player).sendRewardMessage();
             else player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, raidSuccess));
         });
     }
 

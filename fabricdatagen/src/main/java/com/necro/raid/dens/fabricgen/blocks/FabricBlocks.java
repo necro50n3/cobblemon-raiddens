@@ -2,13 +2,10 @@ package com.necro.raid.dens.fabricgen.blocks;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.ModBlocks;
-import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
-import com.necro.raid.dens.common.blocks.block.RaidHomeBlock;
 import com.necro.raid.dens.fabricgen.blocks.block.RaidCrystalBlockFabric;
 import com.necro.raid.dens.fabricgen.blocks.block.RaidHomeBlockFabric;
 import com.necro.raid.dens.fabricgen.blocks.entity.RaidCrystalBlockEntityFabric;
 import com.necro.raid.dens.fabricgen.blocks.entity.RaidHomeBlockEntityFabric;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -41,8 +38,6 @@ public class FabricBlocks {
     }
 
     public static void registerModBlocks() {
-        CobblemonRaidDens.LOGGER.info("Registering blocks for {}", CobblemonRaidDens.MOD_ID);
-
         RAID_CRYSTAL_BLOCK = registerBlock(
             "raid_crystal_block",
             new RaidCrystalBlockFabric(ModBlocks.PROPERTIES)

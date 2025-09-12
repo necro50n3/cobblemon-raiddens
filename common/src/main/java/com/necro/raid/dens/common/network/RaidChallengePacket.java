@@ -11,6 +11,8 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.events.RaidBattleStartEvent;
+import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -78,12 +80,11 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     if (!RaidHelper.ACTIVE_RAIDS.containsKey(raidId2)) {
                         ((IRaidAccessor) pokemonEntity).setRaidId(battle.getBattleId());
                         raidId2 = ((IRaidAccessor) pokemonEntity).getRaidId();
-                        RaidHelper.ACTIVE_RAIDS.put(
-                            pokemonEntity.getBattleId(),
-                            new RaidInstance(pokemonEntity)
-                        );
+                        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getBattleId(), new RaidInstance(pokemonEntity));
                     }
-                    RaidHelper.ACTIVE_RAIDS.get(raidId2).addPlayer(battle);
+                    RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(raidId2);
+                    raidInstance.addPlayer(battle);
+                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, raidInstance.getRaidBoss(), battle));
                     return Unit.INSTANCE;
                 })
                 .ifErrored(errors -> {

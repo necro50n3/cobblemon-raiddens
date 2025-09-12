@@ -3,8 +3,9 @@ package com.necro.raid.dens.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -57,6 +58,9 @@ public class RaidRequestCommands {
             host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
             return 0;
         }
+
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent(player, false, blockEntity.getRaidBoss()));
+        if (!success) return 0;
 
         if (RaidHelper.JOIN_QUEUE.containsKey(player) && !RaidHelper.isAlreadyParticipating(player)) {
             RaidHelper.JOIN_QUEUE.remove(player);

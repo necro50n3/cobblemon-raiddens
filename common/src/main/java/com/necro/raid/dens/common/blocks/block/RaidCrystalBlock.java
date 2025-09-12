@@ -1,12 +1,16 @@
 package com.necro.raid.dens.common.blocks.block;
 
+import com.cobblemon.mod.common.api.reactive.EventObservable;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.items.ItemTags;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import kotlin.Unit;
 import me.shedaniel.cloth.clothconfig.shadowed.org.yaml.snakeyaml.constructor.DuplicateKeyException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -15,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -93,10 +98,19 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_participating"));
             return false;
         }
-        else if (blockEntity.setRaidHost(player)) {
-            RaidHelper.addHost(player);
-            this.startRaid(player, blockEntity);
-            return true;
+        else if (blockEntity.canSetRaidHost()) {
+            boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
+
+            if (success) {
+                blockEntity.setRaidHost(player);
+                RaidHelper.addHost(player);
+                this.startRaid(player, blockEntity);
+            }
+            else {
+                CobblemonRaidDens.LOGGER.info("event was cancelled.");
+            }
+
+            return success;
         }
         else if (blockEntity.isFull()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
