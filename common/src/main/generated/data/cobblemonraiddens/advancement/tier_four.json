@@ -1,0 +1,32 @@
+{
+  "parent": "cobblemonraiddens:tier_three",
+  "criteria": {
+    "completed_tier_four": {
+      "conditions": {
+        "tier": "TIER_FOUR"
+      },
+      "trigger": "cobblemonraiddens:completed_tier"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.tier_four.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "cobblemonraiddens:raid_crystal_block"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.tier_four.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_tier_four"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.network.SyncHealthPacket;
 import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
+import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import com.necro.raid.dens.neoforge.compat.megashowdown.NeoForgeMSDCompat;
@@ -52,6 +53,8 @@ public class CobblemonRaidDensNeoForge {
         NeoForgeLootFunctions.LOOT_FUNCTION_TYPES.register(modBus);
         NeoForgeStatistics.registerStatistics();
         NeoForgeStatistics.CUSTOM_STATS.register(modBus);
+        NeoForgeCriteriaTriggers.registerCriteriaTriggers();
+        NeoForgeCriteriaTriggers.TRIGGERS.register(modBus);
         RaidDenTab.CREATIVE_TABS.register(modBus);
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);

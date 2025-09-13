@@ -1,0 +1,27 @@
+{
+  "criteria": {
+    "joined_raid": {
+      "trigger": "cobblemonraiddens:joined_raid"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.join_raid.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "cobblemonraiddens:raid_home_block"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.join_raid.title"
+    }
+  },
+  "requirements": [
+    [
+      "joined_raid"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

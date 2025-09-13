@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.item.PokeBallItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
 import net.minecraft.ChatFormatting;
@@ -60,6 +61,8 @@ public class RewardHandler {
         pokemon.setCaughtBall(pokeBallItem.getPokeBall());
         PlayerExtensionsKt.party(player).add(pokemon);
         player.getMainHandItem().consume(1, player);
+
+        RaidDenCriteriaTriggers.triggerRaidShiny(player, pokemon);
         return true;
     }
 

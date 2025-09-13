@@ -1,0 +1,33 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "shiny_from_raid": {
+      "conditions": {
+        "shiny": true
+      },
+      "trigger": "cobblemonraiddens:shiny_from_raid"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_shiny.description"
+    },
+    "frame": "challenge",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "cobblemon:star_sweet"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_shiny.title"
+    }
+  },
+  "requirements": [
+    [
+      "shiny_from_raid"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

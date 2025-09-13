@@ -84,8 +84,6 @@ public class CobblemonRaidDens {
     private static void setRaidShinyRate(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((chance, player, pokemon) -> {
             Float shinyRate = ((IShinyRate) pokemon).getRaidShinyRate();
-            LOGGER.info(String.valueOf(chance));
-            LOGGER.info(String.valueOf(shinyRate));
             return shinyRate == null || shinyRate < 0 ? chance : shinyRate;
         });
     }

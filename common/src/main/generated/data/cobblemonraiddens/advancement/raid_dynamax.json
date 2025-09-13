@@ -1,0 +1,33 @@
+{
+  "parent": "cobblemonraiddens:raid_tera",
+  "criteria": {
+    "completed_dynamax": {
+      "conditions": {
+        "feature": "DYNAMAX"
+      },
+      "trigger": "cobblemonraiddens:completed_feature"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_dynamax.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "mega_showdown:dynamax_band"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_dynamax.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_dynamax"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

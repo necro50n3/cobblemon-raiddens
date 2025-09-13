@@ -1,0 +1,32 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "completed_tier_one": {
+      "conditions": {
+        "tier": "TIER_ONE"
+      },
+      "trigger": "cobblemonraiddens:completed_tier"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.tier_one.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "cobblemonraiddens:raid_crystal_block"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.tier_one.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_tier_one"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

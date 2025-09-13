@@ -1,0 +1,33 @@
+{
+  "parent": "cobblemonraiddens:raid_dynamax",
+  "criteria": {
+    "completed_mega": {
+      "conditions": {
+        "feature": "MEGA"
+      },
+      "trigger": "cobblemonraiddens:completed_feature"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_mega.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "mega_showdown:mega_stone"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_mega.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_mega"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

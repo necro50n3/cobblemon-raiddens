@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabricgen;
 
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.fabricgen.datagen.AdvancementGenerator;
 import com.necro.raid.dens.fabricgen.datagen.ItemTagGenerator;
 import com.necro.raid.dens.fabricgen.datagen.LootTableGenerator;
 import com.necro.raid.dens.fabricgen.datagen.WorldGenerator;
@@ -18,6 +19,7 @@ public class CobblemonRaidDensDataGenerator implements DataGeneratorEntrypoint {
         pack.addProvider(WorldGenerator::new);
         pack.addProvider(ItemTagGenerator::new);
         pack.addProvider(LootTableGenerator::new);
+        pack.addProvider(AdvancementGenerator::new);
     }
 
     @Override

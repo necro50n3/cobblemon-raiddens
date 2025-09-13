@@ -1,0 +1,33 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "completed_tera": {
+      "conditions": {
+        "feature": "TERA"
+      },
+      "trigger": "cobblemonraiddens:completed_feature"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_tera.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "mega_showdown:tera_orb"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_tera.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_tera"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
