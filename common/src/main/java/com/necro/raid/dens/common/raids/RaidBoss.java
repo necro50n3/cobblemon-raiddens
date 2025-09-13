@@ -116,6 +116,7 @@ public class RaidBoss {
         this.displayAspects = displayPokemon.getAspects();
     }
 
+    @SuppressWarnings("UnreachableCode")
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
 

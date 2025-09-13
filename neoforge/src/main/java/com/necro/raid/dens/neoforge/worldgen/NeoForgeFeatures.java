@@ -17,6 +17,7 @@ public class NeoForgeFeatures {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, CobblemonRaidDens.MOD_ID);
     public static final ResourceKey<BiomeModifier> ADD_RAID_DENS = registerKey("add_raid_dens");
 
+    @SuppressWarnings("unchecked")
     public static void registerFeatures() {
         ModFeatures.RAID_DEN_FEATURE = (Holder<Feature<BlockStateConfiguration>>) (Object) FEATURES.register("raid_den_feature", RaidDenFeature::new);
     }

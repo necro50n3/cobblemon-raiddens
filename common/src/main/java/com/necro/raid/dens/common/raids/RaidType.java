@@ -1,15 +1,9 @@
 package com.necro.raid.dens.common.raids;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Stream;
 
 public enum RaidType implements StringRepresentable {
     NONE("none", DyeColor.GRAY.getTextureDiffuseColor()),

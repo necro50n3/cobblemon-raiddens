@@ -75,8 +75,7 @@ public class ModDimensions {
         );
     }
 
-    public static LevelStem raidDimBuilder(MinecraftServer server, ResourceKey<LevelStem> dimensionKey)
-    {
+    public static LevelStem raidDimBuilder(MinecraftServer server, ResourceKey<LevelStem> dimensionKey) {
         RegistryAccess registries = server.registryAccess();
         return new LevelStem(
             registries.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(RAIDDIM_TYPE),

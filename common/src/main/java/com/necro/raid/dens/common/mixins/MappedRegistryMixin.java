@@ -26,6 +26,7 @@ public abstract class MappedRegistryMixin<T> implements IRegistryRemover {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void removeDimension(ResourceLocation loc) {
         MappedRegistryAccessor<T> accessor = ((MappedRegistryAccessor<T>) this);
         T type = accessor.getByLocation().get(loc).value();

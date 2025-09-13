@@ -29,6 +29,7 @@ public class TeraShardsFunction extends LootItemConditionalFunction {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
         return (LootItemFunctionType<? extends LootItemConditionalFunction>) LootFunctions.TERA_SHARDS_FUNCTION.value();
     }

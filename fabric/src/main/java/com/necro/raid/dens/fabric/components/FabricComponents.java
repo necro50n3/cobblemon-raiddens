@@ -1,6 +1,5 @@
 package com.necro.raid.dens.fabric.components;
 
-import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.raids.RaidFeature;
@@ -15,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.UnaryOperator;
 
 public class FabricComponents {
+    @SuppressWarnings("unchecked")
     public static void registerDataComponents() {
         ModComponents.TIER_COMPONENT = Holder.direct((DataComponentType<RaidTier>) registerTierComponent(builder -> builder.persistent(RaidTier.codec())));
         ModComponents.FEATURE_COMPONENT = Holder.direct((DataComponentType<RaidFeature>) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec())));

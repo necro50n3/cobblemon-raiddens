@@ -28,6 +28,7 @@ public class MaxMushroomsFunction extends LootItemConditionalFunction {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
         return (LootItemFunctionType<? extends LootItemConditionalFunction>) LootFunctions.MAX_MUSHROOMS_FUNCTION.value();
     }

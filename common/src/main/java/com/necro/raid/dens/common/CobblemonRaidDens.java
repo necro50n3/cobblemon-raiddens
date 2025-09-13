@@ -10,7 +10,6 @@ import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.ClientConfig;
 import com.necro.raid.dens.common.config.MoveConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
-import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.statistics.RaidStatistics;

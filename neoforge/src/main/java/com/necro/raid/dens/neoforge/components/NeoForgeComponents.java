@@ -1,6 +1,5 @@
 package com.necro.raid.dens.neoforge.components;
 
-import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.raids.RaidFeature;
@@ -18,6 +17,7 @@ public class NeoForgeComponents {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES =
         DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, CobblemonRaidDens.MOD_ID);
 
+    @SuppressWarnings("unchecked")
     public static void registerDataComponents() {
         ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerTierComponent(builder -> builder.persistent(RaidTier.codec()));
         ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec()));

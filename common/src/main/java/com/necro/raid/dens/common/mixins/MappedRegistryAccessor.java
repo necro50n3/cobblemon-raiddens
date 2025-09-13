@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.mixins;
 
 import com.mojang.serialization.Lifecycle;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;

@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.util;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.config.CobblemonConfig;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

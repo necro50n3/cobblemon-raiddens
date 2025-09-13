@@ -19,13 +19,4 @@ public class DoubleWeightedRandomMap<T> {
         double r = random.nextDouble() * this.totalWeight;
         return Optional.ofNullable(this.map.ceilingEntry(r).getValue());
     }
-
-    public void clear() {
-        this.map.clear();
-        this.totalWeight = 0.0;
-    }
-
-    public boolean isEmpty() {
-        return this.map.isEmpty();
-    }
 }

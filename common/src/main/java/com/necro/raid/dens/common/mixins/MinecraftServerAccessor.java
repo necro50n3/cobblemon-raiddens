@@ -26,7 +26,4 @@ public interface MinecraftServerAccessor {
 
     @Accessor("levels")
     Map<ResourceKey<Level>, ServerLevel> getLevels();
-
-    @Invoker("waitUntilNextTick")
-    void waitUntilNextTickAccessor();
 }

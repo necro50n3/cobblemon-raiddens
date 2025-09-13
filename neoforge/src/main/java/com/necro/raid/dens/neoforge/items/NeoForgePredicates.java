@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class NeoForgePredicates {
     public static final DeferredRegister<ItemSubPredicate.Type<?>> PREDICATES = DeferredRegister.create(Registries.ITEM_SUB_PREDICATE_TYPE, CobblemonRaidDens.MOD_ID);
 
+    @SuppressWarnings("unchecked")
     public static void registerPredicates() {
         ModPredicates.ITEM_TIER_PREDICATE = (Holder<ItemSubPredicate.Type<RaidTierPredicate>>) (Object)  PREDICATES.register("raid_tier", () -> new ItemSubPredicate.Type<>(RaidTierPredicate.CODEC));
         ModPredicates.ITEM_TYPE_PREDICATE = (Holder<ItemSubPredicate.Type<RaidTypePredicate>>) (Object)  PREDICATES.register("raid_type", () -> new ItemSubPredicate.Type<>(RaidTypePredicate.CODEC));

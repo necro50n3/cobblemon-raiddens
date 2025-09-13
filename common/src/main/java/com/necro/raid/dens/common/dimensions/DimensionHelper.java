@@ -82,6 +82,7 @@ public class DimensionHelper {
             this.isRunning = false;
         }
 
+        @SuppressWarnings("unchecked")
         void saveAndCLose(MinecraftServer server) {
             this.isRunning = true;
             try {
