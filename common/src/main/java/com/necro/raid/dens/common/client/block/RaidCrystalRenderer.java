@@ -31,7 +31,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     public void actuallyRender(PoseStack poseStack, RaidCrystalBlockEntity blockEntity, BakedGeoModel model, @Nullable RenderType renderType,
                                MultiBufferSource multiBufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float f, int i,
                                int j, int colour) {
-        if (CobblemonRaidDens.CLIENT_CONFIG.show_beam && blockEntity.renderBeacon(blockEntity.getBlockState())
+        if (shouldRenderBeacon(blockEntity) && blockEntity.renderBeacon(blockEntity.getBlockState())
             && blockEntity.hasLevel() && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
             poseStack.pushPose();
             poseStack.scale(0.75f, 1.0f, 0.75f);
@@ -59,5 +59,17 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     @Override
     public boolean shouldRender(RaidCrystalBlockEntity blockEntity, Vec3 vec3) {
         return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0, 0.0, 1.0).closerThan(vec3.multiply(1.0, 0.0, 1.0), this.getViewDistance());
+    }
+
+    private static boolean shouldRenderBeacon(RaidCrystalBlockEntity blockEntity) {
+        return switch (blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER)) {
+            case TIER_ONE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_one;
+            case TIER_TWO -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_two;
+            case TIER_THREE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_three;
+            case TIER_FOUR -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_four;
+            case TIER_FIVE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_five;
+            case TIER_SIX -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_six;
+            case TIER_SEVEN -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_seven;
+        };
     }
 }
