@@ -12,7 +12,7 @@
     },
     "icon": {
       "count": 1,
-      "id": "cobblemonraiddens:raid_home_block"
+      "id": "cobblemonraiddens:raid_crystal_block"
     },
     "title": {
       "translate": "advancement.cobblemonraiddens.join_raid.title"

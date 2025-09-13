@@ -9,8 +9,10 @@ import com.necro.raid.dens.common.advancements.RaidFeatureTrigger;
 import com.necro.raid.dens.common.advancements.RaidTierTrigger;
 import com.necro.raid.dens.common.advancements.JoinRaidDenTrigger;
 import com.necro.raid.dens.common.advancements.RaidShinyTrigger;
+import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
+import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.fabricgen.blocks.FabricBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
@@ -18,8 +20,11 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomModelData;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -31,9 +36,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
     @Override
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
+        ItemStack display = new ItemStack(FabricBlocks.RAID_CRYSTAL_BLOCK);
+
         AdvancementHolder joinRaidDenAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_HOME_BLOCK,
+                display,
                 Component.translatable("advancement.cobblemonraiddens.join_raid.title"),
                 Component.translatable("advancement.cobblemonraiddens.join_raid.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -56,9 +63,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("shiny_from_raid", RaidShinyTrigger.TriggerInstance.shiny(true))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_shiny");
 
+        ItemStack tierOneStack = display.copy();
+        tierOneStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.NORMAL);
         AdvancementHolder tierOneAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierOneStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_one.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_one.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -69,9 +78,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("completed_tier_one", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_ONE))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_one");
 
+        ItemStack tierTwoStack = display.copy();
+        tierTwoStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.GRASS);
         AdvancementHolder tierTwoAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierTwoStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_two.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_two.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -82,9 +93,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("completed_tier_two", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_TWO))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_two");
 
+        ItemStack tierThreeStack = display.copy();
+        tierThreeStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.FIRE);
         AdvancementHolder tierThreeAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierThreeStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_three.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_three.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -95,9 +108,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("completed_tier_three", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_THREE))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_three");
 
+        ItemStack tierFourStack = display.copy();
+        tierFourStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.WATER);
         AdvancementHolder tierFourAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierFourStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_four.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_four.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -108,9 +123,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("completed_tier_four", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_FOUR))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_four");
 
+        ItemStack tierFiveStack = display.copy();
+        tierFiveStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.GHOST);
         AdvancementHolder tierFiveAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierFiveStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_five.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_five.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -121,9 +138,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("completed_tier_five", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_FIVE))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_five");
 
+        ItemStack tierSixStack = display.copy();
+        tierSixStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.DRAGON);
         AdvancementHolder tierSixAdvancement = Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                tierSixStack,
                 Component.translatable("advancement.cobblemonraiddens.tier_six.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_six.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -136,7 +155,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         Advancement.Builder.advancement()
             .display(
-                FabricBlocks.RAID_CRYSTAL_BLOCK,
+                display,
                 Component.translatable("advancement.cobblemonraiddens.tier_seven.title"),
                 Component.translatable("advancement.cobblemonraiddens.tier_seven.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),

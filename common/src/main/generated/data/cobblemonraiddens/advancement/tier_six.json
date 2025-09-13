@@ -17,6 +17,9 @@
     "frame": "challenge",
     "hidden": true,
     "icon": {
+      "components": {
+        "cobblemonraiddens:raid_type": "DRAGON"
+      },
       "count": 1,
       "id": "cobblemonraiddens:raid_crystal_block"
     },

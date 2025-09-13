@@ -33,7 +33,6 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 
 ## Future Updates
 - Custom UI for raid elements
-- Custom achievements and statistics
 
 ## For Map Makers/Server Owners
 ### Raid Crystals

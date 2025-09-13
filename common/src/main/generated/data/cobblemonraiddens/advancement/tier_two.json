@@ -16,6 +16,9 @@
     },
     "frame": "goal",
     "icon": {
+      "components": {
+        "cobblemonraiddens:raid_type": "GRASS"
+      },
       "count": 1,
       "id": "cobblemonraiddens:raid_crystal_block"
     },
