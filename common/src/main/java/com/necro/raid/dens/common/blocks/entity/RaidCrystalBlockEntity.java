@@ -13,6 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -99,7 +100,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (++this.age % (CobblemonRaidDens.CONFIG.reset_time * 20)  == 0) {
             this.playerQueue.clear();
-            RaidHelper.resetClearedRaids(blockPos);
+            RaidHelper.resetClearedRaids(level, blockPos);
             this.clears = 0;
             this.inactiveTicks = 0;
             this.generateRaidBoss(level, blockPos, blockState);
@@ -138,9 +139,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.dimension.addFreshEntity(pokemonEntity);
     }
 
-    public void clearRaid(BlockPos blockPos) {
+    public void clearRaid(Level level, BlockPos blockPos) {
         this.clears++;
-        RaidHelper.clearRaid(blockPos, this.playerQueue);
+        RaidHelper.clearRaid(level, blockPos, this.playerQueue);
         this.setQueueClose();
     }
 
@@ -239,11 +240,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.dimension != null;
     }
 
-    public boolean hasPlayerCleared(BlockPos blockPos, Player player) {
-        Set<UUID> cleared = RaidHelper.CLEARED_RAIDS.getOrDefault(blockPos, new HashSet<>());
-        return cleared.contains(player.getUUID());
-    }
-
     public boolean isFull() {
         return CobblemonRaidDens.CONFIG.max_players != -1 && this.playerQueue.size() >= CobblemonRaidDens.CONFIG.max_players;
     }
@@ -263,7 +259,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.queueFindDimension = true;
         }
         if (compoundTag.contains("raid_player_queue")) {
-            ((ListTag) compoundTag.get("raid_player_queue")).forEach(tag -> this.playerQueue.add(UUID.fromString(tag.getAsString())));
+            compoundTag.getList("raid_player_queue", Tag.TAG_STRING).forEach(tag -> this.playerQueue.add(UUID.fromString(tag.getAsString())));
         }
         this.clears = compoundTag.getInt("raid_cleared");
         this.age = compoundTag.getInt("age");
@@ -292,6 +288,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public void setRaidBoss(RaidBoss raidBoss) {
+        assert this.getLevel() != null;
+        RaidHelper.resetClearedRaids(this.getLevel(), this.getBlockPos());
+        this.clears = 0;
+        this.inactiveTicks = 0;
         this.raidBoss = raidBoss;
     }
 

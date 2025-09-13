@@ -59,7 +59,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, null) ?
+        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), level, blockPos, null) ?
             InteractionResult.SUCCESS : InteractionResult.FAIL;
     }
 
@@ -69,17 +69,17 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         else if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
         else if (!CobblemonRaidDens.CONFIG.requires_key) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, itemStack) ?
+        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), level, blockPos, itemStack) ?
             ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
     }
 
-    private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, BlockPos blockPos, @Nullable ItemStack key) {
+    private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, Level level, BlockPos blockPos, @Nullable ItemStack key) {
         if (blockEntity.isBusy()) return false;
         else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"));
             return false;
         }
-        else if (blockEntity.hasPlayerCleared(blockPos, player)) {
+        else if (RaidHelper.hasClearedRaid(level, blockPos, player)) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.player_cleared"));
             return false;
         }
@@ -161,7 +161,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     protected void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
             raidCrystalBlockEntity.closeRaid(blockPos);
-            RaidHelper.resetClearedRaids(blockPos);
+            RaidHelper.resetClearedRaids(level, blockPos);
         }
         super.onRemove(blockState, level, blockPos, blockState2, bl);
     }
