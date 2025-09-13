@@ -64,7 +64,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             else this.queueTimeout++;
 
             if (this.queueTimeout > 200) {
-                CobblemonRaidDens.LOGGER.info("Could not find dimension {}:{}", CobblemonRaidDens.MOD_ID, this.raidHost.toString());
                 RaidHelper.removeHost(this.raidHost);
                 RaidHelper.finishRaid(this.playerQueue);
                 this.raidHost = null;
@@ -186,6 +185,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void setRaidHost(Player player) {
         this.raidHost = player.getUUID();
         this.playerQueue.add(player.getUUID());
+    }
+
+    public void clearRaidHost() {
+        this.playerQueue.remove(this.raidHost);
+        this.raidHost = null;
     }
 
     public RaidBoss getRaidBoss() {

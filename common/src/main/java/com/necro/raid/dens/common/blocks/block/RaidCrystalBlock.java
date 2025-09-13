@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.blocks.block;
 
-import com.cobblemon.mod.common.api.reactive.EventObservable;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -10,8 +9,6 @@ import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.raids.RaidHelper;
-import kotlin.Unit;
-import me.shedaniel.cloth.clothconfig.shadowed.org.yaml.snakeyaml.constructor.DuplicateKeyException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -99,17 +96,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
         else if (blockEntity.canSetRaidHost()) {
-            boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
-
-            if (success) {
-                blockEntity.setRaidHost(player);
-                RaidHelper.addHost(player);
-                this.startRaid(player, blockEntity);
-            }
-            else {
-                CobblemonRaidDens.LOGGER.info("event was cancelled.");
-            }
-
+            boolean success = this.startRaid(player, blockEntity);
+            if (!success) blockEntity.clearRaidHost();
             return success;
         }
         else if (blockEntity.isFull()) {
@@ -141,18 +129,26 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         raidHost.sendSystemMessage(component);
     }
 
-    private void startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
+    private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
+        blockEntity.setRaidHost(player);
+
         ServerLevel level;
         try { level = this.getOrCreateDimension(blockEntity); }
         catch (IllegalStateException e) {
             player.sendSystemMessage(Component.translatable("error.cobblemonraiddens.dimension_exist").withStyle(ChatFormatting.RED));
-            return;
+            return false;
         }
+
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
+        if (!success) return false;
+
+        RaidHelper.addHost(player);
 
         blockEntity.setDimension(level);
         blockEntity.spawnRaidBoss();
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
         player.teleportTo(level, 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
+        return true;
     }
 
     private ServerLevel getOrCreateDimension(RaidCrystalBlockEntity blockEntity) {

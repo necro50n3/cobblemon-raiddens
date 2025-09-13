@@ -42,7 +42,7 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
                 if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
             });
 
-            RaidUtils.teleportPlayerSafe(player, home, homePos, player.getXRot(), player.getYRot());
+            RaidUtils.teleportPlayerSafe(player, home, homePos, player.getYHeadRot(), player.getXRot());
 
             if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
                 if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
