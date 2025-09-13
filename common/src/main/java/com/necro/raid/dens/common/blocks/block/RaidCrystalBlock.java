@@ -9,6 +9,7 @@ import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
@@ -65,7 +66,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (CobblemonRaidDens.CONFIG.requires_key && !itemStack.is(ItemTags.RAID_DEN_KEY)) return ItemInteractionResult.FAIL;
+        if (CobblemonRaidDens.CONFIG.requires_key && !RaidUtils.isRaidDenKey(itemStack)) return ItemInteractionResult.FAIL;
         else if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
         else if (!CobblemonRaidDens.CONFIG.requires_key) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 

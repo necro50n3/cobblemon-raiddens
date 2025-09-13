@@ -2,10 +2,13 @@ package com.necro.raid.dens.common.util;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.items.ItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,6 +68,10 @@ public class RaidUtils {
 
     public static float getDefaultShinyRate() {
         return CobblemonRaidDens.CONFIG.shiny_rate < 0 ? Cobblemon.config.getShinyRate() : CobblemonRaidDens.CONFIG.shiny_rate;
+    }
+
+    public static boolean isRaidDenKey(ItemStack itemStack) {
+        return itemStack.is(ItemTags.RAID_DEN_KEY) || itemStack.getOrDefault(ModComponents.RAID_DEN_KEY.value(), false);
     }
 
     public static void init() {

@@ -1,5 +1,6 @@
 package com.necro.raid.dens.neoforge.components;
 
+import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.raids.RaidFeature;
@@ -22,6 +23,7 @@ public class NeoForgeComponents {
         ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerTierComponent(builder -> builder.persistent(RaidTier.codec()));
         ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec()));
         ModComponents.TYPE_COMPONENT = (Holder<DataComponentType<RaidType>>) (Object) registerTypeComponent(builder -> builder.persistent(RaidType.codec()));
+        ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent(builder -> builder.persistent(Codec.BOOL));
     }
 
     public static DeferredHolder<DataComponentType<?>, DataComponentType<RaidTier>> registerTierComponent(UnaryOperator<DataComponentType.Builder<RaidTier>> builderOperator) {
@@ -34,5 +36,9 @@ public class NeoForgeComponents {
 
     public static DeferredHolder<DataComponentType<?>, DataComponentType<RaidType>> registerTypeComponent(UnaryOperator<DataComponentType.Builder<RaidType>> builderOperator) {
         return DATA_COMPONENT_TYPES.register("raid_type", () -> builderOperator.apply(DataComponentType.builder()).build());
+    }
+
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBooleanComponent(UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
+        return DATA_COMPONENT_TYPES.register("raid_den_key", () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 }
