@@ -43,7 +43,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
   - RAID_TYPE: The elemental type of the raid.
   - RAID_TIER: The tier of the raid.
 - Raid crystals can be changed or created using /crd dens.
-- There is an option to require a key to enter a raid using the "cobblemonraiddens:raid_den_key" item tag.
+- There is an option to require a key to enter a raid using the "cobblemonraiddens:raid_den_key" item tag or data component.
 
 ### Raid Bosses
 - Raid bosses have the following properties:
@@ -53,7 +53,6 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
     - gender: The Pokemon gender
     - ability: The Pokemon ability
     - nature: The Pokemon nature
-    - shiny: The shiny status of the Pokemon
     - moves: The list of moves the Pokemon has
   - raid_form: The list of custom form data for the raid boss only
     - name*: The name of the form data (i.e. mega_evolution)
@@ -65,7 +64,35 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
   - loot_table: The loot table location for raid boss-specific loot
   - weight: The frequency the raid boss appears
   - is_catchable: Whether the raid boss is catchable
+  - shiny_rate: The shiny rate of the raid boss
 - *Required fields
+- See example below
+
+```
+{
+    "pokemon": {
+        "species": "charizard",
+        "moves": [
+            "flareblitz",
+            "slash",
+            "dragonclaw",
+            "airslash"
+        ]
+    },
+    "raid_form": [
+        {
+            "name": "mega_evolution",
+            "value": "mega_x"
+        }
+    ],
+    "raid_tier": "TIER_SEVEN",
+    "raid_type": "FIRE",
+    "raid_feature": "MEGA",
+    "loot_table": "cobblemonraiddens:raid/boss/charizard_mega_x",
+    "weight": 10.0
+}
+```
 
 ### Data-Driven
 - Raid bosses are completely data-driven! New raid bosses can be added with custom data packs.
+- Raid spawning locations are dependent on the "cobblemonraiddens:raid_spawnable" biome tag.
