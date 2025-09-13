@@ -4,14 +4,18 @@ import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
+import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.ClientConfig;
 import com.necro.raid.dens.common.config.MoveConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
+import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -41,6 +45,7 @@ public class CobblemonRaidDens {
 
         RaidUtils.init();
         RaidStatistics.init();
+        RaidDenCriteriaTriggers.init();
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
             raidFailEvent(event.getBattle());
@@ -79,13 +84,10 @@ public class CobblemonRaidDens {
 
     private static void setRaidShinyRate(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((chance, player, pokemon) -> {
-            PokemonEntity pokemonEntity = pokemon.getEntity();
-            if (pokemonEntity == null) return chance;
-            RaidBoss raidBoss = ((IRaidAccessor) pokemon.getEntity()).getRaidBoss();
-            if (raidBoss == null) return chance;
-
-            float shinyRate = raidBoss.getShinyRate();
-            return shinyRate < 0 ? chance : shinyRate;
+            Float shinyRate = ((IShinyRate) pokemon).getRaidShinyRate();
+            LOGGER.info(String.valueOf(chance));
+            LOGGER.info(String.valueOf(shinyRate));
+            return shinyRate == null || shinyRate < 0 ? chance : shinyRate;
         });
     }
 }

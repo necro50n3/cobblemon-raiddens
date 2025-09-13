@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.mixins;
 
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.util.IHealthSetter;
+import com.necro.raid.dens.common.util.IShinyRate;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,17 +13,30 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Pokemon.class)
-public abstract class PokemonMixin implements IHealthSetter {
+public abstract class PokemonMixin implements IHealthSetter, IShinyRate {
     @Shadow(remap = false)
     public abstract void setCurrentHealth(int value);
 
     @Unique
     private Integer maxHealthBuffer;
 
+    @Unique
+    private Float raidShinyRate;
+
     @Override
     public void setMaxHealth(int maxHealth) {
         this.maxHealthBuffer = maxHealth;
         this.setCurrentHealth(maxHealth);
+    }
+
+    @Override
+    public Float getRaidShinyRate() {
+        return this.raidShinyRate;
+    }
+
+    @Override
+    public void setRaidShinyRate(float raidShinyRate) {
+        this.raidShinyRate = raidShinyRate;
     }
 
     @Inject(method = "getMaxHealth", at = @At("HEAD"), cancellable = true, remap = false)

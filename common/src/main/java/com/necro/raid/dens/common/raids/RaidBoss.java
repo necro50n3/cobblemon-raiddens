@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.moves.MoveSet;
@@ -20,6 +21,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
+import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
@@ -116,13 +118,18 @@ public class RaidBoss {
 
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
-        Pokemon pokemon = properties.create(player);
+
+        Pokemon pokemon = new Pokemon();
+        properties.apply(pokemon);
+        pokemon.initialize();
+        ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
+        properties.roll(pokemon, player);
 
         for (SpeciesFeature form : this.baseForm) {
             ((CustomPokemonProperty) form).apply(pokemon);
         }
 
-        if (this.isDynamax()) pokemon.setDmaxLevel(10);
+        if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
         if (this.raidForm.stream().anyMatch(form -> form instanceof StringSpeciesFeature ssf && ssf.getValue().equals("gmax")))
             pokemon.setGmaxFactor(true);
 
