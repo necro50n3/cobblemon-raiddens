@@ -129,7 +129,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.dimension == null) return;
         PokemonEntity pokemonEntity = this.raidBoss.getBossEntity(this.dimension);
         pokemonEntity.moveTo(0.5, 0, -14.5);
-        ((IRaidAccessor) pokemonEntity).setRaidBossData(this.raidBoss);
+        ((IRaidAccessor) pokemonEntity).setRaidBoss(this.raidBoss);
         float height = pokemonEntity.getExposedSpecies().getHeight();
         float scale;
         if (height > 80.0f) scale = 1.5f;

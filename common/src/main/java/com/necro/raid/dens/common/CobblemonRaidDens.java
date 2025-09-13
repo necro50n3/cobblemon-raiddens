@@ -54,6 +54,10 @@ public class CobblemonRaidDens {
             cancelLootDrops(event);
             return Unit.INSTANCE;
         });
+        CobblemonEvents.SHINY_CHANCE_CALCULATION.subscribe(Priority.HIGHEST, event -> {
+            setRaidShinyRate(event);
+            return Unit.INSTANCE;
+        });
     }
 
     private static void raidFailEvent(PokemonBattle battle) {
@@ -71,5 +75,17 @@ public class CobblemonRaidDens {
         if (!(event.getEntity() instanceof PokemonEntity pokemonEntity)) return;
         else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
         event.cancel();
+    }
+
+    private static void setRaidShinyRate(ShinyChanceCalculationEvent event) {
+        event.addModificationFunction((chance, player, pokemon) -> {
+            PokemonEntity pokemonEntity = pokemon.getEntity();
+            if (pokemonEntity == null) return chance;
+            RaidBoss raidBoss = ((IRaidAccessor) pokemon.getEntity()).getRaidBoss();
+            if (raidBoss == null) return chance;
+
+            float shinyRate = raidBoss.getShinyRate();
+            return shinyRate < 0 ? chance : shinyRate;
+        });
     }
 }

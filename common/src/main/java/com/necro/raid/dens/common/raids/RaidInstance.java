@@ -34,7 +34,7 @@ public class RaidInstance {
 
     public RaidInstance(PokemonEntity entity) {
         this.bossEntity = entity;
-        this.raidBoss = ((IRaidAccessor) entity).getRaidBossData();
+        this.raidBoss = ((IRaidAccessor) entity).getRaidBoss();
         this.bossEvent = new ServerBossEvent(
             ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10

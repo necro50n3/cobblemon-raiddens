@@ -16,9 +16,11 @@ import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
+import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -49,8 +51,11 @@ public class RaidBoss {
     private LootTable lootTable;
     private final double weight;
     private final boolean isCatchable;
+    private final float shinyRate;
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight, boolean isCatchable) {
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
+                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId,
+                    double weight, boolean isCatchable, float shinyRate) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
         this.raidTier = tier;
@@ -61,9 +66,12 @@ public class RaidBoss {
         this.lootTableId = lootTableId;
         this.weight = weight;
         this.isCatchable = isCatchable;
+        this.shinyRate = shinyRate;
     }
 
-    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, boolean isCatchable) {
+    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier,
+                    RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm,
+                    List<SpeciesFeature> baseForm, String lootTableId, boolean isCatchable, float shinyRate) {
         this.baseProperties = baseProperties;
         this.bossProperties = bossProperties;
         this.raidTier = tier;
@@ -74,11 +82,11 @@ public class RaidBoss {
         this.lootTableId = lootTableId;
         this.weight = 0;
         this.isCatchable = isCatchable;
+        this.shinyRate = shinyRate;
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.bossProperties.asString(" ") + " aspect=raid uncatchable");
-        properties.setIvs(IVs.createRandomIVs(this.raidTier.getMaxIvs()));
 
         Pokemon pokemon = properties.create();
         ((IHealthSetter) pokemon).setMaxHealth(this.raidTier.getHealth() * pokemon.getMaxHealth());
@@ -108,7 +116,6 @@ public class RaidBoss {
 
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
-        properties.setIvs(IVs.createRandomIVs(this.raidTier.getMaxIvs()));
         Pokemon pokemon = properties.create(player);
 
         for (SpeciesFeature form : this.baseForm) {
@@ -194,6 +201,10 @@ public class RaidBoss {
         return this.isCatchable;
     }
 
+    public float getShinyRate() {
+        return this.shinyRate;
+    }
+
     public boolean isMega() {
         return this.raidFeature == RaidFeature.MEGA;
     }
@@ -226,6 +237,8 @@ public class RaidBoss {
         tag.put("base_form", baseFormTag);
 
         tag.putString("loot_table", this.lootTableId);
+        tag.putBoolean("is_catchable", this.isCatchable);
+        tag.putFloat("shiny_rate", this.shinyRate);
         return tag;
     }
 
@@ -240,6 +253,7 @@ public class RaidBoss {
 
         String lootTableId = tag.contains("loot_table") ? tag.getString("loot_table") : "";
         boolean isCatchable = !tag.contains("is_catchable") || tag.getBoolean("is_catchable");
+        float shinyRate = tag.contains("shiny_rate") ? tag.getFloat("shiny_rate") : RaidUtils.getDefaultShinyRate();
 
         return new RaidBoss(
             PokemonProperties.Companion.parse(tag.getString("base_properties")),
@@ -247,7 +261,7 @@ public class RaidBoss {
             RaidTier.fromString(tag.getString("raid_tier").toUpperCase()),
             RaidType.fromString(tag.getString("raid_type").toUpperCase()),
             RaidFeature.fromString(tag.getString("raid_feature").toUpperCase()),
-            raidForm, baseForm, lootTableId, isCatchable
+            raidForm, baseForm, lootTableId, isCatchable, shinyRate
         );
     }
 
@@ -282,10 +296,6 @@ public class RaidBoss {
         return forms;
     }
 
-    public static Optional<Boolean> getShiny(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getShiny());
-    }
-
     public static String getGender(PokemonProperties properties) {
         if (properties.getGender() == null) return "";
         else return properties.getGender().getSerializedName();
@@ -318,9 +328,8 @@ public class RaidBoss {
             Codec.STRING.optionalFieldOf("gender", "").forGetter(RaidBoss::getGender),
             Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
             Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
-            Codec.optionalField("shiny", Codec.BOOL, true).forGetter(RaidBoss::getShiny),
             Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
-            ).apply(inst, (species, form, gender, ability, nature, shiny, moves) -> {
+            ).apply(inst, (species, form, gender, ability, nature, moves) -> {
                 PokemonProperties properties = PokemonProperties.Companion.parse("");
                 properties.setSpecies(species);
                 if (!form.isBlank()) properties.setForm(form);
@@ -328,7 +337,6 @@ public class RaidBoss {
                 catch (IllegalArgumentException ignored) {}
                 if (!ability.isBlank()) properties.setAbility(ability);
                 if (!nature.isBlank()) properties.setNature(nature);
-                shiny.ifPresent(properties::setShiny);
                 if (!moves.isEmpty()) properties.setMoves(moves);
                 return properties;
             })
@@ -365,10 +373,15 @@ public class RaidBoss {
             raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
             Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
             Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
-            Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable) -> {
+            Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable),
+            Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, shinyRate) -> {
                 properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
+                properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
+                if (shinyRate == 1.0f) properties.setShiny(true);
+                else if (shinyRate == 0.0f) properties.setShiny(false);
+
                 raidForm = new ArrayList<>(raidForm);
                 raidForm.addAll(baseForm);
 
@@ -379,7 +392,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, shinyRate);
             })
         );
     }

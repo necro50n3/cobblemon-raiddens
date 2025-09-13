@@ -9,9 +9,9 @@ public interface IRaidAccessor {
 
     void setRaidId(UUID raidId);
 
-    RaidBoss getRaidBossData();
+    RaidBoss getRaidBoss();
 
-    void setRaidBossData(RaidBoss raidBossData);
+    void setRaidBoss(RaidBoss raidBoss);
 
     boolean isRaidBoss();
 }

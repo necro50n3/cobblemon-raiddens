@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.mixins;
 
-import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
@@ -32,14 +31,11 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Shadow(remap = false)
     public abstract Pokemon getPokemon();
 
-    @Shadow(remap = false)
-    public abstract DropTable getDrops();
-
     @Unique
     private UUID raidId;
 
     @Unique
-    private RaidBoss raidBossData;
+    private RaidBoss raidBoss;
 
     protected PokemonEntityMixin(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -63,13 +59,13 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     }
 
     @Override
-    public RaidBoss getRaidBossData() {
-        return this.raidBossData;
+    public RaidBoss getRaidBoss() {
+        return this.raidBoss;
     }
 
     @Override
-    public void setRaidBossData(RaidBoss raidBossData) {
-        this.raidBossData = raidBossData;
+    public void setRaidBoss(RaidBoss raidBoss) {
+        this.raidBoss = raidBoss;
     }
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)
@@ -93,13 +89,13 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Inject(method = "saveWithoutId", at = @At("RETURN"))
     private void saveWithoutIdInject(CompoundTag nbt, CallbackInfoReturnable<CompoundTag> cir) {
         if (this.raidId != null) nbt.putString("raid_id", this.raidId.toString());
-        if (this.raidBossData != null) nbt.put("raid_boss_data", this.raidBossData.saveNbt(new CompoundTag()));
+        if (this.raidBoss != null) nbt.put("raid_boss_data", this.raidBoss.saveNbt(new CompoundTag()));
     }
 
     @Inject(method = "load", at = @At("RETURN"))
     private void loadInject(CompoundTag nbt, CallbackInfo ci) {
         if (nbt.contains("raid_id")) this.raidId = UUID.fromString(nbt.getString("raid_id"));
-        if (nbt.contains("raid_boss_data")) this.raidBossData = RaidBoss.loadNbt(nbt.getCompound("raid_boss_data"));
+        if (nbt.contains("raid_boss_data")) this.raidBoss = RaidBoss.loadNbt(nbt.getCompound("raid_boss_data"));
 
         if (this.getPokemon() == null) return;
         CompoundTag tag = nbt.getCompound(DataKeys.POKEMON);

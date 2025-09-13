@@ -29,4 +29,6 @@ public class RaidConfig implements ConfigData {
 //    public int raid_duration = 600;
     @Comment("Raid boss HP multipliers for each raid tier from Tier 1 to Tier 7. Default: [5, 5, 8, 12, 20, 25, 30]")
     public int[] tier_health_multiplier = {5, 5, 8, 12, 20, 25, 30};
+    @Comment("The default shiny chance for raid bosses (Set to -1 to use the Cobblemon rate). Default: -1.0")
+    public float shiny_rate = -1.0f;
 }
