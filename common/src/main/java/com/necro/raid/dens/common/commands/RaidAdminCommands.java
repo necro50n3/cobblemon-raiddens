@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import net.minecraft.commands.CommandBuildContext;
@@ -86,6 +87,8 @@ public class RaidAdminCommands {
         ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
         RaidHelper.resetPlayerClearedRaid(dimension, blockPos, player.getUUID());
         context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+
+        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.resetClears();
         return 1;
     }
 
@@ -94,6 +97,8 @@ public class RaidAdminCommands {
         ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
         RaidHelper.resetClearedRaids(dimension, blockPos);
         context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+
+        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.resetClears();
         return 1;
     }
 

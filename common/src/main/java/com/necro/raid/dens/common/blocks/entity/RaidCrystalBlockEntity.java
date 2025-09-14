@@ -101,7 +101,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (++this.age % (CobblemonRaidDens.CONFIG.reset_time * 20)  == 0) {
             this.playerQueue.clear();
             RaidHelper.resetClearedRaids(level, blockPos);
-            this.clears = 0;
+            this.resetClears();
             this.inactiveTicks = 0;
             this.generateRaidBoss(level, blockPos, blockState);
         }
@@ -224,6 +224,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return blockState.getValue(RaidCrystalBlock.ACTIVE) && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE;
     }
 
+    public void resetClears() {
+        this.clears = 0;
+    }
+
     public boolean isAtMaxClears() {
         return CobblemonRaidDens.CONFIG.max_clears != -1 && this.clears >= CobblemonRaidDens.CONFIG.max_clears;
     }
@@ -290,7 +294,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void setRaidBoss(RaidBoss raidBoss) {
         assert this.getLevel() != null;
         RaidHelper.resetClearedRaids(this.getLevel(), this.getBlockPos());
-        this.clears = 0;
+        this.resetClears();
         this.inactiveTicks = 0;
         this.raidBoss = raidBoss;
     }
