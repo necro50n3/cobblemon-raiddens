@@ -9,7 +9,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - Host a raid, or join one that has already started.
 - The raid boss' health pool is SHARED between all battlers.
 - Obtain the Pokemon as well as receive extra rewards for completing the raid.
-- For map makers/server owners: An optional item tag and config for raid key requirements.
+- For map makers/server owners: An optional item tag/data component and config for raid key requirements.
 - Fully configurable!
 
 ![Raid Boss](https://i.imgur.com/u5zD078.png)

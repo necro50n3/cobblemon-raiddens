@@ -2,11 +2,14 @@ package com.necro.raid.dens.common.dimensions;
 
 import com.google.common.collect.Maps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.distanthorizons.RaidDensDistantHorizonsCompat;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
 import com.necro.raid.dens.common.mixins.ServerLevelAccessor;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import com.necro.raid.dens.common.util.IRegistryRemover;
+import net.minecraft.Util;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class DimensionHelper {
     public static TriConsumer<MinecraftServer, ResourceKey<Level>, Boolean> SYNC_DIMENSIONS;
@@ -82,7 +86,6 @@ public class DimensionHelper {
             this.isRunning = false;
         }
 
-        @SuppressWarnings("unchecked")
         void saveAndCLose(MinecraftServer server) {
             this.isRunning = true;
             try {
@@ -90,16 +93,27 @@ public class DimensionHelper {
                 this.level.getChunkSource().getLightEngine().close();
                 this.level.getChunkSource().chunkMap.close();
 
-                MappedRegistry<LevelStem> levelStemRegistry = (MappedRegistry<LevelStem>) server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
-                ResourceKey<LevelStem> resourceKey = ResourceKey.create(Registries.LEVEL_STEM, ModDimensions.createLevelKey(this.levelKey.location().getPath()).location());
-                ((IRegistryRemover<LevelStem>) levelStemRegistry).getById().removeIf(holder -> holder.is(resourceKey));
-                ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(this.levelKey.location());
-
-                ((ILevelsSetter) server).deleteLevel(this.levelKey);
+                if (ModCompat.DISTANT_HORIZONS.isLoaded()) {
+                    CompletableFuture.runAsync(
+                        () -> RaidDensDistantHorizonsCompat.INSTANCE.unloadLevel(this.level),
+                        Util.backgroundExecutor()
+                    ).thenRun(() -> this.unregisterAndDelete(server));
+                }
+                else this.unregisterAndDelete(server);
             }
             catch (Throwable e) {
                 CobblemonRaidDens.LOGGER.error("Error while closing dimension: ", e);
             }
+        }
+
+        @SuppressWarnings("unchecked")
+        private void unregisterAndDelete(MinecraftServer server) {
+            MappedRegistry<LevelStem> levelStemRegistry = (MappedRegistry<LevelStem>) server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+            ResourceKey<LevelStem> resourceKey = ResourceKey.create(Registries.LEVEL_STEM, ModDimensions.createLevelKey(this.levelKey.location().getPath()).location());
+            ((IRegistryRemover<LevelStem>) levelStemRegistry).getById().removeIf(holder -> holder.is(resourceKey));
+            ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(this.levelKey.location());
+
+            ((ILevelsSetter) server).deleteLevel(this.levelKey);
         }
     }
 }

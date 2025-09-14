@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
+import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCompat;
 import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.events.RaidBossResourceReloadListener;
@@ -38,6 +39,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
+    public static long tickTime = 0;
     @Override
     public void onInitialize() {
         CobblemonRaidDens.init();
@@ -46,6 +48,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
         if (ModCompat.MEGA_SHOWDOWN.isLoaded()) FabricMSDCompat.init();
+        if (ModCompat.DISTANT_HORIZONS.isLoaded()) FabricDistantHorizonsCompat.init();
 
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
@@ -58,6 +61,18 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricStatistics.registerStatistics();
         FabricCriteriaTriggers.registerCriteriaTriggers();
         RaidDenTab.registerItemGroups();
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            if (tickTime == 0) {
+                tickTime = System.nanoTime();
+                return;
+            }
+
+            long diff = System.nanoTime() - tickTime;
+            tickTime = System.nanoTime();
+
+            if (diff > 200L * 1_000_000) CobblemonRaidDens.LOGGER.info("Tick took {} ms", diff / 1_000_000);
+        });
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);

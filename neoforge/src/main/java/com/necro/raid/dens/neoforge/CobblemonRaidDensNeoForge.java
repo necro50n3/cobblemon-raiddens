@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
+import com.necro.raid.dens.neoforge.compat.distanthorizons.NeoForgeDistantHorizonsCompat;
 import com.necro.raid.dens.neoforge.compat.megashowdown.NeoForgeMSDCompat;
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
 import com.necro.raid.dens.neoforge.dimensions.NeoForgeChunkGenerator;
@@ -36,6 +37,7 @@ public class CobblemonRaidDensNeoForge {
             mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
         }
         if (ModCompat.MEGA_SHOWDOWN.isLoaded()) NeoForgeMSDCompat.init();
+        if (ModCompat.DISTANT_HORIZONS.isLoaded()) NeoForgeDistantHorizonsCompat.init();
 
         NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
