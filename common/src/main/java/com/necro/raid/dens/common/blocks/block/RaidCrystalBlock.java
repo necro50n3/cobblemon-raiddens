@@ -121,11 +121,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         Component component = Component.translatable("message.cobblemonraiddens.raid.request_to_join", player.getName())
             .append(Component.translatable("message.cobblemonraiddens.raid.request_accept")
                 .withStyle(Style.EMPTY.applyFormat(ChatFormatting.GREEN).applyFormat(ChatFormatting.BOLD).withClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.acceptRaidCommand(raidHost, player, blockEntity, blockPos))
+                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.acceptRaidCommand(player, blockEntity, blockPos))
                 )))
             .append(Component.translatable("message.cobblemonraiddens.raid.request_deny")
                 .withStyle(Style.EMPTY.applyFormat(ChatFormatting.RED).applyFormat(ChatFormatting.BOLD).withClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.rejectRaidCommand(raidHost, player))
+                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.rejectRaidCommand(player))
                 )));
         raidHost.sendSystemMessage(component);
     }

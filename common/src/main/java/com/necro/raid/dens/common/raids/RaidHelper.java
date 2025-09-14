@@ -121,7 +121,7 @@ public class RaidHelper extends SavedData {
         raids.forEach(RaidInstance::tick);
     }
 
-    public static String acceptRaidCommand(Player host, Player player, RaidCrystalBlockEntity blockEntity, BlockPos blockPos) {
+    public static String acceptRaidCommand(Player player, RaidCrystalBlockEntity blockEntity, BlockPos blockPos) {
         return String.format("/crd_raids acceptrequest %s %s %s %s %s",
             player.getName().getString(),
             blockEntity.getLevel().dimension().location(),
@@ -129,7 +129,7 @@ public class RaidHelper extends SavedData {
         );
     }
 
-    public static String rejectRaidCommand(Player host, Player player) {
+    public static String rejectRaidCommand(Player player) {
         return String.format("/crd_raids denyrequest %s", player.getName().getString());
     }
 
