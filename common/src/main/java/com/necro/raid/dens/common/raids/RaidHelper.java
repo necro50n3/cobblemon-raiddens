@@ -77,9 +77,7 @@ public class RaidHelper extends SavedData {
         CLEARED_RAIDS.get(key).remove(player);
     }
 
-    public static void resetPlayerAllClearedRaids(Level level, BlockPos blockPos, UUID player) {
-        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
-        if (!CLEARED_RAIDS.containsKey(key)) return;
+    public static void resetPlayerAllClearedRaids(UUID player) {
         CLEARED_RAIDS.values().forEach(playerSet -> playerSet.remove(player));
     }
 

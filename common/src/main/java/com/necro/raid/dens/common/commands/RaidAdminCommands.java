@@ -19,26 +19,33 @@ import net.minecraft.server.level.ServerPlayer;
 public class RaidAdminCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd")
-            .requires(source -> source.hasPermission(2))
-            .then(Commands.literal("reset")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .executes(RaidAdminCommands::resetPlayer)
-                    .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .then(Commands.argument("dimension", DimensionArgument.dimension())
-                            .executes(RaidAdminCommands::resetClearsForPlayer)
-                        )
-                    )
-                )
+            .then(Commands.literal("resetclears")
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                     .then(Commands.argument("dimension", DimensionArgument.dimension())
                         .executes(RaidAdminCommands::resetClearsForAll)
+                        .then(Commands.argument("player", EntityArgument.player())
+                            .executes(RaidAdminCommands::resetClearsForPlayerAndPos)
+                        )
                     )
+                )
+                .then(Commands.argument("player", EntityArgument.player())
+                    .executes(RaidAdminCommands::resetClearsForPlayer)
                 )
             )
             .then(Commands.literal("remove")
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("dimension", DimensionArgument.dimension())
                     .executes(RaidAdminCommands::removeDimension)
                 )
+            )
+            .then(Commands.literal("refresh")
+                .then(Commands.argument("player", EntityArgument.player())
+                    .requires(source -> source.hasPermission(2))
+                    .executes(context -> refreshPlayer(context, EntityArgument.getPlayer(context, "player")))
+                )
+                .requires(CommandSourceStack::isPlayer)
+                .executes(RaidAdminCommands::refreshPlayer)
             )
         );
     }
@@ -47,22 +54,38 @@ public class RaidAdminCommands {
         register(dispatcher);
     }
 
-    private static int resetPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ServerPlayer player = EntityArgument.getPlayer(context, "player");
+    private static int refreshPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
         RaidHelper.removeHost(player.getUUID());
         RaidHelper.removeParticipant(player.getUUID());
         if (RaidHelper.JOIN_QUEUE.containsKey(player)) {
             RaidHelper.JOIN_QUEUE.get(player).refundItem();
             RaidHelper.JOIN_QUEUE.remove(player);
         }
+        context.getSource().sendSystemMessage(
+            RaidHelper.getSystemMessage(Component.translatable("message.cobblemonraiddens.command.refresh_player", player.getName()))
+        );
         return 1;
+    }
+
+    private static int refreshPlayer(CommandContext<CommandSourceStack> context) {
+        ServerPlayer player = context.getSource().getPlayer();
+        if (player == null) return 0;
+        return refreshPlayer(context, player);
     }
 
     private static int resetClearsForPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
+        RaidHelper.resetPlayerAllClearedRaids(player.getUUID());
+        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+        return 1;
+    }
+
+    private static int resetClearsForPlayerAndPos(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ServerPlayer player = EntityArgument.getPlayer(context, "player");
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
         ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
         RaidHelper.resetPlayerClearedRaid(dimension, blockPos, player.getUUID());
+        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
         return 1;
     }
 
@@ -70,6 +93,7 @@ public class RaidAdminCommands {
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
         ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
         RaidHelper.resetClearedRaids(dimension, blockPos);
+        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
         return 1;
     }
 
@@ -85,6 +109,7 @@ public class RaidAdminCommands {
         }
         DimensionHelper.queueForRemoval(level.dimension(), level);
         DimensionHelper.SYNC_DIMENSIONS.accept(context.getSource().getServer(), level.dimension(), false);
+        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.remove_dimension"));
         return 1;
     }
 }
