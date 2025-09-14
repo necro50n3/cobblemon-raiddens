@@ -24,11 +24,15 @@ public class RaidAdminCommands {
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes(RaidAdminCommands::resetPlayer)
                     .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .executes(RaidAdminCommands::resetClearsForPlayer)
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
+                            .executes(RaidAdminCommands::resetClearsForPlayer)
+                        )
                     )
                 )
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                    .executes(RaidAdminCommands::resetClearsForAll)
+                    .then(Commands.argument("dimension", DimensionArgument.dimension())
+                        .executes(RaidAdminCommands::resetClearsForAll)
+                    )
                 )
             )
             .then(Commands.literal("remove")
@@ -45,8 +49,8 @@ public class RaidAdminCommands {
 
     private static int resetPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
-        RaidHelper.RAID_HOSTS.remove(player.getUUID());
-        RaidHelper.RAID_PARTICIPANTS.remove(player.getUUID());
+        RaidHelper.removeHost(player.getUUID());
+        RaidHelper.removeParticipant(player.getUUID());
         if (RaidHelper.JOIN_QUEUE.containsKey(player)) {
             RaidHelper.JOIN_QUEUE.get(player).refundItem();
             RaidHelper.JOIN_QUEUE.remove(player);
@@ -57,15 +61,15 @@ public class RaidAdminCommands {
     private static int resetClearsForPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
-
-        if (!RaidHelper.CLEARED_RAIDS.containsKey(blockPos)) return 0;
-        RaidHelper.CLEARED_RAIDS.get(blockPos).remove(player.getUUID());
+        ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
+        RaidHelper.resetPlayerClearedRaid(dimension, blockPos, player.getUUID());
         return 1;
     }
 
-    private static int resetClearsForAll(CommandContext<CommandSourceStack> context) {
+    private static int resetClearsForAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
-        RaidHelper.CLEARED_RAIDS.remove(blockPos);
+        ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
+        RaidHelper.resetClearedRaids(dimension, blockPos);
         return 1;
     }
 
