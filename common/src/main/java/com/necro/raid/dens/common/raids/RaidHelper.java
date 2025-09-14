@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.mojang.datafixers.util.Pair;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -10,8 +11,11 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +92,13 @@ public class RaidHelper extends SavedData {
         for (UUID player : players) {
             removeParticipant(player);
         }
+    }
+
+    public static void onPlayerJoin(ServerPlayer player) {
+        if (!WAS_SURVIVAL.contains(player.getUUID())) return;
+        else if (DimensionHelper.isCustomDimension((ServerLevel) player.level())) return;
+        else if (player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE) return;
+        player.setGameMode(GameType.SURVIVAL);
     }
 
     public static void onPlayerDisconnect(Player player) {

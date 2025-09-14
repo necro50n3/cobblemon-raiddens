@@ -37,6 +37,11 @@ public class ModEvents {
     }
 
     @SubscribeEvent
+    public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedInEvent event) {
+        RaidHelper.onPlayerJoin((ServerPlayer) event.getEntity());
+    }
+
+    @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
         RaidHelper.onPlayerDisconnect(event.getEntity());
     }
