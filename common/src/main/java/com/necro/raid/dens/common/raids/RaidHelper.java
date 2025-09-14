@@ -71,10 +71,16 @@ public class RaidHelper extends SavedData {
         CLEARED_RAIDS.remove(key);
     }
 
-    public static void resetPlayerClearedRaid(Level level, BlockPos blockPos, UUID... players) {
+    public static void resetPlayerClearedRaid(Level level, BlockPos blockPos, UUID player) {
         Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
         if (!CLEARED_RAIDS.containsKey(key)) return;
-        List.of(players).forEach(CLEARED_RAIDS.get(key)::remove);
+        CLEARED_RAIDS.get(key).remove(player);
+    }
+
+    public static void resetPlayerAllClearedRaids(Level level, BlockPos blockPos, UUID player) {
+        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
+        if (!CLEARED_RAIDS.containsKey(key)) return;
+        CLEARED_RAIDS.values().forEach(playerSet -> playerSet.remove(player));
     }
 
     public static boolean isAlreadyHosting(Player player) {
