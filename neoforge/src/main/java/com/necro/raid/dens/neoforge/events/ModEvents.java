@@ -21,21 +21,6 @@ public class ModEvents {
         DimensionHelper.removePending(event.getServer());
     }
 
-    private static long tickTime = 0;
-
-    @SubscribeEvent
-    public static void debugTick(ServerTickEvent.Post event) {
-        if (tickTime == 0) {
-            tickTime = System.nanoTime();
-            return;
-        }
-
-        long diff = System.nanoTime() - tickTime;
-        tickTime = System.nanoTime();
-
-        if (diff > 200L * 1_000_000) CobblemonRaidDens.LOGGER.info("Tick took {} ms", diff / 1_000_000);
-    }
-
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedInEvent event) {
         RaidHelper.onPlayerJoin((ServerPlayer) event.getEntity());
