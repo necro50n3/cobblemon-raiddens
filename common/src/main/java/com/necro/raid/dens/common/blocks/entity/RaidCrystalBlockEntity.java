@@ -291,9 +291,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
     }
 
+    public void setRaidBoss(RaidBoss raidBoss, Level level) {
+        RaidHelper.resetClearedRaids(level, this.getBlockPos());
+        this.setRaidBoss(raidBoss);
+    }
+
     public void setRaidBoss(RaidBoss raidBoss) {
-        assert this.getLevel() != null;
-        RaidHelper.resetClearedRaids(this.getLevel(), this.getBlockPos());
         this.resetClears();
         this.inactiveTicks = 0;
         this.raidBoss = raidBoss;

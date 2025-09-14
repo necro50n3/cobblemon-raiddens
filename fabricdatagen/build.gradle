@@ -40,7 +40,7 @@ loom {
 
 repositories {
     maven {
-        url "https://www.cursemaven.com"
+        url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
@@ -67,7 +67,7 @@ dependencies {
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951008"
     modImplementation "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
 

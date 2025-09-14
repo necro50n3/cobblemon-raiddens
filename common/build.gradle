@@ -8,7 +8,7 @@ loom {
 
 repositories {
     maven {
-        url "https://www.cursemaven.com"
+        url = "https://www.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
@@ -26,7 +26,7 @@ dependencies {
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951008"
     modImplementation "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
-    modImplementation "curse.maven:distant-horizons-508933:6791190"
+    modCompileOnly "curse.maven:distant-horizons-508933:6791190"
 
     include(modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version")
 }
