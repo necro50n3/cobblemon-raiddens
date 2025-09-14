@@ -141,7 +141,8 @@ public class RaidDenCommands {
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
-        ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos)).setRaidBoss(raidBoss, level);
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.setRaidBoss(raidBoss, level);
         return 1;
     }
 
