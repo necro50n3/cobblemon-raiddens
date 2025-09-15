@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 public class NeoForgeDistantHorizonsCompat extends RaidDensDistantHorizonsCompat {
     @Override
     public void unloadLevel(ServerLevel level) {
-        try { SharedApi.getIDhServerWorld().getLevel(ServerLevelWrapper.getWrapper(level)).close(); }
+        try { SharedApi.getIDhServerWorld().unloadLevel(ServerLevelWrapper.getWrapper(level)); }
         catch (Exception e) { CobblemonRaidDens.LOGGER.error("Error closing DH level: ", e); }
     }
 

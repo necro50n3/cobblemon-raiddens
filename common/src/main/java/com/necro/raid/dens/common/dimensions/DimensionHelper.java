@@ -23,10 +23,12 @@ import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class DimensionHelper {
     public static TriConsumer<MinecraftServer, ResourceKey<Level>, Boolean> SYNC_DIMENSIONS;
     private static final Set<PendingDimension> QUEUED_FOR_REMOVAL = new HashSet<>();
+    private static final Set<Level> REMOVED_LEVELS = new HashSet<>();
 
     public static void queueForRemoval(ResourceKey<Level> key, ServerLevel level) {
         QUEUED_FOR_REMOVAL.add(new PendingDimension(key, level));
@@ -43,8 +45,15 @@ public class DimensionHelper {
         }
         ((ILevelsSetter) server).setLevels(newLevels);
 
-        QUEUED_FOR_REMOVAL.forEach(pd -> { if (!pd.isRunning) pd.saveAndCLose(server); });
+        QUEUED_FOR_REMOVAL.forEach(pd -> {
+            REMOVED_LEVELS.add(pd.level);
+            if (!pd.isRunning) pd.saveAndCLose(server);
+        });
         QUEUED_FOR_REMOVAL.clear();
+    }
+
+    public static boolean isLevelRemoved(ServerLevel level) {
+        return REMOVED_LEVELS.contains(level);
     }
 
     public static void onDimensionChange(ServerPlayer player, ServerLevel from, ServerLevel to) {
@@ -97,9 +106,9 @@ public class DimensionHelper {
                     CompletableFuture.runAsync(
                         () -> RaidDensDistantHorizonsCompat.INSTANCE.unloadLevel(this.level),
                         Util.backgroundExecutor()
-                    ).thenRun(() -> this.unregisterAndDelete(server));
+                    ).thenRun(() -> server.submit(() -> this.unregisterAndDelete(server)));
                 }
-                else this.unregisterAndDelete(server);
+                else server.submit(() -> this.unregisterAndDelete(server));
             }
             catch (Throwable e) {
                 CobblemonRaidDens.LOGGER.error("Error while closing dimension: ", e);
@@ -114,6 +123,7 @@ public class DimensionHelper {
             ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(this.levelKey.location());
 
             ((ILevelsSetter) server).deleteLevel(this.levelKey);
+            CompletableFuture.delayedExecutor(5, TimeUnit.SECONDS).execute(() -> REMOVED_LEVELS.remove(this.level));
         }
     }
 }

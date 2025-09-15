@@ -33,7 +33,7 @@ public class RaidUtils {
         int groundY = level.getChunk(targetPos).getHeight(Heightmap.Types.MOTION_BLOCKING, targetPos.getX(), targetPos.getZ());
         BlockPos groundPos = targetPos.atY((int) Mth.absMax(groundY, targetPos.getY()));
 
-        if (RaidUtils.isSafe(level, groundPos.north())) {
+        if (RaidUtils.isSafe(level, groundPos.north()) && level.getBlockState(groundPos.north().below()).isSolidRender(level, groundPos.north().below())) {
             player.teleportTo(level, groundPos.getX() + 0.5, groundPos.getY(), groundPos.getZ() - 0.5,
                 new HashSet<>(), yaw, pitch);
             return;
@@ -45,7 +45,7 @@ public class RaidUtils {
                 BlockPos offset = targetPos.offset(dx, 0, dz);
                 int topY = level.getChunk(offset).getHeight(Heightmap.Types.MOTION_BLOCKING, offset.getX(), offset.getZ());
                 offset = offset.atY((int) Mth.absMax(topY, targetPos.getY()));
-                if (RaidUtils.isSafe(level, offset)) {
+                if (RaidUtils.isSafe(level, offset) && level.getBlockState(offset.below()).isSolidRender(level, offset.below())) {
                     player.teleportTo(level,offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5,
                         new HashSet<>(), yaw, pitch);
                     return;
