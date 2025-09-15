@@ -7,6 +7,9 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.exception.IllegalActionChoiceException;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,6 +30,9 @@ public abstract class ForcePassActionResponseMixin {
         else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
 
         BattleActor battleActor = activeBattlePokemon.getActor();
+        ServerPlayer player = battleActor.getBattle().getPlayers().getFirst();
+        ItemStack stack = player.getMainHandItem();
+        if (!stack.is(Items.AIR) && !player.isCreative()) stack.grow(1);
         battleActor.getExpectingPassActions().removeFirst();
         throw new IllegalActionChoiceException(
             battleActor,
