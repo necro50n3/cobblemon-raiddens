@@ -1,7 +1,15 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.CobblemonItems;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
+import com.cobblemon.mod.common.battles.BagItemActionResponse;
+import com.cobblemon.mod.common.battles.PassActionResponse;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.item.battle.BagItem;
+import com.cobblemon.mod.common.item.interactive.PotionType;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -153,6 +161,38 @@ public class RaidInstance {
 
     public RaidBoss getRaidBoss() {
         return this.raidBoss;
+    }
+
+    public void attackCheer() {
+        this.cheer(CobblemonItems.X_ATTACK.getBagItem());
+    }
+
+    public void defenseCheer() {
+        this.cheer(CobblemonItems.X_DEFENSE.getBagItem());
+    }
+
+    public void healCheer() {
+        this.cheer(CobblemonItems.POTION.getBagItem());
+    }
+
+    private void cheer(BagItem bagItem) {
+        for (PokemonBattle battle : this.battles) {
+            BattleActor battleActor = battle.getSide1().getActors()[0];
+            BattleActor battleActor2 = battle.getSide2().getActors()[0];
+
+            List<ActiveBattlePokemon> activePokemon = battleActor.getActivePokemon();
+            if (activePokemon.isEmpty()) continue;
+            BattlePokemon battlePokemon = activePokemon.getFirst().getBattlePokemon();
+            if (battlePokemon == null) continue;
+
+            String value = bagItem instanceof PotionType ? String.valueOf(battlePokemon.getMaxHealth() / 2) : "1";
+
+            battleActor.getResponses().add(new BagItemActionResponse(bagItem, battlePokemon, value));
+            battleActor.setMustChoose(false);
+            battleActor2.getResponses().addFirst(PassActionResponse.INSTANCE);
+            battleActor2.setMustChoose(false);
+            battle.checkForInputDispatch();
+        }
     }
 
     private static class DelayedRunnable {

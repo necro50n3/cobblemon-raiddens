@@ -15,7 +15,8 @@
     "PokemonBattleMixin",
     "PokemonEntityMixin",
     "PokemonMixin",
-    "ServerLevelAccessor"
+    "ServerLevelAccessor",
+    "TestItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
