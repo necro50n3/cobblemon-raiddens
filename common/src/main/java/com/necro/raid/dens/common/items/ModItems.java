@@ -11,5 +11,6 @@ public class ModItems {
     public static Holder<Item> DEFENSE_CHEER;
     public static Holder<Item> HEAL_CHEER;
 
-    public static final BagItem CLEAR_BOOST = new ClearBoostBagItem();
+    public static final BagItem CLEAR_BOSS = new ClearBoostBagItem(ClearBoostBagItem.ClearType.BOSS);
+    public static final BagItem CLEAR_PLAYER = new ClearBoostBagItem(ClearBoostBagItem.ClearType.PLAYER);
 }

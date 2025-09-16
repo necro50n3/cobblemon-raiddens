@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
+import com.cobblemon.mod.common.battles.ShowdownActionResponse;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
@@ -226,7 +227,7 @@ public class RaidInstance {
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side2.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        this.clearStats(side1, side2, target.getFirst().getBattlePokemon());
+        this.clearStats(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, target.getFirst().getBattlePokemon(), side2.getName().getString()));
     }
 
     private void clearPlayerStats(@NotNull PokemonBattle battle) {
@@ -234,11 +235,11 @@ public class RaidInstance {
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        this.clearStats(side1, side2, target.getFirst().getBattlePokemon());
+        this.clearStats(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, target.getFirst().getBattlePokemon(), side2.getName().getString()));
     }
 
-    private void clearStats(BattleActor side1, BattleActor side2, BattlePokemon target) {
-        side1.getResponses().add(new BagItemActionResponse(ModItems.CLEAR_BOOST, target, null));
+    private void clearStats(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
+        side1.getResponses().add(response);
         side1.setMustChoose(false);
         side2.getResponses().addFirst(PassActionResponse.INSTANCE);
         side2.setMustChoose(false);

@@ -6,6 +6,8 @@ import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.InstructionSet;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.necro.raid.dens.common.showdown.CheerInstruction;
+import com.necro.raid.dens.common.showdown.ResetBossInstruction;
+import com.necro.raid.dens.common.showdown.ResetPlayerInstruction;
 import kotlin.jvm.functions.Function4;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +29,12 @@ public class ShowdownInterpreterMixin {
     private static void clinitInject(CallbackInfo ci) {
         updateInstructionParser.put("cheer", (battle, instruction, message, messageIterator) ->
             new CheerInstruction(message)
+        );
+        updateInstructionParser.put("clearboss", (battle, instruction, message, messageIterator) ->
+            new ResetBossInstruction(message)
+        );
+        updateInstructionParser.put("clearplayer", (battle, instruction, message, messageIterator) ->
+            new ResetPlayerInstruction(message)
         );
     }
 }

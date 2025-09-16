@@ -11,7 +11,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ClearBoostBagItem implements BagItem {
+public record ClearBoostBagItem(ClearType clearType) implements BagItem {
     @Override
     public @NotNull String getItemName() {
         return "clear_boost";
@@ -28,12 +28,27 @@ public class ClearBoostBagItem implements BagItem {
     }
 
     @Override
-    public @NotNull String getShowdownInput(@NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @Nullable String s) {
-        return "clear_boost";
+    public @NotNull String getShowdownInput(@NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @Nullable String data) {
+        return this.clearType.getId() + " " + data;
     }
 
     @Override
     public boolean canStillUse(@NotNull ServerPlayer serverPlayer, @NotNull PokemonBattle pokemonBattle, @NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack itemStack) {
         return true;
+    }
+
+    public enum ClearType {
+        BOSS("clear_boss"),
+        PLAYER("clear_player");
+
+        private final String id;
+
+        ClearType(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return this.id;
+        }
     }
 }
