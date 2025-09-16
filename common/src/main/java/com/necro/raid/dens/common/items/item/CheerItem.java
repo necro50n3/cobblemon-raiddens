@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.items.item;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
@@ -9,6 +8,7 @@ import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleMakeChoicePacket;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +17,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -26,46 +25,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class CheerItem extends Item implements SimpleBagItemLike {
-    private final CheerType cheerType;
     private final BagItem bagItem;
 
-    private CheerItem(CheerType cheerType, String data) {
+    private CheerItem(BagItem bagItem) {
         super(new Properties().rarity(Rarity.RARE));
-        this.cheerType = cheerType;
-        this.bagItem = new BagItem() {
-            @Override
-            public @NotNull String getItemName() {
-                return cheerType.getItemId();
-            }
-
-            @Override
-            public @NotNull Item getReturnItem() {
-                return Items.AIR;
-            }
-
-            @Override
-            public boolean canUse(@NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
-                return target.getHealth() > 0;
-            }
-
-            @Override
-            public @NotNull String getShowdownInput(@NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @Nullable String s) {
-                return cheerType.getShowdownString(data);
-            }
-
-            @Override
-            public boolean canStillUse(@NotNull ServerPlayer player, @NotNull PokemonBattle battle, @NotNull BattleActor actor, @NotNull BattlePokemon target, @NotNull ItemStack stack) {
-                return false;
-            }
-        };
+        this.bagItem = bagItem;
     }
 
     public CheerItem(CheerType cheerType, int data) {
-        this(cheerType, String.valueOf(data));
+        this(new CheerBagItem(cheerType, data));
     }
 
     public CheerItem(CheerType cheerType, double data) {
-        this(cheerType, String.valueOf(data));
+        this(new CheerBagItem(cheerType, data));
     }
 
     @Override
@@ -97,7 +69,9 @@ public class CheerItem extends Item implements SimpleBagItemLike {
 
         battlePokemon.getActor().sendUpdate(new BattleMakeChoicePacket());
         UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).getRaidId();
-        RaidHelper.ACTIVE_RAIDS.get(raidId).cheer(battle, this.cheerType, this.getBagItem());
+
+        String data = player.getName().getString();
+        RaidHelper.ACTIVE_RAIDS.get(raidId).cheer(battle, this.getBagItem(), data);
         return true;
     }
 
@@ -134,12 +108,16 @@ public class CheerItem extends Item implements SimpleBagItemLike {
             this.showdownString = showdownString;
         }
 
+        public String getId() {
+            return this.id;
+        }
+
         public String getItemId() {
             return "item.cobblemonraiddens." + this.id;
         }
 
-        public String getShowdownString(String data) {
-            return this.showdownString + " " + data;
+        public String getShowdownString() {
+            return this.showdownString;
         }
     }
 }

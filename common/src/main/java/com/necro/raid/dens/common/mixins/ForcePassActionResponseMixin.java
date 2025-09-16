@@ -23,6 +23,7 @@ public abstract class ForcePassActionResponseMixin {
     private void isValidInject(ActiveBattlePokemon activeBattlePokemon, ShowdownMoveset showdownMoveSet, boolean forceSwitch, CallbackInfoReturnable<Boolean> cir) {
         List<ActiveBattlePokemon> targetPokemon = activeBattlePokemon.getActor().getBattle().getSide2().getActivePokemon();
         if (targetPokemon.isEmpty()) return;
+        else if (targetPokemon.getFirst() == activeBattlePokemon) return;
         BattlePokemon battlePokemon = targetPokemon.getFirst().getBattlePokemon();
         if (battlePokemon == null) return;
         PokemonEntity pokemonEntity = battlePokemon.getEntity();
@@ -31,9 +32,10 @@ public abstract class ForcePassActionResponseMixin {
 
         BattleActor battleActor = activeBattlePokemon.getActor();
         ServerPlayer player = battleActor.getBattle().getPlayers().getFirst();
+        if (!battleActor.isForPlayer(player)) return;
         ItemStack stack = player.getMainHandItem();
         if (!stack.is(Items.AIR) && !player.isCreative()) stack.grow(1);
-        battleActor.getExpectingPassActions().removeFirst();
+        if (!battleActor.getExpectingPassActions().isEmpty()) battleActor.getExpectingPassActions().removeFirst();
         throw new IllegalActionChoiceException(
             battleActor,
             Component.translatable("message.cobblemonraiddens.raid.forbidden_item").getString()
