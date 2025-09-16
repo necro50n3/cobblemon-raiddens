@@ -32,11 +32,11 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         this.bagItem = bagItem;
     }
 
-    public CheerItem(CheerType cheerType, int data) {
+    public CheerItem(CheerBagItem.CheerType cheerType, int data) {
         this(new CheerBagItem(cheerType, data));
     }
 
-    public CheerItem(CheerType cheerType, double data) {
+    public CheerItem(CheerBagItem.CheerType cheerType, double data) {
         this(new CheerBagItem(cheerType, data));
     }
 
@@ -93,31 +93,5 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         }
         itemStack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
-    }
-
-    public enum CheerType {
-        ATTACK("cheer_attack", "cheer_stat atk spa"),
-        DEFENSE("cheer_defense", "cheer_stat def spd"),
-        HEAL("cheer_heal", "cheer_heal");
-
-        private final String id;
-        private final String showdownString;
-
-        CheerType(String id, String showdownString) {
-            this.id = id;
-            this.showdownString = showdownString;
-        }
-
-        public String getId() {
-            return this.id;
-        }
-
-        public String getItemId() {
-            return "item.cobblemonraiddens." + this.id;
-        }
-
-        public String getShowdownString() {
-            return this.showdownString;
-        }
     }
 }
