@@ -31,10 +31,10 @@ public class ShowdownInterpreterMixin {
             new CheerInstruction(message)
         );
         updateInstructionParser.put("clearboss", (battle, instruction, message, messageIterator) ->
-            new ResetBossInstruction(message)
+            new ResetBossInstruction(battle, message)
         );
         updateInstructionParser.put("clearplayer", (battle, instruction, message, messageIterator) ->
-            new ResetPlayerInstruction(message)
+            new ResetPlayerInstruction(battle, message)
         );
     }
 }

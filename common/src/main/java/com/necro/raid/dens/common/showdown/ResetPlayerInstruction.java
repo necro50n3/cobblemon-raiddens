@@ -31,11 +31,13 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
     private final BattleMessage message;
     private CompletableFuture<?> future;
     private Set<String> holds;
+    private final BattlePokemon pokemon;
 
-    public ResetPlayerInstruction(BattleMessage message) {
+    public ResetPlayerInstruction(PokemonBattle battle, BattleMessage message) {
         this.message = message;
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
+        this.pokemon = this.message.battlePokemon(0, battle);
     }
 
     @Override
@@ -68,12 +70,11 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
 
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
+        if (this.pokemon == null) return;
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("unboost"));
             List<Object> providers = new ArrayList<>(List.of(battle));
-            BattlePokemon battlePokemon = this.message.battlePokemon(0, battle);
-            if (battlePokemon != null && battlePokemon.getEffectedPokemon().getEntity() != null)
-                providers.add(new UsersProvider(battlePokemon.getEffectedPokemon().getEntity()));
+            providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
 
             ActionEffectContext context = new ActionEffectContext(
                 actionEffect, new HashSet<>(), providers, runtime, false, false,
@@ -90,21 +91,22 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
 
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
+        if (this.pokemon == null) return;
         battle.dispatch(() -> {
-            BattlePokemon battlePokemon = this.message.battlePokemon(0, battle);
             String origin = this.message.argumentAt(1);
-            if (battlePokemon == null) return DispatchResultKt.getGO();
-            else if (origin == null) return DispatchResultKt.getGO();
+            if (origin == null) return DispatchResultKt.getGO();
 
             battle.broadcastChatMessage(
-                Component.translatable("battle.cobblemonraiddens.reset.player", origin)
+                Component.translatable("battle.cobblemonraiddens.reset.boss",
+                    Component.translatable(origin)
+                )
             );
 
             BattleContext.Type boostBucket = BattleContext.Type.UNBOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
 
-            battlePokemon.getContextManager().add(context);
-            battle.getMinorBattleActions().put(battlePokemon.getUuid(), this.message);
+            this.pokemon.getContextManager().add(context);
+            battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });
     }

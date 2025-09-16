@@ -18,6 +18,7 @@ import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
@@ -201,25 +202,20 @@ public class RaidInstance {
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
 
-    public void cheer(PokemonBattle oBattle, BagItem bagItem, String data) {
-        for (PokemonBattle battle : this.battles) {
-            BattleActor battleActor = battle.getSide1().getActors()[0];
-            BattleActor battleActor2 = battle.getSide2().getActors()[0];
-
-            List<ActiveBattlePokemon> activePokemon = battleActor.getActivePokemon();
-            if (activePokemon.isEmpty()) continue;
-            BattlePokemon battlePokemon = activePokemon.getFirst().getBattlePokemon();
-            if (battlePokemon == null) continue;
-
-            battleActor.getResponses().add(new BagItemActionResponse(bagItem, battlePokemon, data));
-            battleActor.setMustChoose(false);
-            if (battle != oBattle) {
-                battleActor2.getResponses().addFirst(PassActionResponse.INSTANCE);
-                battleActor2.setMustChoose(false);
-            }
-            battle.checkForInputDispatch();
-            battleActor.sendUpdate(new BattleApplyPassResponsePacket());
+    public void runCheer(PokemonBattle oBattle, BagItem bagItem, String data) {
+        this.cheer(oBattle, bagItem, data);
+        for (PokemonBattle b : this.battles) {
+            if (b == oBattle) continue;
+            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data));
         }
+    }
+
+    public void cheer(PokemonBattle battle, BagItem bagItem, String data) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side1.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data));
     }
 
     private void clearBossStats(@NotNull PokemonBattle battle) {
@@ -227,7 +223,9 @@ public class RaidInstance {
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side2.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        this.clearStats(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, target.getFirst().getBattlePokemon(), side2.getName().getString()));
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, bp, key));
     }
 
     private void clearPlayerStats(@NotNull PokemonBattle battle) {
@@ -235,10 +233,12 @@ public class RaidInstance {
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        this.clearStats(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, target.getFirst().getBattlePokemon(), side2.getName().getString()));
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, bp, key));
     }
 
-    private void clearStats(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
+    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
         side1.getResponses().add(response);
         side1.setMustChoose(false);
         side2.getResponses().addFirst(PassActionResponse.INSTANCE);

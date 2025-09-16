@@ -71,7 +71,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).getRaidId();
 
         String data = player.getName().getString();
-        RaidHelper.ACTIVE_RAIDS.get(raidId).cheer(battle, this.getBagItem(), data);
+        RaidHelper.ACTIVE_RAIDS.get(raidId).runCheer(battle, this.getBagItem(), data);
         return true;
     }
 

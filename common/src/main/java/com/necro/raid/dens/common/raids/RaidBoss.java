@@ -71,6 +71,7 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.shinyRate = shinyRate;
         this.script = script;
+        this.script.put("turn:1", "RESET_BOSS");
     }
 
     public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier,
@@ -88,6 +89,7 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.shinyRate = shinyRate;
         this.script = script;
+        this.script.put("turn:1", "RESET_BOSS");
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {

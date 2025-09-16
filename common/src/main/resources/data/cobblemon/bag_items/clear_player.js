@@ -11,6 +11,5 @@
 
         battle.log = battle.log.filter(line => !(line.startsWith('|bagitem|') && line.includes('clear_boost')));
         battle.add('clearplayer', pokemon, origin);
-        battle.add('-clearboost', pokemon);
     }
 }
