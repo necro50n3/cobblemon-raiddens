@@ -52,7 +52,7 @@
   "item.cobblemonraiddens.cheer_defense": "Defense Cheer",
   "item.cobblemonraiddens.cheer_defense.tooltip": "Raise your party's Def and Sp. Def by one stage",
   "item.cobblemonraiddens.cheer_heal": "Heal Cheer",
-  "item.cobblemonraiddens.cheer_heal.tooltip": "Restores 30% HP for your party",
+  "item.cobblemonraiddens.cheer_heal.tooltip": "Restores 50% HP for your party",
   "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
   "message.cobblemonraiddens.command.refresh_player": "%s has been refreshed.",
   "message.cobblemonraiddens.command.reset_clears": "Successfully reset clears.",

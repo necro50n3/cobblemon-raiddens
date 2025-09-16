@@ -16,7 +16,7 @@ public class FabricItems {
         ModItems.RAID_POUCH = registerRaidPouch("raid_pouch", new RaidPouchItem());
         ModItems.ATTACK_CHEER = registerRaidPouch("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK, 1));
         ModItems.DEFENSE_CHEER = registerRaidPouch("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE, 1));
-        ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL, 0.3));
+        ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL, 0.5));
     }
 
     private static Holder<Item> registerRaidPouch(String name, Item item) {

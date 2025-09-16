@@ -17,7 +17,7 @@ public class NeoForgeItems {
         ModItems.RAID_POUCH = ITEMS.register("raid_pouch", RaidPouchItem::new);
         ModItems.ATTACK_CHEER = ITEMS.register("cheer_attack", () -> new CheerItem(CheerBagItem.CheerType.ATTACK, 1));
         ModItems.DEFENSE_CHEER = ITEMS.register("cheer_defense", () -> new CheerItem(CheerBagItem.CheerType.DEFENSE, 1));
-        ModItems.HEAL_CHEER = ITEMS.register("cheer_heal", () -> new CheerItem(CheerBagItem.CheerType.HEAL, 0.3));
+        ModItems.HEAL_CHEER = ITEMS.register("cheer_heal", () -> new CheerItem(CheerBagItem.CheerType.HEAL, 0.5));
     }
 
     public static void registerBlockItem(String name, Supplier<BlockItem> blockItem) {
