@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,26 +19,30 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public class CheerItem extends Item implements SimpleBagItemLike {
+    private final CheerBagItem.CheerType cheerType;
     private final BagItem bagItem;
 
-    private CheerItem(BagItem bagItem) {
+    private CheerItem(CheerBagItem.CheerType cheerType, BagItem bagItem) {
         super(new Properties().rarity(Rarity.RARE));
+        this.cheerType = cheerType;
         this.bagItem = bagItem;
     }
 
     public CheerItem(CheerBagItem.CheerType cheerType, int data) {
-        this(new CheerBagItem(cheerType, data));
+        this(cheerType, new CheerBagItem(cheerType, data));
     }
 
     public CheerItem(CheerBagItem.CheerType cheerType, double data) {
-        this(new CheerBagItem(cheerType, data));
+        this(cheerType, new CheerBagItem(cheerType, data));
     }
 
     @Override
@@ -93,5 +98,11 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         }
         itemStack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("item.cobblemonraiddens.cheer.tooltip").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(String.format("item.cobblemonraiddens.%s.tooltip", this.cheerType.getId())).withStyle(ChatFormatting.GRAY));
     }
 }

@@ -203,19 +203,19 @@ public class RaidInstance {
     }
 
     public void runCheer(PokemonBattle oBattle, BagItem bagItem, String data) {
-        this.cheer(oBattle, bagItem, data);
+        this.cheer(oBattle, bagItem, data, false);
         for (PokemonBattle b : this.battles) {
             if (b == oBattle) continue;
-            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data));
+            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data, true));
         }
     }
 
-    public void cheer(PokemonBattle battle, BagItem bagItem, String data) {
+    public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data));
+        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
     }
 
     private void clearBossStats(@NotNull PokemonBattle battle) {
@@ -239,10 +239,16 @@ public class RaidInstance {
     }
 
     private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
+        this.sendAction(side1, side2, response, true);
+    }
+
+    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
         side1.getResponses().add(response);
         side1.setMustChoose(false);
-        side2.getResponses().addFirst(PassActionResponse.INSTANCE);
-        side2.setMustChoose(false);
+        if (skipEnemyAction) {
+            side2.getResponses().addFirst(PassActionResponse.INSTANCE);
+            side2.setMustChoose(false);
+        }
         side1.getBattle().checkForInputDispatch();
         side1.sendUpdate(new BattleApplyPassResponsePacket());
     }
