@@ -8,7 +8,6 @@
             if (i === 'evasion' || i === 'accuracy') continue;
             this.modifiedStats[i] = this.storedStats[i];
         }
-        pokemon.clearVolatile();
         pokemon.cureStatus();
 
         battle.log = battle.log.filter(line => !(line.startsWith('|bagitem|') && line.includes('clear_boost')));
