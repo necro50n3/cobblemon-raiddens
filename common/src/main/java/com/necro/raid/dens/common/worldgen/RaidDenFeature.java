@@ -38,7 +38,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
-        ResourceLocation location = RaidRegistry.getRandomRaidBossResource(context.random(), level.getLevel());
+        ResourceLocation location = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
         if (raidBoss == null) return false;
 

@@ -24,11 +24,19 @@ public class RaidAdminCommands {
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                     .then(Commands.argument("dimension", DimensionArgument.dimension())
-                        .executes(RaidAdminCommands::resetClearsForAll)
+                        .executes(context -> resetClearsForAll(
+                            context,
+                            BlockPosArgument.getBlockPos(context, "pos"),
+                            DimensionArgument.getDimension(context, "dimension")
+                        ))
                         .then(Commands.argument("player", EntityArgument.player())
                             .executes(RaidAdminCommands::resetClearsForPlayerAndPos)
                         )
                     )
+                    .requires(CommandSourceStack::isPlayer)
+                    .executes(context -> resetClearsForAll(
+                        context, BlockPosArgument.getBlockPos(context, "pos")
+                    ))
                 )
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes(RaidAdminCommands::resetClearsForPlayer)
@@ -92,9 +100,14 @@ public class RaidAdminCommands {
         return 1;
     }
 
-    private static int resetClearsForAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
-        ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
+    private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos) {
+        ServerPlayer player = context.getSource().getPlayer();
+        if (player == null) return 0;
+        ServerLevel dimension = player.serverLevel();
+        return resetClearsForAll(context, blockPos, dimension);
+    }
+
+    private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel dimension) {
         RaidHelper.resetClearedRaids(dimension, blockPos);
         context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
 

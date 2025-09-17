@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
@@ -52,7 +53,6 @@ public class RaidDenCommands {
         return builder.buildFuture();
     };
 
-
     public static final SuggestionProvider<CommandSourceStack> CYCLE_MODE = (context, builder) -> {
         String remaining = builder.getRemaining().toLowerCase();
 
@@ -63,6 +63,7 @@ public class RaidDenCommands {
         }
         return builder.buildFuture();
     };
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd")
             .then(Commands.literal("dens")
@@ -70,44 +71,147 @@ public class RaidDenCommands {
                 .then(Commands.argument("position", BlockPosArgument.blockPos())
                     .executes(context -> createRaidDen(
                         context,
-                        BlockPosArgument.getBlockPos(context, "position")
+                        BlockPosArgument.getBlockPos(context, "position"),
+                        context.getSource().getLevel(),
+                        (ResourceLocation) null, null, null
                     ))
-                    .then(Commands.argument("cycle_mode", StringArgumentType.word())
-                        .suggests(CYCLE_MODE)
-                        .executes(context -> createRaidDen(
-                            context,
-                            BlockPosArgument.getBlockPos(context, "position"),
-                            RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode"))
-                        ))
-                        .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                    .then(Commands.literal("tier")
+                        .then(Commands.argument("tier", StringArgumentType.word())
+                            .suggests(RAID_TIERS)
                             .executes(context -> createRaidDen(
                                 context,
                                 BlockPosArgument.getBlockPos(context, "position"),
-                                RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
-                                BoolArgumentType.getBool(context, "can_reset")
+                                context.getSource().getLevel(),
+                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                null, null
                             ))
-                            .then(Commands.literal("tier")
-                                .then(Commands.argument("tier", StringArgumentType.word())
-                                    .suggests(RAID_TIERS)
+                            .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                .suggests(CYCLE_MODE)
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    context.getSource().getLevel(),
+                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                    RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                    null
+                                ))
+                                .then(Commands.argument("can_reset", BoolArgumentType.bool())
                                     .executes(context -> createRaidDen(
                                         context,
                                         BlockPosArgument.getBlockPos(context, "position"),
+                                        context.getSource().getLevel(),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
                                         RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
-                                        BoolArgumentType.getBool(context, "can_reset"),
-                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase())
+                                        BoolArgumentType.getBool(context, "can_reset")
                                     ))
                                 )
                             )
-                            .then(Commands.literal("boss")
-                                .then(Commands.argument("boss", ResourceLocationArgument.id())
-                                    .suggests(RAID_BOSSES)
+                        )
+                    )
+                    .then(Commands.literal("boss")
+                        .then(Commands.argument("boss", ResourceLocationArgument.id())
+                            .suggests(RAID_BOSSES)
+                            .executes(context -> createRaidDen(
+                                context,
+                                BlockPosArgument.getBlockPos(context, "position"),
+                                context.getSource().getLevel(),
+                                ResourceLocationArgument.getId(context, "boss"),
+                                null, null
+                            ))
+                            .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                .suggests(CYCLE_MODE)
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    context.getSource().getLevel(),
+                                    ResourceLocationArgument.getId(context, "boss"),
+                                    RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                    null
+                                ))
+                                .then(Commands.argument("can_reset", BoolArgumentType.bool())
                                     .executes(context -> createRaidDen(
                                         context,
                                         BlockPosArgument.getBlockPos(context, "position"),
+                                        context.getSource().getLevel(),
+                                        ResourceLocationArgument.getId(context, "boss"),
                                         RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
-                                        BoolArgumentType.getBool(context, "can_reset"),
-                                        ResourceLocationArgument.getId(context, "boss")
+                                        BoolArgumentType.getBool(context, "can_reset")
                                     ))
+                                )
+                            )
+                        )
+                    )
+                    .then(Commands.argument("dimension", DimensionArgument.dimension())
+                        .requires(context -> !context.isPlayer())
+                        .executes(context -> createRaidDen(
+                            context,
+                            BlockPosArgument.getBlockPos(context, "position"),
+                            DimensionArgument.getDimension(context, "dimension"),
+                            (ResourceLocation) null, null, null
+                        ))
+                        .then(Commands.literal("tier")
+                            .then(Commands.argument("tier", StringArgumentType.word())
+                                .suggests(RAID_TIERS)
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    DimensionArgument.getDimension(context, "dimension"),
+                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                    null, null
+                                ))
+                                .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                    .suggests(CYCLE_MODE)
+                                    .executes(context -> createRaidDen(
+                                        context,
+                                        BlockPosArgument.getBlockPos(context, "position"),
+                                        DimensionArgument.getDimension(context, "dimension"),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                        RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                        null
+                                    ))
+                                    .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                                        .executes(context -> createRaidDen(
+                                            context,
+                                            BlockPosArgument.getBlockPos(context, "position"),
+                                            DimensionArgument.getDimension(context, "dimension"),
+                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                            RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                            BoolArgumentType.getBool(context, "can_reset")
+                                        ))
+                                    )
+                                )
+                            )
+                        )
+                        .then(Commands.literal("boss")
+                            .then(Commands.argument("boss", ResourceLocationArgument.id())
+                                .suggests(RAID_BOSSES)
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    DimensionArgument.getDimension(context, "dimension"),
+                                    ResourceLocationArgument.getId(context, "boss"),
+                                    null, null
+                                ))
+                                .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                    .suggests(CYCLE_MODE)
+                                    .executes(context -> createRaidDen(
+                                        context,
+                                        BlockPosArgument.getBlockPos(context, "position"),
+                                        DimensionArgument.getDimension(context, "dimension"),
+                                        ResourceLocationArgument.getId(context, "boss"),
+                                        RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                        null
+                                    ))
+                                    .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                                        .executes(context -> createRaidDen(
+                                            context,
+                                            BlockPosArgument.getBlockPos(context, "position"),
+                                            DimensionArgument.getDimension(context, "dimension"),
+                                            ResourceLocationArgument.getId(context, "boss"),
+                                            RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                            BoolArgumentType.getBool(context, "can_reset")
+                                        ))
+                                    )
                                 )
                             )
                         )
@@ -121,16 +225,16 @@ public class RaidDenCommands {
         register(dispatcher);
     }
 
-    private static int createRaidDenFromExisting(Level level, BlockState blockState, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation location) {
+    private static int createRaidDenFromExisting(Level level, BlockState blockState, BlockPos blockPos, ResourceLocation location, RaidCycleMode cycleMode, Boolean canReset) {
         if (cycleMode == null) cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
         if (canReset == null) canReset = blockState.getValue(RaidCrystalBlock.CAN_RESET);
         if (location == null) {
             if (cycleMode == RaidCycleMode.LOCK_TIER) {
                 RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-                location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), tier);
+                location = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier);
             }
             else {
-                location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), level);
+                location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
             }
         }
 
@@ -148,10 +252,10 @@ public class RaidDenCommands {
         return 1;
     }
 
-    private static int createRaidDenNew(Level level, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation location) {
+    private static int createRaidDenNew(Level level, BlockPos blockPos, ResourceLocation location, RaidCycleMode cycleMode, Boolean canReset) {
         if (cycleMode == null) cycleMode = RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
         if (canReset == null) canReset = CobblemonRaidDens.CONFIG.reset_time > 1;
-        if (location == null) location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), level);
+        if (location == null) location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
 
@@ -166,29 +270,16 @@ public class RaidDenCommands {
         return 1;
     }
 
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation raidBoss) {
-        ServerLevel level = context.getSource().getLevel();
+    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation raidBoss, RaidCycleMode cycleMode, Boolean canReset) {
         if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal.getBlockState(), blockPos, cycleMode, canReset, raidBoss);
-        else return createRaidDenNew(level, blockPos, cycleMode, canReset, raidBoss);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal.getBlockState(), blockPos, raidBoss, cycleMode, canReset);
+        else return createRaidDenNew(level, blockPos, raidBoss, cycleMode, canReset);
     }
 
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, RaidTier raidTier) {
+    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, Boolean canReset) {
         RandomSource random = context.getSource().getLevel().getRandom();
-        return createRaidDen(context, blockPos, cycleMode, canReset, RaidRegistry.getRandomRaidBossResource(random, raidTier));
-    }
-
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset) {
-        return createRaidDen(context, blockPos, cycleMode, canReset, (ResourceLocation) null);
-    }
-
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode) {
-        return createRaidDen(context, blockPos, cycleMode, null);
-    }
-
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos) {
-        return createRaidDen(context, blockPos, null);
+        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, raidTier), cycleMode, canReset);
     }
 }
