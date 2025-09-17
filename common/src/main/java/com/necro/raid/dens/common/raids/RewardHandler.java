@@ -84,10 +84,7 @@ public class RewardHandler {
     private ItemStack buildRaidPouch() {
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
         item.set(ModComponents.TIER_COMPONENT.value(),  this.raidBoss.getTier());
-        if (this.raidBoss.isMega()) item.set(ModComponents.FEATURE_COMPONENT.value(), RaidFeature.MEGA);
-        else if (this.raidBoss.isTera()) item.set(ModComponents.FEATURE_COMPONENT.value(), RaidFeature.TERA);
-        else if (this.raidBoss.isDynamax()) item.set(ModComponents.FEATURE_COMPONENT.value(), RaidFeature.DYNAMAX);
-        else item.set(ModComponents.FEATURE_COMPONENT.value(), RaidFeature.DEFAULT);
+        item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
         item.set(ModComponents.TYPE_COMPONENT.value(),  this.raidBoss.getType());
         return item;
     }
