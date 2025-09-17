@@ -22,6 +22,7 @@ repositories {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
     modImplementation "com.cobblemon:mod:$rootProject.cobblemon_version"
+    implementation(files "../lib/common/molang-1.1.19.jar")
     modImplementation "com.terraformersmc:modmenu:11.0.3"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951008"
     modImplementation "maven.modrinth:jade:$rootProject.jade_version+neoforge"

@@ -1,20 +1,38 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
+import com.cobblemon.mod.common.battles.BagItemActionResponse;
+import com.cobblemon.mod.common.battles.PassActionResponse;
+import com.cobblemon.mod.common.battles.ShowdownActionResponse;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.item.battle.BagItem;
+import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class RaidInstance {
+    private static final Map<String, BiConsumer<RaidInstance, PokemonBattle>> INSTRUCTION_MAP = new HashMap<>();
+
     private final PokemonEntity bossEntity;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
@@ -26,10 +44,13 @@ public class RaidInstance {
 
     private float currentHealth;
     private final float maxHealth;
+    private final Map<Integer, String> scriptByTurn;
+    private final NavigableMap<Double, String> scriptByHp;
 
 //    private final int maxDuration;
 //    private int durationTick;
 
+    private final Map<ServerPlayer, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
 
     public RaidInstance(PokemonEntity entity) {
@@ -52,9 +73,21 @@ public class RaidInstance {
         this.currentHealth = entity.getPokemon().getCurrentHealth();
         this.maxHealth = entity.getPokemon().getMaxHealth();
 
+        this.scriptByTurn = new HashMap<>();
+        this.scriptByHp = new TreeMap<>();
+        raidBoss.getScript().forEach((key, func) -> {
+            if (key.startsWith("turn:")) {
+                this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
+            }
+            else if (key.startsWith("hp:")) {
+                this.scriptByHp.put(Double.parseDouble(key.split(":")[1]), func);
+            }
+        });
+
 //        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
 //        this.durationTick = this.maxDuration;
 
+        this.cheersLeft = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
@@ -66,10 +99,12 @@ public class RaidInstance {
 
     public void addPlayer(ServerPlayer player, PokemonBattle battle) {
         this.battles.add(battle);
+        ((IRaidBattle) battle).setRaidBattle(this);
         this.bossEvent.addPlayer(player);
 //        this.timer.addPlayer(player);
         this.damageCache.put(player, this.currentHealth);
         this.activePlayers.add(player);
+        this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
         RaidBuilder.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
     }
 
@@ -82,6 +117,7 @@ public class RaidInstance {
 //        this.durationTick -= (int) (this.maxDuration * 0.1);
 
         this.battles.remove(battle);
+        ((IRaidBattle) battle).setRaidBattle(null);
         this.bossEvent.removePlayer(player);
 //        this.timer.removePlayer(player);
         this.damageCache.remove(player);
@@ -109,7 +145,10 @@ public class RaidInstance {
             this.queueStopRaid();
         }
         else {
-            this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.setProgress(this.currentHealth / this.maxHealth), 60));
+            this.runQueue.add(new DelayedRunnable(() -> {
+                this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
+                this.runScriptByHp((double) this.currentHealth / this.maxHealth);
+            }, 60));
         }
     }
 
@@ -155,6 +194,79 @@ public class RaidInstance {
         return this.raidBoss;
     }
 
+    public void runScriptByTurn(PokemonBattle battle, int turn) {
+        String func = this.scriptByTurn.remove(turn);
+        if (func == null) return;
+        ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func));
+    }
+
+    public void runScriptByHp(double hpRatio) {
+        this.scriptByHp.tailMap(hpRatio, true)
+            .values()
+            .forEach(func -> this.battles.forEach(battle -> ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func))));
+
+        this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
+    }
+
+    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, BagItem bagItem, String data) {
+        int cheersLeft = this.cheersLeft.getOrDefault(player, 0);
+        if (cheersLeft <= 0) return false;
+        this.cheersLeft.put(player, --cheersLeft);
+
+        this.cheer(oBattle, bagItem, data, false);
+        for (PokemonBattle b : this.battles) {
+            if (b == oBattle) continue;
+            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data, true));
+        }
+        return true;
+    }
+
+    public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side1.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        if (bagItem instanceof CheerBagItem cheerBagItem && cheerBagItem.cheerType() == CheerBagItem.CheerType.HEAL && target.getFirst().getBattlePokemon().getEntity() instanceof PokemonEntity entity) {
+            entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1f, 1f);
+        }
+        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
+    }
+
+    private void clearBossStats(@NotNull PokemonBattle battle) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, bp, key));
+    }
+
+    private void clearPlayerStats(@NotNull PokemonBattle battle) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side1.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, bp, key));
+    }
+
+    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
+        this.sendAction(side1, side2, response, true);
+    }
+
+    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
+        side1.getResponses().add(response);
+        side1.setMustChoose(false);
+        if (skipEnemyAction) {
+            side2.getResponses().addFirst(PassActionResponse.INSTANCE);
+            side2.setMustChoose(false);
+        }
+        side1.getBattle().checkForInputDispatch();
+        side1.sendUpdate(new BattleApplyPassResponsePacket());
+    }
+
     private static class DelayedRunnable {
         private final Runnable runnable;
         private final int delay;
@@ -175,7 +287,13 @@ public class RaidInstance {
         public boolean tick() {
             if (++this.tick < this.delay) return false;
             this.runnable.run();
+            if (this.repeat) this.tick = 0;
             return !this.repeat;
         }
+    }
+
+    static {
+        INSTRUCTION_MAP.put("RESET_BOSS", RaidInstance::clearBossStats);
+        INSTRUCTION_MAP.put("RESET_PLAYER", RaidInstance::clearPlayerStats);
     }
 }

@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.advancements.RaidTierTrigger;
 import com.necro.raid.dens.common.advancements.JoinRaidDenTrigger;
 import com.necro.raid.dens.common.advancements.RaidShinyTrigger;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
@@ -19,12 +20,11 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.critereon.ConsumeItemTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomModelData;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -204,5 +204,23 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .parent(dynamaxRaidAchievement)
             .addCriterion("completed_mega", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.MEGA))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_mega");
+
+        Advancement.Builder.advancement()
+            .display(
+                ModItems.HEAL_CHEER.value(),
+                Component.translatable("advancement.cobblemonraiddens.great_friend.title"),
+                Component.translatable("advancement.cobblemonraiddens.great_friend.description"),
+                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
+                AdvancementType.TASK,
+                true, false, false
+            )
+            .parent(joinRaidDenAdvancement)
+            .addCriterion("attack_cheer",
+                ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.ATTACK_CHEER.value()))
+            .addCriterion("defense_cheer",
+                ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.DEFENSE_CHEER.value()))
+            .addCriterion("heal_cheer",
+                ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.HEAL_CHEER.value()))
+            .save(consumer, CobblemonRaidDens.MOD_ID + ":great_friend");
     }
 }

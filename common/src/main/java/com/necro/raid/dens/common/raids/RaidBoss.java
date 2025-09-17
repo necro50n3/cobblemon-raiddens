@@ -51,12 +51,13 @@ public class RaidBoss {
     private final boolean isCatchable;
     private final int healthMulti;
     private final float shinyRate;
+    private final Map<String, String> script;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
-                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId,
-                    double weight, boolean isCatchable, int healthMulti, float shinyRate) {
+                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
         this.raidTier = tier;
@@ -69,13 +70,14 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
+        this.script = script;
 
         this.id = null;
     }
 
-    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType,
-                    RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm,
-                    String lootTableId, boolean isCatchable, int healthMulti, float shinyRate) {
+    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier,
+                    RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm,
+                    String lootTableId, boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
         this.baseProperties = baseProperties;
         this.bossProperties = bossProperties;
         this.raidTier = tier;
@@ -88,6 +90,7 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
+        this.script = script;
 
         this.id = null;
     }
@@ -224,6 +227,10 @@ public class RaidBoss {
         return this.shinyRate;
     }
 
+    public Map<String, String> getScript() {
+        return this.script;
+    }
+
     public ResourceLocation getId() {
         return this.id;
     }
@@ -323,8 +330,9 @@ public class RaidBoss {
             Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
             Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable),
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
-            Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate) -> {
+            Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
+            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script) -> {
                 properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
@@ -341,7 +349,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script);
             })
         );
     }

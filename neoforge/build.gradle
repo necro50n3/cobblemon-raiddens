@@ -93,7 +93,7 @@ shadowJar {
 }
 
 remapJar {
-    // atAccessWideners.add("modid.accesswidener")
+    atAccessWideners.add("cobblemonraiddens.accesswidener")
 
     input.set shadowJar.archiveFile
     dependsOn shadowJar

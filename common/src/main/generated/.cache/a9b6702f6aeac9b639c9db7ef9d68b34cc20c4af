@@ -1,10 +1,11 @@
-// 1.21.1	2025-09-13T20:35:47.9375336	Cobblemon Raid Dens/Advancements
-a8053d03820d1922d7da0f3cfb77899841a8605d data\cobblemonraiddens\advancement\raid_mega.json
+// 1.21.1	2025-09-17T01:01:34.7602331	Cobblemon Raid Dens/Advancements
 ea167180e227c4449efc0e76aeab54e5a91421c7 data\cobblemonraiddens\advancement\join_raid.json
+a8053d03820d1922d7da0f3cfb77899841a8605d data\cobblemonraiddens\advancement\raid_mega.json
 1b0cbca861b6fb86da43321de0c27f83b2230116 data\cobblemonraiddens\advancement\tier_two.json
 862608ecbba28eb79d32ad4bfb4d5a6232962b5b data\cobblemonraiddens\advancement\raid_shiny.json
-89909ec42af10ea84f0181c2cb00254054a11a8e data\cobblemonraiddens\advancement\raid_dynamax.json
 9177cc8bd833e5fca72923ab54abd3ab39295c6e data\cobblemonraiddens\advancement\tier_six.json
+89909ec42af10ea84f0181c2cb00254054a11a8e data\cobblemonraiddens\advancement\raid_dynamax.json
+84140fa8345e7a3d44e9e79791b047f43b997e70 data\cobblemonraiddens\advancement\great_friend.json
 c82903007238ca3d3fc7ec47d5ad4fca34d1ee81 data\cobblemonraiddens\advancement\tier_four.json
 f35d364cd502dcb536b1f8856e58bc7c1bc52055 data\cobblemonraiddens\advancement\raid_tera.json
 e61d4a7fce6bdb127b53ce5bc99316be93e3859a data\cobblemonraiddens\advancement\tier_one.json

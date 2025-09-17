@@ -7,6 +7,9 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.exception.IllegalActionChoiceException;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,6 +23,7 @@ public abstract class ForcePassActionResponseMixin {
     private void isValidInject(ActiveBattlePokemon activeBattlePokemon, ShowdownMoveset showdownMoveSet, boolean forceSwitch, CallbackInfoReturnable<Boolean> cir) {
         List<ActiveBattlePokemon> targetPokemon = activeBattlePokemon.getActor().getBattle().getSide2().getActivePokemon();
         if (targetPokemon.isEmpty()) return;
+        else if (targetPokemon.getFirst() == activeBattlePokemon) return;
         BattlePokemon battlePokemon = targetPokemon.getFirst().getBattlePokemon();
         if (battlePokemon == null) return;
         PokemonEntity pokemonEntity = battlePokemon.getEntity();
@@ -27,7 +31,11 @@ public abstract class ForcePassActionResponseMixin {
         else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
 
         BattleActor battleActor = activeBattlePokemon.getActor();
-        battleActor.getExpectingPassActions().removeFirst();
+        ServerPlayer player = battleActor.getBattle().getPlayers().getFirst();
+        if (!battleActor.isForPlayer(player)) return;
+        ItemStack stack = player.getMainHandItem();
+        if (!stack.is(Items.AIR) && !player.isCreative()) stack.grow(1);
+        if (!battleActor.getExpectingPassActions().isEmpty()) battleActor.getExpectingPassActions().removeFirst();
         throw new IllegalActionChoiceException(
             battleActor,
             Component.translatable("message.cobblemonraiddens.raid.forbidden_item").getString()
