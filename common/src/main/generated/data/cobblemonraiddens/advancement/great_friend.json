@@ -1,0 +1,55 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "attack_cheer": {
+      "conditions": {
+        "item": {
+          "items": "cobblemonraiddens:cheer_attack"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "defense_cheer": {
+      "conditions": {
+        "item": {
+          "items": "cobblemonraiddens:cheer_defense"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "heal_cheer": {
+      "conditions": {
+        "item": {
+          "items": "cobblemonraiddens:cheer_heal"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.great_friend.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "cobblemonraiddens:cheer_heal"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.great_friend.title"
+    }
+  },
+  "requirements": [
+    [
+      "attack_cheer"
+    ],
+    [
+      "defense_cheer"
+    ],
+    [
+      "heal_cheer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

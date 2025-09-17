@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -95,9 +96,11 @@ public class CheerItem extends Item implements SimpleBagItemLike {
 
             boolean success = this.handleInteraction((ServerPlayer) player, battlePokemon, itemStack);
             if (!success) return InteractionResultHolder.fail(itemStack);
+            itemStack.consume(1, player);
+            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, itemStack);
+            return InteractionResultHolder.success(itemStack);
         }
-        itemStack.consume(1, player);
-        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+        else return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 
     @Override

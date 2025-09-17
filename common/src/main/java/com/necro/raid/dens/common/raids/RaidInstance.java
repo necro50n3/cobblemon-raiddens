@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
@@ -13,6 +14,7 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassRespon
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
@@ -215,6 +217,9 @@ public class RaidInstance {
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        if (bagItem instanceof CheerBagItem cheerBagItem && cheerBagItem.cheerType() == CheerBagItem.CheerType.HEAL && target.getFirst().getBattlePokemon().getEntity() instanceof PokemonEntity entity) {
+            entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1f, 1f);
+        }
         this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
     }
 
