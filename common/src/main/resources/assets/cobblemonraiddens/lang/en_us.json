@@ -25,6 +25,7 @@
   "advancement.cobblemonraiddens.tier_six.description": "Defeat a tier six raid.",
   "advancement.cobblemonraiddens.tier_seven.title": "The Mightiest",
   "advancement.cobblemonraiddens.tier_seven.description": "Defeat a tier seven raid.",
+  "battle.cobblemonraiddens.cheer.cannot": "You have no more cheers left.",
   "battle.cobblemonraiddens.cheer.cheer_attack": "%1$s cheered with \"Go All Out\"!",
   "battle.cobblemonraiddens.cheer.cheer_defense": "%1$s cheered with \"Hang tough\"!",
   "battle.cobblemonraiddens.cheer.cheer_heal": "%1$s cheered with \"Heal up\"!",

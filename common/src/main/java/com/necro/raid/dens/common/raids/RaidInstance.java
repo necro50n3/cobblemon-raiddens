@@ -11,6 +11,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
@@ -49,6 +50,7 @@ public class RaidInstance {
 //    private final int maxDuration;
 //    private int durationTick;
 
+    private final Map<ServerPlayer, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
 
     public RaidInstance(PokemonEntity entity) {
@@ -85,6 +87,7 @@ public class RaidInstance {
 //        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
 //        this.durationTick = this.maxDuration;
 
+        this.cheersLeft = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
@@ -101,6 +104,7 @@ public class RaidInstance {
 //        this.timer.addPlayer(player);
         this.damageCache.put(player, this.currentHealth);
         this.activePlayers.add(player);
+        this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
         RaidBuilder.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
     }
 
@@ -204,12 +208,17 @@ public class RaidInstance {
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
 
-    public void runCheer(PokemonBattle oBattle, BagItem bagItem, String data) {
+    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, BagItem bagItem, String data) {
+        int cheersLeft = this.cheersLeft.getOrDefault(player, 0);
+        if (cheersLeft <= 0) return false;
+        this.cheersLeft.put(player, --cheersLeft);
+
         this.cheer(oBattle, bagItem, data, false);
         for (PokemonBattle b : this.battles) {
             if (b == oBattle) continue;
             ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data, true));
         }
+        return true;
     }
 
     public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {

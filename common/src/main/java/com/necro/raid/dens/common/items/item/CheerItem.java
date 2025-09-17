@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleMakeChoicePacket;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
@@ -73,11 +74,15 @@ public class CheerItem extends Item implements SimpleBagItemLike {
             return false;
         }
 
-        battlePokemon.getActor().sendUpdate(new BattleMakeChoicePacket());
         UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).getRaidId();
-
         String data = player.getName().getString();
-        RaidHelper.ACTIVE_RAIDS.get(raidId).runCheer(battle, this.getBagItem(), data);
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(raidId);
+        if (!raid.runCheer(player, battle, this.getBagItem(), data)) {
+            player.sendSystemMessage(Component.translatable("battle.cobblemonraiddens.cheer.cannot").withStyle(ChatFormatting.RED));
+            return false;
+        }
+
+        battlePokemon.getActor().sendUpdate(new BattleMakeChoicePacket());
         return true;
     }
 
