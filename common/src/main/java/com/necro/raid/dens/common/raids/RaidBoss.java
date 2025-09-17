@@ -279,15 +279,13 @@ public class RaidBoss {
     public static Codec<PokemonProperties> propertiesCodec() {
         return RecordCodecBuilder.create(inst -> inst.group(
             Codec.STRING.fieldOf("species").forGetter(PokemonProperties::getSpecies),
-            Codec.STRING.optionalFieldOf("form", "").forGetter(PokemonProperties::getForm),
             Codec.STRING.optionalFieldOf("gender", "").forGetter(RaidBoss::getGender),
             Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
             Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
             Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
-            ).apply(inst, (species, form, gender, ability, nature, moves) -> {
+            ).apply(inst, (species, gender, ability, nature, moves) -> {
                 PokemonProperties properties = PokemonProperties.Companion.parse("");
                 properties.setSpecies(species);
-                if (!form.isBlank()) properties.setForm(form);
                 try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
                 catch (IllegalArgumentException ignored) {}
                 if (!ability.isBlank()) properties.setAbility(ability);
