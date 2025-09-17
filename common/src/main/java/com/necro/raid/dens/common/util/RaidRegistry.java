@@ -51,6 +51,10 @@ public class RaidRegistry {
         return RAID_BOSS_MAP.get(location);
     }
 
+    public static boolean exists(ResourceLocation location) {
+        return RAID_BOSS_MAP.containsKey(location);
+    }
+
     public static RaidBoss getRandomRaidBoss(RandomSource random, RaidTier tier) {
         ResourceLocation location = getRandomRaidBossResource(random, tier);
         return location == null ? null : getRaidBoss(location);

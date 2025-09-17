@@ -83,7 +83,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (level.isClientSide()) return;
         else if (!this.canTick(blockState)) return;
 
-        if (this.raidBoss == null) {
+        if (this.raidBoss == null || !RaidRegistry.exists(this.raidBoss)) {
             this.generateRaidBoss(level, blockPos, blockState);
         }
 
