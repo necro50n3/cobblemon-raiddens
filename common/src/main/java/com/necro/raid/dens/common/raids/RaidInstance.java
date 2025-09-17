@@ -138,7 +138,7 @@ public class RaidInstance {
         this.damageCache.put(player, remainingHealth);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
-        this.bossEvent.getPlayers().forEach(p -> RaidBuilder.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
+        this.activePlayers.forEach(p -> RaidBuilder.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
 
         if (this.currentHealth == 0f) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);

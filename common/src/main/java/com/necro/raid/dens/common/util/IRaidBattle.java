@@ -7,6 +7,7 @@ import java.util.function.BiConsumer;
 
 public interface IRaidBattle {
     boolean isRaidBattle();
-    void setRaidBattle(RaidInstance isRaidBattle);
+    RaidInstance getRaidBattle();
+    void setRaidBattle(RaidInstance raidBattle);
     void addToQueue(BiConsumer<RaidInstance, PokemonBattle> instruction);
 }

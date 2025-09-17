@@ -22,7 +22,7 @@ import java.util.Map;
 @Mixin(ShowdownInterpreter.class)
 public class ShowdownInterpreterMixin {
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private static Map<String, Function4<PokemonBattle, InstructionSet, BattleMessage, Iterator<BattleMessage>, InterpreterInstruction>> updateInstructionParser;
 
     @Inject(method = "<clinit>", at = @At("RETURN"), remap = false)

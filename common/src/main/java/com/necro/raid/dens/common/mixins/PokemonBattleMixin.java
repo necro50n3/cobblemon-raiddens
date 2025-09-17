@@ -39,6 +39,11 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     }
 
     @Override
+    public RaidInstance getRaidBattle() {
+        return this.raidInstance;
+    }
+
+    @Override
     public void setRaidBattle(RaidInstance raidInstance) {
         this.raidInstance = raidInstance;
     }
