@@ -89,8 +89,12 @@ public class RaidRegistry {
         return getRandomRaidBoss(random, tier, null, null);
     }
 
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidType type, RaidFeature feature) {
+        return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random, level), type, feature);
+    }
+
     public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level) {
-        return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random, level));
+        return getRandomRaidBoss(random, level, null, null);
     }
 
     public static void clear() {
@@ -99,6 +103,8 @@ public class RaidRegistry {
         RAIDS_BY_FEATURE.values().forEach(BitSet::clear);
         RAID_LIST.clear();
         RAID_LOOKUP.clear();
+        WEIGHTS_CACHE.clear();
+        INDEX_CACHE.clear();
 
         for (RaidTier tier : RaidTier.values()) { tier.setPresent(false); }
         for (RaidType type : RaidType.values()) { type.setPresent(false); }

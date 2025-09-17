@@ -113,19 +113,17 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         RaidCycleMode cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
         if (cycleMode == RaidCycleMode.NONE) return;
 
-        RaidTier newRaidTier;
-        if (cycleMode == RaidCycleMode.LOCK_TIER) newRaidTier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-        else newRaidTier = RaidTier.getWeightedRandom(level.getRandom(), level);
+        RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
+        RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
 
-        ResourceLocation loc = RaidRegistry.getRandomRaidBoss(level.getRandom(), newRaidTier);
+        ResourceLocation loc = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, type, null);
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(loc);
         if (loc == null || raidBoss == null) return;
         this.raidBoss = loc;
-        RaidType newRaidType = raidBoss.getType();
 
         level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.RAID_TIER, newRaidTier)
-            .setValue(RaidCrystalBlock.RAID_TYPE, newRaidType)
+            .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
+            .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.ACTIVE, true), 2);
     }
 

@@ -13,6 +13,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
+import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -229,13 +230,9 @@ public class RaidDenCommands {
         if (cycleMode == null) cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
         if (canReset == null) canReset = blockState.getValue(RaidCrystalBlock.CAN_RESET);
         if (location == null) {
-            if (cycleMode == RaidCycleMode.LOCK_TIER) {
-                RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-                location = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier);
-            }
-            else {
-                location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
-            }
+            RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
+            RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
+            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, type, null);
         }
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
@@ -279,7 +276,15 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, Boolean canReset) {
+        BlockState blockState = level.getBlockState(blockPos);
+        if (cycleMode == null) cycleMode = blockState.hasProperty(RaidCrystalBlock.CYCLE_MODE)
+            ? level.getBlockState(blockPos).getValue(RaidCrystalBlock.CYCLE_MODE)
+            : RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
+
         RandomSource random = context.getSource().getLevel().getRandom();
-        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, raidTier), cycleMode, canReset);
+        RaidType type;
+        if (!blockState.hasProperty(RaidCrystalBlock.RAID_TYPE) || cycleMode.canCycleType()) type = null;
+        else type = level.getBlockState(blockPos).getValue(RaidCrystalBlock.RAID_TYPE);
+        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, raidTier, type, null), cycleMode, canReset);
     }
 }
