@@ -22,12 +22,8 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IShinyRate;
-import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -56,6 +52,8 @@ public class RaidBoss {
     private final int healthMulti;
     private final float shinyRate;
 
+    private ResourceLocation id;
+
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId,
                     double weight, boolean isCatchable, int healthMulti, float shinyRate) {
@@ -71,6 +69,8 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
+
+        this.id = null;
     }
 
     public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier, RaidType raidType,
@@ -88,6 +88,8 @@ public class RaidBoss {
         this.isCatchable = isCatchable;
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
+
+        this.id = null;
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
@@ -222,6 +224,14 @@ public class RaidBoss {
         return this.shinyRate;
     }
 
+    public ResourceLocation getId() {
+        return this.id;
+    }
+
+    public void setId(ResourceLocation id) {
+        this.id = id;
+    }
+
     public boolean isMega() {
         return this.raidFeature == RaidFeature.MEGA;
     }
@@ -232,87 +242,6 @@ public class RaidBoss {
 
     public boolean isDynamax() {
         return this.raidFeature == RaidFeature.DYNAMAX;
-    }
-
-    public CompoundTag saveNbt(CompoundTag tag) {
-        tag.putString("base_properties", this.baseProperties.asString(" "));
-        tag.putString("boss_properties", this.bossProperties.asString(" "));
-        tag.putString("raid_tier", this.raidTier.getSerializedName());
-        tag.putString("raid_type", this.raidType.getSerializedName());
-        tag.putString("raid_feature", this.raidFeature.getSerializedName());
-
-        ListTag raidFormTag = new ListTag();
-        for (SpeciesFeature form : this.raidForm) {
-            raidFormTag.add(RaidBoss.encodeFormTag(form));
-        }
-        tag.put("raid_form", raidFormTag);
-
-        ListTag baseFormTag = new ListTag();
-        for (SpeciesFeature form : this.baseForm) {
-            baseFormTag.add(RaidBoss.encodeFormTag(form));
-        }
-        tag.put("base_form", baseFormTag);
-
-        tag.putString("loot_table", this.lootTableId);
-        tag.putBoolean("is_catchable", this.isCatchable);
-        tag.putInt("health_multi", this.healthMulti);
-        tag.putFloat("shiny_rate", this.shinyRate);
-        return tag;
-    }
-
-    public static RaidBoss loadNbt(CompoundTag tag) {
-        List<SpeciesFeature> raidForm;
-        if (tag.contains("raid_form")) raidForm = RaidBoss.decodeFormTag(tag.getList("raid_form", Tag.TAG_COMPOUND));
-        else raidForm = new ArrayList<>();
-
-        List<SpeciesFeature> baseForm;
-        if (tag.contains("base_form")) baseForm = RaidBoss.decodeFormTag(tag.getList("base_form", Tag.TAG_COMPOUND));
-        else baseForm = new ArrayList<>();
-
-        String lootTableId = tag.contains("loot_table") ? tag.getString("loot_table") : "";
-        boolean isCatchable = !tag.contains("is_catchable") || tag.getBoolean("is_catchable");
-        int healthMulti = tag.contains("health_multi") ? tag.getInt("health_multi") : 0;
-        float shinyRate = tag.contains("shiny_rate") ? tag.getFloat("shiny_rate") : RaidUtils.getDefaultShinyRate();
-
-        return new RaidBoss(
-            PokemonProperties.Companion.parse(tag.getString("base_properties")),
-            PokemonProperties.Companion.parse(tag.getString("boss_properties")),
-            RaidTier.fromString(tag.getString("raid_tier").toUpperCase()),
-            RaidType.fromString(tag.getString("raid_type").toUpperCase()),
-            RaidFeature.fromString(tag.getString("raid_feature").toUpperCase()),
-            raidForm, baseForm, lootTableId, isCatchable, healthMulti, shinyRate
-        );
-    }
-
-    public static CompoundTag encodeFormTag(SpeciesFeature form) {
-        CompoundTag formTag = new CompoundTag();
-        formTag.putString("name", form.getName());
-        if (form instanceof StringSpeciesFeature) {
-            formTag.putString("value", ((StringSpeciesFeature) form).getValue());
-            formTag.putString("type", "string");
-        }
-        else if (form instanceof FlagSpeciesFeature) {
-            formTag.putBoolean("value", ((FlagSpeciesFeature) form).getEnabled());
-            formTag.putString("type", "flag");
-        }
-        else {
-            formTag.putInt("value", ((IntSpeciesFeature) form).getValue());
-            formTag.putString("type", "int");
-        }
-        return formTag;
-    }
-
-    public static List<SpeciesFeature> decodeFormTag(ListTag tag) {
-        List<SpeciesFeature> forms = new ArrayList<>();
-        for (Tag t : tag) {
-            CompoundTag compoundTag = (CompoundTag) t;
-
-            String type = compoundTag.getString("type");
-            if (type.equals("string")) forms.add(new StringSpeciesFeature(compoundTag.getString("name"), compoundTag.getString("value")));
-            else if (type.equals("flag")) forms.add(new FlagSpeciesFeature(compoundTag.getString("name"), compoundTag.getBoolean("value")));
-            else forms.add(new IntSpeciesFeature(compoundTag.getString("name"), compoundTag.getInt("value")));
-        }
-        return forms;
     }
 
     public static String getGender(PokemonProperties properties) {

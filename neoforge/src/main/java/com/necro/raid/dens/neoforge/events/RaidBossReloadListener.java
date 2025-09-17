@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.util.RaidRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +26,12 @@ public class RaidBossReloadListener implements ResourceManagerReloadListener {
         manager.listResources("raid/boss", path -> path.toString().endsWith(".json")).forEach((id, resource) -> {
             try (InputStream input = resource.open()) {
                 JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
+                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace("raid/boss/", "").replace(".json", ""));
                 Optional<RaidBoss> raidBossOpt = RaidBoss.codec().decode(JsonOps.INSTANCE, jsonObject).result().map(Pair::getFirst);
-                raidBossOpt.ifPresent(RaidRegistry::register);
+                raidBossOpt.ifPresent(raidBoss -> {
+                    raidBoss.setId(key);
+                    RaidRegistry.register(raidBoss);
+                });
             } catch (Exception e) {
                 CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, e);
             }

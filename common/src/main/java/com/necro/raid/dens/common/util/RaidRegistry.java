@@ -14,8 +14,11 @@ import java.util.*;
 
 public class RaidRegistry {
     public static final ResourceKey<Registry<RaidBoss>> RAID_BOSS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "boss"));
+    public static Registry<RaidBoss> REGISTRY;
+
     private static final Map<RaidTier, Set<RaidBoss>> RAID_BOSS_COLLECTION = new HashMap<>();
-    private static final Map<RaidTier, DoubleWeightedRandomMap<RaidBoss>> RAID_BOSSES = new HashMap<>();
+    private static final Map<RaidTier, DoubleWeightedRandomMap<ResourceLocation>> RAID_BOSSES = new HashMap<>();
+    private static final Map<ResourceLocation, RaidBoss> RAID_BOSS_MAP = new HashMap<>();
 
     static {
         for (RaidTier tier : RaidTier.values()) {
@@ -26,6 +29,7 @@ public class RaidRegistry {
     public static void register(RaidBoss raidBoss) {
         if (raidBoss.getProperties().getSpecies() == null) return;
         RAID_BOSS_COLLECTION.get(raidBoss.getTier()).add(raidBoss);
+        RAID_BOSS_MAP.put(raidBoss.getId(), raidBoss);
         raidBoss.getTier().setPresent();
         raidBoss.getType().setPresent();
     }
@@ -38,28 +42,40 @@ public class RaidRegistry {
     }
 
     private static void addWeightedList(RaidTier tier, Set<RaidBoss> raidBosses) {
-        DoubleWeightedRandomMap<RaidBoss> map = new DoubleWeightedRandomMap<>();
-        raidBosses.forEach(raidBoss -> map.add(raidBoss, raidBoss.getWeight()));
+        DoubleWeightedRandomMap<ResourceLocation> map = new DoubleWeightedRandomMap<>();
+        raidBosses.forEach(raidBoss -> map.add(raidBoss.getId(), raidBoss.getWeight()));
         RAID_BOSSES.put(tier, map);
     }
 
+    public static RaidBoss getRaidBoss(ResourceLocation location) {
+        return RAID_BOSS_MAP.get(location);
+    }
+
     public static RaidBoss getRandomRaidBoss(RandomSource random, RaidTier tier) {
-        Optional<RaidBoss> raidBoss = RaidRegistry.RAID_BOSSES.get(tier).getRandom(random);
-        return raidBoss.orElse(null);
+        ResourceLocation location = getRandomRaidBossResource(random, tier);
+        return location == null ? null : getRaidBoss(location);
     }
 
     public static RaidBoss getRandomRaidBoss(RandomSource random, Level level) {
         return getRandomRaidBoss(random, RaidTier.getWeightedRandom(random, level));
     }
 
+    public static ResourceLocation getRandomRaidBossResource(RandomSource random, RaidTier tier) {
+        Optional<ResourceLocation> location = RaidRegistry.RAID_BOSSES.get(tier).getRandom(random);
+        return location.orElse(null);
+    }
+
+    public static ResourceLocation getRandomRaidBossResource(RandomSource random, Level level) {
+        return getRandomRaidBossResource(random, RaidTier.getWeightedRandom(random, level));
+    }
+
     public static void clear() {
+        RAID_BOSS_MAP.clear();
         for (RaidTier tier : RaidTier.values()) { tier.setPresent(false); }
         for (RaidType type : RaidType.values()) { type.setPresent(false); }
     }
 
     public static void initRaidBosses(MinecraftServer server) {
-        server.registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY).forEach(RaidRegistry::register);
-        RaidRegistry.populateWeightedList();
-        RaidTier.updateRandom();
+        REGISTRY = server.registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
     }
 }

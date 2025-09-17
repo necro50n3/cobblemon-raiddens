@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -37,7 +38,8 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
-        RaidBoss raidBoss = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
+        ResourceLocation location = RaidRegistry.getRandomRaidBossResource(context.random(), level.getLevel());
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
         if (raidBoss == null) return false;
 
         level.setBlock(blockPos, blockState
@@ -48,7 +50,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
         RaidCrystalBlockEntity blockEntity = ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos));
-        if (blockEntity != null) blockEntity.setRaidBoss(raidBoss);
+        if (blockEntity != null) blockEntity.setRaidBoss(location);
 
         return true;
     }

@@ -35,7 +35,9 @@ public class RaidBossResourceReloadListener implements SimpleSynchronousResource
                 JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 Optional<Pair<RaidBoss, JsonElement>> result = RaidBoss.codec().decode(JsonOps.INSTANCE, jsonObject).result();
                 if (result.isEmpty()) return;
+                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace("raid/boss/", "").replace(".json", ""));
                 RaidBoss raidBoss = result.get().getFirst();
+                raidBoss.setId(key);
                 RaidRegistry.register(raidBoss);
             } catch(Exception e) {
                 CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, e);

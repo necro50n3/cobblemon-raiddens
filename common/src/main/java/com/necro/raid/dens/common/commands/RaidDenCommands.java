@@ -121,18 +121,20 @@ public class RaidDenCommands {
         register(dispatcher);
     }
 
-    private static int createRaidDenFromExisting(Level level, BlockState blockState, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, RaidBoss raidBoss) {
+    private static int createRaidDenFromExisting(Level level, BlockState blockState, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation location) {
         if (cycleMode == null) cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
         if (canReset == null) canReset = blockState.getValue(RaidCrystalBlock.CAN_RESET);
-        if (raidBoss == null) {
+        if (location == null) {
             if (cycleMode == RaidCycleMode.LOCK_TIER) {
                 RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-                raidBoss = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier);
+                location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), tier);
             }
             else {
-                raidBoss = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
+                location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), level);
             }
         }
+
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)
@@ -142,14 +144,16 @@ public class RaidDenCommands {
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.setRaidBoss(raidBoss, level);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.setRaidBoss(location, level);
         return 1;
     }
 
-    private static int createRaidDenNew(Level level, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, RaidBoss raidBoss) {
+    private static int createRaidDenNew(Level level, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation location) {
         if (cycleMode == null) cycleMode = RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
         if (canReset == null) canReset = CobblemonRaidDens.CONFIG.reset_time > 1;
-        if (raidBoss == null) raidBoss = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
+        if (location == null) location = RaidRegistry.getRandomRaidBossResource(level.getRandom(), level);
+
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
 
         level.setBlock(blockPos, ModBlocks.INSTANCE.getRaidCrystalBlock().defaultBlockState()
             .setValue(RaidCrystalBlock.ACTIVE, true)
@@ -158,11 +162,11 @@ public class RaidDenCommands {
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
-        ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos)).setRaidBoss(raidBoss);
+        ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos)).setRaidBoss(location);
         return 1;
     }
 
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, RaidBoss raidBoss) {
+    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation raidBoss) {
         ServerLevel level = context.getSource().getLevel();
         if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
 
@@ -171,18 +175,13 @@ public class RaidDenCommands {
         else return createRaidDenNew(level, blockPos, cycleMode, canReset, raidBoss);
     }
 
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, ResourceLocation raidBoss) {
-        RaidBoss raidBossObj = context.getSource().getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY).get(raidBoss);
-        return createRaidDen(context, blockPos, cycleMode, canReset, raidBossObj);
-    }
-
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset, RaidTier raidTier) {
         RandomSource random = context.getSource().getLevel().getRandom();
-        return createRaidDen(context, blockPos, cycleMode, canReset, RaidRegistry.getRandomRaidBoss(random, raidTier));
+        return createRaidDen(context, blockPos, cycleMode, canReset, RaidRegistry.getRandomRaidBossResource(random, raidTier));
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode, Boolean canReset) {
-        return createRaidDen(context, blockPos, cycleMode, canReset, (RaidBoss) null);
+        return createRaidDen(context, blockPos, cycleMode, canReset, (ResourceLocation) null);
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, RaidCycleMode cycleMode) {
