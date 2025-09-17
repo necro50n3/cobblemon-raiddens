@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "machamp",
         "moves": [
-            "submission",
+            "knockoff",
             "dualchop",
             "strength",
-            "wakeupslap"
+            "dualchop"
         ]
     },
     "raid_tier": "TIER_FOUR",

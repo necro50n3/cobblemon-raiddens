@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "voltorb",
+        "moves": [
+            "seedbomb",
+            "energyball",
+            "electroball",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

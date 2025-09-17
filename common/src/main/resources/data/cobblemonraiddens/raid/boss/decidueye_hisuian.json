@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "decidueye",
+        "moves": [
+            "bravebird",
+            "leafblade",
+            "suckerpunch",
+            "triplearrows"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

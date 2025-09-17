@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "zoroark",
+        "moves": [
+            "shadowball",
+            "knockoff",
+            "snadowsneak",
+            "scratch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

@@ -3,9 +3,9 @@
         "species": "inteleon",
         "moves": [
             "hydropump",
-            "liquidation",
-            "uturn",
-            "suckerpunch"
+            "suckerpunch",
+            "acrobatics",
+            "snipeshot"
         ]
     },
     "raid_tier": "TIER_FIVE",

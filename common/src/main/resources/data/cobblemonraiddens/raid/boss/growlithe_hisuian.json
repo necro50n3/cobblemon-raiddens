@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "growlithe",
+        "moves": [
+            "crunch",
+            "flamewheel",
+            "retaliate",
+            "firefang"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

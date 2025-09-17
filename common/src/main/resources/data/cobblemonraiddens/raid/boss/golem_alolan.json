@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "golem",
+        "moves": [
+            "heavyslam",
+            "discharge",
+            "rockblast",
+            "thunderpunch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "marowak",
+        "moves": [
+            "bonerush",
+            "stompingtantrum",
+            "hex",
+            "flamewheel"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

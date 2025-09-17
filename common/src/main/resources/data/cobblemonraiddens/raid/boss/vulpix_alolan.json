@@ -1,0 +1,19 @@
+{
+    "pokemon": {
+        "species": "vulpix",
+        "moves": [
+            "icywind",
+            "iceshard",
+            "powdersnow"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

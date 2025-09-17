@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "dugtrio",
+        "moves": [
+            "earthpower",
+            "dig",
+            "mudbomb",
+            "ironhead"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

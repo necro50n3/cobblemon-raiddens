@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "lilligant",
+        "moves": [
+            "axekick",
+            "leafblade",
+            "victorydance",
+            "megakick"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "rillaboom",
         "moves": [
-            "boomburst",
             "woodhammer",
-            "uproar",
-            "slam"
+            "slam",
+            "knockoff",
+            "drumbeating"
         ]
     },
     "raid_tier": "TIER_FIVE",

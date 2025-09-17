@@ -3,9 +3,9 @@
         "species": "charizard",
         "moves": [
             "flareblitz",
-            "inferno",
-            "firespin",
-            "flameburst"
+            "slash",
+            "dragonclaw",
+            "airslash"
         ]
     },
     "raid_tier": "TIER_FIVE",

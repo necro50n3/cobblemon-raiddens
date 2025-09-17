@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "linoone",
+        "moves": [
+            "takedown",
+            "furyswipes",
+            "headbutt",
+            "snarl"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "DARK",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "galarian",
+            "value": true
+        }
+    ]
+}

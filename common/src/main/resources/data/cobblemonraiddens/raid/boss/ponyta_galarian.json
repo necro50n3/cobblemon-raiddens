@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "ponyta",
+        "moves": [
+            "stomp",
+            "psybeam",
+            "fairywind",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "galarian",
+            "value": true
+        }
+    ]
+}

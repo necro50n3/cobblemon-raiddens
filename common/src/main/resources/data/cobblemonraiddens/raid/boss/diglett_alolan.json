@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "diglett",
+        "moves": [
+            "suckerpunch",
+            "bulldoze",
+            "mudslap",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GROUND",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

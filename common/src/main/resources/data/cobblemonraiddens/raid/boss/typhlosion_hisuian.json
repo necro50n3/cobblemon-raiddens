@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "typhlosion",
+        "moves": [
+            "overheat",
+            "burnup",
+            "rollout",
+            "infernal_parade"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FIRE",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "hisuian",
+            "value": true
+        }
+    ]
+}

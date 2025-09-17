@@ -1,0 +1,24 @@
+{
+    "pokemon": {
+        "species": "tauros",
+        "moves": [
+            "ragingbull",
+            "zenheadbutt",
+            "headbutt",
+            "flamecharge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "bull_breed",
+            "value": "blaze"
+        },
+        {
+            "name": "paldean",
+            "value": true
+        }
+    ]
+}

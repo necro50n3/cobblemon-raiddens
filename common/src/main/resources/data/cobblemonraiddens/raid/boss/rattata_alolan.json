@@ -1,0 +1,19 @@
+{
+    "pokemon": {
+        "species": "rattata",
+        "moves": [
+            "bite",
+            "quickattack",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "DARK",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

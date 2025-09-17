@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "rapidash",
+        "moves": [
+            "takedown",
+            "stomp",
+            "psybeam",
+            "fairywind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "galarian",
+            "value": true
+        }
+    ]
+}
