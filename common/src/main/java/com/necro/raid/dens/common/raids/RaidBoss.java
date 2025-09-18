@@ -282,14 +282,16 @@ public class RaidBoss {
             Codec.STRING.optionalFieldOf("gender", "").forGetter(RaidBoss::getGender),
             Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
             Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
+            Codec.INT.optionalFieldOf("level", -1).forGetter(PokemonProperties::getLevel),
             Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
-            ).apply(inst, (species, gender, ability, nature, moves) -> {
+            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
                 PokemonProperties properties = PokemonProperties.Companion.parse("");
                 properties.setSpecies(species);
                 try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
                 catch (IllegalArgumentException ignored) {}
                 if (!ability.isBlank()) properties.setAbility(ability);
                 if (!nature.isBlank()) properties.setNature(nature);
+                if (level > 0) properties.setLevel(level);
                 if (!moves.isEmpty()) properties.setMoves(moves);
                 return properties;
             })
@@ -331,7 +333,7 @@ public class RaidBoss {
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script) -> {
-                properties.setLevel(tier.getLevel());
+                if (properties.getLevel() == null) properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);

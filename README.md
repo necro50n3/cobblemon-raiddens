@@ -52,6 +52,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
     - gender: The Pokemon gender
     - ability: The Pokemon ability
     - nature: The Pokemon nature
+    - level: The Pokemon level
     - moves: The list of moves the Pokemon has
   - raid_form: The list of custom form data for the raid boss only
     - name*: The name of the form data (i.e. mega_evolution)
