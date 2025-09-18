@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -160,6 +162,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.dimension.players().forEach((player) ->
             player.teleportTo((ServerLevel) this.getLevel(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() - 0.5, 0, 0)
         );
+        this.dimension
+            .getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
+            .forEach(p1 -> RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId()));
 
         this.removeDimension();
         this.dimension = null;
