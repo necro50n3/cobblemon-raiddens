@@ -80,7 +80,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     if (!RaidHelper.ACTIVE_RAIDS.containsKey(raidId2)) {
                         ((IRaidAccessor) pokemonEntity).setRaidId(battle.getBattleId());
                         raidId2 = ((IRaidAccessor) pokemonEntity).getRaidId();
-                        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getBattleId(), new RaidInstance(pokemonEntity));
+                        RaidHelper.ACTIVE_RAIDS.put(raidId2, new RaidInstance(pokemonEntity));
                     }
                     RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(raidId2);
                     raidInstance.addPlayer(battle);
