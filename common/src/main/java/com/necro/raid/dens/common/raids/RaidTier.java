@@ -11,13 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public enum RaidTier implements StringRepresentable {
-    TIER_ONE("tier_one", RaidTier.initHealth(0), 0, 12),
-    TIER_TWO("tier_two", RaidTier.initHealth(1), 1, 20),
-    TIER_THREE("tier_three", RaidTier.initHealth(2), 2, 35),
-    TIER_FOUR("tier_four", RaidTier.initHealth(3), 3, 45),
-    TIER_FIVE("tier_five", RaidTier.initHealth(4), 4, 75),
-    TIER_SIX("tier_six", RaidTier.initHealth(5), 5, 75),
-    TIER_SEVEN("tier_seven", RaidTier.initHealth(6), 6, 100);
+    TIER_ONE("tier_one", initHealth(0), initIvs(0), initLevel(0)),
+    TIER_TWO("tier_two", initHealth(1), initIvs(1), initLevel(1)),
+    TIER_THREE("tier_three", initHealth(2), initIvs(2), initLevel(2)),
+    TIER_FOUR("tier_four", initHealth(3), initIvs(3), initLevel(3)),
+    TIER_FIVE("tier_five", initHealth(4), initIvs(4), initLevel(4)),
+    TIER_SIX("tier_six", initHealth(5), initIvs(5), initLevel(5)),
+    TIER_SEVEN("tier_seven", initHealth(6), initIvs(6), initLevel(6));
 
     private final String id;
     private final int health;
@@ -125,6 +125,16 @@ public enum RaidTier implements StringRepresentable {
     public static int initHealth(int index) {
         index = Math.min(index, CobblemonRaidDens.CONFIG.tier_health_multiplier.length - 1);
         return CobblemonRaidDens.CONFIG.tier_health_multiplier[index];
+    }
+
+    public static int initIvs(int index) {
+        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_ivs.length - 1);
+        return CobblemonRaidDens.CONFIG.tier_ivs[index];
+    }
+
+    public static int initLevel(int index) {
+        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_level.length - 1);
+        return CobblemonRaidDens.CONFIG.tier_level[index];
     }
 
     public static RaidTier fromString(String name) {
