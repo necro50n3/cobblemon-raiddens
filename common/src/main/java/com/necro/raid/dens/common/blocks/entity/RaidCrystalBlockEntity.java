@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -137,13 +136,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.dimension);
         pokemonEntity.moveTo(0.5, 0, -14.5);
-        ((IRaidAccessor) pokemonEntity).setRaidBoss(this.raidBoss);
-        float height = pokemonEntity.getExposedSpecies().getHeight();
-        float scale;
-        if (height > 80.0f) scale = 1.5f;
-        else if (height > 40.f) scale = 2.0f;
-        else scale = 2.5f;
-        pokemonEntity.getPokemon().setScaleModifier(scale);
         this.dimension.addFreshEntity(pokemonEntity);
     }
 

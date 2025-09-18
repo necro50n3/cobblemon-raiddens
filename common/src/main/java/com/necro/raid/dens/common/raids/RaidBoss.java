@@ -21,6 +21,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
+import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
@@ -28,12 +29,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class RaidBoss {
     private final PokemonProperties baseProperties;
@@ -115,6 +118,10 @@ public class RaidBoss {
 
         if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupTera(pokemonEntity, pokemon);
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupDmax(pokemonEntity);
+
+        ((IRaidAccessor) pokemonEntity).setRaidBoss(this.id);
+        float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
+        pokemonEntity.getPokemon().setScaleModifier(scale);
 
         return pokemonEntity;
     }
