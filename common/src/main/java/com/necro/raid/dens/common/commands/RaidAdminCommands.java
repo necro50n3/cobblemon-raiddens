@@ -64,6 +64,11 @@ public class RaidAdminCommands {
     }
 
     private static int refreshPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
+        if (DimensionHelper.isCustomDimension(player.serverLevel())) {
+            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.player_in_raid"));
+            return 0;
+        }
+
         RaidHelper.removeHost(player.getUUID());
         RaidHelper.removeParticipant(player.getUUID());
         if (RaidHelper.JOIN_QUEUE.containsKey(player)) {
