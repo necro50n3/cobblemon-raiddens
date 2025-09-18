@@ -76,12 +76,15 @@ public class RaidInstance {
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
         raidBoss.getScript().forEach((key, func) -> {
-            if (key.startsWith("turn:")) {
-                this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
+            try {
+                if (key.startsWith("turn:")) {
+                    this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
+                }
+                else if (key.startsWith("hp:")) {
+                    this.scriptByHp.put(Double.parseDouble(key.split(":")[1]), func);
+                }
             }
-            else if (key.startsWith("hp:")) {
-                this.scriptByHp.put(Double.parseDouble(key.split(":")[1]), func);
-            }
+            catch (Exception ignored) {}
         });
 
 //        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
