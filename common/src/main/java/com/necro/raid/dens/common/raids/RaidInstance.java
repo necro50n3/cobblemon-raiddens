@@ -76,6 +76,7 @@ public class RaidInstance {
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
         raidBoss.getScript().forEach((key, func) -> {
+            if (!INSTRUCTION_MAP.containsKey(func)) return;
             try {
                 if (key.startsWith("turn:")) {
                     this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
