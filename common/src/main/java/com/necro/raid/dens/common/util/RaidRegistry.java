@@ -24,7 +24,7 @@ public class RaidRegistry {
     private static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
 
     private static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
-    private static final Map<String, List<Integer>> INDEX_CACHE = new HashMap<>();
+    private static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
 
     public static void register(RaidBoss raidBoss) {
         if (raidBoss.getProperties().getSpecies() == null) return;
@@ -51,38 +51,92 @@ public class RaidRegistry {
         return RAID_LOOKUP.containsKey(location);
     }
 
-    public static ResourceLocation getRandomRaidBoss(RandomSource random, RaidTier tier, RaidType type, RaidFeature feature) {
-        BitSet result = (BitSet) RAIDS_BY_TIER.get(tier).clone();
-        if (type != null) result.and(RAIDS_BY_TYPE.get(type));
-        if (feature != null) result.and(RAIDS_BY_FEATURE.get(feature));
-
-        List<Integer> matches = new ArrayList<>();
-        for (int i = result.nextSetBit(0); i >= 0; i = result.nextSetBit(++i)) matches.add(i);
-        if (matches.isEmpty()) return null;
-
-        String key = tier + ":" + type + ":" + feature;
-        float[] cachedWeights;
-        List<Integer> cachedIndexes;
-        if (WEIGHTS_CACHE.containsKey(key)) {
-            cachedWeights = WEIGHTS_CACHE.get(key);
-            cachedIndexes = INDEX_CACHE.get(key);
-        } else {
-            cachedWeights = new float[matches.size()];
-            float sum = 0f;
-            for (int i = 0; i < matches.size(); i++) {
-                sum += (float) RAID_LOOKUP.get(RAID_LIST.get(matches.get(i))).getWeight();
-                cachedWeights[i] = sum;
-            }
-            cachedIndexes = matches;
-            WEIGHTS_CACHE.put(key, cachedWeights);
-            INDEX_CACHE.put(key, cachedIndexes);
+    private static float[] buildWeights(int[] matches) {
+        float[] weights = new float[matches.length];
+        float sum = 0f;
+        for (int i = 0; i < matches.length; i++) {
+            sum += (float) RAID_LOOKUP.get(RAID_LIST.get(matches[i])).getWeight();
+            weights[i] = sum;
         }
+        return weights;
+    }
 
-        float roll = random.nextFloat() * cachedWeights[cachedWeights.length - 1];
-        int idx = Arrays.binarySearch(cachedWeights, roll);
+    private static ResourceLocation roll(RandomSource random, float[] weights, int[] indexes) {
+        float roll = random.nextFloat() * weights[weights.length - 1];
+        int idx = Arrays.binarySearch(weights, roll);
         if (idx < 0) idx = -idx - 1;
 
-        return RAID_LIST.get(cachedIndexes.get(idx));
+        return RAID_LIST.get(indexes[idx]);
+    }
+
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, List<RaidTier> tiers, List<RaidType> types, List<RaidFeature> features) {
+        if (tiers == null || tiers.isEmpty()) return null;
+        BitSet result = new BitSet();
+
+        for (RaidTier tier : tiers) {
+            BitSet set = RAIDS_BY_TIER.get(tier);
+            if (set != null) result.or(set);
+        }
+
+        if (types != null && !types.isEmpty()) {
+            BitSet typeSet = new BitSet();
+            for (RaidType type : types) {
+                BitSet set = RAIDS_BY_TYPE.get(type);
+                if (set != null) typeSet.or(set);
+            }
+            result.and(typeSet);
+        }
+
+        if (features != null && !features.isEmpty()) {
+            BitSet featureSet = new BitSet();
+            for (RaidFeature feature : features) {
+                BitSet set = RAIDS_BY_FEATURE.get(feature);
+                if (set != null) featureSet.or(set);
+            }
+            result.and(featureSet);
+        }
+
+        int size = result.cardinality();
+        if (size == 0) return null;
+        int[] matches = new int[size];
+        for (int i = result.nextSetBit(0), idx = 0; i >= 0; i = result.nextSetBit(i + 1), idx++) {
+            matches[idx] = i;
+        }
+
+        boolean cacheable = (tiers.size() == 1 && (types == null || types.size() <= 1) && (features == null || features.isEmpty()));
+
+        float[] cachedWeights;
+        int[] cachedIndexes;
+
+        if (cacheable) {
+            String key = tiers.getFirst() + ":" + (types == null ? null : types.getFirst());
+            if (WEIGHTS_CACHE.containsKey(key)) {
+                cachedWeights = WEIGHTS_CACHE.get(key);
+                cachedIndexes = INDEX_CACHE.get(key);
+            } else {
+                cachedWeights = buildWeights(matches);
+                cachedIndexes = matches;
+                WEIGHTS_CACHE.put(key, cachedWeights);
+                INDEX_CACHE.put(key, cachedIndexes);
+            }
+        } else {
+            cachedWeights = buildWeights(matches);
+            cachedIndexes = matches;
+        }
+
+        return roll(random, cachedWeights, cachedIndexes);
+    }
+
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, RaidTier tier, RaidType type, RaidFeature feature) {
+        String key = tier + ":" + type;
+        if (feature != null || !WEIGHTS_CACHE.containsKey(key)) {
+            return getRandomRaidBoss(
+                random, List.of(tier),
+                type == null ? null : List.of(type),
+                feature == null ? null : List.of(feature)
+            );
+        }
+        return roll(random, WEIGHTS_CACHE.get(key), INDEX_CACHE.get(key));
     }
 
     public static ResourceLocation getRandomRaidBoss(RandomSource random, RaidTier tier) {
