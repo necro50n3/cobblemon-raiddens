@@ -122,6 +122,11 @@ public class RaidBoss {
     public void createDisplayAspects() {
         Pokemon displayPokemon = this.baseProperties.create();
         displayPokemon.setShiny(this.shinyRate == 1.0f);
+
+        for (SpeciesFeature form : this.raidForm) {
+            ((CustomPokemonProperty) form).apply(displayPokemon);
+        }
+
         this.displaySpecies = displayPokemon.getSpecies();
         this.displayAspects = displayPokemon.getAspects();
     }

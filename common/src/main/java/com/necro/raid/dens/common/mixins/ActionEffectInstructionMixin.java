@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.interpreter.instructions.DamageInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,8 +34,8 @@ public abstract class ActionEffectInstructionMixin {
         if (!((IRaidBattle) battle).isRaidBattle()) return;
         RaidInstance raidInstance = ((IRaidBattle) battle).getRaidBattle();
         BattlePokemon battlePokemon = publicMessage.battlePokemon(0, actor.battle);
-        if (battlePokemon == null) return;
-        else if (battlePokemon.getEntity() == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null) return;
+        else if (!((IRaidAccessor) battlePokemon.getEntity()).isRaidBoss()) return;
 
         String newHealth = this.privateMessage.argumentAt(1).split(" ")[0];
         if (newHealth.equals("0")) {
