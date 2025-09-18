@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
+import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
@@ -14,6 +15,7 @@ import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
+import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -147,6 +149,20 @@ public class RaidBoss {
         pokemon.initialize();
         ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
         properties.roll(pokemon, player);
+
+        if (properties.getAbility() == null && player.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.ha_rate) {
+            pokemon.getForm().getAbilities().getMapping().values().forEach(
+                abilities -> {
+                    List<HiddenAbility> hidden = abilities.stream()
+                        .filter(a -> a instanceof HiddenAbility)
+                        .map(a -> (HiddenAbility) a)
+                        .toList();
+                    if (hidden.isEmpty()) return;
+                    HiddenAbility chosen = hidden.get(player.getRandom().nextInt(hidden.size()));
+                    pokemon.setAbility$common(chosen.getTemplate().create(false, chosen.getPriority()));
+                }
+            );
+        }
 
         for (SpeciesFeature form : this.baseForm) {
             ((CustomPokemonProperty) form).apply(pokemon);

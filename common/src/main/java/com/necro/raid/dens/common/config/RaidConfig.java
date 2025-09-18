@@ -35,6 +35,8 @@ public class RaidConfig implements ConfigData {
     public int[] tier_ivs = {0, 1, 2, 3, 4, 5, 6};
     @Comment("The default shiny chance for raid bosses (Set to -1 to use the Cobblemon rate). Default: -1.0")
     public float shiny_rate = -1.0f;
+    @Comment("The chance for raid bosses to have their hidden ability. Default: 0.20")
+    public double ha_rate = 0.20;
     @Comment("The max number of cheers a player can use per raid. Default: 3")
     public int max_cheers = 3;
 }
