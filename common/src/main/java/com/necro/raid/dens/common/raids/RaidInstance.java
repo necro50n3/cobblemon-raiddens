@@ -199,17 +199,14 @@ public class RaidInstance {
 
     public void runScriptByTurn(PokemonBattle battle, int turn) {
         String func = this.scriptByTurn.remove(turn);
-        if (func == null || !INSTRUCTION_MAP.containsKey(func)) return;
+        if (func == null) return;
         ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func));
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(func -> this.battles.forEach(battle -> {
-                if (!INSTRUCTION_MAP.containsKey(func)) return;
-                ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func));
-            }));
+            .forEach(func -> this.battles.forEach(battle -> ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func))));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
