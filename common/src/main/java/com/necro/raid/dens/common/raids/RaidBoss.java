@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
-import com.cobblemon.mod.common.api.abilities.PotentialAbility;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
@@ -38,7 +37,6 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 public class RaidBoss {
     private final PokemonProperties baseProperties;

@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,7 +45,8 @@ public abstract class ActionEffectInstructionMixin {
         }
         else {
             float remainingHealth = Float.parseFloat(newHealth.split("/")[0]);
-            battle.getPlayers().forEach(player -> raidInstance.syncHealth(player, remainingHealth));
+            ServerPlayer player = battle.getPlayers().getFirst();
+            raidInstance.syncHealth(player, remainingHealth);
             battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
         }
         ci.cancel();
