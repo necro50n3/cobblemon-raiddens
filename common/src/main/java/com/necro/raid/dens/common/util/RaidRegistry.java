@@ -71,6 +71,11 @@ public class RaidRegistry {
 
     public static ResourceLocation getRandomRaidBoss(RandomSource random, List<RaidTier> tiers, List<RaidType> types, List<RaidFeature> features) {
         if (tiers == null || tiers.isEmpty()) return null;
+
+        boolean cacheable = (tiers.size() == 1 && (types == null || types.size() <= 1) && (features == null || features.isEmpty()));
+        String key = tiers.getFirst() + ":" + (types == null ? null : types.getFirst());
+        if (cacheable && WEIGHTS_CACHE.containsKey(key)) return roll(random, WEIGHTS_CACHE.get(key), INDEX_CACHE.get(key));
+
         BitSet result = new BitSet();
 
         for (RaidTier tier : tiers) {
@@ -103,40 +108,18 @@ public class RaidRegistry {
             matches[idx] = i;
         }
 
-        boolean cacheable = (tiers.size() == 1 && (types == null || types.size() <= 1) && (features == null || features.isEmpty()));
-
-        float[] cachedWeights;
-        int[] cachedIndexes;
+        float[] cachedWeights = buildWeights(matches);
 
         if (cacheable) {
-            String key = tiers.getFirst() + ":" + (types == null ? null : types.getFirst());
-            if (WEIGHTS_CACHE.containsKey(key)) {
-                cachedWeights = WEIGHTS_CACHE.get(key);
-                cachedIndexes = INDEX_CACHE.get(key);
-            } else {
-                cachedWeights = buildWeights(matches);
-                cachedIndexes = matches;
-                WEIGHTS_CACHE.put(key, cachedWeights);
-                INDEX_CACHE.put(key, cachedIndexes);
-            }
-        } else {
-            cachedWeights = buildWeights(matches);
-            cachedIndexes = matches;
+            WEIGHTS_CACHE.put(key, cachedWeights);
+            INDEX_CACHE.put(key, matches);
         }
 
-        return roll(random, cachedWeights, cachedIndexes);
+        return roll(random, cachedWeights, matches);
     }
 
     public static ResourceLocation getRandomRaidBoss(RandomSource random, RaidTier tier, RaidType type, RaidFeature feature) {
-        String key = tier + ":" + type;
-        if (feature != null || !WEIGHTS_CACHE.containsKey(key)) {
-            return getRandomRaidBoss(
-                random, List.of(tier),
-                type == null ? null : List.of(type),
-                feature == null ? null : List.of(feature)
-            );
-        }
-        return roll(random, WEIGHTS_CACHE.get(key), INDEX_CACHE.get(key));
+        return getRandomRaidBoss(random, List.of(tier), type == null ? null : List.of(type), feature == null ? null : List.of(feature));
     }
 
     public static ResourceLocation getRandomRaidBoss(RandomSource random, RaidTier tier) {
