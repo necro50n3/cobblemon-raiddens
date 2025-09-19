@@ -179,8 +179,7 @@ public class RaidBucket {
         return RecordCodecBuilder.create(inst -> inst.group(
             RaidBucketFilters.codec().optionalFieldOf("include", new RaidBucketFilters()).forGetter(RaidBucket::getIncluded),
             RaidBucketFilters.codec().optionalFieldOf("exclude", new RaidBucketFilters()).forGetter(RaidBucket::getExcluded),
-            Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
-                .fieldOf("biome").forGetter(RaidBucket::getBiomes),
+            Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new).fieldOf("biome").forGetter(RaidBucket::getBiomes),
             Codec.DOUBLE.optionalFieldOf("weight", 10.0).forGetter(RaidBucket::getWeight)
         ).apply(inst, (include, exclude, biomes, weight) -> new RaidBucket(
             include.tiers(), include.types(), include.features(), include.bosses(),
