@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -43,6 +42,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private int inactiveTicks;
     private int soundTicks;
 
+    private UUID uuid;
     private ResourceLocation raidBoss;
     private ServerLevel dimension;
 
@@ -56,6 +56,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         super(blockEntityType, blockPos, blockState);
         this.playerQueue = new HashSet<>();
         this.soundTicks = 0;
+        this.uuid = UUID.randomUUID();
         this.queueFindDimension = false;
         this.queueTimeout = 0;
         this.queueClose = false;
@@ -103,7 +104,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (++this.age % (CobblemonRaidDens.CONFIG.reset_time * 20)  == 0) {
             this.playerQueue.clear();
-            RaidHelper.resetClearedRaids(level, blockPos);
+            RaidHelper.resetClearedRaids(this.getUuid());
             this.resetClears();
             this.inactiveTicks = 0;
             this.generateRaidBoss(level, blockPos, blockState);
@@ -143,8 +144,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void clearRaid(Level level, BlockPos blockPos) {
         this.clears++;
-        if (this.isAtMaxClears()) RaidHelper.resetClearedRaids(level, blockPos);
-        else RaidHelper.clearRaid(level, blockPos, this.playerQueue);
+        if (this.isAtMaxClears()) RaidHelper.resetClearedRaids(this.getUuid());
+        else RaidHelper.clearRaid(this.getUuid(), this.playerQueue);
         this.setQueueClose();
     }
 
@@ -196,6 +197,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void clearRaidHost() {
         this.playerQueue.remove(this.raidHost);
         this.raidHost = null;
+    }
+
+    public UUID getUuid() {
+        return this.uuid;
     }
 
     public RaidBoss getRaidBoss() {
@@ -274,9 +279,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.age = compoundTag.getInt("age");
         this.inactiveTicks = compoundTag.getInt("raid_inactive_for");
 
-        if (compoundTag.contains("raid_boss")) {
-            this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
-        }
+        if (compoundTag.contains("uuid")) this.uuid = UUID.fromString(compoundTag.getString("uuid"));
+        else this.uuid = UUID.randomUUID();
+        if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
     }
 
     @Override
@@ -292,15 +297,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         compoundTag.putInt("age", this.age);
         compoundTag.putInt("raid_inactive_for", this.inactiveTicks);
 
+        if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
     }
 
-    public void setRaidBoss(ResourceLocation raidBoss, @NotNull Level level) {
-        RaidHelper.resetClearedRaids(level, this.getBlockPos());
-        this.setRaidBoss(raidBoss);
-    }
-
     public void setRaidBoss(ResourceLocation raidBoss) {
+        RaidHelper.resetClearedRaids(this.getUuid());
         this.resetClears();
         this.inactiveTicks = 0;
         this.raidBoss = raidBoss;

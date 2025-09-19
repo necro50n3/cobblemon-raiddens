@@ -98,11 +98,14 @@ public class RaidAdminCommands {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "pos");
         ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
-        RaidHelper.resetPlayerClearedRaid(dimension, blockPos, player.getUUID());
-        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
 
-        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.resetClears();
-        return 1;
+        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
+            RaidHelper.resetPlayerClearedRaid(raidCrystal.getUuid(), player.getUUID());
+            context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+            raidCrystal.resetClears();
+            return 1;
+        }
+        else return 0;
     }
 
     private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos) {
@@ -113,11 +116,13 @@ public class RaidAdminCommands {
     }
 
     private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel dimension) {
-        RaidHelper.resetClearedRaids(dimension, blockPos);
-        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
-
-        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) raidCrystal.resetClears();
-        return 1;
+        if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
+            RaidHelper.resetClearedRaids(raidCrystal.getUuid());
+            context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+            raidCrystal.resetClears();
+            return 1;
+        }
+        else return 0;
     }
 
     private static int removeDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

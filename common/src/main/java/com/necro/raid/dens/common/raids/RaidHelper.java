@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.raids;
 
-import com.mojang.datafixers.util.Pair;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
@@ -16,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +27,7 @@ public class RaidHelper extends SavedData {
     public static final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
     public static final Set<UUID> WAS_SURVIVAL = new HashSet<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
-    public static final Map<Pair<String, BlockPos>, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
+    public static final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
     public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
     public static boolean addToQueue(Player player, @Nullable ItemStack key) {
@@ -54,27 +52,23 @@ public class RaidHelper extends SavedData {
         return WAS_SURVIVAL.remove(player.getUUID());
     }
 
-    public static boolean hasClearedRaid(Level level, BlockPos blockPos, Player player) {
-        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
-        Set<UUID> cleared = RaidHelper.CLEARED_RAIDS.getOrDefault(key, new HashSet<>());
+    public static boolean hasClearedRaid(UUID uuid, Player player) {
+        Set<UUID> cleared = RaidHelper.CLEARED_RAIDS.getOrDefault(uuid, new HashSet<>());
         return cleared.contains(player.getUUID());
     }
 
-    public static void clearRaid(Level level, BlockPos blockPos, Collection<UUID> players) {
-        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
-        if (!CLEARED_RAIDS.containsKey(key)) CLEARED_RAIDS.put(key, new HashSet<>());
-        CLEARED_RAIDS.get(key).addAll(players);
+    public static void clearRaid(UUID uuid, Collection<UUID> players) {
+        if (!CLEARED_RAIDS.containsKey(uuid)) CLEARED_RAIDS.put(uuid, new HashSet<>());
+        CLEARED_RAIDS.get(uuid).addAll(players);
     }
 
-    public static void resetClearedRaids(Level level, BlockPos blockPos) {
-        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
-        CLEARED_RAIDS.remove(key);
+    public static void resetClearedRaids(UUID uuid) {
+        CLEARED_RAIDS.remove(uuid);
     }
 
-    public static void resetPlayerClearedRaid(Level level, BlockPos blockPos, UUID player) {
-        Pair<String, BlockPos> key = new Pair<>(level.dimension().location().toString(), blockPos);
-        if (!CLEARED_RAIDS.containsKey(key)) return;
-        CLEARED_RAIDS.get(key).remove(player);
+    public static void resetPlayerClearedRaid(UUID uuid, UUID player) {
+        if (!CLEARED_RAIDS.containsKey(uuid)) return;
+        CLEARED_RAIDS.get(uuid).remove(player);
     }
 
     public static void resetPlayerAllClearedRaids(UUID player) {
@@ -194,17 +188,15 @@ public class RaidHelper extends SavedData {
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
         for (Tag t : clearedRaids) {
             CompoundTag entry = (CompoundTag) t;
-            String dimension = entry.getString("dimension");
-            if (dimension.isEmpty()) dimension = "minecraft:overworld";
-            Optional<BlockPos> pos = NbtUtils.readBlockPos(entry, "pos");
-            if (pos.isEmpty()) continue;
+            String uuid = entry.getString("uuid");
+            if (uuid.isEmpty()) continue;
 
             Set<UUID> players = new HashSet<>();
             ListTag uuidList = entry.getList("players", Tag.TAG_INT_ARRAY);
             for (Tag uuidTag : uuidList) {
                 players.add(NbtUtils.loadUUID(uuidTag));
             }
-            CLEARED_RAIDS.put(new Pair<>(dimension, pos.get()), players);
+            CLEARED_RAIDS.put(UUID.fromString(uuid), players);
         }
 
         return data;
@@ -230,10 +222,9 @@ public class RaidHelper extends SavedData {
         compoundTag.put("was_survival", wasSurvivalTag);
 
         ListTag clearedRaidsTag = new ListTag();
-        for (Map.Entry<Pair<String, BlockPos>, Set<UUID>> entry : CLEARED_RAIDS.entrySet()) {
+        for (Map.Entry<UUID, Set<UUID>> entry : CLEARED_RAIDS.entrySet()) {
             CompoundTag e = new CompoundTag();
-            e.putString("dimension", entry.getKey().getFirst());
-            e.put("pos", NbtUtils.writeBlockPos(entry.getKey().getSecond()));
+            e.putString("uuid", entry.getKey().toString());
 
             ListTag uuidList = new ListTag();
             for (UUID uuid : entry.getValue()) {
