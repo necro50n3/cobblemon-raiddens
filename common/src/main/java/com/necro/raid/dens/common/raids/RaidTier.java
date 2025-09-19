@@ -88,7 +88,13 @@ public enum RaidTier implements StringRepresentable {
         }
 
         if (!RANDOM_MAP.containsKey("minecraft:overworld")) {
-            RaidTier.addWeightedMap("minecraft:overworld", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0});
+            double[] weights;
+            if (!CobblemonRaidDens.CONFIG.dimension_tier_weights.isEmpty()) {
+                weights = CobblemonRaidDens.CONFIG.dimension_tier_weights.values().iterator().next();
+            } else {
+                weights = new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0};
+            }
+            RaidTier.addWeightedMap("minecraft:overworld", weights);
         }
     }
 
@@ -120,6 +126,12 @@ public enum RaidTier implements StringRepresentable {
     public static RaidTier getWeightedRandom(RandomSource random, Level level) {
         String levelKey = level.dimension().location().toString();
         return RaidTier.getWeightedRandom(random, levelKey);
+    }
+
+    public double getWeight(Level level) {
+        String levelKey = level.dimension().location().toString();
+        if (!RANDOM_MAP.containsKey(levelKey)) levelKey = "minecraft:overworld";
+        return RANDOM_MAP.get(levelKey).getWeight(this);
     }
 
     public static int initHealth(int index) {

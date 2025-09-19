@@ -3,6 +3,7 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,6 +37,7 @@ public class ModEvents {
         MinecraftServer server = event.getServer();
         RaidHelper.initHelper(server);
         RaidRegistry.initRaidBosses(server);
+        RaidBucketRegistry.init(server);
     }
 
     @SubscribeEvent
@@ -46,5 +48,6 @@ public class ModEvents {
     @SubscribeEvent
     public static void onReloadDataPack(AddReloadListenerEvent event) {
         event.addListener(new RaidBossReloadListener());
+        event.addListener(new RaidBucketReloadListener());
     }
 }

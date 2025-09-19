@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -43,6 +44,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private int inactiveTicks;
     private int soundTicks;
 
+    private ResourceLocation raidBucket;
     private ResourceLocation raidBoss;
     private ServerLevel dimension;
 
@@ -112,15 +114,23 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
         RaidCycleMode cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
+        ResourceLocation bossLocation = null;
+
         if (cycleMode == RaidCycleMode.NONE) return;
 
-        RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
-        RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
+        if (this.raidBucket != null) {
+            bossLocation = RaidBucketRegistry.getBucket(this.raidBucket).getRandomRaidBoss(level.getRandom(), level);
+        }
 
-        ResourceLocation loc = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, type, null);
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(loc);
-        if (loc == null || raidBoss == null) return;
-        this.raidBoss = loc;
+        if (bossLocation == null) {
+            RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
+            RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
+            bossLocation = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+        }
+
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(bossLocation);
+        if (bossLocation == null || raidBoss == null) return;
+        this.raidBoss = bossLocation;
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
@@ -261,6 +271,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.queueClose = true;
     }
 
+    public void setRaidBucket(ResourceLocation bucket) {
+        this.raidBucket = bucket;
+    }
+
     @Override
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
         if (compoundTag.contains("raid_host_uuid")) {
@@ -274,9 +288,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.age = compoundTag.getInt("age");
         this.inactiveTicks = compoundTag.getInt("raid_inactive_for");
 
-        if (compoundTag.contains("raid_boss")) {
-            this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
-        }
+        if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
+        if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
     }
 
     @Override
@@ -292,6 +305,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         compoundTag.putInt("age", this.age);
         compoundTag.putInt("raid_inactive_for", this.inactiveTicks);
 
+        if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
     }
 
