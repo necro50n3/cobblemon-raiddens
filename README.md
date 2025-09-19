@@ -66,7 +66,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
   - is_catchable: Whether the raid boss is catchable
   - health_multi: The raid boss health multiplier
   - shiny_rate: The shiny rate of the raid boss
-  - script: Custom raid boss triggers. This will be explained in the future
+  - script: Custom raid boss event triggers
 - *Required fields
 - See example below
 
@@ -91,7 +91,11 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
     "raid_type": "FIRE",
     "raid_feature": "MEGA",
     "loot_table": "cobblemonraiddens:raid/boss/charizard_mega_x",
-    "weight": 10.0
+    "weight": 10.0,
+    "script": {
+        "turn:3": "RESET_BOSS",    // Boss will clear its stat drops AFTER turn 3
+        "hp:0.5": "RESET_PLAYER"   // Boss will clear player stat boosts after dropping to 50%
+    }
 }
 ```
 
