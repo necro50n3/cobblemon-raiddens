@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
@@ -22,48 +22,54 @@ public class RaidBucket {
     private final HashSet<RaidTier> includeTiers;
     private final HashSet<RaidType> includeTypes;
     private final HashSet<RaidFeature> includeFeatures;
-    private final HashSet<ResourceLocation> includeBosses;
+    private Set<ResourceLocation> includeBosses;
 
     private final HashSet<RaidTier> excludeTiers;
     private final HashSet<RaidType> excludeTypes;
     private final HashSet<RaidFeature> excludeFeatures;
-    private final HashSet<ResourceLocation> excludeBosses;
+    private Set<ResourceLocation> excludeBosses;
 
-    private final HashSet<String> biomes;
-    private Set<ResourceKey<Biome>> resolvedBiomes;
+    private Set<ResourceKey<Biome>> biomes;
     private final double weight;
 
     private BitSet compiled;
     private ResourceLocation id;
 
-    private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<RaidFeature> includeFeatures, HashSet<ResourceLocation> includeBosses,
-                       HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<RaidFeature> excludeFeatures, HashSet<ResourceLocation> excludeBosses,
+    private final HashSet<String> includeBossesInner;
+    private final HashSet<String> excludeBossesInner;
+    private final HashSet<String> biomesInner;
+
+    private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<RaidFeature> includeFeatures, HashSet<String> includeBosses,
+                       HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<RaidFeature> excludeFeatures, HashSet<String> excludeBosses,
                        HashSet<String> biomes, double weight) {
         this.includeTiers = includeTiers;
         this.includeTypes = includeTypes;
         this.includeFeatures = includeFeatures;
-        this.includeBosses = includeBosses;
+        this.includeBosses = null;
 
         this.excludeTiers = excludeTiers;
         this.excludeTypes = excludeTypes;
         this.excludeFeatures = excludeFeatures;
-        this.excludeBosses = excludeBosses;
+        this.excludeBosses = null;
 
-        this.biomes =  biomes;
-        this.resolvedBiomes = null;
+        this.biomes = null;
         this.weight = weight;
 
         this.compiled = null;
         this.id = null;
+
+        this.includeBossesInner = includeBosses;
+        this.excludeBossesInner = excludeBosses;
+        this.biomesInner =  biomes;
     }
 
     private HashSet<String> getBiomes() {
-        return this.biomes;
+        return this.biomesInner;
     }
 
     public boolean isValidBiome(Registry<Biome> biomeRegistry, Holder<Biome> biome) {
-        if (this.resolvedBiomes == null) this.resolveBiomes(biomeRegistry);
-        return this.resolvedBiomes.stream().anyMatch(biome::is);
+        if (this.biomes == null) this.resolveBiomes(biomeRegistry);
+        return this.biomes.stream().anyMatch(biome::is);
     }
 
     public double getWeight() {
@@ -85,10 +91,10 @@ public class RaidBucket {
         else return RaidRegistry.getRandomRaidBoss(random, level, this.getCompiled(), key);
     }
 
-    public void resolveBiomes(Registry<Biome> biomeRegistry) {
+    private void resolveBiomes(Registry<Biome> biomeRegistry) {
         Set<ResourceKey<Biome>> result = new HashSet<>();
 
-        for (String entry : this.biomes) {
+        for (String entry : this.biomesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
@@ -103,14 +109,50 @@ public class RaidBucket {
             }
         }
 
-        CobblemonRaidDens.LOGGER.info(String.valueOf(this.biomes));
-        CobblemonRaidDens.LOGGER.info(String.valueOf(result));
+        this.biomes = result;
+    }
 
-        this.resolvedBiomes = result;
+    private void resolveRaidBosses() {
+        Set<ResourceLocation> result = new HashSet<>();
+        for (String entry : this.includeBossesInner) {
+            ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
+            if (entry.startsWith("#")) {
+                TagKey<RaidBoss> tag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, id);
+                RaidRegistry.REGISTRY.getTag(tag).ifPresent(holderSet ->
+                    holderSet.forEach(holder -> {
+                        if (holder.unwrapKey().isEmpty()) return;
+                        ResourceLocation loc = holder.unwrapKey().get().location();
+                        if (RaidRegistry.getRaidBoss(loc) != null) result.add(loc);
+                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result.add(holder.value().getId());
+                    }));
+            } else {
+                if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
+            }
+        }
+        this.includeBosses = result;
+
+        result.clear();
+        for (String entry : this.excludeBossesInner) {
+            ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
+            if (entry.startsWith("#")) {
+                TagKey<RaidBoss> tag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, id);
+                RaidRegistry.REGISTRY.getTag(tag).ifPresent(holderSet ->
+                    holderSet.forEach(holder -> {
+                        if (holder.unwrapKey().isEmpty()) return;
+                        ResourceLocation loc = holder.unwrapKey().get().location();
+                        if (RaidRegistry.getRaidBoss(loc) != null) result.add(loc);
+                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result.add(holder.value().getId());
+                    }));
+            } else {
+                if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
+            }
+        }
+        this.excludeBosses = result;
     }
 
     private BitSet getCompiled() {
         if (this.compiled == null) {
+            this.resolveRaidBosses();
             this.compiled = new BitSet();
 
             if (includeTiers.isEmpty()) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
@@ -148,7 +190,7 @@ public class RaidBucket {
         return this.compiled;
     }
 
-    private record RaidBucketFilters(HashSet<RaidTier> tiers, HashSet<RaidType> types, HashSet<RaidFeature> features, HashSet<ResourceLocation> bosses) {
+    private record RaidBucketFilters(HashSet<RaidTier> tiers, HashSet<RaidType> types, HashSet<RaidFeature> features, HashSet<String> bosses) {
         public RaidBucketFilters() {
             this(new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
         }
@@ -161,18 +203,18 @@ public class RaidBucket {
                     .optionalFieldOf("type", new HashSet<>()).forGetter(RaidBucketFilters::types),
                 RaidFeature.codec().listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("feature", new HashSet<>()).forGetter(RaidBucketFilters::features),
-                ResourceLocation.CODEC.listOf().xmap(HashSet::new, ArrayList::new)
+                Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("boss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)
             ).apply(inst, RaidBucketFilters::new));
         }
     }
 
     private RaidBucketFilters getIncluded() {
-        return new RaidBucketFilters(this.includeTiers, this.includeTypes, this.includeFeatures, this.includeBosses);
+        return new RaidBucketFilters(this.includeTiers, this.includeTypes, this.includeFeatures, this.includeBossesInner);
     }
 
     private RaidBucketFilters getExcluded() {
-        return new RaidBucketFilters(this.excludeTiers, this.excludeTypes, this.excludeFeatures, this.excludeBosses);
+        return new RaidBucketFilters(this.excludeTiers, this.excludeTypes, this.excludeFeatures, this.excludeBossesInner);
     }
 
     public static Codec<RaidBucket> codec() {
