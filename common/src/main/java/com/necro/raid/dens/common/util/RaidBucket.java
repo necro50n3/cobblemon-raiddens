@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
@@ -62,7 +63,7 @@ public class RaidBucket {
 
     public boolean isValidBiome(Registry<Biome> biomeRegistry, Holder<Biome> biome) {
         if (this.resolvedBiomes == null) this.resolveBiomes(biomeRegistry);
-        return this.resolvedBiomes.isEmpty() || this.resolvedBiomes.stream().anyMatch(biome::is);
+        return this.resolvedBiomes.stream().anyMatch(biome::is);
     }
 
     public double getWeight() {
@@ -98,11 +99,12 @@ public class RaidBucket {
                     }));
             } else {
                 ResourceKey<Biome> biomeKey = ResourceKey.create(Registries.BIOME, id);
-                if (biomeRegistry.containsKey(biomeKey)) {
-                    result.add(biomeKey);
-                }
+                if (biomeRegistry.containsKey(biomeKey)) result.add(biomeKey);
             }
         }
+
+        CobblemonRaidDens.LOGGER.info(String.valueOf(this.biomes));
+        CobblemonRaidDens.LOGGER.info(String.valueOf(result));
 
         this.resolvedBiomes = result;
     }
@@ -178,7 +180,7 @@ public class RaidBucket {
             RaidBucketFilters.codec().optionalFieldOf("include", new RaidBucketFilters()).forGetter(RaidBucket::getIncluded),
             RaidBucketFilters.codec().optionalFieldOf("exclude", new RaidBucketFilters()).forGetter(RaidBucket::getExcluded),
             Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
-                .optionalFieldOf("biomes", new HashSet<>()).forGetter(RaidBucket::getBiomes),
+                .fieldOf("biome").forGetter(RaidBucket::getBiomes),
             Codec.DOUBLE.optionalFieldOf("weight", 10.0).forGetter(RaidBucket::getWeight)
         ).apply(inst, (include, exclude, biomes, weight) -> new RaidBucket(
             include.tiers(), include.types(), include.features(), include.bosses(),
