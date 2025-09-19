@@ -39,4 +39,6 @@ public class RaidConfig implements ConfigData {
     public double ha_rate = 0.20;
     @Comment("The max number of cheers a player can use per raid. Default: 3")
     public int max_cheers = 3;
+    @Comment("The max number Pokemon a player can use in a raid. Default: 1")
+    public int raid_party_size = 1;
 }
