@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -121,7 +122,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         ResourceLocation loc = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, type, null);
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(loc);
         if (loc == null || raidBoss == null) return;
-        this.raidBoss = loc;
+        this.setRaidBoss(loc);
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
@@ -133,7 +134,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.dimension == null) return;
         RaidBoss raidBoss = this.getRaidBoss();
         if (raidBoss == null) {
-            this.raidBoss = null;
+            this.setRaidBoss(null);
             return;
         }
 
@@ -306,6 +307,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.resetClears();
         this.inactiveTicks = 0;
         this.raidBoss = raidBoss;
+        this.setChanged();
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        if (this.raidBoss != null) tag.putString("raid_boss", this.raidBoss.toString());
+        return tag;
     }
 
     @Override

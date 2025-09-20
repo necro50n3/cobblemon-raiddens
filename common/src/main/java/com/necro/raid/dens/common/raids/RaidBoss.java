@@ -78,26 +78,6 @@ public class RaidBoss {
         this.id = null;
     }
 
-    public RaidBoss(PokemonProperties baseProperties, PokemonProperties bossProperties, RaidTier tier,
-                    RaidType raidType, RaidFeature raidFeature, List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm,
-                    String lootTableId, boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
-        this.baseProperties = baseProperties;
-        this.bossProperties = bossProperties;
-        this.raidTier = tier;
-        this.raidType = raidType;
-        this.raidFeature = raidFeature;
-        this.raidForm = raidForm;
-        this.baseForm = baseForm;
-        this.lootTableId = lootTableId;
-        this.weight = 0;
-        this.isCatchable = isCatchable;
-        this.healthMulti = healthMulti;
-        this.shinyRate = shinyRate;
-        this.script = script;
-
-        this.id = null;
-    }
-
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.bossProperties.asString(" ") + " aspect=raid uncatchable");
 

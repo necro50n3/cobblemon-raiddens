@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabric;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
 import com.necro.raid.dens.common.commands.RaidRequestCommands;
@@ -73,7 +74,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(DimensionHelper::onDimensionChange);
 
-        DynamicRegistries.register(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec());
+        DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossResourceReloadListener());
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->

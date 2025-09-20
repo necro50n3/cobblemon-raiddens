@@ -1,6 +1,7 @@
 package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.SyncHealthPacket;
@@ -61,7 +62,7 @@ public class CobblemonRaidDensNeoForge {
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
         modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), null);
+            event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         });
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
