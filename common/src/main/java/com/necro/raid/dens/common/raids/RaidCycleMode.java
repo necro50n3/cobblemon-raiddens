@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public enum RaidCycleMode implements StringRepresentable {
     NONE("none", true, true),
+    BUCKET("bucket", false, false),
     LOCK_BOTH("lock_both", true, true),
     LOCK_TIER("lock_tier", true, false),
     LOCK_TYPE("lock_type", false, true),

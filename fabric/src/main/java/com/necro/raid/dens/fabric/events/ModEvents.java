@@ -2,6 +2,7 @@ package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -39,5 +40,6 @@ public class ModEvents {
 
     public static void initRaidBosses(MinecraftServer server) {
         RaidRegistry.initRaidBosses(server);
+        RaidBucketRegistry.init(server);
     }
 }

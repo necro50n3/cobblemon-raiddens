@@ -6,12 +6,18 @@ import java.util.*;
 
 public class DoubleWeightedRandomMap<T> {
     private final NavigableMap<Double, T> map = new TreeMap<>();
+    private final Map<T, Double> weights = new HashMap<>();
     private double totalWeight = 0.0;
 
     public void add(T value, double weight) {
         if (weight <= 0) return;
         this.totalWeight += weight;
         this.map.put(this.totalWeight, value);
+        this.weights.put(value, weight);
+    }
+
+    public double getWeight(T value) {
+        return this.weights.getOrDefault(value, 0.0);
     }
 
     public Optional<T> getRandom(RandomSource random) {

@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
@@ -38,19 +39,38 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
-        ResourceLocation location = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
+        RaidCycleMode cycleMode = RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
+        ResourceLocation bucket = null;
+        ResourceLocation location = null;
+        RaidBoss raidBoss = null;
+
+        if (cycleMode == RaidCycleMode.BUCKET && level.getServer() != null) {
+            bucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(blockPos));
+            if (bucket != null) {
+                location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level.getLevel());
+                raidBoss = RaidRegistry.getRaidBoss(location);
+            }
+        }
+
+        if (raidBoss == null) {
+            location = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
+            raidBoss = RaidRegistry.getRaidBoss(location);
+        }
+
         if (raidBoss == null) return false;
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)
             .setValue(RaidCrystalBlock.CAN_RESET, CobblemonRaidDens.CONFIG.reset_time > 0)
-            .setValue(RaidCrystalBlock.CYCLE_MODE, RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode))
+            .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
         RaidCrystalBlockEntity blockEntity = ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos));
-        if (blockEntity != null) blockEntity.setRaidBoss(location);
+        if (blockEntity != null) {
+            blockEntity.setRaidBoss(location);
+            blockEntity.setRaidBucket(bucket);
+        }
 
         return true;
     }

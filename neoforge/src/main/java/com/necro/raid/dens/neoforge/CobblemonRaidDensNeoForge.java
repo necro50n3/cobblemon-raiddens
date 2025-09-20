@@ -2,12 +2,15 @@ package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
+import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.SyncHealthPacket;
 import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
+import com.necro.raid.dens.common.util.RaidBucket;
+import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
@@ -63,6 +66,7 @@ public class CobblemonRaidDensNeoForge {
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
         modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
             event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
+            event.dataPackRegistry(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec(), null);
         });
 
         RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
