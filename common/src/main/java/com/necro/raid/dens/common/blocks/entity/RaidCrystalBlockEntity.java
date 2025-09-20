@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
@@ -206,6 +207,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void clearRaidHost() {
         this.playerQueue.remove(this.raidHost);
         this.raidHost = null;
+    }
+
+    public RaidBucket getRaidBucket() {
+        return RaidBucketRegistry.getBucket(this.raidBucket);
     }
 
     public RaidBoss getRaidBoss() {

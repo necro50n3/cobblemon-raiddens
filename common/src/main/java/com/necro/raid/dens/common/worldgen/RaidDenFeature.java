@@ -11,7 +11,6 @@ import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,11 +45,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         RaidBoss raidBoss = null;
 
         if (cycleMode == RaidCycleMode.BUCKET && level.getServer() != null) {
-            bucket = RaidBucketRegistry.getRandomBucket(
-                level.getRandom(),
-                level.getServer().registryAccess().registryOrThrow(Registries.BIOME),
-                level.getBiome(blockPos)
-            );
+            bucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(blockPos));
             if (bucket != null) {
                 location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level.getLevel());
                 raidBoss = RaidRegistry.getRaidBoss(location);

@@ -7,7 +7,6 @@ import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -67,8 +66,8 @@ public class RaidBucket {
         return this.biomesInner;
     }
 
-    public boolean isValidBiome(Registry<Biome> biomeRegistry, Holder<Biome> biome) {
-        if (this.biomes == null) this.resolveBiomes(biomeRegistry);
+    public boolean isValidBiome(Holder<Biome> biome) {
+        if (this.biomes == null) this.resolveBiomes();
         return this.biomes.stream().anyMatch(biome::is);
     }
 
@@ -91,21 +90,21 @@ public class RaidBucket {
         else return RaidRegistry.getRandomRaidBoss(random, level, this.getCompiled(), key);
     }
 
-    private void resolveBiomes(Registry<Biome> biomeRegistry) {
+    private void resolveBiomes() {
         Set<ResourceKey<Biome>> result = new HashSet<>();
 
         for (String entry : this.biomesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
-                biomeRegistry.getTag(tag).ifPresent(holderSet ->
+                RaidBucketRegistry.BIOME_REGISTRY.getTag(tag).ifPresent(holderSet ->
                     holderSet.forEach(holder -> {
                         if (holder.unwrapKey().isEmpty()) return;
                         result.add(holder.unwrapKey().get());
                     }));
             } else {
                 ResourceKey<Biome> biomeKey = ResourceKey.create(Registries.BIOME, id);
-                if (biomeRegistry.containsKey(biomeKey)) result.add(biomeKey);
+                if (RaidBucketRegistry.BIOME_REGISTRY.containsKey(biomeKey)) result.add(biomeKey);
             }
         }
 
