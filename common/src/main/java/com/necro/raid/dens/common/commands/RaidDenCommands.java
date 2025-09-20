@@ -316,7 +316,7 @@ public class RaidDenCommands {
         if (location == null) {
             RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
             RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, type, null);
+            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, cycleMode, location, bucket);
@@ -357,7 +357,7 @@ public class RaidDenCommands {
         RaidType type;
         if (!blockState.hasProperty(RaidCrystalBlock.RAID_TYPE) || cycleMode.canCycleType()) type = null;
         else type = level.getBlockState(blockPos).getValue(RaidCrystalBlock.RAID_TYPE);
-        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, raidTier, type, null), cycleMode, canReset);
+        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, level, raidTier, type, null), cycleMode, canReset);
     }
 
     private static int createRaidDenWithBucketFromExisting(Level level, BlockState blockState, BlockPos blockPos, ResourceLocation bucket, Boolean canReset) {
@@ -365,7 +365,7 @@ public class RaidDenCommands {
         ResourceLocation location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level);
         if (location == null) {
             RaidTier tier = RaidTier.getWeightedRandom(level.getRandom(), level);
-            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), tier, null, null);
+            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, null, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, RaidCycleMode.BUCKET, location, bucket);
