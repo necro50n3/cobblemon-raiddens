@@ -95,14 +95,18 @@ public class RaidBucket {
 
         for (String entry : this.biomesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
-            if (entry.startsWith("#")) {
+            if (entry.equals("#minecraft:all")) {
+                result.addAll(RaidBucketRegistry.BIOME_REGISTRY.registryKeySet());
+            }
+            else if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
                 RaidBucketRegistry.BIOME_REGISTRY.getTag(tag).ifPresent(holderSet ->
                     holderSet.forEach(holder -> {
                         if (holder.unwrapKey().isEmpty()) return;
                         result.add(holder.unwrapKey().get());
                     }));
-            } else {
+            }
+            else {
                 ResourceKey<Biome> biomeKey = ResourceKey.create(Registries.BIOME, id);
                 if (RaidBucketRegistry.BIOME_REGISTRY.containsKey(biomeKey)) result.add(biomeKey);
             }
@@ -124,7 +128,8 @@ public class RaidBucket {
                         if (RaidRegistry.getRaidBoss(loc) != null) result.add(loc);
                         else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result.add(holder.value().getId());
                     }));
-            } else {
+            }
+            else {
                 if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
             }
         }
@@ -142,7 +147,8 @@ public class RaidBucket {
                         if (RaidRegistry.getRaidBoss(loc) != null) result2.add(loc);
                         else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result2.add(holder.value().getId());
                     }));
-            } else {
+            }
+            else {
                 if (RaidRegistry.getRaidBoss(id) != null) result2.add(id);
             }
         }
