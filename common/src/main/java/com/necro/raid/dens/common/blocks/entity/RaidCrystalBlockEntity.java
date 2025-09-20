@@ -156,7 +156,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.getLevel() == null) return;
         MinecraftServer server = this.getLevel().getServer();
         ServerPlayer p = null;
-        if (server != null) p = server.getPlayerList().getPlayer(this.raidHost);
+        if (server != null && this.raidHost != null) p = server.getPlayerList().getPlayer(this.raidHost);
         if (p != null) server.getCommands().sendCommands(p);
 
         if (!this.hasDimension()) return;
