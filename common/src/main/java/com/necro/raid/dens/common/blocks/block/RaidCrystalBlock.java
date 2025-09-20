@@ -135,7 +135,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         ServerLevel level;
         try { level = this.getOrCreateDimension(blockEntity); }
         catch (IllegalStateException e) {
-            player.sendSystemMessage(Component.translatable("error.cobblemonraiddens.dimension_exist").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.already_hosting").withStyle(ChatFormatting.RED));
             return false;
         }
 
