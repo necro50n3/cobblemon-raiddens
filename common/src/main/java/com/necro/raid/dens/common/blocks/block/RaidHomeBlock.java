@@ -46,7 +46,7 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
 
             if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
                 if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-                    raidCrystalBlockEntity.clearRaid(home, homePos);
+                    raidCrystalBlockEntity.clearRaid();
                 }
             }
             else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {

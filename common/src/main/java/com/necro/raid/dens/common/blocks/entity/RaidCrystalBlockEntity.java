@@ -142,7 +142,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.dimension.addFreshEntity(pokemonEntity);
     }
 
-    public void clearRaid(Level level, BlockPos blockPos) {
+    public void clearRaid() {
         this.clears++;
         if (this.isAtMaxClears()) RaidHelper.resetClearedRaids(this.getUuid());
         else RaidHelper.clearRaid(this.getUuid(), this.playerQueue);

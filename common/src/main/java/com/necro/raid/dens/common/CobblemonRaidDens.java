@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.ClientConfig;
@@ -50,7 +51,9 @@ public class CobblemonRaidDens {
             raidFailEvent(event.getBattle());
             return Unit.INSTANCE;
         });
-        CobblemonEvents.BATTLE_FAINTED.subscribe(Priority.NORMAL, event -> {
+        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
+            BattlePokemon battlePokemon = event.getLosers().getFirst().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon != null && battlePokemon.getEffectedPokemon().getOwnerPlayer() != null) return Unit.INSTANCE;
             raidFailEvent(event.getBattle());
             return Unit.INSTANCE;
         });
