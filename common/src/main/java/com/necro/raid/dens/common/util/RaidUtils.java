@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.util;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ItemTags;
@@ -64,10 +63,6 @@ public class RaidUtils {
         return !block.is(Blocks.LAVA) &&
             block.getCollisionShape(world, pos).isEmpty() &&
             above.getCollisionShape(world, pos.above()).isEmpty();
-    }
-
-    public static float getDefaultShinyRate() {
-        return CobblemonRaidDens.CONFIG.shiny_rate < 0 ? Cobblemon.config.getShinyRate() : CobblemonRaidDens.CONFIG.shiny_rate;
     }
 
     public static boolean isRaidDenKey(ItemStack itemStack) {
