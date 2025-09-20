@@ -131,7 +131,7 @@ public class RaidBucket {
         }
         this.includeBosses = result;
 
-        result.clear();
+        Set<ResourceLocation> result2 = new HashSet<>();
         for (String entry : this.excludeBossesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) {
@@ -140,14 +140,14 @@ public class RaidBucket {
                     holderSet.forEach(holder -> {
                         if (holder.unwrapKey().isEmpty()) return;
                         ResourceLocation loc = holder.unwrapKey().get().location();
-                        if (RaidRegistry.getRaidBoss(loc) != null) result.add(loc);
-                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result.add(holder.value().getId());
+                        if (RaidRegistry.getRaidBoss(loc) != null) result2.add(loc);
+                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result2.add(holder.value().getId());
                     }));
             } else {
-                if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
+                if (RaidRegistry.getRaidBoss(id) != null) result2.add(id);
             }
         }
-        this.excludeBosses = result;
+        this.excludeBosses = result2;
     }
 
     private BitSet getCompiled() {
@@ -155,8 +155,14 @@ public class RaidBucket {
             this.resolveRaidBosses();
             this.compiled = new BitSet();
 
-            if (includeTiers.isEmpty()) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
-            else for (RaidTier tier : includeTiers) this.compiled.or(RaidRegistry.RAIDS_BY_TIER.get(tier));
+            boolean noIncludes = includeTiers.isEmpty() && includeTypes.isEmpty() && includeFeatures.isEmpty() && includeBosses.isEmpty();
+            if (noIncludes) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
+
+            if (!includeTiers.isEmpty()) {
+                BitSet tierSet = new BitSet();
+                for (RaidTier tier : includeTiers) tierSet.or(RaidRegistry.RAIDS_BY_TIER.get(tier));
+                this.compiled.and(tierSet);
+            }
 
             if (!includeTypes.isEmpty()) {
                 BitSet typeSet = new BitSet();
