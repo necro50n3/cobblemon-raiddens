@@ -95,8 +95,9 @@ public class RaidBucket {
 
         for (String entry : this.biomesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
-            if (entry.equals("#minecraft:all")) {
+            if (entry.equals("*")) {
                 result.addAll(RaidBucketRegistry.BIOME_REGISTRY.registryKeySet());
+                break;
             }
             else if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
