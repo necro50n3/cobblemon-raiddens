@@ -21,9 +21,10 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashSet;
 
 public class RaidRequestCommands {
+    @SuppressWarnings("ConstantConditions")
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd_raids")
-            .requires(source -> source.isPlayer() && RaidHelper.RAID_HOSTS.contains(source.getPlayer().getUUID()))
+            .requires(source -> source.isPlayer() && RaidHelper.isAlreadyHosting(source.getPlayer()))
             .then(Commands.literal("acceptrequest")
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("origin", DimensionArgument.dimension())
@@ -48,7 +49,7 @@ public class RaidRequestCommands {
     private static int acceptRequest(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer host = context.getSource().getPlayer();
         assert host != null;
-        if (!RaidHelper.RAID_HOSTS.contains(host.getUUID())) return 0;
+        if (!RaidHelper.isAlreadyHosting(host)) return 0;
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
         ServerLevel originalLevel = DimensionArgument.getDimension(context, "origin");
         BlockPos blockPos = BlockPosArgument.getBlockPos(context, "position");

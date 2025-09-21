@@ -22,13 +22,16 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class RaidHelper extends SavedData {
-    public static final Set<UUID> RAID_HOSTS = new HashSet<>();
+    public static RaidHelper INSTANCE;
+
     public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
-    public static final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
-    public static final Set<UUID> WAS_SURVIVAL = new HashSet<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
-    public static final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
     public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
+
+    public final Set<UUID> RAID_HOSTS = new HashSet<>();
+    public final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
+    public final Set<UUID> WAS_SURVIVAL = new HashSet<>();
+    public final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
 
     public static boolean addToQueue(Player player, @Nullable ItemStack key) {
         if (JOIN_QUEUE.containsKey(player)) return false;
@@ -37,68 +40,85 @@ public class RaidHelper extends SavedData {
     }
 
     public static void addHost(Player player) {
-        RAID_HOSTS.add(player.getUUID());
+        INSTANCE.RAID_HOSTS.add(player.getUUID());
+        INSTANCE.setDirty();
     }
 
     public static void addParticipant(Player player) {
-        RAID_PARTICIPANTS.add(player.getUUID());
+        INSTANCE.RAID_PARTICIPANTS.add(player.getUUID());
+        INSTANCE.setDirty();
     }
 
     public static void addSurvivalPlayer(Player player) {
-        WAS_SURVIVAL.add(player.getUUID());
+        INSTANCE.WAS_SURVIVAL.add(player.getUUID());
+        INSTANCE.setDirty();
     }
 
     public static boolean playerWasSurvival(Player player) {
-        return WAS_SURVIVAL.remove(player.getUUID());
+        INSTANCE.setDirty();
+        return INSTANCE.WAS_SURVIVAL.remove(player.getUUID());
     }
 
     public static boolean hasClearedRaid(UUID uuid, Player player) {
-        Set<UUID> cleared = RaidHelper.CLEARED_RAIDS.getOrDefault(uuid, new HashSet<>());
+        Set<UUID> cleared = INSTANCE.CLEARED_RAIDS.getOrDefault(uuid, new HashSet<>());
         return cleared.contains(player.getUUID());
     }
 
     public static void clearRaid(UUID uuid, Collection<UUID> players) {
-        if (!CLEARED_RAIDS.containsKey(uuid)) CLEARED_RAIDS.put(uuid, new HashSet<>());
-        CLEARED_RAIDS.get(uuid).addAll(players);
+        if (!INSTANCE.CLEARED_RAIDS.containsKey(uuid)) INSTANCE.CLEARED_RAIDS.put(uuid, new HashSet<>());
+        INSTANCE.CLEARED_RAIDS.get(uuid).addAll(players);
+        INSTANCE.setDirty();
     }
 
     public static void resetClearedRaids(UUID uuid) {
-        CLEARED_RAIDS.remove(uuid);
+        INSTANCE.CLEARED_RAIDS.remove(uuid);
+        INSTANCE.setDirty();
     }
 
     public static void resetPlayerClearedRaid(UUID uuid, UUID player) {
-        if (!CLEARED_RAIDS.containsKey(uuid)) return;
-        CLEARED_RAIDS.get(uuid).remove(player);
+        if (!INSTANCE.CLEARED_RAIDS.containsKey(uuid)) return;
+        INSTANCE.CLEARED_RAIDS.get(uuid).remove(player);
+        INSTANCE.setDirty();
     }
 
     public static void resetPlayerAllClearedRaids(UUID player) {
-        CLEARED_RAIDS.values().forEach(playerSet -> playerSet.remove(player));
+        INSTANCE.CLEARED_RAIDS.values().forEach(playerSet -> playerSet.remove(player));
+        INSTANCE.setDirty();
     }
 
     public static boolean isAlreadyHosting(Player player) {
-        return RAID_HOSTS.contains(player.getUUID());
+        return isAlreadyHosting(player.getUUID());
+    }
+
+    public static boolean isAlreadyHosting(UUID player) {
+        return INSTANCE.RAID_HOSTS.contains(player);
     }
 
     public static boolean isAlreadyParticipating(Player player) {
-        return RAID_PARTICIPANTS.contains(player.getUUID());
+        return isAlreadyParticipating(player.getUUID());
+    }
+
+    public static boolean isAlreadyParticipating(UUID player) {
+        return INSTANCE.RAID_PARTICIPANTS.contains(player);
     }
 
     public static void removeHost(UUID player) {
-        RAID_HOSTS.remove(player);
+        INSTANCE.RAID_HOSTS.remove(player);
+        INSTANCE.setDirty();
     }
 
     public static void removeParticipant(UUID player) {
-        RAID_PARTICIPANTS.remove(player);
+        INSTANCE.RAID_PARTICIPANTS.remove(player);
+        INSTANCE.setDirty();
     }
 
     public static void finishRaid(Set<UUID> players) {
-        for (UUID player : players) {
-            removeParticipant(player);
-        }
+        INSTANCE.RAID_PARTICIPANTS.removeAll(players);
+        INSTANCE.setDirty();
     }
 
     public static void onPlayerJoin(ServerPlayer player) {
-        if (!WAS_SURVIVAL.contains(player.getUUID())) return;
+        if (!INSTANCE.WAS_SURVIVAL.contains(player.getUUID())) return;
         else if (DimensionHelper.isCustomDimension((ServerLevel) player.level())) return;
         else if (player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE) return;
         player.setGameMode(GameType.SURVIVAL);
@@ -176,13 +196,13 @@ public class RaidHelper extends SavedData {
         RaidHelper data = create();
 
         if (compoundTag.contains("raid_hosts")) {
-            compoundTag.getList("raid_hosts", Tag.TAG_STRING).forEach(host -> RAID_HOSTS.add(UUID.fromString(host.getAsString())));
+            compoundTag.getList("raid_hosts", Tag.TAG_STRING).forEach(host -> data.RAID_HOSTS.add(UUID.fromString(host.getAsString())));
         }
         if (compoundTag.contains("raid_participants")) {
-            compoundTag.getList("raid_participants", Tag.TAG_STRING).forEach(p -> RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
+            compoundTag.getList("raid_participants", Tag.TAG_STRING).forEach(p -> data.RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
         }
         if (compoundTag.contains("was_survival")) {
-            compoundTag.getList("was_survival", Tag.TAG_STRING).forEach(s -> WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
+            compoundTag.getList("was_survival", Tag.TAG_STRING).forEach(s -> data.WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
         }
 
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
@@ -196,15 +216,15 @@ public class RaidHelper extends SavedData {
             for (Tag uuidTag : uuidList) {
                 players.add(NbtUtils.loadUUID(uuidTag));
             }
-            CLEARED_RAIDS.put(UUID.fromString(uuid), players);
+            data.CLEARED_RAIDS.put(UUID.fromString(uuid), players);
         }
 
         return data;
     }
 
     public static void initHelper(MinecraftServer server) {
-        SavedData data = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(), CobblemonRaidDens.MOD_ID);
-        data.setDirty();
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(), CobblemonRaidDens.MOD_ID);
+        INSTANCE.setDirty();
     }
 
     @Override
