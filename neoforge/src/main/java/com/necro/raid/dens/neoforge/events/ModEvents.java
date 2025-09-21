@@ -7,7 +7,6 @@ import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,11 +24,6 @@ public class ModEvents {
     public static void commonTick(ServerTickEvent.Post event) {
         RaidHelper.commonTick();
         DimensionHelper.removePending(event.getServer());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedInEvent event) {
-        RaidHelper.onPlayerJoin((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent

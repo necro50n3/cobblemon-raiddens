@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.raids;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -10,10 +9,8 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +26,6 @@ public class RaidHelper extends SavedData {
 
     public final Set<UUID> RAID_HOSTS = new HashSet<>();
     public final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
-    public final Set<UUID> WAS_SURVIVAL = new HashSet<>();
     public final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
 
     public static boolean addToQueue(Player player, @Nullable ItemStack key) {
@@ -46,16 +42,6 @@ public class RaidHelper extends SavedData {
     public static void addParticipant(Player player) {
         INSTANCE.RAID_PARTICIPANTS.add(player.getUUID());
         INSTANCE.setDirty();
-    }
-
-    public static void addSurvivalPlayer(Player player) {
-        INSTANCE.WAS_SURVIVAL.add(player.getUUID());
-        INSTANCE.setDirty();
-    }
-
-    public static boolean playerWasSurvival(Player player) {
-        INSTANCE.setDirty();
-        return INSTANCE.WAS_SURVIVAL.remove(player.getUUID());
     }
 
     public static boolean hasClearedRaid(UUID uuid, Player player) {
@@ -113,15 +99,6 @@ public class RaidHelper extends SavedData {
 
     public static void finishRaid(Set<UUID> players) {
         INSTANCE.RAID_PARTICIPANTS.removeAll(players);
-        INSTANCE.setDirty();
-    }
-
-    public static void onPlayerJoin(ServerPlayer player) {
-        if (!INSTANCE.WAS_SURVIVAL.contains(player.getUUID())) return;
-        else if (RaidUtils.isCustomDimension(player.level())) return;
-        else if (player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE) return;
-        player.setGameMode(GameType.SURVIVAL);
-        INSTANCE.WAS_SURVIVAL.remove(player.getUUID());
         INSTANCE.setDirty();
     }
 
@@ -202,9 +179,6 @@ public class RaidHelper extends SavedData {
         if (compoundTag.contains("raid_participants")) {
             compoundTag.getList("raid_participants", Tag.TAG_STRING).forEach(p -> data.RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
         }
-        if (compoundTag.contains("was_survival")) {
-            compoundTag.getList("was_survival", Tag.TAG_STRING).forEach(s -> data.WAS_SURVIVAL.add(UUID.fromString(s.getAsString())));
-        }
 
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
         for (Tag t : clearedRaids) {
@@ -237,10 +211,6 @@ public class RaidHelper extends SavedData {
         ListTag raidParticipantsTag = new ListTag();
         RAID_PARTICIPANTS.forEach(uuid -> raidParticipantsTag.add(StringTag.valueOf(uuid.toString())));
         compoundTag.put("raid_participants", raidParticipantsTag);
-
-        ListTag wasSurvivalTag = new ListTag();
-        WAS_SURVIVAL.forEach(uuid -> wasSurvivalTag.add(StringTag.valueOf(uuid.toString())));
-        compoundTag.put("was_survival", wasSurvivalTag);
 
         ListTag clearedRaidsTag = new ListTag();
         for (Map.Entry<UUID, Set<UUID>> entry : CLEARED_RAIDS.entrySet()) {

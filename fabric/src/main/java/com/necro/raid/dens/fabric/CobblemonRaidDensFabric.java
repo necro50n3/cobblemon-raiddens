@@ -69,7 +69,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);
-        ServerPlayConnectionEvents.JOIN.register(ModEvents::onPlayerJoin);
         ServerPlayConnectionEvents.DISCONNECT.register(ModEvents::onPlayerDisconnect);
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::commonTick);
         ServerTickEvents.END_SERVER_TICK.register(DimensionHelper::removePending);
