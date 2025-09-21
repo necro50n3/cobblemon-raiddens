@@ -12,6 +12,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
+import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
 import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCompat;
@@ -33,9 +34,10 @@ import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -75,7 +77,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidRequestCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidRewardCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(DimensionHelper::onDimensionChange);
+        PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreakOrPlace);
+        UseBlockCallback.EVENT.register(RaidUtils::canBreakOrPlace);
 
         DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossResourceReloadListener());
@@ -88,5 +91,4 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
     }
-
 }

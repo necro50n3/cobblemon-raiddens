@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.distanthorizons.RaidDensDistantHorizonsCompat;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
 import com.necro.raid.dens.common.mixins.ServerLevelAccessor;
-import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import com.necro.raid.dens.common.util.IRegistryRemover;
 import net.minecraft.Util;
@@ -15,8 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -54,34 +51,6 @@ public class DimensionHelper {
 
     public static boolean isLevelRemoved(ServerLevel level) {
         return REMOVED_LEVELS.contains(level);
-    }
-
-    public static void onDimensionChange(ServerPlayer player, ServerLevel from, ServerLevel to) {
-        boolean entering = isCustomDimension(to);
-        boolean leaving = isCustomDimension(from);
-
-        if (entering) {
-            if (player.gameMode.getGameModeForPlayer() == GameType.SURVIVAL) {
-                player.setGameMode(GameType.ADVENTURE);
-                RaidHelper.addSurvivalPlayer(player);
-            }
-        }
-        else if (leaving) {
-            if (RaidHelper.playerWasSurvival(player)) {
-                player.setGameMode(GameType.SURVIVAL);
-            }
-        }
-    }
-
-    public static void onDimensionChange(ServerPlayer player, ResourceKey<Level> from, ResourceKey<Level> to) {
-        if (player.getServer() == null) return;
-        ServerLevel fromLevel = player.getServer().getLevel(from);
-        ServerLevel toLevel = player.getServer().getLevel(to);
-        onDimensionChange(player, fromLevel, toLevel);
-    }
-
-    public static boolean isCustomDimension(ServerLevel level) {
-        return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
     }
 
     private static class PendingDimension {

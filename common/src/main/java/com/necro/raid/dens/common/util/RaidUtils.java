@@ -1,17 +1,24 @@
 package com.necro.raid.dens.common.util;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -67,6 +74,23 @@ public class RaidUtils {
 
     public static boolean isRaidDenKey(ItemStack itemStack) {
         return itemStack.is(ItemTags.RAID_DEN_KEY) || itemStack.getOrDefault(ModComponents.RAID_DEN_KEY.value(), false);
+    }
+
+    public static boolean isCustomDimension(Level level) {
+        return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
+    }
+
+    public static boolean cannotBreakOrPlace(Player player, Level level) {
+        return RaidUtils.isCustomDimension(level) && !player.isCreative();
+    }
+
+    public static boolean canBreakOrPlace(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+        return !RaidUtils.cannotBreakOrPlace(player, level);
+    }
+
+    public static InteractionResult canBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        if (!RaidUtils.cannotBreakOrPlace(player, level)) return InteractionResult.PASS;
+        return !(level.getBlockEntity(hitResult.getBlockPos()) instanceof RaidHomeBlockEntity) ? InteractionResult.FAIL : InteractionResult.PASS;
     }
 
     public static void init() {

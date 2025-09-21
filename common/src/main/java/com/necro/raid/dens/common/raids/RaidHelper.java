@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.raids;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -10,7 +10,6 @@ import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -119,7 +118,7 @@ public class RaidHelper extends SavedData {
 
     public static void onPlayerJoin(ServerPlayer player) {
         if (!INSTANCE.WAS_SURVIVAL.contains(player.getUUID())) return;
-        else if (DimensionHelper.isCustomDimension((ServerLevel) player.level())) return;
+        else if (RaidUtils.isCustomDimension(player.level())) return;
         else if (player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE) return;
         player.setGameMode(GameType.SURVIVAL);
         INSTANCE.WAS_SURVIVAL.remove(player.getUUID());

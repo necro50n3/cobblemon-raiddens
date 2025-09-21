@@ -6,6 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -64,7 +65,7 @@ public class RaidAdminCommands {
     }
 
     private static int refreshPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
-        if (DimensionHelper.isCustomDimension(player.serverLevel())) {
+        if (RaidUtils.isCustomDimension(player.serverLevel())) {
             context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.player_in_raid"));
             return 0;
         }
@@ -127,7 +128,7 @@ public class RaidAdminCommands {
 
     private static int removeDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel level = DimensionArgument.getDimension(context, "dimension");
-        if (!DimensionHelper.isCustomDimension(level)) {
+        if (!RaidUtils.isCustomDimension(level)) {
             context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.invalid_dimension"));
             return 0;
         }
