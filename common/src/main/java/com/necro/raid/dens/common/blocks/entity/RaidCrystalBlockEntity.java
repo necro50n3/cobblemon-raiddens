@@ -16,6 +16,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -177,7 +180,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         );
         this.dimension
             .getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
-            .forEach(p1 -> RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId()));
+            .forEach(p1 -> {
+                RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
+                if (raidInstance != null) raidInstance.stopRaid(false);
+            });
 
         this.removeDimension();
         this.dimension = null;
@@ -336,6 +342,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         CompoundTag tag = super.getUpdateTag(provider);
         if (this.raidBoss != null) tag.putString("raid_boss", this.raidBoss.toString());
         return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

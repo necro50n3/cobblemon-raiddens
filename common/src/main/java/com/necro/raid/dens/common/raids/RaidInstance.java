@@ -174,7 +174,7 @@ public class RaidInstance {
         this.queueStopRaid(true);
     }
 
-    private void queueStopRaid(boolean raidSuccess) {
+    public void queueStopRaid(boolean raidSuccess) {
         this.runQueue.add(new DelayedRunnable(() -> this.stopRaid(raidSuccess), 60));
     }
 
