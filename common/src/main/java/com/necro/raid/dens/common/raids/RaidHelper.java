@@ -122,6 +122,8 @@ public class RaidHelper extends SavedData {
         else if (DimensionHelper.isCustomDimension((ServerLevel) player.level())) return;
         else if (player.gameMode.getGameModeForPlayer() != GameType.ADVENTURE) return;
         player.setGameMode(GameType.SURVIVAL);
+        INSTANCE.WAS_SURVIVAL.remove(player.getUUID());
+        INSTANCE.setDirty();
     }
 
     public static void onPlayerDisconnect(Player player) {

@@ -22,6 +22,7 @@ import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public enum RaidCrystalComponents implements IBlockComponentProvider {
@@ -38,10 +39,14 @@ public enum RaidCrystalComponents implements IBlockComponentProvider {
         return IElementHelper.get().item(stack, 1.5f);
     }
 
-    private IElement getTypeIcon(RaidType type) {
-        String string = String.format("textures/gui/summary/tera_types/%s.png", type.getSerializedName());
-        ResourceLocation location = ResourceLocation.fromNamespaceAndPath("mega_showdown", string);
-        return new TeraTypeElement(location, 32, 32);
+    private IElement getTeraTypeIcon(RaidType type) {
+        String string = String.format("mega_showdown:textures/gui/summary/tera_types/%s.png", type.getSerializedName());
+        return new TeraTypeElement(ResourceLocation.parse(string), 32, 32);
+    }
+
+    private IElement getElementalTypeIcon(RaidType type) {
+        String string = "cobblemon:textures/gui/types_small.png";
+        return new ElementalTypeElement(ResourceLocation.parse(string), 324, 18, type);
     }
 
     @Override
@@ -61,8 +66,15 @@ public enum RaidCrystalComponents implements IBlockComponentProvider {
         component.append(" | ").append(Component.translatable(feature.getTranslatable()));
         component.append(" | ").append(tier.getStars());
         tooltip.add(component, this.getUid());
-        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) {
-            tooltip.append(0, List.of(IElementHelper.get().text(Component.literal(" ")), this.getTypeIcon(type)));
+        List<IElement> elements = new ArrayList<>();
+        elements.add(IElementHelper.get().text(Component.literal(" ")));
+        if (type != RaidType.STELLAR){
+            elements.add(this.getElementalTypeIcon(type));
+            tooltip.append(0, elements);
+        }
+        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) {
+            elements.add(this.getTeraTypeIcon(type));
+            tooltip.append(0, elements);
         }
     }
 
