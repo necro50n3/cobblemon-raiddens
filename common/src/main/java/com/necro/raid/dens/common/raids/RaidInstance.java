@@ -138,7 +138,7 @@ public class RaidInstance {
     }
 
     public void syncHealth(ServerPlayer player, float remainingHealth) {
-        float damage = this.damageCache.get(player) - remainingHealth;
+        float damage = this.damageCache.getOrDefault(player, this.currentHealth) - remainingHealth;
         this.damageCache.put(player, remainingHealth);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
