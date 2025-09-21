@@ -8,12 +8,13 @@ import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -45,9 +46,11 @@ public class ModEvents {
     }
 
     @SubscribeEvent
-    public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (RaidUtils.cannotBreakOrPlace(player, (Level) event.getLevel())) event.setCanceled(true);
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (RaidUtils.cannotBreakOrPlace(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec())) {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.FAIL);
+        }
     }
 
     @SubscribeEvent

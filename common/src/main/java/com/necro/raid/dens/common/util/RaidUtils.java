@@ -84,13 +84,16 @@ public class RaidUtils {
         return RaidUtils.isCustomDimension(level) && !player.isCreative();
     }
 
+    public static boolean cannotBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockEntity(hitResult.getBlockPos()) instanceof RaidHomeBlockEntity);
+    }
+
     public static boolean canBreakOrPlace(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         return !RaidUtils.cannotBreakOrPlace(player, level);
     }
 
     public static InteractionResult canBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        if (!RaidUtils.cannotBreakOrPlace(player, level)) return InteractionResult.PASS;
-        return !(level.getBlockEntity(hitResult.getBlockPos()) instanceof RaidHomeBlockEntity) ? InteractionResult.FAIL : InteractionResult.PASS;
+        return RaidUtils.cannotBreakOrPlace(player, level, hand, hitResult) ? InteractionResult.FAIL : InteractionResult.PASS;
     }
 
     public static void init() {
