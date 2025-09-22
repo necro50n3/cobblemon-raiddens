@@ -57,7 +57,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
     @Override
     public @Nullable IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
-        if (!accessor.isServerConnected() || true) return this.getIconClient(accessor, currentIcon);
+        if (!accessor.isServerConnected()) return this.getIconClient(accessor, currentIcon);
 
         CompoundTag serverData = accessor.getServerData();
         if (!serverData.contains("boss_aspects") || !serverData.contains("boss_species")) return currentIcon;
@@ -118,7 +118,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (!accessor.isServerConnected() || true) {
+        if (!accessor.isServerConnected()) {
             this.appendTooltipClient(tooltip, accessor);
             return;
         }
