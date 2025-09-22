@@ -229,6 +229,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return RaidRegistry.getRaidBoss(this.raidBoss);
     }
 
+    public ResourceLocation getRaidBossLocation() {
+        return this.raidBoss;
+    }
+
     public void addPlayer(Player player) {
         this.playerQueue.add(player.getUUID());
         this.setChanged();

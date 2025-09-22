@@ -6,8 +6,6 @@ import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
 
 public record RaidEnergyInstruction(PokemonBattle battle, BattleMessage message) implements InterpreterInstruction {
@@ -21,10 +19,6 @@ public record RaidEnergyInstruction(PokemonBattle battle, BattleMessage message)
                 Component.translatable("battle.cobblemonraiddens.raid_energy", origin.getName())
             );
 
-            origin.getEntity().level().playSound(
-                origin.getEntity(), origin.getEntity().blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER,
-                SoundSource.WEATHER, 2.0f, 1.0f
-            );
             origin.getEntity().cry();
 
             return Unit.INSTANCE;

@@ -39,7 +39,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
         this.pokemon = this.message.battlePokemon(0, battle);
-        this.origin = this.message.battlePokemon(1, battle);
+        this.origin = this.message.pokemonByUuid(1, battle);
     }
 
     @Override
