@@ -137,7 +137,9 @@ public class RaidInstance {
         this.damageCache.remove(player);
     }
 
-    public void syncHealth(ServerPlayer player, float remainingHealth) {
+    public void syncHealth(ServerPlayer player, PokemonBattle battle, float remainingHealth) {
+        if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).isRaidBattle()) this.addPlayer(player, battle);
+
         float damage = this.damageCache.get(player) - remainingHealth;
         this.damageCache.put(player, remainingHealth);
 

@@ -46,7 +46,7 @@ public abstract class ActionEffectInstructionMixin {
         else {
             float remainingHealth = Float.parseFloat(newHealth.split("/")[0]);
             ServerPlayer player = battle.getPlayers().getFirst();
-            raidInstance.syncHealth(player, remainingHealth);
+            raidInstance.syncHealth(player, battle, remainingHealth);
             battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
         }
         ci.cancel();
