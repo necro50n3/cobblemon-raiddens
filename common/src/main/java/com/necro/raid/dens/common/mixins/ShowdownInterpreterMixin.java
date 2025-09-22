@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.InstructionSet;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.necro.raid.dens.common.showdown.CheerInstruction;
+import com.necro.raid.dens.common.showdown.RaidEnergyInstruction;
 import com.necro.raid.dens.common.showdown.ResetBossInstruction;
 import com.necro.raid.dens.common.showdown.ResetPlayerInstruction;
 import kotlin.jvm.functions.Function4;
@@ -35,6 +36,9 @@ public class ShowdownInterpreterMixin {
         );
         updateInstructionParser.put("clearplayer", (battle, instruction, message, messageIterator) ->
             new ResetPlayerInstruction(battle, message)
+        );
+        updateInstructionParser.put("raidenergy", (battle, instruction, message, messageIterator) ->
+            new RaidEnergyInstruction(battle, message)
         );
     }
 }

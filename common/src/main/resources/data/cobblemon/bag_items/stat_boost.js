@@ -5,6 +5,7 @@
         boosts[stat1] = parseInt(data[1]);
         var origin = data[2];
         battle.log = battle.log.filter(line => !(line.startsWith('|bagitem|') && line.includes('stat_boost')));
+        battle.add("raidenergy", origin);
         battle.boost(boosts, pokemon, null, { effectType: 'BagItem', name: itemId });
     }
 }

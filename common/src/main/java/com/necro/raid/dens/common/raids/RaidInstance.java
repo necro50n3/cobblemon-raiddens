@@ -245,9 +245,10 @@ public class RaidInstance {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        String key = bp.getUuid().toString();
         this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
     }
 
@@ -259,9 +260,8 @@ public class RaidInstance {
         if (side1.getRequest() == null || side2.getRequest() == null) return;
         else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = side2.getActivePokemon().getFirst().getBattlePokemon();
-        String key = origin.getFirst().getBattlePokemon().getName().getContents() instanceof TranslatableContents t
-            ? t.getKey() : origin.getFirst().getBattlePokemon().getName().toString();
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = origin.getFirst().getBattlePokemon().getUuid().toString();
         this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
     }
 
@@ -269,9 +269,10 @@ public class RaidInstance {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        String key = bp.getUuid().toString();
         this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, bp, key));
     }
 
@@ -284,8 +285,7 @@ public class RaidInstance {
         else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = origin.getFirst().getBattlePokemon().getName().getContents() instanceof TranslatableContents t
-            ? t.getKey() : origin.getFirst().getBattlePokemon().getName().toString();
+        String key = origin.getFirst().getBattlePokemon().getUuid().toString();
         this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, bp, key));
     }
 
@@ -343,6 +343,10 @@ public class RaidInstance {
         INSTRUCTION_MAP.put("BOSS_SPD_2", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_DEFENCE, 2));
         INSTRUCTION_MAP.put("BOSS_SPE_1", (r, b) -> r.changeBossStat(b, Stats.SPEED, 1));
         INSTRUCTION_MAP.put("BOSS_SPE_2", (r, b) -> r.changeBossStat(b, Stats.SPEED, 2));
+        INSTRUCTION_MAP.put("BOSS_ACC_1", (r, b) -> r.changeBossStat(b, Stats.ACCURACY, 1));
+        INSTRUCTION_MAP.put("BOSS_ACC_2", (r, b) -> r.changeBossStat(b, Stats.ACCURACY, 2));
+        INSTRUCTION_MAP.put("BOSS_EVA_1", (r, b) -> r.changeBossStat(b, Stats.EVASION, 1));
+        INSTRUCTION_MAP.put("BOSS_EVA_2", (r, b) -> r.changeBossStat(b, Stats.EVASION, 2));
 
         INSTRUCTION_MAP.put("PLAYER_ATK_1", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -1));
         INSTRUCTION_MAP.put("PLAYER_ATK_2", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -2));
@@ -354,5 +358,9 @@ public class RaidInstance {
         INSTRUCTION_MAP.put("PLAYER_SPD_2", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_DEFENCE, -2));
         INSTRUCTION_MAP.put("PLAYER_SPE_1", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -1));
         INSTRUCTION_MAP.put("PLAYER_SPE_2", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -2));
+        INSTRUCTION_MAP.put("PLAYER_ACC_1", (r, b) -> r.changePlayerStat(b, Stats.ACCURACY, -1));
+        INSTRUCTION_MAP.put("PLAYER_ACC_2", (r, b) -> r.changePlayerStat(b, Stats.ACCURACY, -2));
+        INSTRUCTION_MAP.put("PLAYER_EVA_1", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -1));
+        INSTRUCTION_MAP.put("PLAYER_EVA_2", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -2));
     }
 }

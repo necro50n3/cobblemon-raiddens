@@ -10,6 +10,7 @@
         }
 
         battle.log = battle.log.filter(line => !(line.startsWith('|bagitem|') && line.includes('clear_boost')));
+        battle.add("raidenergy", origin);
         battle.add('clearplayer', pokemon, origin);
     }
 }

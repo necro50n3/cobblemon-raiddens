@@ -29,6 +29,7 @@
     "battle.cobblemonraiddens.cheer.cheer_attack": "%1$s cheered with \"Go All Out\"!",
     "battle.cobblemonraiddens.cheer.cheer_defense": "%1$s cheered with \"Hang tough\"!",
     "battle.cobblemonraiddens.cheer.cheer_heal": "%1$s cheered with \"Heal up\"!",
+    "battle.cobblemonraiddens.raid_energy": "A burst of energy was released from %1$s!",
     "battle.cobblemonraiddens.reset.boss": "%1$s cleared its own negative effects!",
     "battle.cobblemonraiddens.reset.player": "%1$s cleared your positive stat changes!",
     "block.cobblemonraiddens.raid_crystal_block": "Raid Den Crystal",

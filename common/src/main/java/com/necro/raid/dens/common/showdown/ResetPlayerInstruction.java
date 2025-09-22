@@ -32,12 +32,14 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
     private CompletableFuture<?> future;
     private Set<String> holds;
     private final BattlePokemon pokemon;
+    private final BattlePokemon origin;
 
     public ResetPlayerInstruction(PokemonBattle battle, BattleMessage message) {
         this.message = message;
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
         this.pokemon = this.message.battlePokemon(0, battle);
+        this.origin = this.message.battlePokemon(1, battle);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
 
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
-        if (this.pokemon == null) return;
+        if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("unboost"));
             List<Object> providers = new ArrayList<>(List.of(battle));
@@ -91,16 +93,9 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
 
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
-        if (this.pokemon == null) return;
+        if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
-            String origin = this.message.argumentAt(1);
-            if (origin == null) return DispatchResultKt.getGO();
-
-            battle.broadcastChatMessage(
-                Component.translatable("battle.cobblemonraiddens.reset.boss",
-                    Component.translatable(origin)
-                )
-            );
+            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
 
             BattleContext.Type boostBucket = BattleContext.Type.UNBOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);

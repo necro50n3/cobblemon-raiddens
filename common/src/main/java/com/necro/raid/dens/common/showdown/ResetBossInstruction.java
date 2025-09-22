@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ambient.Bat;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -32,12 +33,14 @@ public class ResetBossInstruction implements ActionEffectInstruction {
     private CompletableFuture<?> future;
     private Set<String> holds;
     private final BattlePokemon pokemon;
+    private final BattlePokemon origin;
 
     public ResetBossInstruction(PokemonBattle battle, BattleMessage message) {
         this.message = message;
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
         this.pokemon = this.message.battlePokemon(0, battle);
+        this.origin = this.message.battlePokemon(1, battle);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class ResetBossInstruction implements ActionEffectInstruction {
 
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
-        if (this.pokemon == null) return;
+        if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("boost"));
             List<Object> providers = new ArrayList<>(List.of(battle));
@@ -91,16 +94,9 @@ public class ResetBossInstruction implements ActionEffectInstruction {
 
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
-        if (this.pokemon == null) return;
+        if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
-            String origin = this.message.argumentAt(1);
-            if (origin == null) return DispatchResultKt.getGO();
-
-            battle.broadcastChatMessage(
-                Component.translatable("battle.cobblemonraiddens.reset.boss",
-                    Component.translatable(origin)
-                )
-            );
+            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
 
             BattleContext.Type boostBucket = BattleContext.Type.BOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
