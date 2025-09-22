@@ -3,6 +3,8 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
@@ -16,6 +18,7 @@ import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.showdown.CheerBagItem;
+import com.necro.raid.dens.common.showdown.StatChangeBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
@@ -238,6 +241,30 @@ public class RaidInstance {
         this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
     }
 
+    private void changeBossStat(@NotNull PokemonBattle battle, Stat stat, int stages) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
+    }
+
+    private void changePlayerStat(@NotNull PokemonBattle battle, Stat stat, int stages) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side1.getActivePokemon();
+        List<ActiveBattlePokemon> origin = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = side2.getActivePokemon().getFirst().getBattlePokemon();
+        String key = origin.getFirst().getBattlePokemon().getName().getContents() instanceof TranslatableContents t
+            ? t.getKey() : origin.getFirst().getBattlePokemon().getName().toString();
+        this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
+    }
+
     private void clearBossStats(@NotNull PokemonBattle battle) {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
@@ -252,9 +279,13 @@ public class RaidInstance {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        List<ActiveBattlePokemon> origin = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = bp.getName().getContents() instanceof TranslatableContents t ? t.getKey() : bp.getName().toString();
+        String key = origin.getFirst().getBattlePokemon().getName().getContents() instanceof TranslatableContents t
+            ? t.getKey() : origin.getFirst().getBattlePokemon().getName().toString();
         this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, bp, key));
     }
 
@@ -301,5 +332,27 @@ public class RaidInstance {
     static {
         INSTRUCTION_MAP.put("RESET_BOSS", RaidInstance::clearBossStats);
         INSTRUCTION_MAP.put("RESET_PLAYER", RaidInstance::clearPlayerStats);
+
+        INSTRUCTION_MAP.put("BOSS_ATK_1", (r, b) -> r.changeBossStat(b, Stats.ATTACK, 1));
+        INSTRUCTION_MAP.put("BOSS_ATK_2", (r, b) -> r.changeBossStat(b, Stats.ATTACK, 2));
+        INSTRUCTION_MAP.put("BOSS_DEF_1", (r, b) -> r.changeBossStat(b, Stats.DEFENCE, 1));
+        INSTRUCTION_MAP.put("BOSS_DEF_2", (r, b) -> r.changeBossStat(b, Stats.DEFENCE, 2));
+        INSTRUCTION_MAP.put("BOSS_SPA_1", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_ATTACK, 1));
+        INSTRUCTION_MAP.put("BOSS_SPA_2", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_ATTACK, 2));
+        INSTRUCTION_MAP.put("BOSS_SPD_1", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_DEFENCE, 1));
+        INSTRUCTION_MAP.put("BOSS_SPD_2", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_DEFENCE, 2));
+        INSTRUCTION_MAP.put("BOSS_SPE_1", (r, b) -> r.changeBossStat(b, Stats.SPEED, 1));
+        INSTRUCTION_MAP.put("BOSS_SPE_2", (r, b) -> r.changeBossStat(b, Stats.SPEED, 2));
+
+        INSTRUCTION_MAP.put("PLAYER_ATK_1", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -1));
+        INSTRUCTION_MAP.put("PLAYER_ATK_2", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -2));
+        INSTRUCTION_MAP.put("PLAYER_DEF_1", (r, b) -> r.changePlayerStat(b, Stats.DEFENCE, -1));
+        INSTRUCTION_MAP.put("PLAYER_DEF_2", (r, b) -> r.changePlayerStat(b, Stats.DEFENCE, -2));
+        INSTRUCTION_MAP.put("PLAYER_SPA_1", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_ATTACK, -1));
+        INSTRUCTION_MAP.put("PLAYER_SPA_2", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_ATTACK, -2));
+        INSTRUCTION_MAP.put("PLAYER_SPD_1", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_DEFENCE, -1));
+        INSTRUCTION_MAP.put("PLAYER_SPD_2", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_DEFENCE, -2));
+        INSTRUCTION_MAP.put("PLAYER_SPE_1", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -1));
+        INSTRUCTION_MAP.put("PLAYER_SPE_2", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -2));
     }
 }
