@@ -74,8 +74,6 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
-        this.script.put("turn:1", "BOSS_ATK_1");
-        this.script.put("turn:3", "PLAYER_ATK_1");
 
         this.id = null;
     }
