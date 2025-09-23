@@ -33,30 +33,39 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
         if (!level.isClientSide()) {
             RaidHomeBlockEntity blockEntity = (RaidHomeBlockEntity) level.getBlockEntity(blockPos);
             if (blockEntity == null) return InteractionResult.FAIL;
-            BlockPos homePos = blockEntity.getHomePos();
-            if (homePos == null) return InteractionResult.FAIL;
-            ServerLevel home = level.getServer().getLevel(blockEntity.getHome());
-            if (home == null) return InteractionResult.FAIL;
-
-            PlayerExtensionsKt.party((ServerPlayer) player).forEach(pokemon -> {
-                if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
-            });
-
-            RaidUtils.teleportPlayerSafe(player, home, homePos, player.getYHeadRot(), player.getXRot());
-
-            if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
-                if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-                    raidCrystalBlockEntity.clearRaid();
-                }
-            }
-            else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {
-                if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-                    raidCrystalBlockEntity.setQueueClose();
-                }
-            }
+            boolean success = safeExit(blockEntity, blockPos, (ServerPlayer) player, level);
+            if (success) this.sendClientPacket((ServerPlayer) player);
+            return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
     }
+
+    public static boolean safeExit(RaidHomeBlockEntity blockEntity, BlockPos blockPos, ServerPlayer player, Level level) {
+        BlockPos homePos = blockEntity.getHomePos();
+        if (homePos == null || level.getServer() == null) return false;
+        ServerLevel home = level.getServer().getLevel(blockEntity.getHome());
+        if (home == null) return false;
+
+        PlayerExtensionsKt.party(player).forEach(pokemon -> {
+            if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
+        });
+
+        RaidUtils.teleportPlayerSafe(player, home, homePos, player.getYHeadRot(), player.getXRot());
+
+        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
+            if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
+                raidCrystalBlockEntity.clearRaid();
+            }
+        }
+        else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {
+            if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
+                raidCrystalBlockEntity.setQueueClose();
+            }
+        }
+        return true;
+    }
+
+    protected void sendClientPacket(ServerPlayer player) {}
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
