@@ -69,11 +69,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         else if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
         else if (!CobblemonRaidDens.CONFIG.requires_key) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, itemStack) ?
-            ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
+        Boolean success = this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, itemStack);
+        if (success == null) return ItemInteractionResult.SUCCESS;
+        else if (success) itemStack.consume(1, player);
+        else player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.no_key"));
+        return success ? ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
     }
 
-    private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, BlockPos blockPos, @Nullable ItemStack key) {
+    private Boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, BlockPos blockPos, @Nullable ItemStack key) {
         if (blockEntity.isBusy()) return false;
         else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"));
@@ -85,7 +88,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
         else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) {
             player.teleportTo(blockEntity.getDimension(), 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
-            return true;
+            return null;
         }
         else if (RaidHelper.isAlreadyHosting(player)) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"));

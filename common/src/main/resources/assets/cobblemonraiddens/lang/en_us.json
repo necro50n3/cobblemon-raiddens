@@ -73,6 +73,7 @@
     "message.cobblemonraiddens.raid.has_fainted": "You have already fainted!",
     "message.cobblemonraiddens.raid.is_not_active": "The raid den is not active right now.",
     "message.cobblemonraiddens.raid.lobby_is_full": "This lobby is already full!",
+    "message.cobblemonraiddens.raid.no_key": "You do not have a Raid Den Key!",
     "message.cobblemonraiddens.raid.not_participating": "You have not registered for the raid. Leave and rejoin the lobby.",
     "message.cobblemonraiddens.raid.player_cleared": "You have already cleared this raid.",
     "message.cobblemonraiddens.raid.raid_catch": " [CATCH]",
