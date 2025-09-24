@@ -55,8 +55,9 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), null) ?
-            InteractionResult.SUCCESS : InteractionResult.FAIL;
+        Boolean success = this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), null);
+        if (success == null || success) return InteractionResult.SUCCESS;
+        else return InteractionResult.FAIL;
     }
 
     @Override
