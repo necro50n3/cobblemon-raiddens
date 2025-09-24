@@ -16,7 +16,7 @@ import java.util.List;
 public class RaidRequestOverlay extends AbstractOverlay {
     private static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/overlay.png");
     private static final int WIDTH = 100;
-    private static final int HEIGHT = 60;
+    private static final int HEIGHT = 70;
 
     private final String player;
 
@@ -28,11 +28,11 @@ public class RaidRequestOverlay extends AbstractOverlay {
     public void render(GuiGraphics guiGraphics, int maxX, int maxY) {
         Font font = Minecraft.getInstance().font;
         int x = (maxX - WIDTH) / 2;
-        int y = (int) (maxY * 0.6);
+        int y = (int) (maxY * 0.55);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 4000);
-        guiGraphics.blit(OVERLAY, 0, 0, 0, 0, WIDTH,HEIGHT, WIDTH,HEIGHT);
+        guiGraphics.blit(OVERLAY, 0, 0, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
@@ -48,6 +48,11 @@ public class RaidRequestOverlay extends AbstractOverlay {
             guiGraphics.drawCenteredString(font, text, WIDTH, textY, 16777215);
             textY += font.lineHeight + 1;
         }
+        guiGraphics.pose().popPose();
+
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
+        guiGraphics.drawString(font, Component.translatable("screen.cobblemonraiddens.footer"), 10, 119, 10197915, false);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().popPose();
