@@ -68,6 +68,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static void resetClearedRaids(UUID uuid) {
+        if (INSTANCE == null) return;
         INSTANCE.CLEARED_RAIDS.remove(uuid);
         INSTANCE.setDirty();
     }
