@@ -2,10 +2,10 @@ package com.necro.raid.dens.common.client.gui.screens;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
+import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -46,7 +46,7 @@ public class RaidOverlay extends AbstractOverlay {
     }
 
     @Override
-    public List<Button> getButtons() {
+    public List<AbstractRaidButton> getButtons() {
         return List.of(RaidScreenComponents.LEAVE_RAID_BUTTON);
     }
 }

@@ -1,12 +1,15 @@
 package com.necro.raid.dens.common.client.keybind;
 
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
+import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import com.necro.raid.dens.common.client.gui.screens.ClickHandler;
 import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
 import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 public class RaidDenKeybinds {
     public static final KeyMapping MOUSE_KEYDOWN = new KeyMapping(
@@ -22,18 +25,6 @@ public class RaidDenKeybinds {
     );
 
     public static void handleKeyInput() {
-        if (ACCEPT_SHORTCUT.isDown()) {
-            ACCEPT_SHORTCUT.consumeClick();
-            if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty()) RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(true));
-            else RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
-        }
-
-        if (DENY_SHORTCUT.isDown()) {
-            DENY_SHORTCUT.consumeClick();
-            if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty()) RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRequestOverlay("Player 111"));
-            else RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
-        }
-
         if (!RaidDenGuiManager.hasOverlay()) return;
 
         if (MOUSE_KEYDOWN.isDown() && Minecraft.getInstance().screen == null) {
@@ -45,9 +36,15 @@ public class RaidDenKeybinds {
 
         if (ACCEPT_SHORTCUT.isDown()) {
             ACCEPT_SHORTCUT.consumeClick();
+            List<AbstractRaidButton> buttons = RaidDenGuiManager.OVERLAY_QUEUE.getFirst().getButtons();
+            if (buttons.isEmpty()) return;
+            buttons.getFirst().onPress();
         }
         else if (DENY_SHORTCUT.isDown()) {
             DENY_SHORTCUT.consumeClick();
+            List<AbstractRaidButton> buttons = RaidDenGuiManager.OVERLAY_QUEUE.getFirst().getButtons();
+            if (buttons.size() < 2) return;
+            buttons.get(1).onPress();
         }
     }
 }

@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.PopupButton;
 import com.necro.raid.dens.common.client.gui.buttons.RaidButton;
+import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
 import com.necro.raid.dens.common.network.LeaveRaidPacket;
 import com.necro.raid.dens.common.network.RequestResponsePacket;
 import com.necro.raid.dens.common.network.RewardResponsePacket;
@@ -47,12 +48,14 @@ public class FabricHud implements HudRenderCallback {
         );
 
         RaidScreenComponents.ACCEPT_REQUEST_BUTTON = new PopupButton(
-            45, 16,
+            45, 16, 0,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/accept_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/accept_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.request.accept"),
             button -> {
-                NetworkMessages.sendPacketToServer(new RequestResponsePacket(true));
+                if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRequestOverlay overlay)) return;
+                String player = overlay.getPlayer();
+                NetworkMessages.sendPacketToServer(new RequestResponsePacket(true, player));
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);
@@ -61,12 +64,14 @@ public class FabricHud implements HudRenderCallback {
         );
 
         RaidScreenComponents.DENY_REQUEST_BUTTON = new PopupButton(
-            45, 16,
+            45, 16, 1,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.request.deny"),
             button -> {
-                NetworkMessages.sendPacketToServer(new RequestResponsePacket(false));
+                if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRequestOverlay overlay)) return;
+                String player = overlay.getPlayer();
+                NetworkMessages.sendPacketToServer(new RequestResponsePacket(false, player));
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);
@@ -75,7 +80,7 @@ public class FabricHud implements HudRenderCallback {
         );
 
         RaidScreenComponents.ACCEPT_REWARD_BUTTON = new PopupButton(
-            45, 16,
+            45, 16, 0,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/accept_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/accept_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.pokemon"),
@@ -97,7 +102,7 @@ public class FabricHud implements HudRenderCallback {
         );
 
         RaidScreenComponents.DENY_REWARD_BUTTON = new PopupButton(
-            45, 16,
+            45, 16, 1,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.item"),
@@ -111,7 +116,7 @@ public class FabricHud implements HudRenderCallback {
         );
 
         RaidScreenComponents.DENY_WIDE_REWARD_BUTTON = new PopupButton(
-            92, 16,
+            92, 16, 0,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_wide_button.png"),
             Component.translatable("screen.cobblemonraiddens.reward.item"),

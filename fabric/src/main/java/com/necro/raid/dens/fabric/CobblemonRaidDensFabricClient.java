@@ -3,6 +3,7 @@ package com.necro.raid.dens.fabric;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.fabric.client.FabricHud;
+import com.necro.raid.dens.fabric.client.keybind.FabricKeybinds;
 import com.necro.raid.dens.fabric.events.ModEvents;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -17,6 +18,7 @@ public class CobblemonRaidDensFabricClient implements ClientModInitializer {
         NetworkMessages.registerS2CPackets();
 
         FabricHud.init();
+        FabricKeybinds.registerKeybinds();
 
         BlockEntityRenderers.register(FabricBlocks.RAID_CRYSTAL_BLOCK_ENTITY, RaidCrystalRenderer::new);
         BlockEntityRenderers.register(FabricBlocks.RAID_HOME_BLOCK_ENTITY, RaidHomeRenderer::new);

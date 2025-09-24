@@ -4,16 +4,12 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
-import com.necro.raid.dens.common.raids.RaidCycleMode;
-import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.raids.RaidType;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -59,7 +55,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, null) ?
+        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), null) ?
             InteractionResult.SUCCESS : InteractionResult.FAIL;
     }
 
@@ -69,11 +65,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         else if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
         else if (!CobblemonRaidDens.CONFIG.requires_key) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), blockPos, itemStack) ?
+        return this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), itemStack) ?
             ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
     }
 
-    private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, BlockPos blockPos, @Nullable ItemStack key) {
+    private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
         if (blockEntity.isBusy()) return false;
         else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"));
@@ -108,25 +104,18 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
             return false;
         }
-        this.requestJoinRaid(player, blockEntity, blockPos);
+        this.requestJoinRaid(player, blockEntity);
         return true;
     }
 
-    private void requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity, BlockPos blockPos) {
+    private void requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         MinecraftServer server = player.getServer();
         if (server == null) return;
-        Player raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
+        ServerPlayer raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
         if (raidHost == null) return;
-        Component component = Component.translatable("message.cobblemonraiddens.raid.request_to_join", player.getName())
-            .append(Component.translatable("message.cobblemonraiddens.raid.request_accept")
-                .withStyle(Style.EMPTY.applyFormat(ChatFormatting.GREEN).applyFormat(ChatFormatting.BOLD).withClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.acceptRaidCommand(player, blockEntity, blockPos))
-                )))
-            .append(Component.translatable("message.cobblemonraiddens.raid.request_deny")
-                .withStyle(Style.EMPTY.applyFormat(ChatFormatting.RED).applyFormat(ChatFormatting.BOLD).withClickEvent(
-                    new ClickEvent(ClickEvent.Action.RUN_COMMAND, RaidHelper.rejectRaidCommand(player))
-                )));
-        raidHost.sendSystemMessage(component);
+
+        RaidHelper.addRequest(raidHost, player, blockEntity);
+        RaidDenNetworkMessages.REQUEST_PACKET.accept(raidHost, player.getName().getString());
     }
 
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {

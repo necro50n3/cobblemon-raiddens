@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.showdown.CheerBagItem;
 import com.necro.raid.dens.common.showdown.StatChangeBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -24,7 +25,6 @@ import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
@@ -112,7 +112,7 @@ public class RaidInstance {
         this.damageCache.put(player, this.currentHealth);
         this.activePlayers.add(player);
         this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
-        RaidBuilder.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
+        RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
     }
 
     public void addPlayer(PokemonBattle battle) {
@@ -147,7 +147,7 @@ public class RaidInstance {
         this.damageCache.put(player, remainingHealth);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
-        this.activePlayers.forEach(p -> RaidBuilder.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
+        this.activePlayers.forEach(p -> RaidDenNetworkMessages.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
 
         if (this.currentHealth == 0f) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);

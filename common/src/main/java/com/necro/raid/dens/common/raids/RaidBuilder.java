@@ -12,14 +12,11 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import org.apache.logging.log4j.util.BiConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class RaidBuilder {
-    public static BiConsumer<ServerPlayer, Float> SYNC_HEALTH;
-
     public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon) {
         List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon);
         if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, CobblemonRaidDens.CONFIG.raid_party_size));

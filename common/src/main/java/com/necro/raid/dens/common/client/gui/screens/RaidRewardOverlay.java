@@ -2,10 +2,10 @@ package com.necro.raid.dens.common.client.gui.screens;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
+import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -71,7 +71,7 @@ public class RaidRewardOverlay extends AbstractOverlay {
     }
 
     @Override
-    public List<Button> getButtons() {
+    public List<AbstractRaidButton> getButtons() {
         return this.isCatchable
             ? List.of(RaidScreenComponents.ACCEPT_REWARD_BUTTON, RaidScreenComponents.DENY_REWARD_BUTTON)
             : List.of(RaidScreenComponents.DENY_WIDE_REWARD_BUTTON);

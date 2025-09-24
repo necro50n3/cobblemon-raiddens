@@ -9,8 +9,7 @@ import com.necro.raid.dens.common.commands.RaidRequestCommands;
 import com.necro.raid.dens.common.commands.RaidRewardCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.network.JoinRaidPacket;
-import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
+import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -27,8 +26,6 @@ import com.necro.raid.dens.fabric.events.RaidBucketResourceReloadListener;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
-import com.necro.raid.dens.common.network.SyncHealthPacket;
-import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.events.ModEvents;
@@ -70,7 +67,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricLootFunctions.registerLootFunctions();
         FabricStatistics.registerStatistics();
         FabricCriteriaTriggers.registerCriteriaTriggers();
-        FabricKeybinds.registerKeybinds();
         RaidDenTab.registerItemGroups();
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
@@ -92,8 +88,13 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketResourceReloadListener());
 
-        RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
+        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
+            NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable));
+
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
 

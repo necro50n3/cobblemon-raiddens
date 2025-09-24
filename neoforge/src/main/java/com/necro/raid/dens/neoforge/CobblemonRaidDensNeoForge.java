@@ -6,11 +6,8 @@ import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.network.JoinRaidPacket;
-import com.necro.raid.dens.common.network.SyncHealthPacket;
-import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
+import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
@@ -72,8 +69,13 @@ public class CobblemonRaidDensNeoForge {
             event.dataPackRegistry(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec(), null);
         });
 
-        RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
+        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
+            NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable));
+
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, create));
 
