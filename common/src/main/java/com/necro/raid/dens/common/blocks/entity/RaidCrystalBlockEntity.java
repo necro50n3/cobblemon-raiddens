@@ -238,11 +238,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.setChanged();
     }
 
-    public void removePlayer(Player player) {
-        this.playerQueue.remove(player.getUUID());
-        if (this.playerQueue.isEmpty()) this.setQueueClose();
-    }
-
     public boolean isPlayerParticipating(Player player) {
         return this.playerQueue.contains(player.getUUID());
     }
