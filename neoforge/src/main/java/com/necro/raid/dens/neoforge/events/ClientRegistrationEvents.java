@@ -35,7 +35,6 @@ public class ClientRegistrationEvents {
 
     @SubscribeEvent
     public static  void registerKeybinds(RegisterKeyMappingsEvent event) {
-        event.register(RaidDenKeybinds.MOUSE_KEYDOWN);
         event.register(RaidDenKeybinds.ACCEPT_SHORTCUT);
         event.register(RaidDenKeybinds.DENY_SHORTCUT);
 

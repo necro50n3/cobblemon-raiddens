@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.client.gui;
 
+import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import com.necro.raid.dens.common.client.gui.screens.AbstractOverlay;
 import com.necro.raid.dens.common.client.gui.screens.RaidOverlay;
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,5 +35,10 @@ public class RaidDenGuiManager {
 
     public static boolean hasOverlayQueue() {
         return !OVERLAY_QUEUE.isEmpty();
+    }
+
+    public static List<AbstractRaidButton> getOverlayButtons() {
+        if (OVERLAY_QUEUE.isEmpty()) return List.of();
+        else return OVERLAY_QUEUE.getFirst().getButtons();
     }
 }

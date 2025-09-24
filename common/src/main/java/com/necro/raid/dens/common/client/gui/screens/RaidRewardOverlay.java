@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.client.gui.screens;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
@@ -32,11 +31,9 @@ public class RaidRewardOverlay extends AbstractOverlay {
         int x = (maxX - WIDTH) / 2;
         int y = (int) (maxY * 0.6);
 
-        RenderSystem.disableDepthTest();
-        guiGraphics.blit(OVERLAY, x, y, 0, 0, WIDTH,HEIGHT, WIDTH,HEIGHT);
-
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
+        guiGraphics.pose().translate(x, y, 4000);
+        guiGraphics.blit(OVERLAY, 0, 0, 0, 0, WIDTH,HEIGHT, WIDTH,HEIGHT);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
@@ -45,7 +42,6 @@ public class RaidRewardOverlay extends AbstractOverlay {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
-
         MutableComponent component = this.isCatchable
             ? Component.translatable("screen.cobblemonraiddens.reward.description.1")
             : Component.translatable("screen.cobblemonraiddens.reward.description.2");
@@ -55,7 +51,6 @@ public class RaidRewardOverlay extends AbstractOverlay {
             guiGraphics.drawCenteredString(font, text, WIDTH, textY, 16777215);
             textY += font.lineHeight + 1;
         }
-
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().popPose();

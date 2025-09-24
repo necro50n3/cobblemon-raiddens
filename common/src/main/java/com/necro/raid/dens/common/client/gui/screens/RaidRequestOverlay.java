@@ -30,10 +30,9 @@ public class RaidRequestOverlay extends AbstractOverlay {
         int x = (maxX - WIDTH) / 2;
         int y = (int) (maxY * 0.6);
 
-        guiGraphics.blit(OVERLAY, x, y, 0, 0, WIDTH,HEIGHT, WIDTH,HEIGHT);
-
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
+        guiGraphics.pose().translate(x, y, 4000);
+        guiGraphics.blit(OVERLAY, 0, 0, 0, 0, WIDTH,HEIGHT, WIDTH,HEIGHT);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
@@ -42,7 +41,6 @@ public class RaidRequestOverlay extends AbstractOverlay {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
-
         Component component = Component.translatable("screen.cobblemonraiddens.request.description", this.player);
         List<FormattedCharSequence> wrapped = font.split(component, WIDTH * 2 - 16);
         int textY = 44;
@@ -50,7 +48,6 @@ public class RaidRequestOverlay extends AbstractOverlay {
             guiGraphics.drawCenteredString(font, text, WIDTH, textY, 16777215);
             textY += font.lineHeight + 1;
         }
-
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().popPose();
@@ -60,6 +57,7 @@ public class RaidRequestOverlay extends AbstractOverlay {
 
         RaidScreenComponents.DENY_REQUEST_BUTTON.setPos(x + 51, y + 40);
         RaidScreenComponents.DENY_REQUEST_BUTTON.renderStatic(guiGraphics);
+
     }
 
     @Override

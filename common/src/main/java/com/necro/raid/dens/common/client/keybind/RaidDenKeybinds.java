@@ -15,12 +15,14 @@ public class RaidDenKeybinds {
     );
 
     public static final KeyMapping ACCEPT_SHORTCUT = new KeyMapping(
-        "key.cobblemonraiddens.accept", GLFW.GLFW_KEY_1, "category.cobblemonraiddens.raid_dens"
+        "key.cobblemonraiddens.accept", GLFW.GLFW_KEY_Y, "category.cobblemonraiddens.raid_dens"
     );
 
     public static final KeyMapping DENY_SHORTCUT = new KeyMapping(
-        "key.cobblemonraiddens.deny", GLFW.GLFW_KEY_2, "category.cobblemonraiddens.raid_dens"
+        "key.cobblemonraiddens.deny", GLFW.GLFW_KEY_N, "category.cobblemonraiddens.raid_dens"
     );
+
+    public static boolean wasPressed = false;
 
     public static void handleKeyInput() {
         if (!RaidDenGuiManager.hasOverlay()) return;
@@ -32,17 +34,19 @@ public class RaidDenKeybinds {
 
         if (!RaidDenGuiManager.hasOverlayQueue()) return;
 
-        if (ACCEPT_SHORTCUT.isDown()) {
+        if (ACCEPT_SHORTCUT.isDown() && !wasPressed) {
             ACCEPT_SHORTCUT.consumeClick();
-            List<AbstractRaidButton> buttons = RaidDenGuiManager.OVERLAY_QUEUE.getFirst().getButtons();
+            List<AbstractRaidButton> buttons = RaidDenGuiManager.getOverlayButtons();
             if (buttons.isEmpty()) return;
             buttons.getFirst().onPress();
         }
-        else if (DENY_SHORTCUT.isDown()) {
+        else if (DENY_SHORTCUT.isDown() && !wasPressed) {
             DENY_SHORTCUT.consumeClick();
-            List<AbstractRaidButton> buttons = RaidDenGuiManager.OVERLAY_QUEUE.getFirst().getButtons();
+            List<AbstractRaidButton> buttons = RaidDenGuiManager.getOverlayButtons();
             if (buttons.size() < 2) return;
             buttons.get(1).onPress();
         }
+
+        wasPressed = ACCEPT_SHORTCUT.isDown() || DENY_SHORTCUT.isDown();
     }
 }

@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 public class FabricKeybinds {
     public static void registerKeybinds() {
-        KeyBindingHelper.registerKeyBinding(RaidDenKeybinds.MOUSE_KEYDOWN);
         KeyBindingHelper.registerKeyBinding(RaidDenKeybinds.ACCEPT_SHORTCUT);
         KeyBindingHelper.registerKeyBinding(RaidDenKeybinds.DENY_SHORTCUT);
 

@@ -21,7 +21,7 @@ public class PopupButton extends AbstractRaidButton {
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.pose().pushPose();
 
-        guiGraphics.pose().translate(this.getX(), this.getY(), 0f);
+        guiGraphics.pose().translate(this.getX(), this.getY(), 4000);
         guiGraphics.blit(texture, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
         guiGraphics.pose().pushPose();
