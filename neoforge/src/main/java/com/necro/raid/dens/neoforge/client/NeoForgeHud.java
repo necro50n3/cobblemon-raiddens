@@ -106,7 +106,7 @@ public class NeoForgeHud {
             92, 16, 1,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button.png"),
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button_hover.png"),
-            Component.translatable("screen.cobblemonraiddens.reward.item"),
+            Component.translatable("screen.cobblemonraiddens.reward.force_item"),
             button -> {
                 NetworkMessages.sendPacketToServer(new RewardResponsePacket(false));
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
