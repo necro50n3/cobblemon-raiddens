@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.client.gui.screens;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,7 +37,7 @@ public class RaidRequestOverlay extends AbstractOverlay {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
-        guiGraphics.drawCenteredString(font, Component.translatable("screen.cobblemonraiddens.request.title"), (int) (WIDTH / 1.7), 12, 16777215);
+        guiGraphics.drawCenteredString(font, Component.translatable("screen.cobblemonraiddens.request.title").withStyle(ChatFormatting.GOLD), (int) (WIDTH / 1.7), 12, 16777215);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();

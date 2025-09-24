@@ -105,7 +105,7 @@ public class NeoForgeHud {
         RaidScreenComponents.DENY_WIDE_REWARD_BUTTON = new PopupButton(
             92, 16, 0,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button.png"),
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_wide_button.png"),
+            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.item"),
             button -> {
                 NetworkMessages.sendPacketToServer(new RewardResponsePacket(false));
