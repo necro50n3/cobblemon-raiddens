@@ -43,7 +43,7 @@ public class RaidRequestOverlay extends AbstractOverlay {
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
         Component component = Component.translatable("screen.cobblemonraiddens.request.description", this.player);
         List<FormattedCharSequence> wrapped = font.split(component, WIDTH * 2 - 16);
-        int textY = 44;
+        int textY = wrapped.size() > 1 ? 44 : 52;
         for (FormattedCharSequence text : wrapped) {
             guiGraphics.drawCenteredString(font, text, WIDTH, textY, 16777215);
             textY += font.lineHeight + 1;
@@ -67,7 +67,7 @@ public class RaidRequestOverlay extends AbstractOverlay {
 
     @Override
     public List<AbstractRaidButton> getButtons() {
-        return List.of(RaidScreenComponents.ACCEPT_REQUEST_BUTTON, RaidScreenComponents.DENY_REQUEST_BUTTON);
+        return List.of(RaidScreenComponents.DENY_REQUEST_BUTTON, RaidScreenComponents.ACCEPT_REQUEST_BUTTON);
     }
 
     public String getPlayer() {

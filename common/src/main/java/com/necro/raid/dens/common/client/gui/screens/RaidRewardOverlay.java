@@ -46,7 +46,7 @@ public class RaidRewardOverlay extends AbstractOverlay {
             ? Component.translatable("screen.cobblemonraiddens.reward.description.1")
             : Component.translatable("screen.cobblemonraiddens.reward.description.2");
         List<FormattedCharSequence> wrapped = font.split(component, WIDTH * 2 - 16);
-        int textY = 44;
+        int textY = wrapped.size() > 1 ? 44 : 52;
         for (FormattedCharSequence text : wrapped) {
             guiGraphics.drawCenteredString(font, text, WIDTH, textY, 16777215);
             textY += font.lineHeight + 1;
@@ -76,7 +76,7 @@ public class RaidRewardOverlay extends AbstractOverlay {
     @Override
     public List<AbstractRaidButton> getButtons() {
         return this.isCatchable
-            ? List.of(RaidScreenComponents.ACCEPT_REWARD_BUTTON, RaidScreenComponents.DENY_REWARD_BUTTON)
+            ? List.of(RaidScreenComponents.DENY_REWARD_BUTTON, RaidScreenComponents.ACCEPT_REWARD_BUTTON)
             : List.of(RaidScreenComponents.DENY_WIDE_REWARD_BUTTON);
     }
 }

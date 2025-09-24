@@ -37,14 +37,14 @@ public class RaidDenKeybinds {
         if (ACCEPT_SHORTCUT.isDown() && !wasPressed) {
             ACCEPT_SHORTCUT.consumeClick();
             List<AbstractRaidButton> buttons = RaidDenGuiManager.getOverlayButtons();
-            if (buttons.isEmpty()) return;
-            buttons.getFirst().onPress();
+            if (buttons.size() < 2) return;
+            buttons.get(1).onPress();
         }
         else if (DENY_SHORTCUT.isDown() && !wasPressed) {
             DENY_SHORTCUT.consumeClick();
             List<AbstractRaidButton> buttons = RaidDenGuiManager.getOverlayButtons();
-            if (buttons.size() < 2) return;
-            buttons.get(1).onPress();
+            if (buttons.isEmpty()) return;
+            buttons.getFirst().onPress();
         }
 
         wasPressed = ACCEPT_SHORTCUT.isDown() || DENY_SHORTCUT.isDown();

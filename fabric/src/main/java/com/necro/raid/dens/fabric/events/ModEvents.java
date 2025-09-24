@@ -2,7 +2,6 @@ package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.network.JoinRaidPacket;
-import com.necro.raid.dens.common.network.RequestPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
@@ -20,8 +19,6 @@ public class ModEvents {
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(true));
         }
         if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
-
-        NetworkMessages.sendPacketToPlayer(player, new RequestPacket("Player"));
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer minecraftServer) {
