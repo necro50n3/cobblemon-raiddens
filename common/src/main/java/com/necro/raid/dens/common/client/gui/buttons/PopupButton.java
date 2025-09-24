@@ -1,8 +1,10 @@
 package com.necro.raid.dens.common.client.gui.buttons;
 
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -23,14 +25,17 @@ public class PopupButton extends AbstractRaidButton {
         guiGraphics.blit(texture, 0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
-        String shortcut = String.format(" [%s]", this.index == 0
-            ? RaidDenKeybinds.ACCEPT_SHORTCUT.getName().toUpperCase()
-            : RaidDenKeybinds.DENY_SHORTCUT.getName().toUpperCase()
-        );
-        guiGraphics.drawCenteredString(minecraft.font, ((MutableComponent) this.getMessage()).append(shortcut), (int) (this.width / 1.7), 6, 16777215);
+        guiGraphics.pose().scale(0.65f, 0.65f, 1.0f);
+        Component component = this.getMessage().copy().append(this.getFormat());
+        guiGraphics.drawCenteredString(minecraft.font, component, (int) (this.width / 1.3), 9, 16777215);
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().popPose();
+    }
+
+    private String getFormat() {
+        KeyMapping key = this.index == 0 ? RaidDenKeybinds.ACCEPT_SHORTCUT : RaidDenKeybinds.DENY_SHORTCUT;
+        if (key.isUnbound()) return "";
+        else return String.format(" [%s]", key.getTranslatedKeyMessage().getString());
     }
 }

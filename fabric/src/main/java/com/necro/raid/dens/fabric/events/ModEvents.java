@@ -18,6 +18,7 @@ public class ModEvents {
         if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(true));
         }
+        if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer minecraftServer) {

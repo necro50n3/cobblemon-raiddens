@@ -3,8 +3,6 @@ package com.necro.raid.dens.common.client.keybind;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import com.necro.raid.dens.common.client.gui.screens.ClickHandler;
-import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
-import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
