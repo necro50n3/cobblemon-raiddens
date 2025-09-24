@@ -1,13 +1,13 @@
 package com.necro.raid.dens.fabric;
 
+import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
-import com.necro.raid.dens.common.commands.RaidRequestCommands;
-import com.necro.raid.dens.common.commands.RaidRewardCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.network.SyncRaidDimensionsPacket;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -23,8 +23,6 @@ import com.necro.raid.dens.fabric.events.RaidBucketResourceReloadListener;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
-import com.necro.raid.dens.common.network.SyncHealthPacket;
-import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.events.ModEvents;
@@ -32,6 +30,7 @@ import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
+import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -69,12 +68,11 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);
+        ServerPlayConnectionEvents.JOIN.register(ModEvents::onPlayerJoin);
         ServerPlayConnectionEvents.DISCONNECT.register(ModEvents::onPlayerDisconnect);
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::commonTick);
         ServerTickEvents.END_SERVER_TICK.register(DimensionHelper::removePending);
         CommandRegistrationCallback.EVENT.register(RaidAdminCommands::register);
-        CommandRegistrationCallback.EVENT.register(RaidRequestCommands::register);
-        CommandRegistrationCallback.EVENT.register(RaidRewardCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreakOrPlace);
         UseBlockCallback.EVENT.register(RaidUtils::canBreakOrPlace);
@@ -85,9 +83,19 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketResourceReloadListener());
 
-        RaidBuilder.SYNC_HEALTH = (player, healthRatio) ->
+        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
+            NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable));
+
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
+
+        RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
+            NetworkMessages.sendPacketToPlayer(event.getPlayer(), new JoinRaidPacket(true));
+            return Unit.INSTANCE;
+        });
     }
 }

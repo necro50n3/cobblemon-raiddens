@@ -3,12 +3,12 @@ package com.necro.raid.dens.common.raids;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -22,6 +22,7 @@ public class RaidHelper extends SavedData {
 
     public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
+    public static final Map<Player, RequestHandler> REQUEST_QUEUE = new HashMap<>();
     public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
     public final Set<UUID> RAID_HOSTS = new HashSet<>();
@@ -32,6 +33,17 @@ public class RaidHelper extends SavedData {
         if (JOIN_QUEUE.containsKey(player)) return false;
         JOIN_QUEUE.put(player, new JoinRequestInstance(player, key));
         return true;
+    }
+
+    public static void addRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
+        if (!REQUEST_QUEUE.containsKey(host)) REQUEST_QUEUE.put(host, new RequestHandler(blockEntity));
+        RequestHandler handler = REQUEST_QUEUE.get(host);
+        handler.addPlayer(player);
+    }
+
+    public static RequestHandler getRequest(ServerPlayer host) {
+        if (!REQUEST_QUEUE.containsKey(host)) return null;
+        return REQUEST_QUEUE.get(host);
     }
 
     public static void addHost(Player player) {
@@ -56,6 +68,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static void resetClearedRaids(UUID uuid) {
+        if (INSTANCE == null) return;
         INSTANCE.CLEARED_RAIDS.remove(uuid);
         INSTANCE.setDirty();
     }
@@ -120,18 +133,6 @@ public class RaidHelper extends SavedData {
     public static void commonTick() {
         List<RaidInstance> raids = new ArrayList<>(ACTIVE_RAIDS.values());
         raids.forEach(RaidInstance::tick);
-    }
-
-    public static String acceptRaidCommand(Player player, RaidCrystalBlockEntity blockEntity, BlockPos blockPos) {
-        return String.format("/crd_raids acceptrequest %s %s %s %s %s",
-            player.getName().getString(),
-            blockEntity.getLevel().dimension().location(),
-            blockPos.getX(), blockPos.getY(), blockPos.getZ()
-        );
-    }
-
-    public static String rejectRaidCommand(Player player) {
-        return String.format("/crd_raids denyrequest %s", player.getName().getString());
     }
 
     public static Component getSystemMessage(String translatable) {

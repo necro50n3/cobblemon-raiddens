@@ -1,12 +1,15 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.network.JoinRaidPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
+import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -24,6 +27,15 @@ public class ModEvents {
     public static void commonTick(ServerTickEvent.Post event) {
         RaidHelper.commonTick();
         DimensionHelper.removePending(event.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
+            NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(true));
+        }
+        if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
     }
 
     @SubscribeEvent

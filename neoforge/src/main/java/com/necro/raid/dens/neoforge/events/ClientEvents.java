@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientManager;
+import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,5 +13,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void clientTick(ClientTickEvent.Post event) {
         ClientManager.clientTick();
+    }
+
+    @SubscribeEvent
+    public static void keydownTick(ClientTickEvent.Post event) {
+        RaidDenKeybinds.handleKeyInput();
     }
 }
