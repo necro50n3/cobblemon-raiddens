@@ -2,7 +2,8 @@ package com.necro.raid.dens.common.client.keybind;
 
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.gui.screens.ClickHandler;
-import com.necro.raid.dens.common.client.gui.screens.RaidOverlay;
+import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
+import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
@@ -23,8 +24,14 @@ public class RaidDenKeybinds {
     public static void handleKeyInput() {
         if (ACCEPT_SHORTCUT.isDown()) {
             ACCEPT_SHORTCUT.consumeClick();
-            if (RaidDenGuiManager.RAID_OVERLAY == null) RaidDenGuiManager.RAID_OVERLAY = new RaidOverlay();
-            else RaidDenGuiManager.RAID_OVERLAY = null;
+            if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty()) RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(true));
+            else RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
+        }
+
+        if (DENY_SHORTCUT.isDown()) {
+            DENY_SHORTCUT.consumeClick();
+            if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty()) RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRequestOverlay("Player 111"));
+            else RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
         }
 
         if (!RaidDenGuiManager.hasOverlay()) return;

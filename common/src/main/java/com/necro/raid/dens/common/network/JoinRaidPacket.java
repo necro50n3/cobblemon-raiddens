@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.network;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
+import com.necro.raid.dens.common.client.gui.screens.RaidOverlay;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -29,7 +30,7 @@ public record JoinRaidPacket(boolean isJoining) implements CustomPacketPayload {
 
     public void handleClient() {
         CobblemonRaidDens.LOGGER.info("Setting join status to {}", this.isJoining);
-        if (this.isJoining) RaidDenGuiManager.RAID_OVERLAY = RaidScreenComponents.RAID_OVERLAY;
+        if (this.isJoining) RaidDenGuiManager.RAID_OVERLAY = new RaidOverlay();
         else RaidDenGuiManager.RAID_OVERLAY = null;
     }
 }
