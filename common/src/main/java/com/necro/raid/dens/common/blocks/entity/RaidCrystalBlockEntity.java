@@ -44,7 +44,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private UUID raidHost;
     private final Set<UUID> playerQueue;
     private int clears;
-    private int age;
     private int inactiveTicks;
     private int soundTicks;
 
@@ -56,6 +55,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private boolean queueFindDimension;
     private int queueTimeout;
     private boolean queueClose;
+
+    private long lastReset;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -110,11 +111,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else if (CobblemonRaidDens.CONFIG.reset_time <= 0) return;
         else if (this.isInProgress()) return;
 
-        if (++this.age % (CobblemonRaidDens.CONFIG.reset_time * 20)  == 0) {
+        long gameTime = level.getGameTime();
+        if (this.lastReset == 0) this.lastReset = gameTime;
+        else if (gameTime - this.lastReset > CobblemonRaidDens.CONFIG.reset_time * 20L) {
             this.playerQueue.clear();
-            RaidHelper.resetClearedRaids(this.getUuid());
-            this.resetClears();
-            this.inactiveTicks = 0;
             this.generateRaidBoss(level, blockPos, blockState);
         }
     }
@@ -137,7 +137,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(bossLocation);
         if (bossLocation == null || raidBoss == null) return;
-        this.setRaidBoss(bossLocation);
+        this.setRaidBoss(bossLocation, level.getGameTime());
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
@@ -149,7 +149,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.dimension == null) return;
         RaidBoss raidBoss = this.getRaidBoss();
         if (raidBoss == null) {
-            this.setRaidBoss(null);
+            this.setRaidBoss(null, 0);
             return;
         }
 
@@ -192,6 +192,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.playerQueue.clear();
         this.inactiveTicks = 0;
         this.getLevel().getChunkAt(blockPos).setUnsaved(true);
+        this.setChanged();
     }
 
     protected void removeDimension() {
@@ -211,6 +212,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void setRaidHost(Player player) {
         this.raidHost = player.getUUID();
         this.playerQueue.add(player.getUUID());
+        this.setChanged();
     }
 
     public void clearRaidHost() {
@@ -307,7 +309,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             compoundTag.getList("raid_player_queue", Tag.TAG_STRING).forEach(tag -> this.playerQueue.add(UUID.fromString(tag.getAsString())));
         }
         this.clears = compoundTag.getInt("raid_cleared");
-        this.age = compoundTag.getInt("age");
+        this.lastReset = compoundTag.getLong("last_reset");
         this.inactiveTicks = compoundTag.getInt("raid_inactive_for");
 
         if (compoundTag.contains("uuid")) this.uuid = UUID.fromString(compoundTag.getString("uuid"));
@@ -326,7 +328,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         compoundTag.put("raid_player_queue", playerQueueTag);
 
         compoundTag.putInt("raid_cleared", this.clears);
-        compoundTag.putInt("age", this.age);
+        compoundTag.putLong("last_reset", this.lastReset);
         compoundTag.putInt("raid_inactive_for", this.inactiveTicks);
 
         if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());
@@ -334,10 +336,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
     }
 
-    public void setRaidBoss(ResourceLocation raidBoss) {
+    public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
         RaidHelper.resetClearedRaids(this.getUuid());
         this.resetClears();
         this.inactiveTicks = 0;
+        this.lastReset = gameTime;
         this.raidBoss = raidBoss;
         this.setChanged();
     }
