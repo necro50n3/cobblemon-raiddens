@@ -87,8 +87,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
-        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable) ->
-            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
 
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));

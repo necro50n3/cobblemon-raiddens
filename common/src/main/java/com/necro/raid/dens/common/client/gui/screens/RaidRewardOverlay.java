@@ -20,9 +20,11 @@ public class RaidRewardOverlay extends AbstractOverlay {
     private static final int HEIGHT = 70;
 
     private final boolean isCatchable;
+    private final String pokemon;
 
-    public RaidRewardOverlay(boolean isCatchable) {
+    public RaidRewardOverlay(boolean isCatchable, String pokemon) {
         this.isCatchable = isCatchable;
+        this.pokemon = pokemon;
     }
 
     @Override
@@ -43,8 +45,8 @@ public class RaidRewardOverlay extends AbstractOverlay {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
         MutableComponent component = this.isCatchable
-            ? Component.translatable("screen.cobblemonraiddens.reward.description.1")
-            : Component.translatable("screen.cobblemonraiddens.reward.description.2");
+            ? Component.translatable("screen.cobblemonraiddens.reward.description.1", Component.translatable(this.pokemon))
+            : Component.translatable("screen.cobblemonraiddens.reward.description.2", Component.translatable(this.pokemon));
         List<FormattedCharSequence> wrapped = font.split(component, WIDTH * 2 - 16);
         int textY = wrapped.size() > 1 ? 44 : 52;
         for (FormattedCharSequence text : wrapped) {

@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,9 @@ public class RewardHandler {
     }
 
     public void sendRewardMessage() {
-        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.raidBoss.isCatchable());
+        if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
+        String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
+        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.raidBoss.isCatchable(), speciesName);
         RaidHelper.REWARD_QUEUE.put(this.player, this);
     }
 
