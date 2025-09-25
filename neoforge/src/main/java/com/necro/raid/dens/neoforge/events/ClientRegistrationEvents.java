@@ -3,19 +3,16 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
-import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import com.necro.raid.dens.neoforge.client.NeoForgeHud;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 @EventBusSubscriber(modid = CobblemonRaidDens.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -39,15 +36,5 @@ public class ClientRegistrationEvents {
         event.register(RaidDenKeybinds.DENY_SHORTCUT);
 
         NeoForgeHud.init();
-    }
-
-    @SubscribeEvent
-    public static void onRenderGui(RenderGuiEvent event) {
-        if (!RaidDenGuiManager.hasOverlay()) return;
-
-        Minecraft client = Minecraft.getInstance();
-        int width = client.getWindow().getGuiScaledWidth();
-        int height = client.getWindow().getGuiScaledHeight();
-        RaidDenGuiManager.render(event.getGuiGraphics(), width, height);
     }
 }
