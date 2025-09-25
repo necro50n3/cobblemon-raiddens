@@ -245,6 +245,7 @@ public class RaidBoss {
         this.id = id;
     }
 
+    @SuppressWarnings("unused")
     public boolean isMega() {
         return this.raidFeature == RaidFeature.MEGA;
     }

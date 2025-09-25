@@ -8,6 +8,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+@SuppressWarnings("unused")
 public class NeoForgeChunkGenerator {
     public static final DeferredRegister<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATORS =
         DeferredRegister.create(Registries.CHUNK_GENERATOR, CobblemonRaidDens.MOD_ID);

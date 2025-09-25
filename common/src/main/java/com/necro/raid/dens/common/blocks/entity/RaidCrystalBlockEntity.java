@@ -107,6 +107,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else this.inactiveTicks = 0;
 
         if (!blockState.getValue(RaidCrystalBlock.CAN_RESET)) return;
+        else if (CobblemonRaidDens.CONFIG.reset_time <= 0) return;
         else if (this.isInProgress()) return;
 
         if (++this.age % (CobblemonRaidDens.CONFIG.reset_time * 20)  == 0) {

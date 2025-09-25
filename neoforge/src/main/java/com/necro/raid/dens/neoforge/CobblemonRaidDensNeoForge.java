@@ -32,6 +32,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
+@SuppressWarnings("unused")
 @Mod(CobblemonRaidDens.MOD_ID)
 public class CobblemonRaidDensNeoForge {
     public CobblemonRaidDensNeoForge(IEventBus modBus, ModContainer container) {

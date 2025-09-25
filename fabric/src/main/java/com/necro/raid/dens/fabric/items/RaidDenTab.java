@@ -12,6 +12,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 public class RaidDenTab {
+    @SuppressWarnings("unused")
     public static final CreativeModeTab RAID_DEN_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
         ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_tab"),
         FabricItemGroup.builder().title(Component.translatable("itemgroup.cobblemonraiddens.raid_den_tab"))

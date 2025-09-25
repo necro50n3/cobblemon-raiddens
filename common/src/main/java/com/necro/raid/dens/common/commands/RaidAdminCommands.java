@@ -60,6 +60,7 @@ public class RaidAdminCommands {
         );
     }
 
+    @SuppressWarnings("unused")
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
         register(dispatcher);
     }

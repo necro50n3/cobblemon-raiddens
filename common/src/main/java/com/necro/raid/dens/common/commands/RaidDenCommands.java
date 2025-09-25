@@ -279,6 +279,7 @@ public class RaidDenCommands {
         );
     }
 
+    @SuppressWarnings("unused")
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
         register(dispatcher);
     }
@@ -339,6 +340,7 @@ public class RaidDenCommands {
         return 1;
     }
 
+    @SuppressWarnings("unused")
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation raidBoss, RaidCycleMode cycleMode, Boolean canReset) {
         if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
 
@@ -381,6 +383,7 @@ public class RaidDenCommands {
         return 1;
     }
 
+    @SuppressWarnings("unused")
     private static int createRaidDenWithBucket(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation bucket, Boolean canReset) {
         if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
 

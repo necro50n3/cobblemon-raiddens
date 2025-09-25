@@ -15,6 +15,7 @@ public class RaidDenTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister
         .create(Registries.CREATIVE_MODE_TAB, CobblemonRaidDens.MOD_ID);
 
+    @SuppressWarnings("unused")
     public static final Supplier<CreativeModeTab> RAID_DEN_TAB = CREATIVE_TABS.register("raid_den_tab",
         () -> CreativeModeTab.builder().title(Component.translatable("itemgroup.cobblemonraiddens.raid_den_tab"))
             .icon(() -> new ItemStack(NeoForgeBlocks.RAID_CRYSTAL_BLOCK))
