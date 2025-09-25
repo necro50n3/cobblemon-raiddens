@@ -149,6 +149,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.dimension == null) return;
         RaidBoss raidBoss = this.getRaidBoss();
         if (raidBoss == null) {
+            CobblemonRaidDens.LOGGER.error("Could not load Raid Boss {}", this.raidBoss);
             this.setRaidBoss(null, 0);
             return;
         }
