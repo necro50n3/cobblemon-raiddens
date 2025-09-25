@@ -57,16 +57,7 @@ public class GemTypeFunction extends LootItemConditionalFunction {
         assert raidTier != null && raidType != null;
         if (raidType == RaidType.NONE) return itemStack;
 
-        int count = switch (raidTier) {
-            case RaidTier.TIER_ONE, RaidTier.TIER_TWO -> lootContext.getRandom().nextIntBetweenInclusive(0, 3);
-            case RaidTier.TIER_THREE, RaidTier.TIER_FOUR -> lootContext.getRandom().nextIntBetweenInclusive(2, 5);
-            case RaidTier.TIER_FIVE -> lootContext.getRandom().nextIntBetweenInclusive(5, 10);
-            case RaidTier.TIER_SIX -> lootContext.getRandom().nextIntBetweenInclusive(10, 20);
-            default -> 30;
-        };
-        if (count == 0) return itemStack;
         itemStack = this.getGem(raidType, lootContext.getRandom());
-        itemStack.setCount(count);
         return itemStack;
     }
 
