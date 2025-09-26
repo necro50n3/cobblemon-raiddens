@@ -15,7 +15,7 @@ public class RaidStructureReloadListener implements ResourceManagerReloadListene
     public void onResourceManagerReload(@NotNull ResourceManager manager) {
         RaidStructureRegistry.clear();
 
-        manager.listResources("structure/raid_dens", path -> path.toString().endsWith(".json")).forEach((id, resource) -> {
+        manager.listResources("structure/raid_dens", path -> path.toString().endsWith(".nbt")).forEach((id, resource) -> {
             try (InputStream input = resource.open()) {
                 CompoundTag nbt = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
                 if (!nbt.contains("raid_pois")) return;
