@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -138,7 +139,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(bossLocation);
         if (bossLocation == null || raidBoss == null) return;
-        this.setRaidBoss(bossLocation, level.getGameTime());
+        this.setRaidBoss(bossLocation, level.getRandom(), level.getGameTime());
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
@@ -151,7 +152,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         RaidBoss raidBoss = this.getRaidBoss();
         if (raidBoss == null) {
             CobblemonRaidDens.LOGGER.error("Could not load Raid Boss {}", this.raidBoss);
-            this.setRaidBoss(null, 0);
+            this.setRaidBoss(null, null, 0);
             return false;
         }
 
@@ -356,15 +357,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidStructure != null) compoundTag.putString("raid_structure", this.raidStructure.toString());
     }
 
-    public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
+    public void setRaidBoss(ResourceLocation raidBoss, RandomSource random, long gameTime) {
         RaidHelper.resetClearedRaids(this.getUuid());
         this.resetClears();
         this.inactiveTicks = 0;
         this.lastReset = gameTime;
         this.raidBoss = raidBoss;
         if (raidBoss == null) this.raidStructure = null;
-        //TODO: Get raid structure from raid boss
-        else this.raidStructure = ResourceLocation.parse("cobblemonraiddens:raid_dens/raid_den");
+        else this.raidStructure = this.getRaidBoss().getRandomStructure(random);
         this.setChanged();
     }
 

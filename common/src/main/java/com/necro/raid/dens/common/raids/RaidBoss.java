@@ -31,6 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -55,12 +56,13 @@ public class RaidBoss {
     private final int healthMulti;
     private final float shinyRate;
     private final Map<String, String> script;
+    private final List<ResourceLocation> structures;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<ResourceLocation> structures) {
         this.bossProperties = properties;
         this.baseProperties = properties.copy();
         this.raidTier = tier;
@@ -74,6 +76,7 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
+        this.structures = structures;
 
         this.id = null;
     }
@@ -237,6 +240,15 @@ public class RaidBoss {
         return this.script;
     }
 
+    public List<ResourceLocation> getStructures() {
+        return this.structures;
+    }
+
+    public ResourceLocation getRandomStructure(RandomSource random) {
+        if (this.structures.size() == 1) return this.structures.getFirst();
+        else return this.structures.get(random.nextInt(this.structures.size()));
+    }
+
     public ResourceLocation getId() {
         return this.id;
     }
@@ -338,8 +350,9 @@ public class RaidBoss {
             Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable),
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
-            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script) -> {
+            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("structures", List.of(ResourceLocation.fromNamespaceAndPath("cobblemonraiddens", "raid_dens/raid_den"))).forGetter(RaidBoss::getStructures)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures) -> {
                 if (properties.getLevel() == null) properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
@@ -356,7 +369,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures);
             })
         );
     }
