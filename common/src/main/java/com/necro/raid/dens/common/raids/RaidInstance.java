@@ -85,7 +85,9 @@ public class RaidInstance {
                     this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
                 }
                 else if (key.startsWith("hp:")) {
-                    this.scriptByHp.put(Double.parseDouble(key.split(":")[1]), func);
+                    double threshold = Double.parseDouble(key.split(":")[1]);
+                    if ((this.currentHealth / this.maxHealth) < threshold) return;
+                    this.scriptByHp.put(threshold, func);
                 }
             }
             catch (Exception ignored) {}
