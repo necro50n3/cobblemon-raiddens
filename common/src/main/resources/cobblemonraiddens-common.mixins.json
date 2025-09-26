@@ -1,24 +1,27 @@
 {
-  "required": true,
-  "package": "com.necro.raid.dens.common.mixins",
-  "compatibilityLevel": "JAVA_21",
-  "mixins": [
-    "ActionEffectInstructionMixin",
-    "ChunkMapMixin",
-    "ForcePassActionResponseMixin",
-    "HolderSetNamedAccessor",
-    "MappedRegistryAccessor",
-    "MappedRegistryMixin",
-    "MinecraftServerAccessor",
-    "MinecraftServerMixin",
-    "MoveActionResponseMixin",
-    "PokemonBattleMixin",
-    "PokemonEntityMixin",
-    "PokemonMixin",
-    "ServerLevelAccessor",
-    "ShowdownInterpreterMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "com.necro.raid.dens.common.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "mixins": [
+        "ActionEffectInstructionMixin",
+        "ChunkMapMixin",
+        "ForcePassActionResponseMixin",
+        "HolderSetNamedAccessor",
+        "MappedRegistryAccessor",
+        "MappedRegistryMixin",
+        "MinecraftServerAccessor",
+        "MinecraftServerMixin",
+        "MoveActionResponseMixin",
+        "PokemonBattleMixin",
+        "PokemonEntityMixin",
+        "PokemonMixin",
+        "ServerLevelAccessor",
+        "ShowdownInterpreterMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "client": [
+        "KeyMappingAccessor"
+    ]
 }

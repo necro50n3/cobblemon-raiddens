@@ -35,7 +35,8 @@ public class PopupButton extends AbstractRaidButton {
 
     private String getFormat() {
         KeyMapping key = this.index == 0 ? RaidDenKeybinds.ACCEPT_SHORTCUT : RaidDenKeybinds.DENY_SHORTCUT;
-        if (key.isUnbound()) return "";
-        else return String.format(" [%s]", key.getTranslatedKeyMessage().getString());
+        String keyName = key.getTranslatedKeyMessage().getString();
+        if (key.isUnbound() || keyName.length() > 3) return "";
+        else return String.format(" [%s]", keyName);
     }
 }

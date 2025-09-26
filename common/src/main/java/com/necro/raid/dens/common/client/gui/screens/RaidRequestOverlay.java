@@ -3,6 +3,8 @@ package com.necro.raid.dens.common.client.gui.screens;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
+import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
+import com.necro.raid.dens.common.mixins.KeyMappingAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -50,10 +52,13 @@ public class RaidRequestOverlay extends AbstractOverlay {
         }
         guiGraphics.pose().popPose();
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
-        guiGraphics.drawString(font, Component.translatable("screen.cobblemonraiddens.footer"), 10, 119, 10197915, false);
-        guiGraphics.pose().popPose();
+        if (!RaidDenKeybinds.MOUSE_KEYDOWN.isUnbound()) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
+            Component key = getShorthand(((KeyMappingAccessor) RaidDenKeybinds.MOUSE_KEYDOWN).getKey()).copy();
+            guiGraphics.drawString(font, Component.translatable("screen.cobblemonraiddens.footer", key), 10, 119, 10197915, false);
+            guiGraphics.pose().popPose();
+        }
 
         guiGraphics.pose().popPose();
 
