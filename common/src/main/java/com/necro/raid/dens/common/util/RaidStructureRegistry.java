@@ -17,14 +17,17 @@ public class RaidStructureRegistry {
     }
 
     public static Vec3 getOffset(ResourceLocation structure) {
+        if (!STRUCTURES.containsKey(structure)) return STRUCTURES.get(DEFAULT).offset;
         return STRUCTURES.get(structure).offset;
     }
 
     public static Vec3 getPlayerPos(ResourceLocation structure) {
+        if (!STRUCTURES.containsKey(structure)) return STRUCTURES.get(DEFAULT).playerPos;
         return STRUCTURES.get(structure).playerPos;
     }
 
     public static Vec3 getBossPos(ResourceLocation structure) {
+        if (!STRUCTURES.containsKey(structure)) return STRUCTURES.get(DEFAULT).bossPos;
         return STRUCTURES.get(structure).bossPos;
     }
 
