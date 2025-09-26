@@ -159,7 +159,7 @@ public class RaidInstance {
             this.runQueue.add(new DelayedRunnable(() -> {
                 this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
                 this.runScriptByHp((double) this.currentHealth / this.maxHealth);
-            }, 60));
+            }, 20));
         }
     }
 

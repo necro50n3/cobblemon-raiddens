@@ -4,7 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
-import com.necro.raid.dens.common.mixins.KeyMappingAccessor;
+import com.necro.raid.dens.common.mixins.client.KeyMappingAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

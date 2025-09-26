@@ -3,9 +3,10 @@
     "package": "com.necro.raid.dens.common.mixins",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
-        "ActionEffectInstructionMixin",
         "ChunkMapMixin",
+        "DamageInstructionMixin",
         "ForcePassActionResponseMixin",
+        "HealInstructionMixin",
         "HolderSetNamedAccessor",
         "MappedRegistryAccessor",
         "MappedRegistryMixin",
@@ -22,6 +23,6 @@
         "defaultRequire": 1
     },
     "client": [
-        "KeyMappingAccessor"
+        "client.KeyMappingAccessor"
     ]
 }

@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.client.gui.screens;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
-import com.necro.raid.dens.common.mixins.KeyMappingAccessor;
+import com.necro.raid.dens.common.mixins.client.KeyMappingAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
