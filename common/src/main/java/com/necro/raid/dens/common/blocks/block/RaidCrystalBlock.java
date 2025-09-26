@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
+import com.necro.raid.dens.common.util.RaidStructureRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,25 +106,30 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
             return false;
         }
-        else if (!RaidHelper.addToQueue(player, key)) {
+        else if (RaidHelper.isInQueue(player)) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
             return false;
         }
-        this.requestJoinRaid(player, blockEntity);
+        return this.requestJoinRaid(player, blockEntity, key);
+    }
+
+    private boolean requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
+        MinecraftServer server = player.getServer();
+        if (server == null) return false;
+        ServerPlayer raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
+        if (raidHost == null) {
+            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.no_host"));
+            return false;
+        }
+
+        RaidHelper.addToQueue(player, key);
+        RaidHelper.addRequest(raidHost, player, blockEntity);
+        RaidDenNetworkMessages.REQUEST_PACKET.accept(raidHost, player.getName().getString());
         return true;
     }
 
-    private void requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity) {
-        MinecraftServer server = player.getServer();
-        if (server == null) return;
-        ServerPlayer raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
-        if (raidHost == null) return;
-
-        RaidHelper.addRequest(raidHost, player, blockEntity);
-        RaidDenNetworkMessages.REQUEST_PACKET.accept(raidHost, player.getName().getString());
-    }
-
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
+        if (blockEntity.getLevel() == null) return false;
         blockEntity.setRaidHost(player);
 
         ServerLevel level;
@@ -135,12 +142,17 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
         if (!success) return false;
 
-        RaidHelper.addHost(player);
-
         blockEntity.setDimension(level);
-        blockEntity.spawnRaidBoss();
+        if (!blockEntity.spawnRaidBoss()) {
+            blockEntity.setQueueClose();
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.boss_spawn_failed").withStyle(ChatFormatting.RED));
+            return false;
+        }
+
+        RaidHelper.addHost(player);
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
-        player.teleportTo(level, 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
+        Vec3 playerPos = RaidStructureRegistry.getPlayerPos(blockEntity.getRaidStructure());
+        player.teleportTo(level, playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
         return true;
     }
 

@@ -6,10 +6,7 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.util.IRaidAccessor;
-import com.necro.raid.dens.common.util.RaidBucket;
-import com.necro.raid.dens.common.util.RaidBucketRegistry;
-import com.necro.raid.dens.common.util.RaidRegistry;
+import com.necro.raid.dens.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +28,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -51,6 +51,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private ResourceLocation raidBucket;
     private ResourceLocation raidBoss;
     private ServerLevel dimension;
+    private ResourceLocation raidStructure;
 
     private boolean queueFindDimension;
     private int queueTimeout;
@@ -145,18 +146,29 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             .setValue(RaidCrystalBlock.ACTIVE, true), 2);
     }
 
-    public void spawnRaidBoss() {
-        if (this.dimension == null) return;
+    public boolean spawnRaidBoss() {
+        if (this.dimension == null) return false;
         RaidBoss raidBoss = this.getRaidBoss();
         if (raidBoss == null) {
             CobblemonRaidDens.LOGGER.error("Could not load Raid Boss {}", this.raidBoss);
             this.setRaidBoss(null, 0);
-            return;
+            return false;
         }
 
+        StructureTemplate template = this.dimension.getStructureManager().getOrCreate(this.getRaidStructure());
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        Vec3 offset = RaidStructureRegistry.getOffset(this.getRaidStructure());
+        if (offset == null) {
+            CobblemonRaidDens.LOGGER.error("Could not load Raid Structure {}", this.getRaidStructure());
+            return false;
+        }
+        BlockPos corner = new BlockPos((int) offset.x, (int) offset.y, (int) offset.z);
+        template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
+
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.dimension);
-        pokemonEntity.moveTo(0.5, 0, -14.5);
+        pokemonEntity.moveTo(RaidStructureRegistry.getBossPos(this.getRaidStructure()));
         this.dimension.addFreshEntity(pokemonEntity);
+        return true;
     }
 
     public void clearRaid() {
@@ -235,6 +247,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public ResourceLocation getRaidBossLocation() {
         return this.raidBoss;
+    }
+
+    public ResourceLocation getRaidStructure() {
+        return this.raidStructure;
     }
 
     public void addPlayer(Player player) {
@@ -317,6 +333,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else this.uuid = UUID.randomUUID();
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
+        if (compoundTag.contains("raid_structure")) this.raidStructure = ResourceLocation.parse(compoundTag.getString("raid_structure"));
+        else this.raidStructure = ResourceLocation.fromNamespaceAndPath("cobblemonraiddens", "raid_dens/raid_den");
     }
 
     @Override
@@ -335,6 +353,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
+        if (this.raidStructure != null) compoundTag.putString("raid_structure", this.raidStructure.toString());
     }
 
     public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
@@ -343,6 +362,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.inactiveTicks = 0;
         this.lastReset = gameTime;
         this.raidBoss = raidBoss;
+        if (raidBoss == null) this.raidStructure = null;
+        //TODO: Get raid structure from raid boss
+        else this.raidStructure = ResourceLocation.parse("cobblemonraiddens:raid_dens/raid_den");
         this.setChanged();
     }
 

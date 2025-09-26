@@ -20,6 +20,7 @@ import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.events.RaidBossResourceReloadListener;
 import com.necro.raid.dens.fabric.events.RaidBucketResourceReloadListener;
+import com.necro.raid.dens.fabric.events.RaidStructureResourceReloadListener;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
@@ -82,6 +83,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketResourceReloadListener());
+
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidStructureResourceReloadListener());
 
         RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));

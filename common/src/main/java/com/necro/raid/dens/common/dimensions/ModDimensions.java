@@ -19,8 +19,6 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
@@ -133,13 +131,6 @@ public class ModDimensions {
         );
 
         ((MinecraftServerAccessor) server).getLevels().put(levelKey, raidDim);
-
-        ResourceLocation structure = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den");
-        StructureTemplate template = raidDim.getStructureManager().getOrCreate(structure);
-        StructurePlaceSettings settings = new StructurePlaceSettings();
-        BlockPos corner = new BlockPos(-24, -3, -29);
-        template.placeInWorld(raidDim, corner, corner, settings, raidDim.getRandom(), 2);
-
         return raidDim;
     }
 }
