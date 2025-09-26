@@ -32,6 +32,5 @@ public abstract class ModBlocks {
 
     public abstract Block getRaidCrystalBlock();
 
-    @SuppressWarnings("unused")
     public abstract Block getRaidHomeBlock();
 }

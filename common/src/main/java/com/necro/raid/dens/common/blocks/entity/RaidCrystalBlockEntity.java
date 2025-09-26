@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.blocks.entity;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
@@ -26,7 +27,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -167,6 +167,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         Vec3 offset = RaidStructureRegistry.getOffset(this.getRaidStructure());
         BlockPos corner = new BlockPos((int) offset.x, (int) offset.y, (int) offset.z);
         template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
+
+        this.dimension.setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
+        if (this.dimension.getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
+            homeBlockEntity.setHome(this.getBlockPos(), (ServerLevel) this.getLevel());
+        }
 
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.dimension);
         pokemonEntity.moveTo(RaidStructureRegistry.getBossPos(this.getRaidStructure()));
