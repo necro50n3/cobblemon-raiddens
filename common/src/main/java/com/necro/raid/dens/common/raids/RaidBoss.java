@@ -24,6 +24,7 @@ import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
+import com.necro.raid.dens.common.util.RaidStructureRegistry;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -351,7 +352,7 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("structures", List.of(ResourceLocation.fromNamespaceAndPath("cobblemonraiddens", "raid_dens/raid_den"))).forGetter(RaidBoss::getStructures)
+            ResourceLocation.CODEC.listOf().optionalFieldOf("structures", List.of(RaidStructureRegistry.DEFAULT)).forGetter(RaidBoss::getStructures)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures) -> {
                 if (properties.getLevel() == null) properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());

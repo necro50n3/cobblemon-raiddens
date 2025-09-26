@@ -1,8 +1,8 @@
 package com.necro.raid.dens.common.util;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashMap;
@@ -10,27 +10,21 @@ import java.util.Map;
 
 public class RaidStructureRegistry {
     private static final Map<ResourceLocation, RaidStructureData> STRUCTURES = new HashMap<>();
+    public static final ResourceLocation DEFAULT = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_dens/raid_den");
 
     public static void register(ResourceLocation structure, CompoundTag tag) {
         STRUCTURES.put(structure, new RaidStructureData(tag));
     }
 
-    public static ResourceLocation getRandom(RandomSource random) {
-        return STRUCTURES.keySet().stream().toList().get(random.nextInt(STRUCTURES.size()));
-    }
-
     public static Vec3 getOffset(ResourceLocation structure) {
-        if (!STRUCTURES.containsKey(structure)) return null;
         return STRUCTURES.get(structure).offset;
     }
 
     public static Vec3 getPlayerPos(ResourceLocation structure) {
-        if (!STRUCTURES.containsKey(structure)) return new Vec3(0.5, 0, -0.5);
         return STRUCTURES.get(structure).playerPos;
     }
 
     public static Vec3 getBossPos(ResourceLocation structure) {
-        if (!STRUCTURES.containsKey(structure)) return null;
         return STRUCTURES.get(structure).bossPos;
     }
 

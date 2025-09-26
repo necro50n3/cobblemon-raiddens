@@ -26,11 +26,13 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -156,13 +158,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             return false;
         }
 
-        StructureTemplate template = this.dimension.getStructureManager().getOrCreate(this.getRaidStructure());
+        StructureTemplateManager structureManager = this.dimension.getStructureManager();
+        StructureTemplate template = structureManager.get(this.getRaidStructure()).orElseGet(() -> {
+            this.raidStructure = RaidStructureRegistry.DEFAULT;
+            return structureManager.getOrCreate(this.getRaidStructure());
+        });
         StructurePlaceSettings settings = new StructurePlaceSettings();
         Vec3 offset = RaidStructureRegistry.getOffset(this.getRaidStructure());
-        if (offset == null) {
-            CobblemonRaidDens.LOGGER.error("Could not load Raid Structure {}", this.getRaidStructure());
-            return false;
-        }
         BlockPos corner = new BlockPos((int) offset.x, (int) offset.y, (int) offset.z);
         template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
 
@@ -335,7 +337,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("raid_structure")) this.raidStructure = ResourceLocation.parse(compoundTag.getString("raid_structure"));
-        else this.raidStructure = ResourceLocation.fromNamespaceAndPath("cobblemonraiddens", "raid_dens/raid_den");
+        else this.raidStructure = RaidStructureRegistry.DEFAULT;
     }
 
     @Override
