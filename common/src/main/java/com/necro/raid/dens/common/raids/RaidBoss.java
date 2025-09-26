@@ -107,6 +107,7 @@ public class RaidBoss {
         ((IRaidAccessor) pokemonEntity).setRaidBoss(this.id);
         float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
+        pokemonEntity.refreshDimensions();
 
         return pokemonEntity;
     }
