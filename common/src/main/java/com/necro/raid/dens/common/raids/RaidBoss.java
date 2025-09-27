@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
+import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
 import com.cobblemon.mod.common.api.moves.Moves;
@@ -97,7 +98,7 @@ public class RaidBoss {
             ((CustomPokemonProperty) form).apply(pokemon);
         }
 
-        this.setMoveSet(properties, pokemon);
+        this.setMoveSet(properties, pokemon, true);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setNoAi(true);
@@ -159,11 +160,11 @@ public class RaidBoss {
         if (this.raidForm.stream().anyMatch(form -> form instanceof StringSpeciesFeature ssf && ssf.getValue().equals("gmax")))
             pokemon.setGmaxFactor(true);
 
-        this.setMoveSet(properties, pokemon);
+        this.setMoveSet(properties, pokemon, false);
         return pokemon;
     }
 
-    private void setMoveSet(PokemonProperties properties, Pokemon pokemon) {
+    private void setMoveSet(PokemonProperties properties, Pokemon pokemon, boolean isRaidBoss) {
         List<String> moves = properties.getMoves();
         if (moves != null) {
             MoveSet moveSet = pokemon.getMoveSet();
@@ -173,7 +174,10 @@ public class RaidBoss {
                 for (int i = 0; i < moves.size(); i++) {
                     MoveTemplate mt = moveTemplates.get(i);
                     moveSet.setMove(i, mt.create());
-                    Objects.requireNonNull(moveSet.get(i)).update();
+                    Move move = moveSet.get(i);
+                    assert move != null;
+                    if (isRaidBoss) move.setCurrentPp(99);
+                    else move.update();
                 }
                 return Unit.INSTANCE;
             });
