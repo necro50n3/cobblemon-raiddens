@@ -165,7 +165,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         });
         StructurePlaceSettings settings = new StructurePlaceSettings();
         Vec3 offset = RaidStructureRegistry.getOffset(this.getRaidStructure());
-        BlockPos corner = new BlockPos((int) offset.x, (int) offset.y, (int) offset.z);
+        BlockPos corner = BlockPos.containing(offset);
         template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
 
         this.dimension.setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());

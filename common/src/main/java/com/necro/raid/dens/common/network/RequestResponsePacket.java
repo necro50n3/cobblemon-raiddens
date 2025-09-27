@@ -6,13 +6,18 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
+import com.necro.raid.dens.common.util.RaidStructureRegistry;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -59,9 +64,17 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
             RaidHelper.JOIN_QUEUE.remove(player);
             RaidHelper.addParticipant(player);
             blockEntity.addPlayer(player);
-            player.teleportTo(blockEntity.getDimension(), 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.accepted_request"));
-            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.confirm_accept_request"));
+
+            Vec3 playerPos = RaidStructureRegistry.getPlayerPos(blockEntity.getRaidStructure());
+            ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
+            blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
+
+            if (player.getServer() == null) return;
+            player.getServer().execute(() -> {
+                player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
+                player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.accepted_request"));
+                host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.confirm_accept_request"));
+            });
         }
         else {
             RaidHelper.JOIN_QUEUE.remove(player);

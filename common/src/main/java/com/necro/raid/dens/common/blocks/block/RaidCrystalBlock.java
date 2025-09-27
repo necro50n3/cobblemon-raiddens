@@ -14,11 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -129,7 +131,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
-        if (blockEntity.getLevel() == null) return false;
+        if (blockEntity.getLevel() == null || player.getServer() == null) return false;
         blockEntity.setRaidHost(player);
 
         ServerLevel level;
@@ -151,8 +153,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         RaidHelper.addHost(player);
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
+
         Vec3 playerPos = RaidStructureRegistry.getPlayerPos(blockEntity.getRaidStructure());
-        player.teleportTo(level, playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
+        ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
+        blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
+
+        player.getServer().execute(() ->
+            player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f)
+        );
         return true;
     }
 
