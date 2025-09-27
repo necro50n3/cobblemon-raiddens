@@ -75,7 +75,7 @@
     "message.cobblemonraiddens.raid.boss_spawn_failed": "The raid boss or raid den failed to spawn.",
     "message.cobblemonraiddens.command.refresh_player": "%s has been refreshed.",
     "message.cobblemonraiddens.command.reset_clears": "Successfully reset clears.",
-    "message.cobblemonraiddens.command.remove_dimension": "Rain dimension has been removed.",
+    "message.cobblemonraiddens.command.remove_dimension": "The raid dimension has been removed.",
     "message.cobblemonraiddens.raid.accepted_request": "Your request has been accepted.",
     "message.cobblemonraiddens.raid.already_hosting": "You are already hosting another raid.",
     "message.cobblemonraiddens.raid.already_in_queue": "You are already waiting to join a raid.",

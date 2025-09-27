@@ -78,7 +78,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private Boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
-        if (blockEntity.isBusy()) return false;
+        if (blockEntity.isBusy() || player.getServer() == null) return false;
         else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"));
             return false;
@@ -88,7 +88,13 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
         else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) {
-            player.teleportTo(blockEntity.getDimension(), 0.5, 0, -0.5, new HashSet<>(), 180f, 0f);
+            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
+            ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
+            blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
+
+            player.getServer().execute(() ->
+                player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f)
+            );
             return null;
         }
         else if (RaidHelper.isAlreadyHosting(player)) {
