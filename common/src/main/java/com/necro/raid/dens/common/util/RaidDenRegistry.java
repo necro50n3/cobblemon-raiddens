@@ -34,6 +34,10 @@ public class RaidDenRegistry {
         else return DEN_POOL.get(pool).getDens();
     }
 
+    public static boolean isNotValidStructure(ResourceLocation structure) {
+        return !TEMPLATES.containsKey(structure);
+    }
+
     public static Vec3 getOffset(ResourceLocation structure) {
         if (!TEMPLATES.containsKey(structure)) return TEMPLATES.get(DEFAULT).offset;
         return TEMPLATES.get(structure).offset;

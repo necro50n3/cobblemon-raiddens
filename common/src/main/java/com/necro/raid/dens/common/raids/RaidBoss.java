@@ -56,15 +56,15 @@ public class RaidBoss {
     private final int healthMulti;
     private final float shinyRate;
     private final Map<String, String> script;
-    private List<ResourceLocation> structures;
+    private List<ResourceLocation> dens;
 
-    private final List<String> structuresInner;
+    private final List<String> densInner;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> structures) {
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -77,9 +77,9 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
-        this.structures = new ArrayList<>();
+        this.dens = new ArrayList<>();
 
-        this.structuresInner = structures;
+        this.densInner = dens;
 
         this.id = null;
     }
@@ -246,25 +246,26 @@ public class RaidBoss {
         return this.script;
     }
 
-    public List<String> getStructures() {
-        return this.structuresInner;
+    public List<String> getDens() {
+        return this.densInner;
     }
 
-    public ResourceLocation getRandomStructure(RandomSource random) {
-        if (this.structures.isEmpty()) this.resolveStructures();
+    public ResourceLocation getRandomDen(RandomSource random) {
+        if (this.dens.isEmpty()) this.resolveDens();
 
-        if (this.structures.size() == 1) return this.structures.getFirst();
-        else return this.structures.get(random.nextInt(this.structures.size()));
+        if (this.dens.size() == 1) return this.dens.getFirst();
+        else return this.dens.get(random.nextInt(this.dens.size()));
     }
 
-    private void resolveStructures() {
-        List<ResourceLocation> validStructures = new ArrayList<>();
-        for (String value : this.structuresInner) {
-            if (value.startsWith("#")) validStructures.addAll(RaidDenRegistry.getStructures(ResourceLocation.parse(value.substring(1))));
-            else validStructures.add(ResourceLocation.parse(value));
+    private void resolveDens() {
+        List<ResourceLocation> validDens = new ArrayList<>();
+        for (String value : this.densInner) {
+            if (value.startsWith("#")) validDens.addAll(RaidDenRegistry.getStructures(ResourceLocation.parse(value.substring(1))));
+            else validDens.add(ResourceLocation.parse(value));
         }
-        if (validStructures.isEmpty()) validStructures.addAll(RaidDenRegistry.getStructures(RaidDenRegistry.DEFAULT));
-        this.structures = validStructures;
+        validDens.removeIf(RaidDenRegistry::isNotValidStructure);
+        if (validDens.isEmpty()) validDens.add(RaidDenRegistry.DEFAULT);
+        this.dens = validDens;
     }
 
     public ResourceLocation getId() {
@@ -369,8 +370,8 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
-            Codec.STRING.listOf().optionalFieldOf("structures", List.of("cobblemonraiddens:default")).forGetter(RaidBoss::getStructures)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures) -> {
+            Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens) -> {
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);
@@ -386,7 +387,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens);
             })
         );
     }

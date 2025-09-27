@@ -29,7 +29,7 @@ public class RaidDenPoolResourceReloadListener implements SimpleSynchronousResou
     public void onResourceManagerReload(ResourceManager manager) {
         RaidDenRegistry.clear();
 
-        for(ResourceLocation id : manager.listResources("raid/den_pool", path -> path.getPath().endsWith(".nbt")).keySet()) {
+        for(ResourceLocation id : manager.listResources("raid/den_pool", path -> path.getPath().endsWith(".json")).keySet()) {
             try (Stream<Resource> stream = manager.getResource(id).stream(); InputStream input = stream.findFirst().get().open()) {
                 JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 Optional<Pair<RaidDenPool, JsonElement>> result = RaidDenPool.codec().decode(JsonOps.INSTANCE, jsonObject).result();

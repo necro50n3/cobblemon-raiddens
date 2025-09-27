@@ -371,7 +371,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.lastReset = gameTime;
         this.raidBoss = raidBoss;
         if (raidBoss == null) this.raidStructure = null;
-        else this.raidStructure = this.getRaidBoss().getRandomStructure(random);
+        else this.raidStructure = this.getRaidBoss().getRandomDen(random);
         this.setChanged();
     }
 
