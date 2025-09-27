@@ -40,7 +40,6 @@ import java.util.*;
 
 public class RaidBoss {
     private final PokemonProperties baseProperties;
-    private final PokemonProperties bossProperties;
     private Species displaySpecies;
     private Set<String> displayAspects;
     private final RaidTier raidTier;
@@ -61,8 +60,7 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
                     boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
-        this.bossProperties = properties;
-        this.baseProperties = properties.copy();
+        this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
         this.raidFeature = raidFeature;
@@ -79,7 +77,7 @@ public class RaidBoss {
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
-        PokemonProperties properties = PokemonProperties.Companion.parse(this.bossProperties.asString(" ") + " aspect=raid uncatchable");
+        PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         if (properties.getLevel() == null) properties.setLevel(this.raidTier.getLevel());
 
         Pokemon pokemon = properties.create();
@@ -174,7 +172,7 @@ public class RaidBoss {
     }
 
     public PokemonProperties getProperties() {
-        return this.bossProperties;
+        return this.baseProperties;
     }
 
     public Species getDisplaySpecies() {
