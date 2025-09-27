@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
-import com.necro.raid.dens.common.util.RaidStructureRegistry;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -154,7 +154,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         RaidHelper.addHost(player);
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
 
-        Vec3 playerPos = RaidStructureRegistry.getPlayerPos(blockEntity.getRaidStructure());
+        Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
         ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
         blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
 

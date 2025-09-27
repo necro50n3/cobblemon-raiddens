@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
-import com.necro.raid.dens.common.util.RaidStructureRegistry;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -65,7 +65,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
             RaidHelper.addParticipant(player);
             blockEntity.addPlayer(player);
 
-            Vec3 playerPos = RaidStructureRegistry.getPlayerPos(blockEntity.getRaidStructure());
+            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
             ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
             blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
 

@@ -24,7 +24,7 @@ import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
-import com.necro.raid.dens.common.util.RaidStructureRegistry;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -56,13 +56,15 @@ public class RaidBoss {
     private final int healthMulti;
     private final float shinyRate;
     private final Map<String, String> script;
-    private final List<ResourceLocation> structures;
+    private List<ResourceLocation> structures;
+
+    private final List<String> structuresInner;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<ResourceLocation> structures) {
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> structures) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -75,7 +77,9 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
-        this.structures = structures;
+        this.structures = new ArrayList<>();
+
+        this.structuresInner = structures;
 
         this.id = null;
     }
@@ -242,13 +246,25 @@ public class RaidBoss {
         return this.script;
     }
 
-    public List<ResourceLocation> getStructures() {
-        return this.structures;
+    public List<String> getStructures() {
+        return this.structuresInner;
     }
 
     public ResourceLocation getRandomStructure(RandomSource random) {
+        if (this.structures.isEmpty()) this.resolveStructures();
+
         if (this.structures.size() == 1) return this.structures.getFirst();
         else return this.structures.get(random.nextInt(this.structures.size()));
+    }
+
+    private void resolveStructures() {
+        List<ResourceLocation> validStructures = new ArrayList<>();
+        for (String value : this.structuresInner) {
+            if (value.startsWith("#")) validStructures.addAll(RaidDenRegistry.getStructures(ResourceLocation.parse(value.substring(1))));
+            else validStructures.add(ResourceLocation.parse(value));
+        }
+        if (validStructures.isEmpty()) validStructures.addAll(RaidDenRegistry.getStructures(RaidDenRegistry.DEFAULT));
+        this.structures = validStructures;
     }
 
     public ResourceLocation getId() {
@@ -353,7 +369,7 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
-            ResourceLocation.CODEC.listOf().optionalFieldOf("structures", List.of(RaidStructureRegistry.DEFAULT)).forGetter(RaidBoss::getStructures)
+            Codec.STRING.listOf().optionalFieldOf("structures", List.of("cobblemonraiddens:default")).forGetter(RaidBoss::getStructures)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures) -> {
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));

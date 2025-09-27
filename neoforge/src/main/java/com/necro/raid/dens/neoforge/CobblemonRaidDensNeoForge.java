@@ -8,8 +8,10 @@ import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
@@ -68,6 +70,7 @@ public class CobblemonRaidDensNeoForge {
         modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
             event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
             event.dataPackRegistry(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec(), null);
+            event.dataPackRegistry(RaidDenRegistry.DEN_KEY, RaidDenPool.codec(), null);
         });
 
         RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->

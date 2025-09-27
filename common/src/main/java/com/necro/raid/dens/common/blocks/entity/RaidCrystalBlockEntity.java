@@ -160,11 +160,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         StructureTemplateManager structureManager = this.dimension.getStructureManager();
         StructureTemplate template = structureManager.get(this.getRaidStructure()).orElseGet(() -> {
-            this.raidStructure = RaidStructureRegistry.DEFAULT;
+            this.raidStructure = RaidDenRegistry.DEFAULT;
             return structureManager.getOrCreate(this.getRaidStructure());
         });
         StructurePlaceSettings settings = new StructurePlaceSettings();
-        Vec3 offset = RaidStructureRegistry.getOffset(this.getRaidStructure());
+        Vec3 offset = RaidDenRegistry.getOffset(this.getRaidStructure());
         BlockPos corner = BlockPos.containing(offset);
         template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
 
@@ -174,7 +174,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
 
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.dimension);
-        pokemonEntity.moveTo(RaidStructureRegistry.getBossPos(this.getRaidStructure()));
+        pokemonEntity.moveTo(RaidDenRegistry.getBossPos(this.getRaidStructure()));
         this.dimension.addFreshEntity(pokemonEntity);
         return true;
     }
@@ -342,7 +342,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("raid_structure")) this.raidStructure = ResourceLocation.parse(compoundTag.getString("raid_structure"));
-        else this.raidStructure = RaidStructureRegistry.DEFAULT;
+        else this.raidStructure = RaidDenRegistry.DEFAULT;
     }
 
     @Override

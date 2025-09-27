@@ -9,24 +9,19 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.util.RaidBucket;
-import com.necro.raid.dens.common.util.RaidBucketRegistry;
-import com.necro.raid.dens.common.util.RaidRegistry;
-import com.necro.raid.dens.common.util.RaidUtils;
+import com.necro.raid.dens.common.structure.RaidDenPool;
+import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
 import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCompat;
 import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
-import com.necro.raid.dens.fabric.events.RaidBossResourceReloadListener;
-import com.necro.raid.dens.fabric.events.RaidBucketResourceReloadListener;
-import com.necro.raid.dens.fabric.events.RaidStructureResourceReloadListener;
+import com.necro.raid.dens.fabric.events.*;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
-import com.necro.raid.dens.fabric.events.ModEvents;
 import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.statistics.FabricStatistics;
@@ -84,7 +79,10 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketResourceReloadListener());
 
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidStructureResourceReloadListener());
+        DynamicRegistries.register(RaidDenRegistry.DEN_KEY, RaidDenPool.codec());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidDenPoolResourceReloadListener());
+
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateResourceReloadListener());
 
         RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));

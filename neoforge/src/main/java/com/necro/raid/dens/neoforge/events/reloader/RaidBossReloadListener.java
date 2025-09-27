@@ -1,4 +1,4 @@
-package com.necro.raid.dens.neoforge.events;
+package com.necro.raid.dens.neoforge.events.reloader;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
