@@ -31,6 +31,8 @@ public class RaidConfig implements ConfigData {
     public int[] tier_health_multiplier = {5, 5, 8, 12, 20, 25, 30};
     @Comment("Raid boss level for each raid tier from Tier 1 to Tier 7. Default: [12, 20, 35, 45, 75, 75, 100]")
     public int[] tier_level = {12, 20, 35, 45, 75, 75, 100};
+    @Comment("Reward Pokemon level for each raid tier from Tier 1 to Tier 7. Default: [12, 20, 35, 45, 75, 75, 100]")
+    public int[] tier_reward_level = {12, 20, 35, 45, 75, 75, 100};
     @Comment("Raid boss number of max IVs for each raid tier from Tier 1 to Tier 7. Default: [0, 1, 2, 3, 4, 5, 6]")
     public int[] tier_ivs = {0, 1, 2, 3, 4, 5, 6};
     @Comment("The default shiny chance for raid bosses (Set to -1 to use the Cobblemon rate). Default: -1.0")

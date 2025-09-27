@@ -80,6 +80,7 @@ public class RaidBoss {
 
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.bossProperties.asString(" ") + " aspect=raid uncatchable");
+        if (properties.getLevel() == null) properties.setLevel(this.raidTier.getLevel());
 
         Pokemon pokemon = properties.create();
         int healthMulti = this.healthMulti > 0 ? this.healthMulti : this.raidTier.getHealth();
@@ -118,9 +119,9 @@ public class RaidBoss {
         this.displayAspects = displayPokemon.getAspects();
     }
 
-    @SuppressWarnings("UnreachableCode")
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
+        if (properties.getLevel() == null) properties.setLevel(this.raidTier.getRewardLevel());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
@@ -340,7 +341,6 @@ public class RaidBoss {
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script) -> {
-                if (properties.getLevel() == null) properties.setLevel(tier.getLevel());
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);

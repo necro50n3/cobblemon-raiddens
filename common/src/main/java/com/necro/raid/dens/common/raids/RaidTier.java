@@ -11,27 +11,29 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public enum RaidTier implements StringRepresentable {
-    TIER_ONE("tier_one", initHealth(0), initIvs(0), initLevel(0)),
-    TIER_TWO("tier_two", initHealth(1), initIvs(1), initLevel(1)),
-    TIER_THREE("tier_three", initHealth(2), initIvs(2), initLevel(2)),
-    TIER_FOUR("tier_four", initHealth(3), initIvs(3), initLevel(3)),
-    TIER_FIVE("tier_five", initHealth(4), initIvs(4), initLevel(4)),
-    TIER_SIX("tier_six", initHealth(5), initIvs(5), initLevel(5)),
-    TIER_SEVEN("tier_seven", initHealth(6), initIvs(6), initLevel(6));
+    TIER_ONE("tier_one", initHealth(0), initIvs(0), initLevel(0), initRewardLevel(0)),
+    TIER_TWO("tier_two", initHealth(1), initIvs(1), initLevel(1), initRewardLevel(1)),
+    TIER_THREE("tier_three", initHealth(2), initIvs(2), initLevel(2), initRewardLevel(2)),
+    TIER_FOUR("tier_four", initHealth(3), initIvs(3), initLevel(3), initRewardLevel(3)),
+    TIER_FIVE("tier_five", initHealth(4), initIvs(4), initLevel(4), initRewardLevel(4)),
+    TIER_SIX("tier_six", initHealth(5), initIvs(5), initLevel(5), initRewardLevel(5)),
+    TIER_SEVEN("tier_seven", initHealth(6), initIvs(6), initLevel(6), initRewardLevel(6));
 
     private final String id;
     private final int health;
     private final int maxIvs;
     private final int level;
+    private final int rewardLevel;
     private boolean isPresent;
 
     private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
 
-    RaidTier(String id, int health, int maxIvs, int level) {
+    RaidTier(String id, int health, int maxIvs, int level, int rewardLevel) {
         this.id = id;
         this.health = health;
         this.maxIvs = maxIvs;
         this.level = level;
+        this.rewardLevel = rewardLevel;
         this.isPresent = false;
     }
 
@@ -49,6 +51,10 @@ public enum RaidTier implements StringRepresentable {
 
     public int getLevel() {
         return this.level;
+    }
+
+    public int getRewardLevel() {
+        return this.rewardLevel;
     }
 
     public boolean isPresent() {
@@ -147,6 +153,11 @@ public enum RaidTier implements StringRepresentable {
     public static int initLevel(int index) {
         index = Math.min(index, CobblemonRaidDens.CONFIG.tier_level.length - 1);
         return CobblemonRaidDens.CONFIG.tier_level[index];
+    }
+
+    public static int initRewardLevel(int index) {
+        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_reward_level.length - 1);
+        return CobblemonRaidDens.CONFIG.tier_reward_level[index];
     }
 
     public static RaidTier fromString(String name) {
