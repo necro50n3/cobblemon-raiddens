@@ -68,5 +68,6 @@ public class ModEvents {
     public static void onReloadDataPack(AddReloadListenerEvent event) {
         event.addListener(new RaidBossReloadListener());
         event.addListener(new RaidBucketReloadListener());
+        event.addListener(new RaidStructureReloadListener());
     }
 }

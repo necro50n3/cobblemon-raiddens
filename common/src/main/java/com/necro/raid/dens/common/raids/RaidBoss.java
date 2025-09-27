@@ -24,6 +24,7 @@ import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
+import com.necro.raid.dens.common.util.RaidStructureRegistry;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -54,12 +56,13 @@ public class RaidBoss {
     private final int healthMulti;
     private final float shinyRate;
     private final Map<String, String> script;
+    private final List<ResourceLocation> structures;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script) {
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<ResourceLocation> structures) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -72,12 +75,14 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
+        this.structures = structures;
 
         this.id = null;
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
+        if (properties.getShiny() == null) properties.setShiny(false);
         if (properties.getLevel() == null) properties.setLevel(this.raidTier.getLevel());
 
         Pokemon pokemon = properties.create();
@@ -101,6 +106,7 @@ public class RaidBoss {
         ((IRaidAccessor) pokemonEntity).setRaidBoss(this.id);
         float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
+        pokemonEntity.refreshDimensions();
 
         return pokemonEntity;
     }
@@ -236,6 +242,15 @@ public class RaidBoss {
         return this.script;
     }
 
+    public List<ResourceLocation> getStructures() {
+        return this.structures;
+    }
+
+    public ResourceLocation getRandomStructure(RandomSource random) {
+        if (this.structures.size() == 1) return this.structures.getFirst();
+        else return this.structures.get(random.nextInt(this.structures.size()));
+    }
+
     public ResourceLocation getId() {
         return this.id;
     }
@@ -337,8 +352,9 @@ public class RaidBoss {
             Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable),
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
-            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script) -> {
+            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("structures", List.of(RaidStructureRegistry.DEFAULT)).forGetter(RaidBoss::getStructures)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures) -> {
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);
@@ -354,7 +370,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, structures);
             })
         );
     }

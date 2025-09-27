@@ -68,7 +68,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         RaidCrystalBlockEntity blockEntity = ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos));
         if (blockEntity != null) {
-            blockEntity.setRaidBoss(location, level.getLevel().getGameTime());
+            blockEntity.setRaidBoss(location, level.getRandom(), level.getLevel().getGameTime());
             blockEntity.setRaidBucket(bucket);
         }
 

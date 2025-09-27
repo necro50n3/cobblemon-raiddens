@@ -33,7 +33,7 @@ public class RaidBucketResourceReloadListener implements SimpleSynchronousResour
             try (Stream<Resource> stream = manager.getResource(id).stream(); InputStream input = stream.findFirst().get().open()) {
                 JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 Optional<Pair<RaidBucket, JsonElement>> result = RaidBucket.codec().decode(JsonOps.INSTANCE, jsonObject).result();
-                if (result.isEmpty()) return;
+                if (result.isEmpty()) continue;
                 ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace("raid/bucket/", "").replace(".json", ""));
                 RaidBucket bucket = result.get().getFirst();
                 bucket.setId(key);

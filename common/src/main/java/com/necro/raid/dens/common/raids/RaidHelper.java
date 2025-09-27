@@ -29,10 +29,12 @@ public class RaidHelper extends SavedData {
     public final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
     public final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
 
-    public static boolean addToQueue(Player player, @Nullable ItemStack key) {
-        if (JOIN_QUEUE.containsKey(player)) return false;
+    public static boolean isInQueue(Player player) {
+        return JOIN_QUEUE.containsKey(player);
+    }
+
+    public static void addToQueue(Player player, @Nullable ItemStack key) {
         JOIN_QUEUE.put(player, new JoinRequestInstance(player, key));
-        return true;
     }
 
     public static void addRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
