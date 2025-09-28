@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -14,13 +13,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -32,11 +29,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
 
 public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidType> RAID_TYPE = EnumProperty.create("raid_type", RaidType.class);
@@ -88,13 +82,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
         else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) {
-            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
-            ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
-            blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
-
-            player.getServer().execute(() ->
-                player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f)
-            );
+            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity);
             return null;
         }
         else if (RaidHelper.isAlreadyHosting(player)) {
@@ -140,17 +128,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (blockEntity.getLevel() == null || player.getServer() == null) return false;
         blockEntity.setRaidHost(player);
 
-        ServerLevel level;
-        try { level = this.getOrCreateDimension(blockEntity); }
-        catch (IllegalStateException e) {
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
+        if (!success) return false;
+
+        try { this.getOrCreateDimension(blockEntity); }
+        catch (Exception e) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.already_hosting").withStyle(ChatFormatting.RED));
             return false;
         }
 
-        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
-        if (!success) return false;
-
-        blockEntity.setDimension(level);
         if (!blockEntity.spawnRaidBoss()) {
             blockEntity.setQueueClose();
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.boss_spawn_failed").withStyle(ChatFormatting.RED));
@@ -160,13 +146,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         RaidHelper.addHost(player);
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
 
-        Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
-        ChunkPos pos = new ChunkPos(BlockPos.containing(playerPos));
-        blockEntity.getDimension().getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, pos, 1, player.getId());
-
-        player.getServer().execute(() ->
-            player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f)
-        );
+        RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity);
         return true;
     }
 

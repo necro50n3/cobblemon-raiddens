@@ -2,8 +2,12 @@ package com.necro.raid.dens.common.dimensions;
 
 import com.google.common.collect.ImmutableList;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.ModBlocks;
+import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.mixins.MappedRegistryAccessor;
 import com.necro.raid.dens.common.mixins.MinecraftServerAccessor;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -19,9 +23,13 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.OptionalLong;
 import java.util.concurrent.Executor;
@@ -132,5 +140,22 @@ public class ModDimensions {
 
         ((MinecraftServerAccessor) server).getLevels().put(levelKey, raidDim);
         return raidDim;
+    }
+
+    public static void placeRaidDenStructure(RaidCrystalBlockEntity blockEntity) {
+        StructureTemplateManager structureManager = blockEntity.getDimension().getStructureManager();
+        StructureTemplate template = structureManager.get(blockEntity.getRaidStructure()).orElseGet(() -> {
+            blockEntity.setRaidStructure(RaidDenRegistry.DEFAULT);
+            return structureManager.getOrCreate(blockEntity.getRaidStructure());
+        });
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        Vec3 offset = RaidDenRegistry.getOffset(blockEntity.getRaidStructure());
+        BlockPos corner = BlockPos.containing(offset);
+        template.placeInWorld(blockEntity.getDimension(), corner, corner, settings, blockEntity.getDimension().getRandom(), 2);
+
+        blockEntity.getDimension().setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
+        if (blockEntity.getDimension().getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
+            homeBlockEntity.setHome(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel());
+        }
     }
 }

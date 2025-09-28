@@ -28,9 +28,8 @@ public class RaidCrystalBlockFabric extends RaidCrystalBlock {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected ServerLevel createDimension(RaidCrystalBlockEntity blockEntity) {
-        return FabricDimensions.createRaidDimension(blockEntity.getLevel().getServer(), blockEntity.getRaidHost().toString());
+        return FabricDimensions.createRaidDimension(blockEntity);
     }
 
     @Override

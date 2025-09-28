@@ -1,12 +1,14 @@
 package com.necro.raid.dens.common.util;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -33,6 +36,11 @@ public class RaidUtils {
     public static boolean hasSkyAccess(LevelReader level, BlockPos blockPos) {
         int topY = level.getChunk(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING, blockPos.getX() & 15, blockPos.getZ() & 15);
         return blockPos.getY() >= topY;
+    }
+
+    public static void teleportPlayerToRaid(ServerPlayer player, RaidCrystalBlockEntity blockEntity) {
+        Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
+        player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
     }
 
     public static void teleportPlayerSafe(Player player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {
@@ -84,10 +92,12 @@ public class RaidUtils {
         return RaidUtils.isCustomDimension(level) && !player.isCreative();
     }
 
+    @SuppressWarnings("unused")
     public static boolean cannotBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockEntity(hitResult.getBlockPos()) instanceof RaidHomeBlockEntity);
     }
 
+    @SuppressWarnings("unused")
     public static boolean canBreakOrPlace(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         return !RaidUtils.cannotBreakOrPlace(player, level);
     }

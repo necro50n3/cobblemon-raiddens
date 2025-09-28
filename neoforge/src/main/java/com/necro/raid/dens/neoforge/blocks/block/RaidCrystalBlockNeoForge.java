@@ -28,9 +28,8 @@ public class RaidCrystalBlockNeoForge extends RaidCrystalBlock {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected ServerLevel createDimension(RaidCrystalBlockEntity blockEntity) {
-        return NeoForgeDimensions.createRaidDimension(blockEntity.getLevel().getServer(), blockEntity.getRaidHost().toString());
+        return NeoForgeDimensions.createRaidDimension(blockEntity);
     }
 
     @Override

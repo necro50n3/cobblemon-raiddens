@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.blocks.entity;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.*;
@@ -30,11 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -156,21 +151,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             CobblemonRaidDens.LOGGER.error("Could not load Raid Boss {}", this.raidBoss);
             this.setRaidBoss(null, null, 0);
             return false;
-        }
-
-        StructureTemplateManager structureManager = this.dimension.getStructureManager();
-        StructureTemplate template = structureManager.get(this.getRaidStructure()).orElseGet(() -> {
-            this.raidStructure = RaidDenRegistry.DEFAULT;
-            return structureManager.getOrCreate(this.getRaidStructure());
-        });
-        StructurePlaceSettings settings = new StructurePlaceSettings();
-        Vec3 offset = RaidDenRegistry.getOffset(this.getRaidStructure());
-        BlockPos corner = BlockPos.containing(offset);
-        template.placeInWorld(this.dimension, corner, corner, settings, this.dimension.getRandom(), 2);
-
-        this.dimension.setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
-        if (this.dimension.getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
-            homeBlockEntity.setHome(this.getBlockPos(), (ServerLevel) this.getLevel());
         }
 
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.dimension);
@@ -373,6 +353,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (raidBoss == null) this.raidStructure = null;
         else this.raidStructure = this.getRaidBoss().getRandomDen(random);
         this.setChanged();
+    }
+
+    public void setRaidStructure(ResourceLocation structure) {
+        this.raidStructure = structure;
     }
 
     @Override

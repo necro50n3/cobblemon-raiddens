@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabric.dimensions;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.dimensions.RaidDenChunkGenerator;
@@ -22,10 +23,14 @@ public class FabricDimensions {
         );
     }
 
-    public static ServerLevel createRaidDimension(MinecraftServer server, String uuid) {
-        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(uuid);
+    @SuppressWarnings("ConstantConditions")
+    public static ServerLevel createRaidDimension(RaidCrystalBlockEntity blockEntity) {
+        MinecraftServer server = blockEntity.getLevel().getServer();
+        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(blockEntity.getRaidHost().toString());
 
         ServerLevel level = ModDimensions.createRaidDimension(server, levelKey);
+        blockEntity.setDimension(level);
+        ModDimensions.placeRaidDenStructure(blockEntity);
         DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
 
         ServerWorldEvents.LOAD.invoker().onWorldLoad(server, level);
