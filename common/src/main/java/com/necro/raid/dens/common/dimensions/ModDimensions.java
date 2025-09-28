@@ -142,8 +142,8 @@ public class ModDimensions {
         return raidDim;
     }
 
-    public static void placeRaidDenStructure(RaidCrystalBlockEntity blockEntity) {
-        StructureTemplateManager structureManager = blockEntity.getDimension().getStructureManager();
+    public static void placeRaidDenStructure(RaidCrystalBlockEntity blockEntity, ServerLevel level) {
+        StructureTemplateManager structureManager = level.getStructureManager();
         StructureTemplate template = structureManager.get(blockEntity.getRaidStructure()).orElseGet(() -> {
             blockEntity.setRaidStructure(RaidDenRegistry.DEFAULT);
             return structureManager.getOrCreate(blockEntity.getRaidStructure());
@@ -151,10 +151,10 @@ public class ModDimensions {
         StructurePlaceSettings settings = new StructurePlaceSettings();
         Vec3 offset = RaidDenRegistry.getOffset(blockEntity.getRaidStructure());
         BlockPos corner = BlockPos.containing(offset);
-        template.placeInWorld(blockEntity.getDimension(), corner, corner, settings, blockEntity.getDimension().getRandom(), 2);
+        template.placeInWorld(level, corner, corner, settings, level.getRandom(), 2);
 
-        blockEntity.getDimension().setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
-        if (blockEntity.getDimension().getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
+        level.setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
+        if (level.getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
             homeBlockEntity.setHome(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel());
         }
     }

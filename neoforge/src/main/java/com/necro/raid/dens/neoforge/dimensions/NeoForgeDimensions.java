@@ -17,8 +17,7 @@ public class NeoForgeDimensions {
         ResourceKey<Level> levelKey = ModDimensions.createLevelKey(blockEntity.getRaidHost().toString());
 
         ServerLevel level = ModDimensions.createRaidDimension(server, levelKey);
-        blockEntity.setDimension(level);
-        ModDimensions.placeRaidDenStructure(blockEntity);
+        ModDimensions.placeRaidDenStructure(blockEntity, level);
         DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
 
         server.markWorldsDirty();

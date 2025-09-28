@@ -131,12 +131,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
         if (!success) return false;
 
-        try { this.getOrCreateDimension(blockEntity); }
+        ServerLevel level;
+        try { level = this.getOrCreateDimension(blockEntity); }
         catch (Exception e) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.already_hosting").withStyle(ChatFormatting.RED));
             return false;
         }
 
+        blockEntity.setDimension(level);
         if (!blockEntity.spawnRaidBoss()) {
             blockEntity.setQueueClose();
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.boss_spawn_failed").withStyle(ChatFormatting.RED));
