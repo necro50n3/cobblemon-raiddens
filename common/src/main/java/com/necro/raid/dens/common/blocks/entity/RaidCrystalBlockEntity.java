@@ -246,6 +246,17 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.setChanged();
     }
 
+    public int getPlayerCount() {
+        return this.playerQueue.size();
+    }
+
+    public long getTicksUntilNextReset() {
+        if (this.getLevel() == null) return 0;
+        else if (!this.getBlockState().getValue(RaidCrystalBlock.CAN_RESET)) return 0;
+        else if (CobblemonRaidDens.CONFIG.reset_time <= 0) return 0;
+        return CobblemonRaidDens.CONFIG.reset_time * 20L - (this.getLevel().getGameTime() - this.lastReset);
+    }
+
     public boolean isPlayerParticipating(Player player) {
         return this.playerQueue.contains(player.getUUID());
     }

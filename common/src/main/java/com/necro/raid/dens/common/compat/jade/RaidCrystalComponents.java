@@ -123,11 +123,12 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             return;
         }
 
-        if (!accessor.getServerData().contains("raid_boss")) return;
-        MutableComponent component = Component.translatable(accessor.getServerData().getString("raid_boss"));
+        CompoundTag serverData = accessor.getServerData();
+        if (!serverData.contains("raid_boss")) return;
+        MutableComponent component = Component.translatable(serverData.getString("raid_boss"));
 
-        if (accessor.getServerData().contains("raid_feature")) {
-            component.append(" | ").append(Component.translatable(accessor.getServerData().getString("raid_feature")));
+        if (serverData.contains("raid_feature")) {
+            component.append(" | ").append(Component.translatable(serverData.getString("raid_feature")));
         }
 
         BlockState blockState = accessor.getBlockState();
@@ -146,6 +147,14 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             elements.add(this.getTeraTypeIcon(type));
             tooltip.append(0, elements);
         }
+
+        MutableComponent component1 = Component.empty();
+        if (serverData.contains("player_count")) {
+            component1.append(Component.translatable("jade.cobblemonraiddens.player_count", serverData.getInt("player_count")));
+            component1.append(" | ");
+        }
+        if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
+        if (!component1.equals(Component.empty())) tooltip.add(component1);
     }
 
     @Override
@@ -175,6 +184,19 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             bossAspects.add(StringTag.valueOf(aspect));
         }
         compoundTag.put("boss_aspects", bossAspects);
+
+        if (blockEntity.getPlayerCount() > 0) compoundTag.putInt("player_count", blockEntity.getPlayerCount());
+        if (blockEntity.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(blockEntity.getTicksUntilNextReset()));
+    }
+
+    private String formatTicks(long ticks) {
+        int totalSeconds = (int) ticks / 20;
+
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 
     @Override

@@ -60,6 +60,7 @@
     "item.cobblemonraiddens.cheer_heal": "Heal Cheer",
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restores 50% HP for your party",
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
+    "jade.cobblemonraiddens.player_count": "%s Inside",
     "key.cobblemonraiddens.accept": "Accept Shortcut",
     "key.cobblemonraiddens.deny": "Deny Shortcut",
     "key.cobblemonraiddens.mouse": "Show Mouse",
