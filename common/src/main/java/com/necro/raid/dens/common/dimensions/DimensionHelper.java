@@ -68,6 +68,7 @@ public class DimensionHelper {
             this.isRunning = false;
         }
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         void saveAndCLose(MinecraftServer server) {
             this.isRunning = true;
             try {
