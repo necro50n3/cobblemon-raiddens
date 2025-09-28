@@ -21,10 +21,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -197,6 +199,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     protected void removeDimension() {
+        ChunkPos chunkPos = new ChunkPos(BlockPos.containing(RaidDenRegistry.getPlayerPos(this.getRaidStructure())));
+        this.getDimension().getChunkSource().removeRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, "raid_spawn".hashCode());
+
         ResourceKey<Level> levelKey = ModDimensions.createLevelKey(this.raidHost.toString());
         DimensionHelper.queueForRemoval(levelKey, this.dimension);
         if (this.getLevel() != null) DimensionHelper.SYNC_DIMENSIONS.accept(this.getLevel().getServer(), levelKey, false);

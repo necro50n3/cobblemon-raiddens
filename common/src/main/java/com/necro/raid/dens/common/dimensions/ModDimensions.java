@@ -14,10 +14,13 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
@@ -157,5 +160,8 @@ public class ModDimensions {
         if (level.getBlockEntity(BlockPos.ZERO) instanceof RaidHomeBlockEntity homeBlockEntity) {
             homeBlockEntity.setHome(blockEntity.getBlockPos(), (ServerLevel) blockEntity.getLevel());
         }
+
+        ChunkPos chunkPos = new ChunkPos(BlockPos.containing(RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure())));
+        level.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, "raid_spawn".hashCode());
     }
 }
