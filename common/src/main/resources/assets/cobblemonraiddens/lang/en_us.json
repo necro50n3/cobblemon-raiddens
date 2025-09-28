@@ -91,6 +91,7 @@
     "message.cobblemonraiddens.raid.no_host": "The host could not be reached...",
     "message.cobblemonraiddens.raid.no_key": "You do not have a Raid Den Key!",
     "message.cobblemonraiddens.raid.not_participating": "You have not registered for the raid. Leave and rejoin the lobby.",
+    "message.cobblemonraiddens.raid.pending_removal": "Please wait before hosting another raid.",
     "message.cobblemonraiddens.raid.player_cleared": "You have already cleared this raid.",
     "message.cobblemonraiddens.raid.raid_fail": "The raid boss was too strong!",
     "message.cobblemonraiddens.raid.rejected_request": "%s has rejected your join request.",

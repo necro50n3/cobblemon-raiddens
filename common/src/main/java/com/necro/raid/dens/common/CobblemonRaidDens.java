@@ -67,6 +67,7 @@ public class CobblemonRaidDens {
         });
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static void raidFailEvent(PokemonBattle battle) {
         try {
             UUID battleId = ((IRaidAccessor) battle.getSide2().getActivePokemon().getFirst().getBattlePokemon().getEntity()).getRaidId();

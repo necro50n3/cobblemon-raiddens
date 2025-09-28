@@ -19,6 +19,6 @@ public class ChunkMapMixin {
 
     @Inject(method = "isExistingChunkFull", at = @At("HEAD"), cancellable = true)
     private void isExistingChunkFullInject(ChunkPos chunkPos, CallbackInfoReturnable<Boolean> cir) {
-        if (DimensionHelper.isLevelRemoved(this.level)) cir.setReturnValue(true);
+        if (DimensionHelper.isLevelRemovedOrPending(this.level)) cir.setReturnValue(true);
     }
 }

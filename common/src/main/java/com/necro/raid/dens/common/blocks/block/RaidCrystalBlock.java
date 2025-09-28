@@ -2,6 +2,8 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
@@ -10,6 +12,7 @@ import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -126,6 +129,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         if (blockEntity.getLevel() == null || player.getServer() == null) return false;
+        ResourceKey<Level> resourceKey = ModDimensions.createLevelKey(player.getStringUUID());
+        if (DimensionHelper.isLevelRemovedOrPending(resourceKey)) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.pending_removal").withStyle(ChatFormatting.RED));
+            return false;
+        }
+
         blockEntity.setRaidHost(player);
 
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
