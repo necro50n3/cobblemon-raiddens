@@ -112,6 +112,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         long gameTime = level.getGameTime();
         if (this.lastReset == 0) this.lastReset = gameTime;
+        else if (this.hasDimension() && !this.dimension.players().isEmpty()) return;
         else if (gameTime - this.lastReset > CobblemonRaidDens.CONFIG.reset_time * 20L) {
             this.playerQueue.clear();
             this.generateRaidBoss(level, blockPos, blockState);
