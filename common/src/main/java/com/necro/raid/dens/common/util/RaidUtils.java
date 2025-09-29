@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.util;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -38,9 +37,8 @@ public class RaidUtils {
         return blockPos.getY() >= topY;
     }
 
-    public static void teleportPlayerToRaid(ServerPlayer player, RaidCrystalBlockEntity blockEntity) {
-        Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
-        player.teleportTo(blockEntity.getDimension(), playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
+    public static void teleportPlayerToRaid(ServerPlayer player, ServerLevel level, Vec3 playerPos) {
+        player.teleportTo(level, playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
     }
 
     public static void teleportPlayerSafe(Player player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {

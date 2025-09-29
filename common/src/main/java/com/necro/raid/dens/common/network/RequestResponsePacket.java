@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -14,6 +15,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestResponsePacket(boolean accept, String player) implements CustomPacketPayload {
@@ -55,11 +57,13 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
         if (!success) return;
 
         if (RaidHelper.JOIN_QUEUE.containsKey(player) && !RaidHelper.isAlreadyParticipating(player)) {
+            assert player.getServer() != null;
             RaidHelper.JOIN_QUEUE.remove(player);
             RaidHelper.addParticipant(player);
             blockEntity.addPlayer(player);
 
-            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity);
+            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
+            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity.getDimension(), playerPos);
         }
         else {
             RaidHelper.JOIN_QUEUE.remove(player);

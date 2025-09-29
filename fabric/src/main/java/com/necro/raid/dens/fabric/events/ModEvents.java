@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
+import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.JoinRaidPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -40,6 +41,7 @@ public class ModEvents {
 
     public static void commonTick(MinecraftServer server) {
         RaidHelper.commonTick();
+        DimensionHelper.removePending(server);
     }
 
     public static void clientTick(Minecraft client) {

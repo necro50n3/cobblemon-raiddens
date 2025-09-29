@@ -22,7 +22,7 @@ public class RaidHelper extends SavedData {
 
     public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
-    public static final Map<Player, RequestHandler> REQUEST_QUEUE = new HashMap<>();
+    public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
     public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
     public final Set<UUID> RAID_HOSTS = new HashSet<>();
@@ -38,14 +38,19 @@ public class RaidHelper extends SavedData {
     }
 
     public static void addRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
-        if (!REQUEST_QUEUE.containsKey(host)) REQUEST_QUEUE.put(host, new RequestHandler(blockEntity));
-        RequestHandler handler = REQUEST_QUEUE.get(host);
+        UUID uuid = host.getUUID();
+        if (!REQUEST_QUEUE.containsKey(uuid)) REQUEST_QUEUE.put(uuid, new RequestHandler(blockEntity));
+        RequestHandler handler = REQUEST_QUEUE.get(uuid);
         handler.addPlayer(player);
     }
 
     public static RequestHandler getRequest(ServerPlayer host) {
-        if (!REQUEST_QUEUE.containsKey(host)) return null;
-        return REQUEST_QUEUE.get(host);
+        if (!REQUEST_QUEUE.containsKey(host.getUUID())) return null;
+        return REQUEST_QUEUE.get(host.getUUID());
+    }
+
+    public static void removeRequests(UUID host) {
+        REQUEST_QUEUE.remove(host);
     }
 
     public static void addHost(Player player) {

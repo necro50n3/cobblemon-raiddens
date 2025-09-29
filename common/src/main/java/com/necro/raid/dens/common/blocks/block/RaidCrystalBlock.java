@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +87,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
         else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) {
-            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity);
+            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
+            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity.getDimension(), playerPos);
             return null;
         }
         else if (RaidHelper.isAlreadyHosting(player)) {
@@ -155,9 +158,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
 
         RaidHelper.addHost(player);
+        blockEntity.addChunkTicket();
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
 
-        RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity);
+        Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
+        RaidUtils.teleportPlayerToRaid((ServerPlayer) player, level, playerPos);
         return true;
     }
 
