@@ -1,6 +1,6 @@
 package com.necro.raid.dens.neoforge.config;
 
-import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.config.ClientConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -20,51 +20,51 @@ public class ClientConfigScreen {
         builder.getOrCreateCategory(Component.literal("Beacon Beam"))
             .addEntry(entryBuilder.startBooleanToggle(
                 Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_one"),
-                CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_one)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_one = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_two"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_two)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_two = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_three"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_three)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_three = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_four"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_four)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_four = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_five"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_five)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_five = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_six"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_six)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_six = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobbleraiddens-client.option.show_beam_tier_seven"),
-                    CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_seven)
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven)
                 .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_seven = value)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven = value)
                 .build()
             );
 

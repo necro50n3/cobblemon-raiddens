@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
-import com.necro.raid.dens.common.config.ClientConfig;
 import com.necro.raid.dens.common.config.MoveConfig;
 import com.necro.raid.dens.common.config.RaidConfig;
 import com.necro.raid.dens.common.raids.RaidHelper;
@@ -30,7 +29,6 @@ public class CobblemonRaidDens {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static RaidConfig CONFIG;
-    public static ClientConfig CLIENT_CONFIG;
     public static MoveConfig MOVE_CONFIG;
 
     public static void init() {
@@ -38,8 +36,6 @@ public class CobblemonRaidDens {
 
         AutoConfig.register(RaidConfig.class, JanksonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(RaidConfig.class).getConfig();
-        AutoConfig.register(ClientConfig.class, JanksonConfigSerializer::new);
-        CLIENT_CONFIG = AutoConfig.getConfigHolder(ClientConfig.class).getConfig();
         AutoConfig.register(MoveConfig.class, JanksonConfigSerializer::new);
         MOVE_CONFIG = AutoConfig.getConfigHolder(MoveConfig.class).getConfig();
 

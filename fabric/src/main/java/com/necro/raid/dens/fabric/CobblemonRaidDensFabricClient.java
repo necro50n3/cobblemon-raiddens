@@ -1,5 +1,6 @@
 package com.necro.raid.dens.fabric;
 
+import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.fabric.client.FabricHud;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 public class CobblemonRaidDensFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        CobblemonRaidDensClient.init();
         NetworkMessages.registerS2CPackets();
 
         FabricHud.init();

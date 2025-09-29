@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.client.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.model.RaidCrystalBlockModel;
@@ -23,6 +23,7 @@ import software.bernie.geckolib.renderer.GeoBlockRenderer;
 public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity> {
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
 
+    @SuppressWarnings("unused")
     public RaidCrystalRenderer(BlockEntityRendererProvider.Context context) {
         super(new RaidCrystalBlockModel());
     }
@@ -32,7 +33,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
                                MultiBufferSource multiBufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float f, int i,
                                int j, int colour) {
         if (shouldRenderBeacon(blockEntity) && blockEntity.renderBeacon(blockEntity.getBlockState())
-            && blockEntity.hasLevel() && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
+            && blockEntity.getLevel() != null && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
             poseStack.pushPose();
             poseStack.scale(0.75f, 1.0f, 0.75f);
             poseStack.translate(-0.5, 0, -0.5);
@@ -63,13 +64,13 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
 
     private static boolean shouldRenderBeacon(RaidCrystalBlockEntity blockEntity) {
         return switch (blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER)) {
-            case TIER_ONE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_one;
-            case TIER_TWO -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_two;
-            case TIER_THREE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_three;
-            case TIER_FOUR -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_four;
-            case TIER_FIVE -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_five;
-            case TIER_SIX -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_six;
-            case TIER_SEVEN -> CobblemonRaidDens.CLIENT_CONFIG.show_beam_tier_seven;
+            case TIER_ONE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one;
+            case TIER_TWO -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two;
+            case TIER_THREE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three;
+            case TIER_FOUR -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four;
+            case TIER_FIVE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five;
+            case TIER_SIX -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six;
+            case TIER_SEVEN -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven;
         };
     }
 }
