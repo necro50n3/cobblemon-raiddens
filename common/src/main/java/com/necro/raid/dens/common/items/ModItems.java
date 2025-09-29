@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.items;
 
 import com.cobblemon.mod.common.item.battle.BagItem;
-import com.necro.raid.dens.common.showdown.ClearBoostBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.ClearBoostBagItem;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 

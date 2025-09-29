@@ -29,6 +29,8 @@ public class RaidConfig implements ConfigData {
 //    public int raid_duration = 600;
     @Comment("Raid boss HP multipliers for each raid tier from Tier 1 to Tier 7. Default: [5, 5, 8, 12, 20, 25, 30]")
     public int[] tier_health_multiplier = {5, 5, 8, 12, 20, 25, 30};
+    @Comment("Bonus raid boss HP multiplier for each extra player that joins the raid battle. Default: 1.0")
+    public float multiplayer_health_multiplier = 1.0f;
     @Comment("Raid boss level for each raid tier from Tier 1 to Tier 7. Default: [12, 20, 35, 45, 75, 75, 100]")
     public int[] tier_level = {12, 20, 35, 45, 75, 75, 100};
     @Comment("Reward Pokemon level for each raid tier from Tier 1 to Tier 7. Default: [12, 20, 35, 45, 75, 75, 100]")

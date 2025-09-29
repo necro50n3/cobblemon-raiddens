@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.showdown;
+package com.necro.raid.dens.common.showdown.instructions;
 
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;

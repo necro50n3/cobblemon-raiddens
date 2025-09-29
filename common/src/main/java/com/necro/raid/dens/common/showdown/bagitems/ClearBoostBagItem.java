@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.showdown;
+package com.necro.raid.dens.common.showdown.bagitems;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;

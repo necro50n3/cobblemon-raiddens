@@ -24,9 +24,9 @@ public abstract class PokemonMixin implements IHealthSetter, IShinyRate {
     private Float raidShinyRate;
 
     @Override
-    public void setMaxHealth(int maxHealth) {
+    public void setMaxHealth(int maxHealth, boolean setCurrent) {
         this.maxHealthBuffer = maxHealth;
-        this.setCurrentHealth(maxHealth);
+        if (setCurrent) this.setCurrentHealth(maxHealth);
     }
 
     @Override

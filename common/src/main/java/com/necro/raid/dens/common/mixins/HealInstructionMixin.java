@@ -70,7 +70,7 @@ public abstract class HealInstructionMixin implements InterpreterInstruction {
                         BattlePokemon drained = this.privateMessage.battlePokemonFromOptional(battle, "of");
                         if (drained != null) lang = LocalizationUtilsKt.battleLang("heal.drain", drained.getName());
                     }
-                    else lang = LocalizationUtilsKt.battleLang("heal." + effect.getId(), battlePokemon.getName());
+                    else if (effect != null) lang = LocalizationUtilsKt.battleLang("heal." + effect.getId(), battlePokemon.getName());
                 }
                 else lang = LocalizationUtilsKt.battleLang("heal.generic", battlePokemon.getName());
 

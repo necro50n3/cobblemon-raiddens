@@ -18,8 +18,10 @@ import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.showdown.CheerBagItem;
-import com.necro.raid.dens.common.showdown.StatChangeBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.PlayerJoinBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.StatChangeBagItem;
+import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
@@ -28,6 +30,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -39,19 +42,16 @@ public class RaidInstance {
     private final PokemonEntity bossEntity;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
-//    private final ServerBossEvent timer;
     private final List<PokemonBattle> battles;
     private final Map<ServerPlayer, Float> damageCache;
     private final List<ServerPlayer> activePlayers;
     private final List<ServerPlayer> failedPlayers;
 
     private float currentHealth;
-    private final float maxHealth;
+    private float maxHealth;
+    private final float initMaxHealth;
     private final Map<Integer, String> scriptByTurn;
     private final NavigableMap<Double, String> scriptByHp;
-
-//    private final int maxDuration;
-//    private int durationTick;
 
     private final Map<ServerPlayer, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
@@ -63,10 +63,7 @@ public class RaidInstance {
             ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
-//        this.timer = new ServerBossEvent(
-//            Component.empty(),
-//            BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS
-//        );
+
         this.battles = new ArrayList<>();
         this.damageCache = new HashMap<>();
 
@@ -75,6 +72,7 @@ public class RaidInstance {
 
         this.currentHealth = entity.getPokemon().getCurrentHealth();
         this.maxHealth = entity.getPokemon().getMaxHealth();
+        this.initMaxHealth = this.maxHealth;
 
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
@@ -93,9 +91,6 @@ public class RaidInstance {
             catch (Exception ignored) {}
         });
 
-//        this.maxDuration = CobblemonRaidDens.CONFIG.raid_duration * 20;
-//        this.durationTick = this.maxDuration;
-
         this.cheersLeft = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
@@ -107,14 +102,32 @@ public class RaidInstance {
     }
 
     public void addPlayer(ServerPlayer player, PokemonBattle battle) {
-        this.battles.add(battle);
         ((IRaidBattle) battle).setRaidBattle(this);
+        this.battles.add(battle);
         this.bossEvent.addPlayer(player);
-//        this.timer.addPlayer(player);
+
         this.damageCache.put(player, this.currentHealth);
-        this.activePlayers.add(player);
+        if (!this.activePlayers.isEmpty() && CobblemonRaidDens.CONFIG.multiplayer_health_multiplier > 1.0f) this.applyHealthMulti(player);
+        ((IRaidBattle) battle).addToQueue((r, b) -> r.playerJoin(b, player, player));
+
         this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
+        this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
+    }
+
+    private void applyHealthMulti(ServerPlayer newPlayer) {
+        float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.CONFIG.multiplayer_health_multiplier - 1f) * this.activePlayers.size();
+        float currentRatio = this.currentHealth / this.maxHealth;
+        this.maxHealth = this.initMaxHealth + bonusHealth;
+        this.currentHealth = this.maxHealth * currentRatio;
+
+        ((IHealthSetter) this.bossEntity.getPokemon()).setMaxHealth((int) this.maxHealth, false);
+        this.bossEntity.getPokemon().setCurrentHealth((int) this.currentHealth);
+
+        this.battles.forEach(b -> {
+            ServerPlayer player = b.getPlayers().getFirst();
+            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.playerJoin(battle, player, newPlayer));
+        });
     }
 
     public void addPlayer(PokemonBattle battle) {
@@ -122,13 +135,9 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, PokemonBattle battle) {
-        // Originally raids were timed before pivoting to one-life system.
-//        this.durationTick -= (int) (this.maxDuration * 0.1);
-
         this.battles.remove(battle);
         ((IRaidBattle) battle).setRaidBattle(null);
         this.bossEvent.removePlayer(player);
-//        this.timer.removePlayer(player);
         this.damageCache.remove(player);
         this.failedPlayers.add(player);
     }
@@ -172,8 +181,6 @@ public class RaidInstance {
     }
 
     public void tick() {
-//        if (--this.durationTick == 0) this.queueStopRaid(false);
-//        if (this.durationTick % 40 == 0) this.timer.setProgress(this.durationTick / (float) this.maxDuration);
         this.runQueue.removeIf(DelayedRunnable::tick);
     }
 
@@ -188,8 +195,6 @@ public class RaidInstance {
     public void stopRaid(boolean raidSuccess) {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
-//        this.timer.setVisible(false);
-//        this.timer.removeAllPlayers();
         if (raidSuccess) this.bossEntity.setHealth(0f);
         RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) this.bossEntity).getRaidId());
         this.battles.forEach(PokemonBattle::stop);
@@ -230,6 +235,18 @@ public class RaidInstance {
             ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data, true));
         }
         return true;
+    }
+
+    public void playerJoin(PokemonBattle battle, ServerPlayer player, Player newPlayer) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        String data = String.format("%s %s", (int) this.currentHealth, newPlayer.getName().getString());
+        this.sendAction(side1, side2, new BagItemActionResponse(new PlayerJoinBagItem(), bp, data));
+        this.damageCache.put(player, (float) Math.floor(this.currentHealth));
     }
 
     public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {

@@ -8,7 +8,7 @@ import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.showdown.CheerBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;

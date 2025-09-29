@@ -5,10 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.InstructionSet;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
-import com.necro.raid.dens.common.showdown.CheerInstruction;
-import com.necro.raid.dens.common.showdown.RaidEnergyInstruction;
-import com.necro.raid.dens.common.showdown.ResetBossInstruction;
-import com.necro.raid.dens.common.showdown.ResetPlayerInstruction;
+import com.necro.raid.dens.common.showdown.instructions.*;
 import kotlin.jvm.functions.Function4;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,6 +36,9 @@ public class ShowdownInterpreterMixin {
         );
         updateInstructionParser.put("raidenergy", (battle, instruction, message, messageIterator) ->
             new RaidEnergyInstruction(battle, message)
+        );
+        updateInstructionParser.put("playerjoin", (battle, instruction, message, messageIterator) ->
+            new PlayerJoinInstruction(battle, message)
         );
     }
 }

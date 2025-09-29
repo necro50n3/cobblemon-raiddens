@@ -4,7 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.items.item.CheerItem;
 import com.necro.raid.dens.common.items.item.RaidPouchItem;
-import com.necro.raid.dens.common.showdown.CheerBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import net.minecraft.world.item.BlockItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.showdown;
+package com.necro.raid.dens.common.showdown.instructions;
 
 import com.bedrockk.molang.runtime.MoLangRuntime;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
@@ -27,14 +27,14 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
 
-public class ResetPlayerInstruction implements ActionEffectInstruction {
+public class ResetBossInstruction implements ActionEffectInstruction {
     private final BattleMessage message;
     private CompletableFuture<?> future;
     private Set<String> holds;
     private final BattlePokemon pokemon;
     private final BattlePokemon origin;
 
-    public ResetPlayerInstruction(PokemonBattle battle, BattleMessage message) {
+    public ResetBossInstruction(PokemonBattle battle, BattleMessage message) {
         this.message = message;
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
@@ -64,7 +64,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
 
     @Override
     public @NotNull ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "reset_player");
+        return ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "reset_boss");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
-            ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("unboost"));
+            ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("boost"));
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
 
@@ -97,7 +97,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
         battle.dispatch(() -> {
             battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
 
-            BattleContext.Type boostBucket = BattleContext.Type.UNBOOST;
+            BattleContext.Type boostBucket = BattleContext.Type.BOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
 
             this.pokemon.getContextManager().add(context);
