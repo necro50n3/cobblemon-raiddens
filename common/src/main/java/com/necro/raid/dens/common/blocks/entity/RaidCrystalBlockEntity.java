@@ -58,6 +58,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private boolean queueClose;
 
     private long lastReset;
+    private boolean isOpen;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -69,6 +70,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.queueFindDimension = false;
         this.queueTimeout = 0;
         this.queueClose = false;
+        this.isOpen = false;
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
@@ -196,6 +198,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.inactiveTicks = 0;
         this.getLevel().getChunkAt(blockPos).setUnsaved(true);
         this.setChanged();
+        this.isOpen = false;
     }
 
     protected void removeDimension() {
@@ -269,6 +272,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else if (!this.getBlockState().getValue(RaidCrystalBlock.CAN_RESET)) return 0;
         else if (CobblemonRaidDens.CONFIG.reset_time <= 0) return 0;
         return CobblemonRaidDens.CONFIG.reset_time * 20L - (this.getLevel().getGameTime() - this.lastReset);
+    }
+
+    public boolean isOpen() {
+        return this.isOpen;
+    }
+
+    public void setOpen() {
+        this.isOpen = true;
     }
 
     public boolean isPlayerParticipating(Player player) {
@@ -352,6 +363,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("raid_structure")) this.raidStructure = ResourceLocation.parse(compoundTag.getString("raid_structure"));
         else this.raidStructure = RaidDenRegistry.DEFAULT;
+        if (compoundTag.contains("is_open")) this.isOpen = true;
     }
 
     @Override
@@ -371,6 +383,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.raidStructure != null) compoundTag.putString("raid_structure", this.raidStructure.toString());
+        if (this.isOpen) compoundTag.putBoolean("is_open", true);
     }
 
     public void setRaidBoss(ResourceLocation raidBoss, RandomSource random, long gameTime) {

@@ -75,21 +75,27 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) level.getBlockEntity(blockPos);
         if (blockEntity == null) return ItemInteractionResult.FAIL;
+        else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         String key = blockEntity.getRaidBoss().getKey();
 
         boolean hasKey = true;
-        if (key.startsWith("#")) {
-            TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(key.substring(1)));
-            if (!itemStack.is(tag)) {
-                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-                hasKey = false;
+        if (!key.isEmpty()) {
+            if (blockEntity.isOpen()) {}
+            else if (key.startsWith("#")) {
+                TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(key.substring(1)));
+                if (!itemStack.is(tag)) {
+                    player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                    hasKey = false;
+                }
+                else if (!CobblemonRaidDens.CONFIG.all_require_unique) blockEntity.setOpen();
             }
-        }
-        else if (!key.isEmpty()) {
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
-            if (item != Items.AIR && !itemStack.is(item)) {
-                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", item.getDefaultInstance().getHoverName()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-                hasKey = false;
+            else {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
+                if (item != Items.AIR && !itemStack.is(item)) {
+                    player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", item.getDefaultInstance().getHoverName()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                    hasKey = false;
+                }
+                else if (!CobblemonRaidDens.CONFIG.all_require_unique) blockEntity.setOpen();
             }
         }
         else if (CobblemonRaidDens.CONFIG.requires_key && !RaidUtils.isRaidDenKey(itemStack)) {
@@ -174,7 +180,10 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!success) return false;
 
         ServerLevel level;
-        try { level = this.getOrCreateDimension(blockEntity); }
+        try {
+            level = this.getOrCreateDimension(blockEntity);
+            if (level == null) throw new Exception();
+        }
         catch (Exception e) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.already_hosting").withStyle(ChatFormatting.RED));
             return false;

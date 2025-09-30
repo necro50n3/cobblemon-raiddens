@@ -101,6 +101,10 @@ public class ModDimensions {
     Credits to SoulHome mod for method
      */
     public static ServerLevel createRaidDimension(MinecraftServer server, ResourceKey<Level> levelKey) {
+        if (server.getLevel(levelKey) != null) {
+            CobblemonRaidDens.LOGGER.warn("Attempting to create already existing dimension: {}", levelKey);
+            return null;
+        }
         ResourceKey<LevelStem> dimKey = ResourceKey.create(Registries.LEVEL_STEM, levelKey.location());
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = ModDimensions::raidDimBuilder;

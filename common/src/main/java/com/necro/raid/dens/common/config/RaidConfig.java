@@ -17,6 +17,8 @@ public class RaidConfig implements ConfigData {
     ));
     @Comment("Raids require key items to interact with. Default: false")
     public boolean requires_key = false;
+    @Comment("Whether all players require the unique key or just the host. Default: true")
+    public boolean all_require_unique = true;
     @Comment("Maximum number of players in a raid (Set to -1 for no limit). Default: 4")
     public int max_players = 4;
     @Comment("Number of clears until the raid den deactivates (Set to -1 for no limit). Default: 3")
