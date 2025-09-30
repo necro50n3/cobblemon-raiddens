@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RaidDenPool {
@@ -14,7 +15,7 @@ public class RaidDenPool {
 
     private RaidDenPool(boolean replace, List<ResourceLocation> dens) {
         this.replace = replace;
-        this.dens = dens;
+        this.dens = new ArrayList<>(dens);
 
         this.id = null;
     }
