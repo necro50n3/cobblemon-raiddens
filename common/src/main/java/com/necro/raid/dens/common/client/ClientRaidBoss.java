@@ -81,7 +81,7 @@ public class ClientRaidBoss {
 
                 return new RaidBoss(
                     properties, tier, type, oFeature.orElse(RaidFeature.DEFAULT), raidForm, new ArrayList<>(), null,
-                    0.0, false, 0, oShinyRate.orElse(0.0f), new HashMap<>(), new ArrayList<>()
+                    0.0, false, 0, oShinyRate.orElse(0.0f), new HashMap<>(), new ArrayList<>(), ""
                 );
             })
         );

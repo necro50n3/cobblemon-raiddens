@@ -58,6 +58,7 @@ public class RaidBoss {
     private final float shinyRate;
     private final Map<String, String> script;
     private List<ResourceLocation> dens;
+    private final String key;
 
     private final List<String> densInner;
 
@@ -65,7 +66,7 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens) {
+                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens, String key) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -79,6 +80,7 @@ public class RaidBoss {
         this.shinyRate = shinyRate;
         this.script = script;
         this.dens = new ArrayList<>();
+        this.key = key;
 
         this.densInner = dens;
 
@@ -254,6 +256,10 @@ public class RaidBoss {
         return this.densInner;
     }
 
+    public String getKey() {
+        return this.key;
+    }
+
     public ResourceLocation getRandomDen(RandomSource random) {
         if (this.dens.isEmpty()) this.resolveDens();
 
@@ -374,8 +380,9 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
-            Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens) -> {
+            Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
+            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens, key) -> {
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);
@@ -391,7 +398,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens, key);
             })
         );
     }

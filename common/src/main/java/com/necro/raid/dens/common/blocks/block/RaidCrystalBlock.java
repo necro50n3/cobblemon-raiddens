@@ -12,16 +12,22 @@ import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -65,14 +71,38 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (CobblemonRaidDens.CONFIG.requires_key && !RaidUtils.isRaidDenKey(itemStack)) return ItemInteractionResult.FAIL;
-        else if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
+        if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
+
+        RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) level.getBlockEntity(blockPos);
+        if (blockEntity == null) return ItemInteractionResult.FAIL;
+        String key = blockEntity.getRaidBoss().getKey();
+
+        boolean hasKey = true;
+        if (key.startsWith("#")) {
+            TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(key.substring(1)));
+            if (!itemStack.is(tag)) {
+                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                hasKey = false;
+            }
+        }
+        else if (!key.isEmpty()) {
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
+            if (item != Items.AIR && !itemStack.is(item)) {
+                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", item.getDefaultInstance().getHoverName()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                hasKey = false;
+            }
+        }
+        else if (CobblemonRaidDens.CONFIG.requires_key && !RaidUtils.isRaidDenKey(itemStack)) {
+            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.no_key"));
+            hasKey = false;
+        }
         else if (!CobblemonRaidDens.CONFIG.requires_key) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        if (!hasKey) return ItemInteractionResult.FAIL;
 
         Boolean success = this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), itemStack);
         if (success == null) return ItemInteractionResult.SUCCESS;
         else if (success) itemStack.consume(1, player);
-        else player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.no_key"));
         return success ? ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
     }
 
