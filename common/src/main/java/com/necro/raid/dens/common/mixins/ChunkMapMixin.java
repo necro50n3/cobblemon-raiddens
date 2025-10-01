@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.mixins;
 
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -19,6 +19,6 @@ public class ChunkMapMixin {
 
     @Inject(method = "isExistingChunkFull", at = @At("HEAD"), cancellable = true)
     private void isExistingChunkFullInject(ChunkPos chunkPos, CallbackInfoReturnable<Boolean> cir) {
-        if (DimensionHelper.isLevelRemovedOrPending(this.level)) cir.setReturnValue(true);
+        if (RaidUtils.isCustomDimension(this.level)) cir.setReturnValue(false);
     }
 }

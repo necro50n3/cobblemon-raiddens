@@ -49,10 +49,6 @@ public class DimensionHelper {
         QUEUED_FOR_REMOVAL.clear();
     }
 
-    public static boolean isLevelRemovedOrPending(ServerLevel level) {
-        return isLevelRemovedOrPending(level.dimension());
-    }
-
     public static boolean isLevelRemovedOrPending(ResourceKey<Level> level) {
         return REMOVED_LEVELS.contains(level);
     }
@@ -97,7 +93,7 @@ public class DimensionHelper {
             ((IRegistryRemover<LevelStem>) levelStemRegistry).removeDimension(this.levelKey.location());
 
             ((ILevelsSetter) server).deleteLevel(this.levelKey);
-            CompletableFuture.delayedExecutor(3, TimeUnit.SECONDS).execute(() -> REMOVED_LEVELS.remove(this.level.dimension()));
+            CompletableFuture.delayedExecutor(2, TimeUnit.SECONDS).execute(() -> REMOVED_LEVELS.remove(this.level.dimension()));
         }
     }
 }
