@@ -26,6 +26,5 @@ public abstract class TransformEffectMixin {
         Set<String> aspects = new HashSet<>(this.mock.getAspects());
         aspects.add("raid");
         this.mock.setAspects(aspects);
-        entity.getPokemon().getAnyChangeObservable().emit(entity.getPokemon());
     }
 }
