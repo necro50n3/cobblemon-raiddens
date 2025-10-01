@@ -91,6 +91,7 @@ public class RaidBoss {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         if (properties.getShiny() == null) properties.setShiny(false);
         if (properties.getLevel() == null) properties.setLevel(this.raidTier.getLevel());
+        properties.setIvs(IVs.createRandomIVs(6));
 
         Pokemon pokemon = properties.create();
         int healthMulti = this.healthMulti > 0 ? this.healthMulti : this.raidTier.getHealth();
