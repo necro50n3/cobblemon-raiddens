@@ -27,8 +27,6 @@ public class RaidConfig implements ConfigData {
     public int reset_time = 7200;
     @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, ALL). Default: ALL")
     public String cycle_mode = "ALL";
-//    @Comment("How long in seconds a raid battle lasts. Default: 600")
-//    public int raid_duration = 600;
     @Comment("Raid boss HP multipliers for each raid tier from Tier 1 to Tier 7. Default: [5, 5, 8, 12, 20, 25, 30]")
     public int[] tier_health_multiplier = {5, 5, 8, 12, 20, 25, 30};
     @Comment("Bonus raid boss HP multiplier for each extra player that joins the raid battle. Default: 1.0")
