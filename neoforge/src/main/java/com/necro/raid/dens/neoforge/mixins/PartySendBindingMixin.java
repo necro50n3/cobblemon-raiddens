@@ -6,7 +6,7 @@ import com.cobblemon.mod.common.client.keybind.keybinds.PartySendBinding;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.necro.raid.dens.common.network.RaidChallengePacket;
+import com.necro.raid.dens.common.network.packets.RaidChallengePacket;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.client.player.LocalPlayer;

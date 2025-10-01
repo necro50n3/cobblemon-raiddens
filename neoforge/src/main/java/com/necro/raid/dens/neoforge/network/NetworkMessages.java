@@ -1,8 +1,9 @@
 package com.necro.raid.dens.neoforge.network;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.network.*;
+import com.necro.raid.dens.common.network.packets.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,6 +23,8 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handleJoinRaid);
         payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handleRequest);
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handleReward);
+        payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handleReward);
+        payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handleResize);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handleRaidChallenge);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handleLeaveRaid);
@@ -35,6 +38,10 @@ public class NetworkMessages {
 
     public static void sendPacketToAll(CustomPacketPayload packet) {
         PacketDistributor.sendToAllPlayers(packet);
+    }
+
+    public static void sendPacketToLevel(ServerLevel level, CustomPacketPayload packet) {
+        PacketDistributor.sendToPlayersInDimension(level, packet);
     }
 
     public static void sendPacketToPlayer(ServerPlayer player, CustomPacketPayload packet) {
@@ -75,5 +82,9 @@ public class NetworkMessages {
 
     public static void handleRewardResponse(RewardResponsePacket packet, IPayloadContext context) {
         context.enqueueWork(() -> packet.handleServer((ServerPlayer) context.player()));
+    }
+
+    public static void handleResize(ResizePacket packet, IPayloadContext context) {
+        context.enqueueWork(packet::handleClient);
     }
 }

@@ -2,7 +2,7 @@ package com.necro.raid.dens.neoforge.blocks.block;
 
 import com.mojang.serialization.MapCodec;
 import com.necro.raid.dens.common.blocks.block.RaidHomeBlock;
-import com.necro.raid.dens.common.network.JoinRaidPacket;
+import com.necro.raid.dens.common.network.packets.JoinRaidPacket;
 import com.necro.raid.dens.neoforge.blocks.entity.RaidHomeBlockEntityNeoForge;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.core.BlockPos;

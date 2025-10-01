@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.network;
+package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.client.CobblemonClient;
 import com.cobblemon.mod.common.client.battle.ClientBattle;

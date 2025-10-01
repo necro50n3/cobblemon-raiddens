@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
+import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.RaidBucket;
@@ -79,6 +80,8 @@ public class CobblemonRaidDensNeoForge {
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
         RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
             NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
+        RaidDenNetworkMessages.RESIZE = (level, entity, scale) ->
+            NetworkMessages.sendPacketToLevel(level, new ResizePacket(entity.getId(), scale));
 
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, create));

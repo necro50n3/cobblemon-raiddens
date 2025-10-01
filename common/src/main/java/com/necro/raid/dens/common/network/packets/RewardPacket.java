@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.network;
+package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;

@@ -1,11 +1,12 @@
 package com.necro.raid.dens.fabric.network;
 
-import com.necro.raid.dens.common.network.*;
+import com.necro.raid.dens.common.network.packets.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkMessages {
@@ -15,6 +16,7 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(ResizePacket.PACKET_TYPE, ResizePacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
@@ -33,6 +35,7 @@ public class NetworkMessages {
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handleJoinRaid);
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handleRequest);
         ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handleReward);
+        ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handleResize);
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
@@ -41,6 +44,10 @@ public class NetworkMessages {
 
     public static void sendPacketToAll(MinecraftServer server, CustomPacketPayload packet) {
         server.getPlayerList().getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+    }
+
+    public static void sendPacketToLevel(ServerLevel level, CustomPacketPayload packet) {
+        level.players().forEach(player -> ServerPlayNetworking.send(player, packet));
     }
 
     public static void sendPacketToPlayer(ServerPlayer player, CustomPacketPayload packet) {
@@ -81,5 +88,9 @@ public class NetworkMessages {
 
     public static void handleRewardResponse(RewardResponsePacket packet, ServerPlayNetworking.Context context) {
         packet.handleServer(context.player());
+    }
+
+    public static void handleResize(ResizePacket packet, ClientPlayNetworking.Context context) {
+        packet.handleClient();
     }
 }

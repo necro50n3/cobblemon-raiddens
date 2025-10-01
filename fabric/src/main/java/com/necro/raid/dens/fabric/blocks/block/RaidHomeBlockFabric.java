@@ -2,7 +2,7 @@ package com.necro.raid.dens.fabric.blocks.block;
 
 import com.mojang.serialization.MapCodec;
 import com.necro.raid.dens.common.blocks.block.RaidHomeBlock;
-import com.necro.raid.dens.common.network.JoinRaidPacket;
+import com.necro.raid.dens.common.network.packets.JoinRaidPacket;
 import com.necro.raid.dens.fabric.blocks.entity.RaidHomeBlockEntityFabric;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import net.minecraft.core.BlockPos;
