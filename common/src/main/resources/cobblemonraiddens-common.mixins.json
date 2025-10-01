@@ -17,7 +17,9 @@
         "PokemonEntityMixin",
         "PokemonMixin",
         "ServerLevelAccessor",
-        "ShowdownInterpreterMixin"
+        "ShowdownInterpreterMixin",
+        "TransformEffectMixin",
+        "TransformInstructionMixin"
     ],
     "injectors": {
         "defaultRequire": 1
