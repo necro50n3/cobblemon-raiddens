@@ -157,7 +157,11 @@ public class RaidHelper extends SavedData {
 
         public JoinRequestInstance(Player player, @Nullable ItemStack itemStack) {
             this.player = player;
-            this.itemStack = itemStack;
+            if (itemStack == null) this.itemStack = null;
+            else {
+                this.itemStack = itemStack.copy();
+                this.itemStack.setCount(1);
+            }
             this.tick = 0;
         }
 
