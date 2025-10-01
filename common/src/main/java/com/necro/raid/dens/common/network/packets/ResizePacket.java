@@ -35,7 +35,6 @@ public record ResizePacket(int entityId, float scale) implements CustomPacketPay
         if (level == null) return;
         Entity entity = level.getEntity(this.entityId);
         if (!(entity instanceof PokemonEntity pokemonEntity)) return;
-        CobblemonRaidDens.LOGGER.info("Resizing ditto");
         pokemonEntity.getPokemon().setScaleModifier(this.scale);
         pokemonEntity.refreshDimensions();
     }

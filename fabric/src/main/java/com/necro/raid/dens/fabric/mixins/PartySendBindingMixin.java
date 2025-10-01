@@ -6,7 +6,6 @@ import com.cobblemon.mod.common.client.keybind.keybinds.PartySendBinding;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.packets.RaidChallengePacket;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
@@ -30,9 +29,6 @@ public abstract class PartySendBindingMixin extends CobblemonBlockingKeyBinding 
             if (!pokemonEntity.canBattle(player)) ci.cancel();
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));
             ci.cancel();
-        }
-        else if (entity instanceof PokemonEntity pokemonEntity) {
-            CobblemonRaidDens.LOGGER.info(String.valueOf(pokemonEntity.getPokemon().getAspects()));
         }
     }
 }
