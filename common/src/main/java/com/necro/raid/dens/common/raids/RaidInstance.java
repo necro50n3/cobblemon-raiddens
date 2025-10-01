@@ -108,7 +108,6 @@ public class RaidInstance {
 
         this.damageCache.put(player, this.currentHealth);
         if (!this.activePlayers.isEmpty() && CobblemonRaidDens.CONFIG.multiplayer_health_multiplier > 1.0f) this.applyHealthMulti(player);
-        ((IRaidBattle) battle).addToQueue((r, b) -> r.playerJoin(b, player, player));
 
         this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
         this.activePlayers.add(player);
