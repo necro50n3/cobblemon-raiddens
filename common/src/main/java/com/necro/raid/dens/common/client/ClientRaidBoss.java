@@ -39,6 +39,10 @@ public class ClientRaidBoss {
         return Optional.of(raidBoss.getShinyRate());
     }
 
+    private static Optional<Boolean> isCatchable(RaidBoss raidBoss) {
+        return Optional.of(raidBoss.isCatchable());
+    }
+
     private static Codec<PokemonProperties> propertiesCodec() {
         return RecordCodecBuilder.create(inst -> inst.group(
                 Codec.STRING.fieldOf("species").forGetter(PokemonProperties::getSpecies),
@@ -61,8 +65,9 @@ public class ClientRaidBoss {
                 RaidFeature.codec().optionalFieldOf("raid_feature").forGetter(ClientRaidBoss::getFeature),
                 RaidBoss.raidFormCodec().listOf().optionalFieldOf("raid_form").forGetter(ClientRaidBoss::getRaidForm),
                 RaidBoss.raidFormCodec().listOf().optionalFieldOf("base_form").forGetter(ClientRaidBoss::getBaseForm),
-                Codec.FLOAT.optionalFieldOf("shiny_rate").forGetter(ClientRaidBoss::getShinyRate)
-            ).apply(inst, (properties, tier, type, oFeature, oRaidForm, oBaseForm, oShinyRate) -> {
+                Codec.FLOAT.optionalFieldOf("shiny_rate").forGetter(ClientRaidBoss::getShinyRate),
+                Codec.BOOL.optionalFieldOf("is_catchable").forGetter(ClientRaidBoss::isCatchable)
+            ).apply(inst, (properties, tier, type, oFeature, oRaidForm, oBaseForm, oShinyRate, oCatchable) -> {
                 if (oShinyRate.isEmpty()) properties.setShiny(false);
                 else if (oShinyRate.get() == 1.0f) properties.setShiny(true);
 
@@ -81,7 +86,7 @@ public class ClientRaidBoss {
 
                 return new RaidBoss(
                     properties, tier, type, oFeature.orElse(RaidFeature.DEFAULT), raidForm, new ArrayList<>(), null,
-                    0.0, false, 0, oShinyRate.orElse(0.0f), new HashMap<>(), new ArrayList<>(), ""
+                    0.0, oCatchable.orElse(true), 0, oShinyRate.orElse(0.0f), new HashMap<>(), new ArrayList<>(), ""
                 );
             })
         );

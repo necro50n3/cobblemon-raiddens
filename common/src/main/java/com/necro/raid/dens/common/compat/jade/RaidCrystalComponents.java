@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
 import com.necro.raid.dens.common.util.RaidRegistry;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -104,8 +105,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         component.append(" | ").append(Component.translatable(feature.getTranslatable()));
         component.append(" | ").append(tier.getStars());
         tooltip.add(component, this.getUid());
+
+        IElementHelper helper = IElementHelper.get();
         List<IElement> elements = new ArrayList<>();
-        elements.add(IElementHelper.get().text(Component.literal(" ")));
+        elements.add(helper.text(Component.literal(" ")));
         if (type != RaidType.STELLAR){
             elements.add(this.getElementalTypeIcon(type));
             tooltip.append(0, elements);
@@ -113,6 +116,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) {
             elements.add(this.getTeraTypeIcon(type));
             tooltip.append(0, elements);
+        }
+
+        if (!raidBoss.isCatchable()) {
+            tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
         }
     }
 
@@ -134,11 +141,12 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         BlockState blockState = accessor.getBlockState();
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         component.append(" | ").append(tier.getStars());
+        tooltip.add(component, this.getUid());
 
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        tooltip.add(component, this.getUid());
+        IElementHelper helper = IElementHelper.get();
         List<IElement> elements = new ArrayList<>();
-        elements.add(IElementHelper.get().text(Component.literal(" ")));
+        elements.add(helper.text(Component.literal(" ")));
         if (type != RaidType.STELLAR){
             elements.add(this.getElementalTypeIcon(type));
             tooltip.append(0, elements);
@@ -155,6 +163,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         }
         if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
         if (!component1.equals(Component.empty())) tooltip.add(component1);
+
+        if (serverData.contains("not_catchable")) {
+            tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+        }
     }
 
     @Override
@@ -187,6 +199,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
         if (blockEntity.getPlayerCount() > 0) compoundTag.putInt("player_count", blockEntity.getPlayerCount());
         if (blockEntity.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(blockEntity.getTicksUntilNextReset()));
+        if (!raidBoss.isCatchable()) compoundTag.putBoolean("not_catchable", true);
     }
 
     private String formatTicks(long ticks) {
