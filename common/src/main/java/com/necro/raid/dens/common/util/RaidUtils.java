@@ -23,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class RaidUtils {
@@ -105,6 +106,6 @@ public class RaidUtils {
     }
 
     public static void init() {
-        MOVE_BLACKLIST.addAll(CobblemonRaidDens.MOVE_CONFIG.blacklist);
+        MOVE_BLACKLIST.addAll(List.of(CobblemonRaidDens.MOVE_CONFIG.blacklist));
     }
 }

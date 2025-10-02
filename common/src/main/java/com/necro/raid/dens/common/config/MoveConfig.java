@@ -10,7 +10,7 @@ import java.util.List;
 @Config(name="cobbleraiddens-moves")
 public class MoveConfig implements ConfigData {
     @Comment("List of blacklisted moves in raid battles.")
-    public List<String> blacklist = new ArrayList<>(List.of(
+    public String[] blacklist = {
         "circlethrow",
         "destinybond",
         "disable",
@@ -39,5 +39,5 @@ public class MoveConfig implements ConfigData {
         "trick",
         "whirlwind",
         "worryseed"
-    ));
+    };
 }
