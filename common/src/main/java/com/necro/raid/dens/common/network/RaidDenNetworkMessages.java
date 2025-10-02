@@ -12,4 +12,5 @@ public class RaidDenNetworkMessages {
     public static BiConsumer<ServerPlayer, String> REQUEST_PACKET;
     public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;
     public static TriConsumer<ServerLevel, Entity, Float> RESIZE;
+    public static BiConsumer<ServerPlayer, Entity> RAID_ASPECT;
 }

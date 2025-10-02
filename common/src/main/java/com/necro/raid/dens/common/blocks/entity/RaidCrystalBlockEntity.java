@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.*;
@@ -19,6 +20,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,6 +39,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
     private UUID raidHost;
@@ -59,6 +62,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private long lastReset;
     private boolean isOpen;
+    private Consumer<ServerPlayer> aspectSync;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -163,6 +167,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.getDimension());
         pokemonEntity.moveTo(RaidDenRegistry.getBossPos(this.getRaidStructure()));
         this.getDimension().addFreshEntity(pokemonEntity);
+
+        if (pokemonEntity.getPokemon().getAbility().getName().equals("imposter") ||
+            pokemonEntity.getPokemon().getMoveSet().getMoves().stream().anyMatch(move -> move.getName().equals("transform"))) {
+            this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
+        }
+
         return true;
     }
 
@@ -199,6 +209,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.getLevel().getChunkAt(blockPos).setUnsaved(true);
         this.setChanged();
         this.isOpen = false;
+        this.setAspectSync(null);
     }
 
     protected void removeDimension() {
@@ -342,6 +353,17 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void setRaidBucket(ResourceLocation bucket) {
         this.raidBucket = bucket;
+    }
+
+    public void syncAspects(ServerPlayer player) {
+        if (this.aspectSync == null) return;
+        CobblemonRaidDens.LOGGER.info("Syncing aspects");
+        this.aspectSync.accept(player);
+    }
+
+    public void setAspectSync(Consumer<ServerPlayer> sync) {
+        CobblemonRaidDens.LOGGER.info("Setting aspect sync");
+        this.aspectSync = sync;
     }
 
     @Override

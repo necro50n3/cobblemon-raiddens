@@ -97,6 +97,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) {
             Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
             RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity.getDimension(), playerPos);
+            blockEntity.syncAspects((ServerPlayer) player);
             return true;
         }
         else if (RaidHelper.isAlreadyHosting(player)) {
@@ -174,6 +175,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
         RaidUtils.teleportPlayerToRaid((ServerPlayer) player, level, playerPos);
+        blockEntity.syncAspects((ServerPlayer) player);
         return true;
     }
 

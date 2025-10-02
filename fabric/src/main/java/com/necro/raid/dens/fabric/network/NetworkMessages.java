@@ -17,6 +17,7 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(ResizePacket.PACKET_TYPE, ResizePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
@@ -36,6 +37,7 @@ public class NetworkMessages {
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handleRequest);
         ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handleReward);
         ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handleResize);
+        ClientPlayNetworking.registerGlobalReceiver(RaidAspectPacket.PACKET_TYPE, NetworkMessages::handleRaidAspect);
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
@@ -91,6 +93,10 @@ public class NetworkMessages {
     }
 
     public static void handleResize(ResizePacket packet, ClientPlayNetworking.Context context) {
+        packet.handleClient();
+    }
+
+    public static void handleRaidAspect(RaidAspectPacket packet, ClientPlayNetworking.Context context) {
         packet.handleClient();
     }
 }

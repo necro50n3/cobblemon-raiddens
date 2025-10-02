@@ -64,6 +64,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
 
             Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
             RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity.getDimension(), playerPos);
+            blockEntity.syncAspects((ServerPlayer) player);
         }
         else {
             RaidHelper.JOIN_QUEUE.remove(player);

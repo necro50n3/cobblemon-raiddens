@@ -25,6 +25,7 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handleReward);
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handleReward);
         payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handleResize);
+        payloadRegistrar.playToClient(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC, NetworkMessages::handleRaidAspect);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handleRaidChallenge);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handleLeaveRaid);
@@ -85,6 +86,10 @@ public class NetworkMessages {
     }
 
     public static void handleResize(ResizePacket packet, IPayloadContext context) {
+        context.enqueueWork(packet::handleClient);
+    }
+
+    public static void handleRaidAspect(RaidAspectPacket packet, IPayloadContext context) {
         context.enqueueWork(packet::handleClient);
     }
 }
