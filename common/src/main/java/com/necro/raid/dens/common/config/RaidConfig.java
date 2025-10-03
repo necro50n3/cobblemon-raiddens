@@ -37,6 +37,8 @@ public class RaidConfig implements ConfigData {
     public int[] tier_reward_level = {12, 20, 35, 45, 75, 75, 100};
     @Comment("Raid boss number of max IVs for each raid tier from Tier 1 to Tier 7. Default: [0, 1, 2, 3, 4, 5, 6]")
     public int[] tier_ivs = {0, 1, 2, 3, 4, 5, 6};
+    @Comment("How much currency is rewarded for clearing a raid boss (Requires CobbleDollars). Default: [1000, 1000, 1000, 1000, 1000, 1000, 1000]")
+    public int[] tier_currency = {1000, 1000, 1000, 1000, 1000, 1000, 1000};
     @Comment("The default shiny chance for raid bosses (Set to -1 to use the Cobblemon rate). Default: -1.0")
     public float shiny_rate = -1.0f;
     @Comment("The chance for raid bosses to have their hidden ability. Default: 0.20")

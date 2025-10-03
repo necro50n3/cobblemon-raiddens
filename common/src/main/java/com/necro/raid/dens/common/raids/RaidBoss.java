@@ -59,6 +59,7 @@ public class RaidBoss {
     private final Map<String, String> script;
     private List<ResourceLocation> dens;
     private final String key;
+    private final int currency;
 
     private final List<String> densInner;
 
@@ -81,6 +82,7 @@ public class RaidBoss {
         this.script = script;
         this.dens = new ArrayList<>();
         this.key = key;
+        this.currency = currency;
 
         this.densInner = dens;
 
@@ -261,6 +263,10 @@ public class RaidBoss {
         return this.key;
     }
 
+    public int getCurrency() {
+        return this.currency == -1 ? this.raidTier.getCurrency() : this.currency;
+    }
+
     public ResourceLocation getRandomDen(RandomSource random) {
         if (this.dens.isEmpty()) this.resolveDens();
 
@@ -382,8 +388,9 @@ public class RaidBoss {
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
-            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens, key) -> {
+            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
+            Codec.INT.optionalFieldOf("currency", -1).forGetter(RaidBoss::getCurrency)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency) -> {
                 properties.setTeraType(type.getSerializedName());
                 properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
                 if (shinyRate == 1.0f) properties.setShiny(true);

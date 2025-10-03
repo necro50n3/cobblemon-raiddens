@@ -32,9 +32,12 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
         RewardHandler handler = RaidHelper.REWARD_QUEUE.get(player);
         if (handler == null) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.already_received_reward"));
+            return;
         }
-        else if (this.catchPokemon) this.getPokemon(handler, player);
+
+        if (this.catchPokemon) this.getPokemon(handler, player);
         else this.getItems(handler, player);
+        handler.giveCurrency();
     }
 
     private void getPokemon(RewardHandler handler, ServerPlayer player) {

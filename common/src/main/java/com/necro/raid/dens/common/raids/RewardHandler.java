@@ -61,6 +61,11 @@ public class RewardHandler {
         return true;
     }
 
+    public void giveCurrency() {
+        if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
+        RaidDensCobbleDollarsCompat.addCurrency(player, this.raidBoss.getCurrency());
+    }
+
     private ItemStack buildRaidPouch() {
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
         item.set(ModComponents.TIER_COMPONENT.value(),  this.raidBoss.getTier());

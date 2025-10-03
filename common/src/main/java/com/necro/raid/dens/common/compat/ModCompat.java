@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.compat;
 
 public enum ModCompat {
+    COBBLEDOLLARS("cobbledollars"),
     DISTANT_HORIZONS("distanthorizons"),
     MEGA_SHOWDOWN("mega_showdown");
 
