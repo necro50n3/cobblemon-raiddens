@@ -56,7 +56,7 @@ dependencies {
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     modRuntimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951007"
-    modImplementation "curse.maven:cobbledollars-859232:6604564"
+    modCompileOnly "curse.maven:cobbledollars-859232:6604564"
     modCompileOnly "curse.maven:distant-horizons-508933:6791190"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }

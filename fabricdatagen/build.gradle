@@ -65,7 +65,7 @@ dependencies {
     include(modApi "me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version")
     modImplementation "dev.emi:trinkets:3.10.0"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951008"
-    modImplementation "curse.maven:cobbledollars-859232:6604561"
+    modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modImplementation "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
