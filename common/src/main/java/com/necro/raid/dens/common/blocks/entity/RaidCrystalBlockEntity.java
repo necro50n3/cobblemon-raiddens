@@ -39,6 +39,8 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
@@ -357,12 +359,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void syncAspects(ServerPlayer player) {
         if (this.aspectSync == null) return;
-        CobblemonRaidDens.LOGGER.info("Syncing aspects");
-        this.aspectSync.accept(player);
+        CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS).execute(() -> this.aspectSync.accept(player));
     }
 
     public void setAspectSync(Consumer<ServerPlayer> sync) {
-        CobblemonRaidDens.LOGGER.info("Setting aspect sync");
         this.aspectSync = sync;
     }
 

@@ -40,5 +40,6 @@ public record RaidAspectPacket(int entityId) implements CustomPacketPayload {
         Set<String> aspects = new HashSet<>(pokemonEntity.getPokemon().getForcedAspects());
         aspects.add("raid");
         pokemonEntity.getPokemon().setForcedAspects(aspects);
+        pokemonEntity.refreshDimensions();
     }
 }
