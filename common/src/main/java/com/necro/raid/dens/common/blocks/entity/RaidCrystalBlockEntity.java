@@ -186,12 +186,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public void closeRaid(BlockPos blockPos) {
+        this.removeChunkTicket();
+
         RaidHelper.removeHost(this.raidHost);
         RaidHelper.finishRaid(this.playerQueue);
         RaidHelper.removeRequests(this.raidHost);
 
         if (this.getLevel() == null || !this.hasDimension()) return;
-        this.removeChunkTicket();
 
         this.getDimension().players().forEach((player) ->
             player.teleportTo((ServerLevel) this.getLevel(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() - 0.5, 0, 0)
@@ -223,13 +224,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void addChunkTicket() {
         if (this.getLevel() == null) return;
         ChunkPos chunkPos = new ChunkPos(this.getBlockPos());
-        ((ServerLevel) this.getLevel()).getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
+        ((ServerLevel) this.getLevel()).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode());
     }
 
     private void removeChunkTicket() {
         if (this.getLevel() == null) return;
         ChunkPos chunkPos = new ChunkPos(this.getBlockPos());
-        ((ServerLevel) this.getLevel()).getChunkSource().removeRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
+        ((ServerLevel) this.getLevel()).getChunkSource().removeRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode());
     }
 
     public UUID getRaidHost() {
