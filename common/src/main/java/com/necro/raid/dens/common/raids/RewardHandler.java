@@ -4,6 +4,8 @@ import com.cobblemon.mod.common.item.PokeBallItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
@@ -17,16 +19,18 @@ import java.util.List;
 public class RewardHandler {
     private final RaidBoss raidBoss;
     private final ServerPlayer player;
+    private final boolean isCatchable;
 
-    public RewardHandler(RaidBoss raidBoss, ServerPlayer player) {
+    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable) {
         this.raidBoss = raidBoss;
         this.player = player;
+        this.isCatchable = isCatchable;
     }
 
     public void sendRewardMessage() {
         if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
         String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
-        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.raidBoss.isCatchable(), speciesName);
+        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.isCatchable, speciesName);
         RaidHelper.REWARD_QUEUE.put(this.player, this);
     }
 

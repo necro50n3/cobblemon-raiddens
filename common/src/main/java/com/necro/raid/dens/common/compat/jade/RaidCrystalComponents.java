@@ -118,9 +118,9 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             tooltip.append(0, elements);
         }
 
-        if (!raidBoss.isCatchable()) {
-            tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
-        }
+        int catches = raidBoss.getMaxCatches();
+        if (catches == 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+        else if (catches > 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
     }
 
     @Override
@@ -164,8 +164,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
         if (!component1.equals(Component.empty())) tooltip.add(component1);
 
-        if (serverData.contains("not_catchable")) {
-            tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+        if (serverData.contains("max_catches")) {
+            int catches = serverData.getInt("max_catches");
+            if (catches == 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+            else tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
         }
     }
 
@@ -199,7 +201,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
         if (blockEntity.getPlayerCount() > 0) compoundTag.putInt("player_count", blockEntity.getPlayerCount());
         if (blockEntity.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(blockEntity.getTicksUntilNextReset()));
-        if (!raidBoss.isCatchable()) compoundTag.putBoolean("not_catchable", true);
+        if (raidBoss.getMaxCatches() >= 0) compoundTag.putInt("max_catches", raidBoss.getMaxCatches());
     }
 
     private String formatTicks(long ticks) {

@@ -53,7 +53,7 @@ public class RaidBoss {
     private final String lootTableId;
     private LootTable lootTable;
     private final double weight;
-    private final boolean isCatchable;
+    private final int maxCatches;
     private final int healthMulti;
     private final float shinyRate;
     private final Map<String, String> script;
@@ -67,7 +67,8 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    boolean isCatchable, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens, String key) {
+                    int maxCatches, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens,
+                    String key, int currency) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -76,7 +77,7 @@ public class RaidBoss {
         this.baseForm = baseForm;
         this.lootTableId = lootTableId;
         this.weight = weight;
-        this.isCatchable = isCatchable;
+        this.maxCatches = maxCatches;
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
@@ -239,8 +240,8 @@ public class RaidBoss {
         return this.weight;
     }
 
-    public boolean isCatchable() {
-        return this.isCatchable;
+    public int getMaxCatches() {
+        return this.maxCatches;
     }
 
     public int getHealthMulti() {
@@ -383,7 +384,7 @@ public class RaidBoss {
             raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
             Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
             Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
-            Codec.BOOL.optionalFieldOf("is_catchable", true).forGetter(RaidBoss::isCatchable),
+            Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
             Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
@@ -406,7 +407,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, isCatchable, healthMulti, shinyRate, script, dens, key);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency);
             })
         );
     }

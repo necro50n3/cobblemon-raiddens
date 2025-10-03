@@ -62,6 +62,7 @@
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restores 50% HP for your party",
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
     "jade.cobblemonraiddens.player_count": "%s Inside",
+    "jade.cobblemonraiddens.max_catches": "Max Catchable: %s",
     "jade.cobblemonraiddens.not_catchable": "*Cannot Be Caught",
     "key.cobblemonraiddens.accept": "Accept Shortcut",
     "key.cobblemonraiddens.deny": "Deny Shortcut",

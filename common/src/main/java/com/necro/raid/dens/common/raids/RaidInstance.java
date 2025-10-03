@@ -198,10 +198,43 @@ public class RaidInstance {
         RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) this.bossEntity).getRaidId());
         this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
+
+        if (raidSuccess) this.handleSuccess();
+        else this.handleFailed();
+    }
+
+    private void handleSuccess() {
+        int catches = this.raidBoss.getMaxCatches();
+        List<ServerPlayer> success;
+        List<ServerPlayer> failed;
+        if (catches < 0 || this.activePlayers.size() < catches) {
+            success = this.activePlayers;
+            failed = List.of();
+        }
+        else if (catches == 0) {
+            success = List.of();
+            failed = this.activePlayers;
+        }
+        else {
+            Collections.shuffle(this.activePlayers);
+            success = this.activePlayers.subList(0, catches);
+            failed = this.activePlayers.subList(catches, this.activePlayers.size());
+        }
+
+        success.forEach(player -> {
+            new RewardHandler(this.raidBoss, player, true).sendRewardMessage();
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, true));
+        });
+        failed.forEach(player -> {
+            new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, true));
+        });
+    }
+
+    private void handleFailed() {
         this.activePlayers.forEach(player -> {
-            if (raidSuccess) new RewardHandler(this.raidBoss, player).sendRewardMessage();
-            else player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, raidSuccess));
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, false));
         });
     }
 
