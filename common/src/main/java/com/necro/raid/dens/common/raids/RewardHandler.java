@@ -67,6 +67,7 @@ public class RewardHandler {
 
     public void giveCurrency() {
         if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
+        else if (this.raidBoss.getCurrency() <= 0) return;
         RaidDensCobbleDollarsCompat.addCurrency(player, this.raidBoss.getCurrency());
     }
 
