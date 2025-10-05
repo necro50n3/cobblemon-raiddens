@@ -134,7 +134,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
 
         RaidHelper.addToQueue(player, key);
-        RaidHelper.addRequest(raidHost, player, blockEntity);
+        RaidHelper.addRequest(raidHost, player);
         RaidDenNetworkMessages.REQUEST_PACKET.accept(raidHost, player.getName().getString());
         return true;
     }
@@ -170,6 +170,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
 
         RaidHelper.addHost(player);
+        RaidHelper.initRequest((ServerPlayer) player, blockEntity);
         blockEntity.addChunkTicket();
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
 

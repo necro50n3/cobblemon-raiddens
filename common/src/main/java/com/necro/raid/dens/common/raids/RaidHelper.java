@@ -37,11 +37,15 @@ public class RaidHelper extends SavedData {
         JOIN_QUEUE.put(player, new JoinRequestInstance(player, key));
     }
 
-    public static void addRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
+    public static void initRequest(ServerPlayer host, RaidCrystalBlockEntity blockEntity) {
+        if (REQUEST_QUEUE.containsKey(host.getUUID())) return;
+        REQUEST_QUEUE.put(host.getUUID(), new RequestHandler(blockEntity));
+    }
+
+    public static void addRequest(ServerPlayer host, Player player) {
         UUID uuid = host.getUUID();
-        if (!REQUEST_QUEUE.containsKey(uuid)) REQUEST_QUEUE.put(uuid, new RequestHandler(blockEntity));
-        RequestHandler handler = REQUEST_QUEUE.get(uuid);
-        handler.addPlayer(player);
+        if (!REQUEST_QUEUE.containsKey(uuid)) return;
+        REQUEST_QUEUE.get(uuid).addPlayer(player);
     }
 
     public static RequestHandler getRequest(ServerPlayer host) {
