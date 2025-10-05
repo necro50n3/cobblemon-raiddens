@@ -35,6 +35,7 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
             RaidHomeBlockEntity blockEntity = (RaidHomeBlockEntity) level.getBlockEntity(blockPos);
             if (blockEntity == null) return InteractionResult.FAIL;
             boolean success = safeExit(blockEntity, blockPos, (ServerPlayer) player, level);
+            if (success) RaidDenNetworkMessages.JOIN_RAID.accept((ServerPlayer) player, false);
             return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
@@ -56,13 +57,11 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
             if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
                 raidCrystalBlockEntity.clearRaid();
             }
-            RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
         }
         else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {
             if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
                 raidCrystalBlockEntity.setQueueClose();
             }
-            RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
         }
         return true;
     }
