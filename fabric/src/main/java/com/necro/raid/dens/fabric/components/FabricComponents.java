@@ -20,7 +20,8 @@ public class FabricComponents {
         ModComponents.TIER_COMPONENT = Holder.direct((DataComponentType<RaidTier>) registerTierComponent(builder -> builder.persistent(RaidTier.codec())));
         ModComponents.FEATURE_COMPONENT = Holder.direct((DataComponentType<RaidFeature>) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec())));
         ModComponents.TYPE_COMPONENT = Holder.direct((DataComponentType<RaidType>) registerTypeComponent(builder -> builder.persistent(RaidType.codec())));
-        ModComponents.RAID_DEN_KEY = Holder.direct((DataComponentType<Boolean>) registerBooleanComponent(builder -> builder.persistent(Codec.BOOL)));
+        ModComponents.RAID_DEN_KEY = Holder.direct((DataComponentType<Boolean>) registerBooleanComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL)));
+        ModComponents.REMOTE_KEY = Holder.direct((DataComponentType<Boolean>) registerBooleanComponent("remote_key", builder -> builder.persistent(Codec.BOOL)));
     }
 
     private static DataComponentType<?> registerTierComponent(UnaryOperator<DataComponentType.Builder<RaidTier>> builderOperator) {
@@ -44,9 +45,9 @@ public class FabricComponents {
         );
     }
 
-    private static DataComponentType<?> registerBooleanComponent(UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
+    private static DataComponentType<?> registerBooleanComponent(String name, UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
         return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_key"),
+            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name),
             builderOperator.apply(DataComponentType.builder()).build()
         );
     }

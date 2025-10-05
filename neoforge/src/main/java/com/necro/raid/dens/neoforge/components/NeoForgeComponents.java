@@ -23,7 +23,8 @@ public class NeoForgeComponents {
         ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerTierComponent(builder -> builder.persistent(RaidTier.codec()));
         ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec()));
         ModComponents.TYPE_COMPONENT = (Holder<DataComponentType<RaidType>>) (Object) registerTypeComponent(builder -> builder.persistent(RaidType.codec()));
-        ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent(builder -> builder.persistent(Codec.BOOL));
+        ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL));
+        ModComponents.REMOTE_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent("remote_key", builder -> builder.persistent(Codec.BOOL));
     }
 
     public static DeferredHolder<DataComponentType<?>, DataComponentType<RaidTier>> registerTierComponent(UnaryOperator<DataComponentType.Builder<RaidTier>> builderOperator) {
@@ -38,7 +39,7 @@ public class NeoForgeComponents {
         return DATA_COMPONENT_TYPES.register("raid_type", () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 
-    public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBooleanComponent(UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
-        return DATA_COMPONENT_TYPES.register("raid_den_key", () -> builderOperator.apply(DataComponentType.builder()).build());
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBooleanComponent(String name, UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
+        return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 }

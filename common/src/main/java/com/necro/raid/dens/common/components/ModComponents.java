@@ -12,4 +12,5 @@ public class ModComponents {
     public static Holder<DataComponentType<RaidType>> TYPE_COMPONENT;
 
     public static Holder<DataComponentType<Boolean>> RAID_DEN_KEY;
+    public static Holder<DataComponentType<Boolean>> REMOTE_KEY;
 }
