@@ -86,6 +86,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
             NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
+        RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
+            NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
         RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
@@ -99,7 +101,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
             NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
 
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
-            NetworkMessages.sendPacketToPlayer(event.getPlayer(), new JoinRaidPacket(true));
+            RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
             return Unit.INSTANCE;
         });
     }

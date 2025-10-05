@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 
 public class RaidDenNetworkMessages {
     public static BiConsumer<ServerPlayer, Float> SYNC_HEALTH;
+    public static BiConsumer<ServerPlayer, Boolean> JOIN_RAID;
     public static BiConsumer<ServerPlayer, String> REQUEST_PACKET;
     public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;
     public static TriConsumer<ServerLevel, Entity, Float> RESIZE;

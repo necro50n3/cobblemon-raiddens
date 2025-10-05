@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,6 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
             RaidHomeBlockEntity blockEntity = (RaidHomeBlockEntity) level.getBlockEntity(blockPos);
             if (blockEntity == null) return InteractionResult.FAIL;
             boolean success = safeExit(blockEntity, blockPos, (ServerPlayer) player, level);
-            if (success) this.sendClientPacket((ServerPlayer) player);
             return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
@@ -56,16 +56,16 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
             if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
                 raidCrystalBlockEntity.clearRaid();
             }
+            RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
         }
         else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {
             if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
                 raidCrystalBlockEntity.setQueueClose();
             }
+            RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
         }
         return true;
     }
-
-    protected void sendClientPacket(ServerPlayer player) {}
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
