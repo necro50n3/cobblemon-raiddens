@@ -8,7 +8,7 @@ import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -18,7 +18,13 @@ import java.util.*;
 
 public class RaidBuilder {
     public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, int raidPartySize) {
-        List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon);
+        List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player)
+            .toBattleTeam(false, false, leadingPokemon)
+            .stream().filter(p ->
+                !p.getEffectedPokemon().isFainted()
+                && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
+                && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
+            ).toList();
         if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, raidPartySize));
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),

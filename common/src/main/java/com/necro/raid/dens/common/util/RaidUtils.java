@@ -34,7 +34,7 @@ public class RaidUtils {
     private static final Set<String> MOVE_BLACKLIST = new HashSet<>();
 
     public static boolean isPokemonBlacklisted(Pokemon pokemon) {
-        return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName());
+        return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName().toLowerCase());
     }
 
     public static boolean isAbilityBlacklisted(Ability ability) {

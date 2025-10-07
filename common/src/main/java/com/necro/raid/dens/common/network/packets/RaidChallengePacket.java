@@ -70,17 +70,21 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             return;
         }
 
-        if (RaidUtils.isPokemonBlacklisted(pokemonEntity.getPokemon())) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon").withStyle(ChatFormatting.RED));
+        Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
+        if (pokemon == null) return;
+        else if (RaidUtils.isPokemonBlacklisted(pokemon)) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName()).withStyle(ChatFormatting.RED));
             return;
         }
-        else if (RaidUtils.isAbilityBlacklisted(pokemonEntity.getPokemon().getAbility())) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability").withStyle(ChatFormatting.RED));
+        else if (RaidUtils.isAbilityBlacklisted(pokemon.getAbility())) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName())).withStyle(ChatFormatting.RED));
+            return;
+        }
+        else if (pokemon.isFainted()) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName()).withStyle(ChatFormatting.RED));
             return;
         }
 
-        Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
-        if (pokemon == null) return;
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
