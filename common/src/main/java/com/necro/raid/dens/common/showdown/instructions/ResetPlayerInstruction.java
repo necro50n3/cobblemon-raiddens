@@ -95,7 +95,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
     public void postActionEffect(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
-            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
+            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.player", origin.getName()));
 
             BattleContext.Type boostBucket = BattleContext.Type.UNBOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);

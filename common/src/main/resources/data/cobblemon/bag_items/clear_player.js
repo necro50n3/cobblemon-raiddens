@@ -1,12 +1,9 @@
 {
     use(battle, pokemon, itemId, data) {
         var origin = data[0];
-        for (let i in this.boosts) {
-            if (this.boosts[i] <= 0) continue; // Add check to skip negative boosts
-            this.boosts[i] = 0;
-
-            if (i === 'evasion' || i === 'accuracy') continue;
-            this.modifiedStats[i] = this.storedStats[i];
+        for (let i in pokemon.boosts) {
+            if (pokemon.boosts[i] <= 0) continue; // Add check to skip negative boosts
+            pokemon.boosts[i] = 0;
         }
 
         battle.log = battle.log.filter(line => !(line.startsWith('|bagitem|') && line.includes('clear_boost')));
