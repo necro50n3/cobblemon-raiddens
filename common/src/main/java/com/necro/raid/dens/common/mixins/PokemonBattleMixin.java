@@ -31,6 +31,9 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     private RaidInstance raidInstance;
 
     @Unique
+    private boolean queueTera;
+
+    @Unique
     private List<BiConsumer<RaidInstance, PokemonBattle>> instructionQueue = new ArrayList<>();
 
     @Override
@@ -65,14 +68,20 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
 
     @Inject(method = "writeShowdownAction", at = @At("HEAD"), remap = false, cancellable = true)
     private void triggerTerastallization(String[] messages, CallbackInfo ci) {
-        if (this.getTurn() != 1) return;
+        if (this.getTurn() != 1 && !this.queueTera) return;
         else if (!this.isRaidBattle()) return;
         else if (!messages[0].startsWith(">p2")) return;
         else if (!this.raidInstance.getRaidBoss().isTera()) return;
 
+        if (!messages[0].startsWith(">p2 move")) {
+            this.queueTera = true;
+            return;
+        }
+
         this.log(String.join("\n", messages));
         String[] messageList = {messages[0] + " terastal"};
         ShowdownService.Companion.getService().send(this.getBattleId(), messageList);
+        this.queueTera = false;
         ci.cancel();
     }
 }
