@@ -17,8 +17,8 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.showdown.RaidBagItems;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.bagitems.PlayerJoinBagItem;
 import com.necro.raid.dens.common.showdown.bagitems.StatChangeBagItem;
@@ -110,6 +110,7 @@ public class RaidInstance {
 
         this.damageCache.put(player, this.currentHealth);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
+        if (this.scriptByTurn.containsKey(0)) ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(this.scriptByTurn.get(0)));
 
         this.cheersLeft.put(player, tierConfig.maxCheers());
         this.activePlayers.add(player);
@@ -326,7 +327,7 @@ public class RaidInstance {
         else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
         String key = bp.getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_BOSS, bp, key));
+        this.sendAction(side1, side2, new BagItemActionResponse(RaidBagItems.CLEAR_BOSS, bp, key));
     }
 
     private void clearPlayerStats(@NotNull PokemonBattle battle) {
@@ -339,7 +340,17 @@ public class RaidInstance {
         else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
         BattlePokemon bp = target.getFirst().getBattlePokemon();
         String key = origin.getFirst().getBattlePokemon().getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(ModItems.CLEAR_PLAYER, bp, key));
+        this.sendAction(side1, side2, new BagItemActionResponse(RaidBagItems.CLEAR_PLAYER, bp, key));
+    }
+
+    private void useSimpleBagItem(@NotNull PokemonBattle battle, BagItem item) {
+        BattleActor side1 = battle.getSide1().getActors()[0];
+        BattleActor side2 = battle.getSide2().getActors()[0];
+        List<ActiveBattlePokemon> target = side2.getActivePokemon();
+        if (side1.getRequest() == null || side2.getRequest() == null) return;
+        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
+        BattlePokemon bp = target.getFirst().getBattlePokemon();
+        this.sendAction(side1, side2, new BagItemActionResponse(item, bp, null));
     }
 
     private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
@@ -415,5 +426,20 @@ public class RaidInstance {
         INSTRUCTION_MAP.put("PLAYER_ACC_2", (r, b) -> r.changePlayerStat(b, Stats.ACCURACY, -2));
         INSTRUCTION_MAP.put("PLAYER_EVA_1", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -1));
         INSTRUCTION_MAP.put("PLAYER_EVA_2", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -2));
+
+        INSTRUCTION_MAP.put("SET_RAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_RAIN));
+        INSTRUCTION_MAP.put("SET_SANDSTORM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SANDSTORM));
+        INSTRUCTION_MAP.put("SET_SNOW", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SNOW));
+        INSTRUCTION_MAP.put("SET_SUN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SUN));
+
+        INSTRUCTION_MAP.put("SET_ELECTRIC_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_ELECTRIC_TERRAIN));
+        INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_GRASSY_TERRAIN));
+        INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_MISTY_TERRAIN));
+        INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_PSYCHIC_TERRAIN));
+
+        INSTRUCTION_MAP.put("SET_GRAVITY", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_GRAVITY));
+        INSTRUCTION_MAP.put("SET_MAGIC_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_MAGIC_ROOM));
+        INSTRUCTION_MAP.put("SET_TRICK_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_TRICK_ROOM));
+        INSTRUCTION_MAP.put("SET_WONDER_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_WONDER_ROOM));
     }
 }
