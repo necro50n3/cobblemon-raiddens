@@ -14,6 +14,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.items.ModItems;
@@ -102,20 +103,21 @@ public class RaidInstance {
     }
 
     public void addPlayer(ServerPlayer player, PokemonBattle battle) {
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
         ((IRaidBattle) battle).setRaidBattle(this);
         this.battles.add(battle);
         this.bossEvent.addPlayer(player);
 
         this.damageCache.put(player, this.currentHealth);
-        if (!this.activePlayers.isEmpty() && CobblemonRaidDens.CONFIG.multiplayer_health_multiplier > 1.0f) this.applyHealthMulti(player);
+        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
 
-        this.cheersLeft.put(player, CobblemonRaidDens.CONFIG.max_cheers);
+        this.cheersLeft.put(player, tierConfig.maxCheers());
         this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
     }
 
     private void applyHealthMulti(ServerPlayer newPlayer) {
-        float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.CONFIG.multiplayer_health_multiplier - 1f) * this.activePlayers.size();
+        float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier()).multiplayerHealthMultiplier() - 1f) * this.activePlayers.size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
         this.currentHealth = this.maxHealth * currentRatio;

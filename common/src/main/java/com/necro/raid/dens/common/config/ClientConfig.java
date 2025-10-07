@@ -5,7 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name="cobbleraiddens-client")
+@Config(name="cobblemonraiddens/client")
 public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("Beacon Beam")
     @Comment("Show Beacon Beam for Tier One Raids")

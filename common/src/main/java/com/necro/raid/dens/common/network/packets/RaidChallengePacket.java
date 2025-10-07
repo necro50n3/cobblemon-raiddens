@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -83,7 +84,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon)
+            RaidBoss boss = ((IRaidAccessor) entity).getRaidBoss();
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).raidPartySize())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     UUID raidId2 = raidId;
@@ -94,7 +96,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     }
                     RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(raidId2);
                     raidInstance.addPlayer(battle);
-                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, raidInstance.getRaidBoss(), battle));
+                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
                     return Unit.INSTANCE;
                 })
                 .ifErrored(errors -> {

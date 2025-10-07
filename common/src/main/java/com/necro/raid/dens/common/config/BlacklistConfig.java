@@ -4,7 +4,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-@Config(name="cobbleraiddens/blacklist")
+@Config(name="cobblemonraiddens/blacklist")
 public class BlacklistConfig implements ConfigData {
     @Comment("List of blacklisted Pokemon in raid battles.")
     public String[] pokemon = {};

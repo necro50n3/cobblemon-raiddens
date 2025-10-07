@@ -323,7 +323,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public boolean isAtMaxClears() {
-        return CobblemonRaidDens.CONFIG.max_clears != -1 && this.clears >= CobblemonRaidDens.CONFIG.max_clears;
+        RaidBoss boss = this.getRaidBoss();
+        if (boss == null) return true;
+        int maxClears = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).maxClears();
+        return maxClears != -1 && this.clears >= maxClears;
     }
 
     public ServerLevel getDimension() {
@@ -343,7 +346,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public boolean isFull() {
-        return CobblemonRaidDens.CONFIG.max_players != -1 && this.playerQueue.size() >= CobblemonRaidDens.CONFIG.max_players;
+        RaidBoss boss = this.getRaidBoss();
+        if (boss == null) return true;
+        int maxPlayers = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).maxPlayers();
+        return maxPlayers != -1 && this.playerQueue.size() >= maxPlayers;
     }
 
     public boolean isBusy() {

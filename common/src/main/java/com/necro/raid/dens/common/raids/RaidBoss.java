@@ -22,6 +22,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
+import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
@@ -93,11 +94,11 @@ public class RaidBoss {
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         if (properties.getShiny() == null) properties.setShiny(false);
-        if (properties.getLevel() == null) properties.setLevel(this.raidTier.getLevel());
+        if (properties.getLevel() == null) properties.setLevel(CobblemonRaidDens.TIER_CONFIG.get(this.getTier()).bossLevel());
         properties.setIvs(IVs.createRandomIVs(6));
 
         Pokemon pokemon = properties.create();
-        int healthMulti = this.healthMulti > 0 ? this.healthMulti : this.raidTier.getHealth();
+        int healthMulti = this.healthMulti;
         ((IHealthSetter) pokemon).setMaxHealth(healthMulti * pokemon.getMaxHealth());
 
         for (SpeciesFeature form : this.raidForm) {
@@ -136,7 +137,8 @@ public class RaidBoss {
 
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
-        if (properties.getLevel() == null) properties.setLevel(this.raidTier.getRewardLevel());
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
+        if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
@@ -144,7 +146,7 @@ public class RaidBoss {
         ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
         properties.roll(pokemon, player);
 
-        if (properties.getAbility() == null && player.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.ha_rate) {
+        if (properties.getAbility() == null && player.getRandom().nextDouble() < tierConfig.haRate()) {
             pokemon.getForm().getAbilities().getMapping().values().forEach(
                 abilities -> {
                     List<HiddenAbility> hidden = abilities.stream()
@@ -265,7 +267,7 @@ public class RaidBoss {
     }
 
     public int getCurrency() {
-        return this.currency == -1 ? this.raidTier.getCurrency() : this.currency;
+        return this.currency;
     }
 
     public ResourceLocation getRandomDen(RandomSource random) {
@@ -384,16 +386,24 @@ public class RaidBoss {
             raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
             Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
             Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
-            Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
             Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
-            Codec.FLOAT.optionalFieldOf("shiny_rate", CobblemonRaidDens.CONFIG.shiny_rate).forGetter(RaidBoss::getShinyRate),
+            Codec.FLOAT.optionalFieldOf("shiny_rate", -1.0f).forGetter(RaidBoss::getShinyRate),
+            Codec.INT.optionalFieldOf("currency", -1).forGetter(RaidBoss::getCurrency),
+            Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
-            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
-            Codec.INT.optionalFieldOf("currency", -1).forGetter(RaidBoss::getCurrency)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency) -> {
+            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key) -> {
                 properties.setTeraType(type.getSerializedName());
-                properties.setIvs(IVs.createRandomIVs(tier.getMaxIvs()));
+
+                TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
+                properties.setIvs(IVs.createRandomIVs(tierConfig.ivs()));
+                if (healthMulti <= 0) healthMulti = tierConfig.healthMultiplier();
+                if (shinyRate == -1.0f) shinyRate = tierConfig.shinyRate();
+                if (currency == -1) currency = tierConfig.currency();
+                if (maxCatches == -1) maxCatches = tierConfig.maxCatches();
+                if (script.isEmpty()) script = tierConfig.defaultScripts();
+
                 if (shinyRate == 1.0f) properties.setShiny(true);
                 else if (shinyRate == 0.0f) properties.setShiny(false);
 

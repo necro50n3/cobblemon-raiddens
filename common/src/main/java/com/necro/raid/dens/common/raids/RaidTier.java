@@ -11,56 +11,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public enum RaidTier implements StringRepresentable {
-    TIER_ONE("tier_one", initHealth(0), initIvs(0), initLevel(0), initRewardLevel(0), initCurrency(0)),
-    TIER_TWO("tier_two", initHealth(1), initIvs(1), initLevel(1), initRewardLevel(1), initCurrency(1)),
-    TIER_THREE("tier_three", initHealth(2), initIvs(2), initLevel(2), initRewardLevel(2), initCurrency(2)),
-    TIER_FOUR("tier_four", initHealth(3), initIvs(3), initLevel(3), initRewardLevel(3), initCurrency(3)),
-    TIER_FIVE("tier_five", initHealth(4), initIvs(4), initLevel(4), initRewardLevel(4), initCurrency(4)),
-    TIER_SIX("tier_six", initHealth(5), initIvs(5), initLevel(5), initRewardLevel(5), initCurrency(5)),
-    TIER_SEVEN("tier_seven", initHealth(6), initIvs(6), initLevel(6), initRewardLevel(6), initCurrency(6));
+    TIER_ONE("tier_one"),
+    TIER_TWO("tier_two"),
+    TIER_THREE("tier_three"),
+    TIER_FOUR("tier_four"),
+    TIER_FIVE("tier_five"),
+    TIER_SIX("tier_six"),
+    TIER_SEVEN("tier_seven");
 
     private final String id;
-    private final int health;
-    private final int maxIvs;
-    private final int level;
-    private final int rewardLevel;
-    private final int currency;
     private boolean isPresent;
 
     private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
 
-    RaidTier(String id, int health, int maxIvs, int level, int rewardLevel, int currency) {
+    RaidTier(String id) {
         this.id = id;
-        this.health = health;
-        this.maxIvs = maxIvs;
-        this.level = level;
-        this.rewardLevel = rewardLevel;
-        this.currency = currency;
         this.isPresent = false;
     }
 
     public String getLootTableId() {
         return "raid/tier/" + this.id;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getMaxIvs() {
-        return this.maxIvs;
-    }
-
-    public int getLevel() {
-        return this.level;
-    }
-
-    public int getRewardLevel() {
-        return this.rewardLevel;
-    }
-
-    public int getCurrency() {
-        return this.currency;
     }
 
     public boolean isPresent() {
@@ -144,31 +114,6 @@ public enum RaidTier implements StringRepresentable {
         String levelKey = level.dimension().location().toString();
         if (!RANDOM_MAP.containsKey(levelKey)) levelKey = "minecraft:overworld";
         return RANDOM_MAP.get(levelKey).getWeight(this);
-    }
-
-    public static int initHealth(int index) {
-        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_health_multiplier.length - 1);
-        return CobblemonRaidDens.CONFIG.tier_health_multiplier[index];
-    }
-
-    public static int initIvs(int index) {
-        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_ivs.length - 1);
-        return CobblemonRaidDens.CONFIG.tier_ivs[index];
-    }
-
-    public static int initLevel(int index) {
-        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_level.length - 1);
-        return CobblemonRaidDens.CONFIG.tier_level[index];
-    }
-
-    public static int initRewardLevel(int index) {
-        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_reward_level.length - 1);
-        return CobblemonRaidDens.CONFIG.tier_reward_level[index];
-    }
-
-    public static int initCurrency(int index) {
-        index = Math.min(index, CobblemonRaidDens.CONFIG.tier_currency.length - 1);
-        return CobblemonRaidDens.CONFIG.tier_currency[index];
     }
 
     public static RaidTier fromString(String name) {
