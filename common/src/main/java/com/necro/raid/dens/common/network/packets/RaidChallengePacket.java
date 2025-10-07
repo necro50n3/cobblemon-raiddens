@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,6 +66,15 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID raidId = ((IRaidAccessor) pokemonEntity).getRaidId();
         if (RaidHelper.ACTIVE_RAIDS.containsKey(raidId) && RaidHelper.ACTIVE_RAIDS.get(raidId).hasFailed(player)) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
+            return;
+        }
+
+        if (RaidUtils.isPokemonBlacklisted(pokemonEntity.getPokemon())) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon").withStyle(ChatFormatting.RED));
+            return;
+        }
+        else if (RaidUtils.isAbilityBlacklisted(pokemonEntity.getPokemon().getAbility())) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability").withStyle(ChatFormatting.RED));
             return;
         }
 

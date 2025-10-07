@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.util;
 
+import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
@@ -27,7 +29,17 @@ import java.util.List;
 import java.util.Set;
 
 public class RaidUtils {
+    private static final Set<String> POKEMON_BLACKLIST = new HashSet<>();
+    private static final Set<String> ABILITY_BLACKLIST = new HashSet<>();
     private static final Set<String> MOVE_BLACKLIST = new HashSet<>();
+
+    public static boolean isPokemonBlacklisted(Pokemon pokemon) {
+        return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName());
+    }
+
+    public static boolean isAbilityBlacklisted(Ability ability) {
+        return ABILITY_BLACKLIST.contains(ability.getName());
+    }
 
     public static boolean isMoveBlacklisted(String move) {
         return MOVE_BLACKLIST.contains(move);
@@ -106,6 +118,8 @@ public class RaidUtils {
     }
 
     public static void init() {
-        MOVE_BLACKLIST.addAll(List.of(CobblemonRaidDens.MOVE_CONFIG.blacklist));
+        POKEMON_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.pokemon));
+        ABILITY_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.abilities));
+        MOVE_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.moves));
     }
 }

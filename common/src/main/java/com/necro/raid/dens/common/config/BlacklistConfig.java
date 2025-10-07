@@ -4,13 +4,17 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Config(name="cobbleraiddens-moves")
-public class MoveConfig implements ConfigData {
+@Config(name="cobbleraiddens/blacklist")
+public class BlacklistConfig implements ConfigData {
+    @Comment("List of blacklisted Pokemon in raid battles.")
+    public String[] pokemon = {};
+    @Comment("List of blacklisted abilities in raid battles")
+    public String[] abilities = {
+        "wonderguard"
+    };
     @Comment("List of blacklisted moves in raid battles.")
-    public String[] blacklist = {
+    public String[] moves = {
+        "bestow",
         "circlethrow",
         "destinybond",
         "disable",
