@@ -436,10 +436,5 @@ public class RaidInstance {
         INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_GRASSY_TERRAIN));
         INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_MISTY_TERRAIN));
         INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_PSYCHIC_TERRAIN));
-
-        INSTRUCTION_MAP.put("SET_GRAVITY", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_GRAVITY));
-        INSTRUCTION_MAP.put("SET_MAGIC_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_MAGIC_ROOM));
-        INSTRUCTION_MAP.put("SET_TRICK_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_TRICK_ROOM));
-        INSTRUCTION_MAP.put("SET_WONDER_ROOM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_WONDER_ROOM));
     }
 }
