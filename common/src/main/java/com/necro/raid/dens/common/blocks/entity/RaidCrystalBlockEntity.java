@@ -4,6 +4,8 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
+import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
@@ -155,6 +157,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.ACTIVE, true), 2);
+
+        RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, raidBoss));
     }
 
     public boolean spawnRaidBoss() {

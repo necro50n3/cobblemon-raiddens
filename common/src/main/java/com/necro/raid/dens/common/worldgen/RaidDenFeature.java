@@ -3,6 +3,8 @@ package com.necro.raid.dens.common.worldgen;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
+import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
@@ -72,6 +74,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
             blockEntity.setRaidBucket(bucket);
         }
 
+        RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, raidBoss));
         return true;
     }
 }
