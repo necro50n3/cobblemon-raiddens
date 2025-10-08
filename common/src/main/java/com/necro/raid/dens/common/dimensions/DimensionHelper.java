@@ -14,6 +14,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -25,10 +27,22 @@ import java.util.concurrent.TimeUnit;
 public class DimensionHelper {
     public static TriConsumer<MinecraftServer, ResourceKey<Level>, Boolean> SYNC_DIMENSIONS;
     private static final Set<PendingDimension> QUEUED_FOR_REMOVAL = new HashSet<>();
+    private static final Set<ResourceKey<Level>> DELAYED_REMOVAL = new HashSet<>();
     private static final Set<ResourceKey<Level>> REMOVED_LEVELS = new HashSet<>();
 
     public static void queueForRemoval(ResourceKey<Level> key, ServerLevel level) {
         QUEUED_FOR_REMOVAL.add(new PendingDimension(key, level));
+    }
+
+    public static void addToCache(ServerLevel level) {
+        DELAYED_REMOVAL.add(level.dimension());
+        for (Entity entity : level.getAllEntities()) {
+            if (!(entity instanceof ServerPlayer) && entity != null) entity.discard();
+        }
+    }
+
+    public static void removeFromCache(ResourceKey<Level> level) {
+        DELAYED_REMOVAL.remove(level);
     }
 
     public static void removePending(MinecraftServer server) {
@@ -43,10 +57,31 @@ public class DimensionHelper {
         ((ILevelsSetter) server).setLevels(newLevels);
 
         QUEUED_FOR_REMOVAL.forEach(pd -> {
-            REMOVED_LEVELS.add(pd.level.dimension());
-            if (!pd.isRunning) pd.saveAndCLose(server);
+            REMOVED_LEVELS.add(pd.levelKey);
+            if (!pd.isRunning) pd.saveAndClose(server);
         });
         QUEUED_FOR_REMOVAL.clear();
+    }
+
+    public static void removeDelayed(MinecraftServer server, ServerPlayer player) {
+        ResourceKey<Level> key = ModDimensions.createLevelKey(player.getStringUUID());
+        if (!DELAYED_REMOVAL.contains(key)) return;
+        ServerLevel level = server.getLevel(key);
+        if (level == null) return;
+
+        queueForRemoval(key, level);
+        SYNC_DIMENSIONS.accept(server, key, false);
+        removeFromCache(key);
+    }
+
+    public static void removeDelayed(MinecraftServer server) {
+        for (ResourceKey<Level> key : DELAYED_REMOVAL) {
+            ServerLevel level = server.getLevel(key);
+            if (level == null) return;
+            queueForRemoval(key, level);
+        }
+        removePending(server);
+        DELAYED_REMOVAL.clear();
     }
 
     public static boolean isLevelRemovedOrPending(ResourceKey<Level> level) {
@@ -65,7 +100,7 @@ public class DimensionHelper {
         }
 
         @SuppressWarnings("ResultOfMethodCallIgnored")
-        void saveAndCLose(MinecraftServer server) {
+        private void saveAndClose(MinecraftServer server) {
             this.isRunning = true;
             try {
                 ((ServerLevelAccessor) this.level).getEntityManager().close();

@@ -156,13 +156,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         ServerLevel level;
         try {
             level = this.getOrCreateDimension(blockEntity);
-            if (level == null) throw new Exception();
+            if (level == null) throw new Exception("Level is null");
         }
         catch (Exception e) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.already_hosting").withStyle(ChatFormatting.RED));
+            CobblemonRaidDens.LOGGER.error("Error creating or getting dim:", e);
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.pending_removal").withStyle(ChatFormatting.RED));
             return false;
         }
 
+        DimensionHelper.removeFromCache(level.dimension());
         blockEntity.setDimension(level);
         if (!blockEntity.spawnRaidBoss()) {
             blockEntity.setQueueClose();

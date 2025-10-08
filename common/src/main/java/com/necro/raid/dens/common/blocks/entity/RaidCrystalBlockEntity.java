@@ -220,9 +220,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     protected void removeDimension() {
-        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(this.raidHost.toString());
-        DimensionHelper.queueForRemoval(levelKey, this.getDimension());
-        if (this.getLevel() != null) DimensionHelper.SYNC_DIMENSIONS.accept(this.getLevel().getServer(), levelKey, false);
+        if (CobblemonRaidDens.CONFIG.cache_dimensions) {
+            DimensionHelper.addToCache(this.getDimension());
+        }
+        else {
+            ResourceKey<Level> levelKey = ModDimensions.createLevelKey(this.raidHost.toString());
+            DimensionHelper.queueForRemoval(levelKey, this.getDimension());
+            if (this.getLevel() != null) DimensionHelper.SYNC_DIMENSIONS.accept(this.getLevel().getServer(), levelKey, false);
+        }
     }
 
     public void addChunkTicket() {

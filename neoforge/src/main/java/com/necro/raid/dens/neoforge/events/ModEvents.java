@@ -23,6 +23,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @EventBusSubscriber(modid = CobblemonRaidDens.MOD_ID)
@@ -45,6 +46,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
         RaidHelper.onPlayerDisconnect(event.getEntity());
+        DimensionHelper.removeDelayed(event.getEntity().getServer(), (ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent
@@ -53,6 +55,11 @@ public class ModEvents {
         RaidHelper.initHelper(server);
         RaidRegistry.initRaidBosses(server);
         RaidBucketRegistry.init(server);
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        DimensionHelper.removeDelayed(event.getServer());
     }
 
     @SubscribeEvent

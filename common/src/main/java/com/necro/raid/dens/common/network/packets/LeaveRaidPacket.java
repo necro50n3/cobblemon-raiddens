@@ -54,6 +54,7 @@ public record LeaveRaidPacket() implements CustomPacketPayload {
 
                 BlockEntity blockEntity = level.getBlockEntity(BlockPos.ZERO);
                 if (blockEntity instanceof RaidHomeBlockEntity homeBlock) RaidHomeBlock.safeExit(homeBlock, BlockPos.ZERO, player, player.level());
+                else if (CobblemonRaidDens.CONFIG.cache_dimensions) DimensionHelper.addToCache(level);
                 else DimensionHelper.queueForRemoval(key, level);
             }
         }

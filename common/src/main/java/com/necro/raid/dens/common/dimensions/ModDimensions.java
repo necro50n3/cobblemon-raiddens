@@ -18,11 +18,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -30,7 +36,11 @@ import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.OptionalLong;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -101,10 +111,7 @@ public class ModDimensions {
     Credits to SoulHome mod for method
      */
     public static ServerLevel createRaidDimension(MinecraftServer server, ResourceKey<Level> levelKey) {
-        if (server.getLevel(levelKey) != null) {
-            CobblemonRaidDens.LOGGER.warn("Attempting to create already existing dimension: {}", levelKey);
-            return null;
-        }
+        if (server.getLevel(levelKey) != null) return server.getLevel(levelKey);
         ResourceKey<LevelStem> dimKey = ResourceKey.create(Registries.LEVEL_STEM, levelKey.location());
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = ModDimensions::raidDimBuilder;
@@ -153,8 +160,16 @@ public class ModDimensions {
             return structureManager.getOrCreate(blockEntity.getRaidStructure());
         });
         StructurePlaceSettings settings = new StructurePlaceSettings();
+        settings.clearProcessors();
+        settings.addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
+
         Vec3 offset = RaidDenRegistry.getOffset(blockEntity.getRaidStructure());
         BlockPos corner = BlockPos.containing(offset);
+
+        for (Entity e : level.getAllEntities()) {
+            if (e != null) e.discard();
+        }
+
         template.placeInWorld(level, corner, corner, settings, level.getRandom(), 2);
 
         level.setBlockAndUpdate(BlockPos.ZERO, ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());

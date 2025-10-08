@@ -23,8 +23,13 @@ public class ModEvents {
         if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
     }
 
-    public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer minecraftServer) {
+    public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
         RaidHelper.onPlayerDisconnect(listener.getPlayer());
+        DimensionHelper.removeDelayed(server, listener.getPlayer());
+    }
+
+    public static void onServerStopping(MinecraftServer server) {
+        DimensionHelper.removeDelayed(server);
     }
 
     public static void initRaidHelper(MinecraftServer server) {
