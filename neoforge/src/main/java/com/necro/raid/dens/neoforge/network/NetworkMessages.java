@@ -2,8 +2,6 @@ package com.necro.raid.dens.neoforge.network;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
-import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
-import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
 import com.necro.raid.dens.common.network.packets.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
@@ -74,7 +72,7 @@ public class NetworkMessages {
     public static void handleRequest(RequestPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests) sendPacketToServer(new RequestResponsePacket(true, packet.player()));
-            else RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRequestOverlay(packet.player()));
+            else packet.handleClient();
         });
     }
 

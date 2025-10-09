@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.events;
 
-import com.cobblemon.mod.common.api.events.Cancelable;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

@@ -1,8 +1,6 @@
 package com.necro.raid.dens.fabric.network;
 
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
-import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
-import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
 import com.necro.raid.dens.common.network.packets.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -81,7 +79,7 @@ public class NetworkMessages {
 
     public static void handleRequest(RequestPacket packet, ClientPlayNetworking.Context context) {
         if (CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests) sendPacketToServer(new RequestResponsePacket(true, packet.player()));
-        else RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRequestOverlay(packet.player()));
+        else packet.handleClient();
     }
 
     public static void handleRequestResponse(RequestResponsePacket packet, ServerPlayNetworking.Context context) {
