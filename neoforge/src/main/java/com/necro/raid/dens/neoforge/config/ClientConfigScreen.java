@@ -66,7 +66,14 @@ public class ClientConfigScreen {
                 .setDefaultValue(true)
                 .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven = value)
                 .build()
-            );
+            )
+            .addEntry(entryBuilder.startBooleanToggle(
+                    Component.translatable("text.autoconfig.cobbleraiddens-client.option.auto_accept_requests"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests)
+                .setDefaultValue(true)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests = value)
+                .build()
+        );
 
         builder.setSavingRunnable(() -> AutoConfig.getConfigHolder(ClientConfig.class).save());
         return builder.build();

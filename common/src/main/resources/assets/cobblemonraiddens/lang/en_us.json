@@ -134,6 +134,7 @@
     "stat.cobblemonraiddens.tier_seven_completed": "Tier Seven Raids Completed",
     "tag.item.cobblemonraiddens.raid_den_keys": "Raid Den Key",
     "text.autoconfig.cobbleraiddens-client.title": "Cobblemon Raid Dens Config",
+    "text.autoconfig.cobbleraiddens-client.option.auto_accept_requests": "Automatically accept raid join requests",
     "text.autoconfig.cobbleraiddens-client.option.show_beam_tier_one": "Tier One Beacon",
     "text.autoconfig.cobbleraiddens-client.option.show_beam_tier_two": "Tier Two Beacon",
     "text.autoconfig.cobbleraiddens-client.option.show_beam_tier_three": "Tier Three Beacon",

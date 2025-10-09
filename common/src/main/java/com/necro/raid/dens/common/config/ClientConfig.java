@@ -28,4 +28,7 @@ public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("Beacon Beam")
     @Comment("Show Beacon Beam for Tier Seven Raids")
     public boolean show_beam_tier_seven = true;
+    @ConfigEntry.Category("Raiding")
+    @Comment("Automatically accept raid join requests")
+    public boolean auto_accept_requests = false;
 }
