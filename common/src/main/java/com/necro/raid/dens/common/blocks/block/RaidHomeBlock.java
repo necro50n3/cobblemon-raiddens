@@ -6,7 +6,9 @@ import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.util.RaidUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -46,6 +48,11 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
         if (homePos == null || level.getServer() == null) return false;
         ServerLevel home = level.getServer().getLevel(blockEntity.getHome());
         if (home == null) return false;
+
+        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).stream().anyMatch(LivingEntity::isDeadOrDying)) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.cannot_leave_yet").withStyle(ChatFormatting.RED));
+            return false;
+        }
 
         PlayerExtensionsKt.party(player).forEach(pokemon -> {
             if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
