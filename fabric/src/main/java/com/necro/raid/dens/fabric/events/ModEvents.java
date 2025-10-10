@@ -1,12 +1,12 @@
 package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
+import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.network.packets.JoinRaidPacket;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
-import com.necro.raid.dens.fabric.network.NetworkMessages;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
@@ -18,7 +18,7 @@ public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
         if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
-            NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(true));
+            RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
         if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
     }
@@ -51,6 +51,7 @@ public class ModEvents {
 
     public static void clientTick(Minecraft client) {
         ClientManager.clientTick();
+        RaidDenGuiManager.tick();
     }
 
     public static void initRaidBosses(MinecraftServer server) {

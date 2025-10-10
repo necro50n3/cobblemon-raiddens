@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class RaidDenNetworkMessages {
     public static BiConsumer<ServerPlayer, Float> SYNC_HEALTH;
@@ -14,4 +15,9 @@ public class RaidDenNetworkMessages {
     public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;
     public static TriConsumer<ServerLevel, Entity, Float> RESIZE;
     public static BiConsumer<ServerPlayer, Entity> RAID_ASPECT;
+    public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
+
+    public static Runnable LEAVE_RAID;
+    public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
+    public static Consumer<Boolean> REWARD_RESPONSE;
 }

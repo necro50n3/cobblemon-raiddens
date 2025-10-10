@@ -1,12 +1,12 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.ClientHud;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
-import com.necro.raid.dens.neoforge.client.NeoForgeHud;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,6 +36,6 @@ public class ClientRegistrationEvents {
         event.register(RaidDenKeybinds.ACCEPT_SHORTCUT);
         event.register(RaidDenKeybinds.DENY_SHORTCUT);
 
-        NeoForgeHud.init();
+        ClientHud.init();
     }
 }

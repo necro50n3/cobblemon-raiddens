@@ -1,7 +1,8 @@
 package com.necro.raid.dens.neoforge.network;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.CobblemonRaidDensClient;
+import com.necro.raid.dens.common.network.ClientPacket;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
@@ -19,18 +20,18 @@ public class NetworkMessages {
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar payloadRegistrar = event.registrar(CobblemonRaidDens.MOD_ID).versioned("1.0.0").optional();
 
-        payloadRegistrar.playToClient(SyncRaidDimensionsPacket.PACKET_TYPE, SyncRaidDimensionsPacket.CODEC, NetworkMessages::handleSyncDim);
-        payloadRegistrar.playToClient(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC, NetworkMessages::handleSyncHealth);
-        payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handleJoinRaid);
-        payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handleRequest);
-        payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handleReward);
-        payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handleResize);
-        payloadRegistrar.playToClient(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC, NetworkMessages::handleRaidAspect);
+        payloadRegistrar.playToClient(SyncRaidDimensionsPacket.PACKET_TYPE, SyncRaidDimensionsPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC, NetworkMessages::handle);
 
-        payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handleRaidChallenge);
-        payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handleLeaveRaid);
-        payloadRegistrar.playToServer(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC, NetworkMessages::handleRequestResponse);
-        payloadRegistrar.playToServer(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC, NetworkMessages::handleRewardResponse);
+        payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToServer(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToServer(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC, NetworkMessages::handle);
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
@@ -49,50 +50,11 @@ public class NetworkMessages {
         PacketDistributor.sendToPlayer(player, packet);
     }
 
-    public static void handleSyncDim(SyncRaidDimensionsPacket packet, IPayloadContext context) {
+    private static void handle(ClientPacket packet, IPayloadContext context) {
         context.enqueueWork(packet::handleClient);
     }
 
-    public static void handleSyncHealth(SyncHealthPacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handleClient);
-    }
-
-    public static void handleRaidChallenge(RaidChallengePacket packet, IPayloadContext context) {
+    private static void handle(ServerPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> packet.handleServer((ServerPlayer) context.player()));
-    }
-
-    public static void handleJoinRaid(JoinRaidPacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handleClient);
-    }
-
-    public static void handleLeaveRaid(LeaveRaidPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> packet.handleServer((ServerPlayer) context.player()));
-    }
-
-    public static void handleRequest(RequestPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> {
-            if (CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests) sendPacketToServer(new RequestResponsePacket(true, packet.player()));
-            else packet.handleClient();
-        });
-    }
-
-    public static void handleRequestResponse(RequestResponsePacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> packet.handleServer((ServerPlayer) context.player()));
-    }
-
-    public static void handleReward(RewardPacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handleClient);
-    }
-
-    public static void handleRewardResponse(RewardResponsePacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> packet.handleServer((ServerPlayer) context.player()));
-    }
-
-    public static void handleResize(ResizePacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handleClient);
-    }
-
-    public static void handleRaidAspect(RaidAspectPacket packet, IPayloadContext context) {
-        context.enqueueWork(packet::handleClient);
     }
 }

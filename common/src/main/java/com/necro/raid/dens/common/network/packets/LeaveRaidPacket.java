@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.blocks.block.RaidHomeBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public record LeaveRaidPacket() implements CustomPacketPayload {
+public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "leave_raid");
     public static final Type<LeaveRaidPacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, LeaveRaidPacket> CODEC = StreamCodec.ofMember(LeaveRaidPacket::write, LeaveRaidPacket::read);
@@ -35,6 +36,7 @@ public record LeaveRaidPacket() implements CustomPacketPayload {
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleServer(ServerPlayer player) {
         assert player.getServer() != null;
         handleDim: {

@@ -13,6 +13,7 @@
         "MinecraftServerAccessor",
         "MinecraftServerMixin",
         "MoveActionResponseMixin",
+        "MoveInstructionMixin",
         "PokemonBattleMixin",
         "PokemonEntityMixin",
         "PokemonMixin",

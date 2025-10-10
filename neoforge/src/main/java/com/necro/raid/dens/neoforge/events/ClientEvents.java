@@ -16,6 +16,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void clientTick(ClientTickEvent.Post event) {
         ClientManager.clientTick();
+        RaidDenGuiManager.tick();
     }
 
     @SubscribeEvent
@@ -30,6 +31,6 @@ public class ClientEvents {
         Minecraft client = Minecraft.getInstance();
         int width = client.getWindow().getGuiScaledWidth();
         int height = client.getWindow().getGuiScaledHeight();
-        RaidDenGuiManager.render(event.getGuiGraphics(), width, height);
+        RaidDenGuiManager.render(event.getGuiGraphics(), width, height, event.getPartialTick().getGameTimeDeltaTicks());
     }
 }

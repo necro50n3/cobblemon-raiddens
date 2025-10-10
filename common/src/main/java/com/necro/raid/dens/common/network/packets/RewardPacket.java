@@ -3,13 +3,14 @@ package com.necro.raid.dens.common.network.packets;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
+import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record RewardPacket(boolean isCatchable, String pokemon) implements CustomPacketPayload {
+public record RewardPacket(boolean isCatchable, String pokemon) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_reward");
     public static final Type<RewardPacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, RewardPacket> CODEC = StreamCodec.ofMember(RewardPacket::write, RewardPacket::read);
@@ -28,6 +29,7 @@ public record RewardPacket(boolean isCatchable, String pokemon) implements Custo
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleClient() {
         RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(this.isCatchable, this.pokemon));
     }

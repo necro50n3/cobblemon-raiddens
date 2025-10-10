@@ -86,6 +86,14 @@ public class CobblemonRaidDensNeoForge {
             NetworkMessages.sendPacketToLevel(level, new ResizePacket(entity.getId(), scale));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
+        RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidLogPacket(pokemon, move));
+
+        RaidDenNetworkMessages.LEAVE_RAID = () -> NetworkMessages.sendPacketToServer(new LeaveRaidPacket());
+        RaidDenNetworkMessages.REQUEST_RESPONSE = (accept, player) ->
+            NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
+        RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
+            NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
 
         DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
             NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, create));

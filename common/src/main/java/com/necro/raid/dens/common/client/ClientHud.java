@@ -1,4 +1,4 @@
-package com.necro.raid.dens.neoforge.client;
+package com.necro.raid.dens.common.client;
 
 import com.cobblemon.mod.common.item.PokeBallItem;
 import com.necro.raid.dens.common.CobblemonRaidDens;
@@ -7,18 +7,15 @@ import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.PopupButton;
 import com.necro.raid.dens.common.client.gui.buttons.RaidButton;
 import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
-import com.necro.raid.dens.common.network.packets.LeaveRaidPacket;
-import com.necro.raid.dens.common.network.packets.RequestResponsePacket;
-import com.necro.raid.dens.common.network.packets.RewardResponsePacket;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
-import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class NeoForgeHud {
+public class ClientHud {
     public static void init() {
         RaidScreenComponents.LEAVE_RAID_BUTTON = new RaidButton(
             32, 12,
@@ -26,7 +23,7 @@ public class NeoForgeHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/raid/leave_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.raid.button"),
             button -> {
-                NetworkMessages.sendPacketToServer(new LeaveRaidPacket());
+                RaidDenNetworkMessages.LEAVE_RAID.run();
                 RaidDenGuiManager.RAID_OVERLAY = null;
                 button.setFocused(false);
                 ((RaidButton) button).setHover(false);
@@ -42,7 +39,7 @@ public class NeoForgeHud {
             button -> {
                 if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRequestOverlay overlay)) return;
                 String player = overlay.getPlayer();
-                NetworkMessages.sendPacketToServer(new RequestResponsePacket(true, player));
+                RaidDenNetworkMessages.REQUEST_RESPONSE.accept(true, player);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);
@@ -58,7 +55,7 @@ public class NeoForgeHud {
             button -> {
                 if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRequestOverlay overlay)) return;
                 String player = overlay.getPlayer();
-                NetworkMessages.sendPacketToServer(new RequestResponsePacket(false, player));
+                RaidDenNetworkMessages.REQUEST_RESPONSE.accept(false, player);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);
@@ -79,7 +76,7 @@ public class NeoForgeHud {
                     player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
                 }
                 else {
-                    NetworkMessages.sendPacketToServer(new RewardResponsePacket(true));
+                    RaidDenNetworkMessages.REWARD_RESPONSE.accept(true);
                     RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                     button.setFocused(false);
                     ((PopupButton) button).setHover(false);
@@ -94,7 +91,7 @@ public class NeoForgeHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.item"),
             button -> {
-                NetworkMessages.sendPacketToServer(new RewardResponsePacket(false));
+                RaidDenNetworkMessages.REWARD_RESPONSE.accept(false);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);
@@ -108,7 +105,7 @@ public class NeoForgeHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.force_item"),
             button -> {
-                NetworkMessages.sendPacketToServer(new RewardResponsePacket(false));
+                RaidDenNetworkMessages.REWARD_RESPONSE.accept(false);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
                 ((PopupButton) button).setHover(false);

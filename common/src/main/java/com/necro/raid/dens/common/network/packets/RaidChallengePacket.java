@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.RaidHelper;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
-public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, BattleFormat battleFormat) implements CustomPacketPayload {
+public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, BattleFormat battleFormat) implements CustomPacketPayload, ServerPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_challenge");
     public static final Type<RaidChallengePacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, RaidChallengePacket> CODEC = StreamCodec.ofMember(RaidChallengePacket::write, RaidChallengePacket::read);
@@ -54,6 +55,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleServer(ServerPlayer player) {
         if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player)) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.not_participating").withStyle(ChatFormatting.RED));

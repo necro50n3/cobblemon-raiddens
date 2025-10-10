@@ -6,13 +6,14 @@ import com.cobblemon.mod.common.client.battle.ClientBattleActor;
 import com.cobblemon.mod.common.client.battle.animations.HealthChangeAnimation;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientManager;
+import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncHealthPacket(float healthRatio) implements CustomPacketPayload {
+public record SyncHealthPacket(float healthRatio) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "sync_health");
     public static final Type<SyncHealthPacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SyncHealthPacket> CODEC = StreamCodec.ofMember(SyncHealthPacket::write, SyncHealthPacket::read);
@@ -30,6 +31,7 @@ public record SyncHealthPacket(float healthRatio) implements CustomPacketPayload
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleClient() {
         ClientManager.RAID_INSTRUCTION_QUEUE.add(this::syncHealth);
     }

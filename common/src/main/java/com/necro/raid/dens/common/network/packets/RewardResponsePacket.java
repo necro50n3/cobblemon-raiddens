@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RewardHandler;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public record RewardResponsePacket(boolean catchPokemon) implements CustomPacketPayload {
+public record RewardResponsePacket(boolean catchPokemon) implements CustomPacketPayload, ServerPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "reward_response");
     public static final Type<RewardResponsePacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, RewardResponsePacket> CODEC = StreamCodec.ofMember(RewardResponsePacket::write, RewardResponsePacket::read);
@@ -28,6 +29,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleServer(ServerPlayer player) {
         RewardHandler handler = RaidHelper.REWARD_QUEUE.get(player);
         if (handler == null) {

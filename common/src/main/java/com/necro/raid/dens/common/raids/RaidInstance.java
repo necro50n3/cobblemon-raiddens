@@ -174,6 +174,10 @@ public class RaidInstance {
         }
     }
 
+    public List<ServerPlayer> getPlayers() {
+        return this.activePlayers;
+    }
+
     public float getRemainingHealth() {
         return this.currentHealth;
     }

@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.registries.Registries;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public record SyncRaidDimensionsPacket(ResourceKey<Level> levelKey, boolean create) implements CustomPacketPayload {
+public record SyncRaidDimensionsPacket(ResourceKey<Level> levelKey, boolean create) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "sync_dimensions");
     public static final Type<SyncRaidDimensionsPacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, SyncRaidDimensionsPacket> CODEC = StreamCodec.ofMember(SyncRaidDimensionsPacket::write, SyncRaidDimensionsPacket::read);
@@ -33,6 +34,7 @@ public record SyncRaidDimensionsPacket(ResourceKey<Level> levelKey, boolean crea
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleClient() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;

@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
-public record ResizePacket(int entityId, float scale) implements CustomPacketPayload {
+public record ResizePacket(int entityId, float scale) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "resize");
     public static final Type<ResizePacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, ResizePacket> CODEC = StreamCodec.ofMember(ResizePacket::write, ResizePacket::read);
@@ -30,6 +31,7 @@ public record ResizePacket(int entityId, float scale) implements CustomPacketPay
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleClient() {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;

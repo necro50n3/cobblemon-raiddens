@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabric.network;
 
-import com.necro.raid.dens.common.CobblemonRaidDensClient;
+import com.necro.raid.dens.common.network.ClientPacket;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -19,26 +20,28 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(ResizePacket.PACKET_TYPE, ResizePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC);
 
-        ServerPlayNetworking.registerGlobalReceiver(RaidChallengePacket.PACKET_TYPE, NetworkMessages::handleRaidChallenge);
-        ServerPlayNetworking.registerGlobalReceiver(LeaveRaidPacket.PACKET_TYPE, NetworkMessages::handleLeaveRaid);
-        ServerPlayNetworking.registerGlobalReceiver(RequestResponsePacket.PACKET_TYPE, NetworkMessages::handleRequestResponse);
-        ServerPlayNetworking.registerGlobalReceiver(RewardResponsePacket.PACKET_TYPE, NetworkMessages::handleRewardResponse);
+        ServerPlayNetworking.registerGlobalReceiver(RaidChallengePacket.PACKET_TYPE, NetworkMessages::handle);
+        ServerPlayNetworking.registerGlobalReceiver(LeaveRaidPacket.PACKET_TYPE, NetworkMessages::handle);
+        ServerPlayNetworking.registerGlobalReceiver(RequestResponsePacket.PACKET_TYPE, NetworkMessages::handle);
+        ServerPlayNetworking.registerGlobalReceiver(RewardResponsePacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void registerS2CPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(SyncRaidDimensionsPacket.PACKET_TYPE, NetworkMessages::handleSyncDim);
-        ClientPlayNetworking.registerGlobalReceiver(SyncHealthPacket.PACKET_TYPE, NetworkMessages::handleSyncHealth);
-        ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handleJoinRaid);
-        ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handleRequest);
-        ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handleReward);
-        ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handleResize);
-        ClientPlayNetworking.registerGlobalReceiver(RaidAspectPacket.PACKET_TYPE, NetworkMessages::handleRaidAspect);
+        ClientPlayNetworking.registerGlobalReceiver(SyncRaidDimensionsPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(SyncHealthPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RaidAspectPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RaidLogPacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
@@ -57,48 +60,11 @@ public class NetworkMessages {
         ServerPlayNetworking.send(player, packet);
     }
 
-    public static void handleSyncDim(SyncRaidDimensionsPacket packet, ClientPlayNetworking.Context context) {
+    private static void handle(ClientPacket packet, ClientPlayNetworking.Context context) {
         packet.handleClient();
     }
 
-    public static void handleSyncHealth(SyncHealthPacket packet, ClientPlayNetworking.Context context) {
-        packet.handleClient();
-    }
-
-    public static void handleRaidChallenge(RaidChallengePacket packet, ServerPlayNetworking.Context context) {
+    private static void handle(ServerPacket packet, ServerPlayNetworking.Context context) {
         packet.handleServer(context.player());
-    }
-
-    public static void handleJoinRaid(JoinRaidPacket packet, ClientPlayNetworking.Context context) {
-        packet.handleClient();
-    }
-
-    public static void handleLeaveRaid(LeaveRaidPacket packet, ServerPlayNetworking.Context context) {
-        packet.handleServer(context.player());
-    }
-
-    public static void handleRequest(RequestPacket packet, ClientPlayNetworking.Context context) {
-        if (CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests) sendPacketToServer(new RequestResponsePacket(true, packet.player()));
-        else packet.handleClient();
-    }
-
-    public static void handleRequestResponse(RequestResponsePacket packet, ServerPlayNetworking.Context context) {
-        packet.handleServer(context.player());
-    }
-
-    public static void handleReward(RewardPacket packet, ClientPlayNetworking.Context context) {
-        packet.handleClient();
-    }
-
-    public static void handleRewardResponse(RewardResponsePacket packet, ServerPlayNetworking.Context context) {
-        packet.handleServer(context.player());
-    }
-
-    public static void handleResize(ResizePacket packet, ClientPlayNetworking.Context context) {
-        packet.handleClient();
-    }
-
-    public static void handleRaidAspect(RaidAspectPacket packet, ClientPlayNetworking.Context context) {
-        packet.handleClient();
     }
 }

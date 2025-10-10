@@ -1,7 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.network.packets.JoinRaidPacket;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -11,7 +11,6 @@ import com.necro.raid.dens.neoforge.events.reloader.RaidBossReloadListener;
 import com.necro.raid.dens.neoforge.events.reloader.RaidBucketReloadListener;
 import com.necro.raid.dens.neoforge.events.reloader.RaidDenPoolReloadListener;
 import com.necro.raid.dens.neoforge.events.reloader.RaidTemplateReloadListener;
-import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +37,7 @@ public class ModEvents {
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
-            NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(true));
+            RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
         if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
     }

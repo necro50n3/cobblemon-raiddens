@@ -4,6 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
+import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.util.RaidDenRegistry;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public record RequestResponsePacket(boolean accept, String player) implements CustomPacketPayload {
+public record RequestResponsePacket(boolean accept, String player) implements CustomPacketPayload, ServerPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "request_response");
     public static final Type<RequestResponsePacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, RequestResponsePacket> CODEC = StreamCodec.ofMember(RequestResponsePacket::write, RequestResponsePacket::read);
@@ -37,6 +38,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
         return PACKET_TYPE;
     }
 
+    @Override
     public void handleServer(ServerPlayer host) {
         RequestHandler handler = RaidHelper.getRequest(host);
         if (handler == null) return;

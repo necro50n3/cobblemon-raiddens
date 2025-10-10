@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class AbstractOverlay {
     public AbstractOverlay() {}
 
-    public void render(GuiGraphics guiGraphics, int x, int y) {}
+    public void render(GuiGraphics guiGraphics, int x, int y, float partialTick) {}
 
     public List<AbstractRaidButton> getButtons() {
         return List.of();

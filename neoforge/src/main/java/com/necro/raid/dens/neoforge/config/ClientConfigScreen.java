@@ -73,7 +73,14 @@ public class ClientConfigScreen {
                 .setDefaultValue(true)
                 .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests = value)
                 .build()
-        );
+            )
+            .addEntry(entryBuilder.startBooleanToggle(
+                    Component.translatable("text.autoconfig.cobbleraiddens-client.option.enable_raid_logs"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.enable_raid_logs)
+                .setDefaultValue(true)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.enable_raid_logs = value)
+                .build()
+            );
 
         builder.setSavingRunnable(() -> AutoConfig.getConfigHolder(ClientConfig.class).save());
         return builder.build();

@@ -31,4 +31,7 @@ public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("Raiding")
     @Comment("Automatically accept raid join requests")
     public boolean auto_accept_requests = false;
+    @ConfigEntry.Category("Raiding")
+    @Comment("Show raid logs during raids")
+    public boolean enable_raid_logs = true;
 }

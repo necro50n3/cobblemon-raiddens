@@ -30,7 +30,7 @@ public class RaidRewardOverlay extends AbstractOverlay {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int maxX, int maxY) {
+    public void render(GuiGraphics guiGraphics, int maxX, int maxY, float partialTick) {
         Font font = Minecraft.getInstance().font;
         int x = (maxX - WIDTH) / 2;
         int y = (int) (maxY * 0.55);
