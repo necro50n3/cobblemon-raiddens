@@ -105,15 +105,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
 
         if (level.isClientSide()) return;
-        else if (!this.canTick(blockState)) return;
 
-        if (this.raidBoss == null || !RaidRegistry.exists(this.raidBoss)) {
+        if (this.canGenerateBoss(blockState) && (this.raidBoss == null || !RaidRegistry.exists(this.raidBoss))) {
             this.generateRaidBoss(level, blockPos, blockState);
-        }
-
-        if (++this.soundTicks % 60 == 0) {
-            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0f, 1.0f);
-            this.soundTicks = 0;
         }
 
         if (this.raidHost != null && this.hasDimension() && this.getDimension().players().isEmpty()) {
@@ -130,6 +124,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else if (gameTime - this.lastReset > CobblemonRaidDens.CONFIG.reset_time * 20L) {
             this.playerQueue.clear();
             this.generateRaidBoss(level, blockPos, blockState);
+        }
+
+        if (!this.isActive(blockState)) return;
+        if (++this.soundTicks % 60 == 0) {
+            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0f, 1.0f);
+            this.soundTicks = 0;
         }
     }
 
@@ -319,8 +319,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             && this.raidBoss != null;
     }
 
-    public boolean canTick(BlockState blockState) {
-        return blockState.getValue(RaidCrystalBlock.ACTIVE);
+    public boolean canGenerateBoss(BlockState blockState) {
+        return blockState.getValue(RaidCrystalBlock.ACTIVE)
+            && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE;
     }
 
     public boolean renderBeacon(BlockState blockState) {
