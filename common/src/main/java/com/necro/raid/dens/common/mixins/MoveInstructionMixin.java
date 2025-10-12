@@ -43,7 +43,7 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
         battle.dispatchGo(() -> {
             raid.getPlayers().forEach(p ->
                 RaidDenNetworkMessages.RAID_LOG.accept(
-                    player,
+                    p,
                     ((TranslatableContents) this.userPokemon.getEffectedPokemon().getDisplayName().getContents()).getKey(),
                     ((TranslatableContents) this.move.getDisplayName().getContents()).getKey()
                 )
