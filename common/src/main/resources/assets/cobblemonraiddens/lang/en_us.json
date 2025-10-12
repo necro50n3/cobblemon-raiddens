@@ -34,6 +34,7 @@
     "battle.cobblemonraiddens.raid_energy": "A burst of energy was released from %1$s!",
     "battle.cobblemonraiddens.reset.boss": "%1$s cleared its own negative effects!",
     "battle.cobblemonraiddens.reset.player": "%1$s cleared your positive stat changes!",
+    "biome.cobblemonraiddens.raid_den": "Crystal Cavern",
     "block.cobblemonraiddens.raid_crystal_block": "Raid Den Crystal",
     "block.cobblemonraiddens.raid_home_block": "Raid Den Crystal",
     "category.cobblemonraiddens.raid_dens": "Raid Dens",

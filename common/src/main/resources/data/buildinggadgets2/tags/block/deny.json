@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "cobblemonraiddens:raid_crystal_block",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:raid_home_block",
+            "required": false
+        }
+    ]
+}
