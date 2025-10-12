@@ -12,7 +12,7 @@ public abstract class ModBlocks {
     public static ModBlocks INSTANCE;
 
     public static final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.of()
-        .sound(SoundType.AMETHYST).strength(50.0f, 1200.0f).noLootTable()
+        .sound(SoundType.AMETHYST).strength(3.0f, 1200.0f).noLootTable()
         .noOcclusion().isValidSpawn(ModBlocks::never).isRedstoneConductor(ModBlocks::never)
         .isSuffocating(ModBlocks::never).isViewBlocking(ModBlocks::never)
         .lightLevel(blockState -> blockState.getValue(RaidCrystalBlock.ACTIVE) ? 8 : 0);
