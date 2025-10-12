@@ -39,7 +39,7 @@ public class ModEvents {
         if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
-        if (RaidHelper.REWARD_QUEUE.containsKey(player)) RaidHelper.REWARD_QUEUE.get(player).sendRewardMessage();
+        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage();
     }
 
     @SubscribeEvent

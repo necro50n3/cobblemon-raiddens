@@ -23,7 +23,7 @@ public class RaidHelper extends SavedData {
     public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
     public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
-    public static final Map<Player, RewardHandler> REWARD_QUEUE = new HashMap<>();
+    public static final Map<UUID, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
     public final Set<UUID> RAID_HOSTS = new HashSet<>();
     public final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();

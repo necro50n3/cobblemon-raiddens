@@ -44,9 +44,9 @@ public class RaidInstance {
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
     private final List<PokemonBattle> battles;
-    private final Map<ServerPlayer, Float> damageCache;
+    private final Map<UUID, Float> damageCache;
     private final List<ServerPlayer> activePlayers;
-    private final List<ServerPlayer> failedPlayers;
+    private final List<UUID> failedPlayers;
 
     private float currentHealth;
     private float maxHealth;
@@ -54,7 +54,7 @@ public class RaidInstance {
     private final Map<Integer, String> scriptByTurn;
     private final NavigableMap<Double, String> scriptByHp;
 
-    private final Map<ServerPlayer, Integer> cheersLeft;
+    private final Map<UUID, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
 
     public RaidInstance(PokemonEntity entity) {
@@ -108,11 +108,11 @@ public class RaidInstance {
         this.battles.add(battle);
         this.bossEvent.addPlayer(player);
 
-        this.damageCache.put(player, this.currentHealth);
+        this.damageCache.put(player.getUUID(), this.currentHealth);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
         if (this.scriptByTurn.containsKey(0)) ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(this.scriptByTurn.get(0)));
 
-        this.cheersLeft.put(player, tierConfig.maxCheers());
+        this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
     }
@@ -140,8 +140,8 @@ public class RaidInstance {
         this.battles.remove(battle);
         ((IRaidBattle) battle).setRaidBattle(null);
         this.bossEvent.removePlayer(player);
-        this.damageCache.remove(player);
-        this.failedPlayers.add(player);
+        this.damageCache.remove(player.getUUID());
+        this.failedPlayers.add(player.getUUID());
     }
 
     public void removePlayer(PokemonBattle battle) {
@@ -150,14 +150,14 @@ public class RaidInstance {
 
     public void removePlayer(ServerPlayer player) {
         this.bossEvent.removePlayer(player);
-        this.damageCache.remove(player);
+        this.damageCache.remove(player.getUUID());
     }
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float remainingHealth) {
         if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).isRaidBattle()) this.addPlayer(player, battle);
 
-        float damage = this.damageCache.get(player) - remainingHealth;
-        this.damageCache.put(player, remainingHealth);
+        float damage = this.damageCache.get(player.getUUID()) - remainingHealth;
+        this.damageCache.put(player.getUUID(), remainingHealth);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
         this.activePlayers.forEach(p -> RaidDenNetworkMessages.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
@@ -183,7 +183,7 @@ public class RaidInstance {
     }
 
     public boolean hasFailed(ServerPlayer player) {
-        return this.failedPlayers.contains(player);
+        return this.failedPlayers.contains(player.getUUID());
     }
 
     public void tick() {
@@ -264,9 +264,9 @@ public class RaidInstance {
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, BagItem bagItem, String data) {
-        int cheersLeft = this.cheersLeft.getOrDefault(player, 0);
+        int cheersLeft = this.cheersLeft.getOrDefault(player.getUUID(), 0);
         if (cheersLeft <= 0) return false;
-        this.cheersLeft.put(player, --cheersLeft);
+        this.cheersLeft.put(player.getUUID(), --cheersLeft);
 
         this.cheer(oBattle, bagItem, data, false);
         for (PokemonBattle b : this.battles) {
@@ -285,7 +285,7 @@ public class RaidInstance {
         BattlePokemon bp = target.getFirst().getBattlePokemon();
         String data = String.format("%s %s", (int) this.currentHealth, newPlayer.getName().getString());
         this.sendAction(side1, side2, new BagItemActionResponse(new PlayerJoinBagItem(), bp, data));
-        this.damageCache.put(player, (float) Math.floor(this.currentHealth));
+        this.damageCache.put(player.getUUID(), (float) Math.floor(this.currentHealth));
     }
 
     public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {

@@ -10,7 +10,6 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Final;

@@ -31,7 +31,7 @@ public class RewardHandler {
         if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
         String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
         RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.isCatchable, speciesName);
-        RaidHelper.REWARD_QUEUE.put(this.player, this);
+        RaidHelper.REWARD_QUEUE.put(this.player.getUUID(), this);
     }
 
     public boolean givePokemonToPlayer() {

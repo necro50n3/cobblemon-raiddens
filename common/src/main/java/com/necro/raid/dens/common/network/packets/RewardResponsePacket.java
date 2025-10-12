@@ -31,7 +31,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
 
     @Override
     public void handleServer(ServerPlayer player) {
-        RewardHandler handler = RaidHelper.REWARD_QUEUE.get(player);
+        RewardHandler handler = RaidHelper.REWARD_QUEUE.get(player.getUUID());
         if (handler == null) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.already_received_reward"));
             return;
@@ -45,14 +45,14 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
         if (handler.givePokemonToPlayer()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"));
-            RaidHelper.REWARD_QUEUE.remove(player);
+            RaidHelper.REWARD_QUEUE.remove(player.getUUID());
         }
     }
 
     private void getItems(RewardHandler handler, ServerPlayer player) {
         if (handler.giveItemToPlayer()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_item"));
-            RaidHelper.REWARD_QUEUE.remove(player);
+            RaidHelper.REWARD_QUEUE.remove(player.getUUID());
         }
     }
 }
