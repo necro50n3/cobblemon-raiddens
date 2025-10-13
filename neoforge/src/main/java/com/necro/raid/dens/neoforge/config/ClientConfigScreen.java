@@ -17,7 +17,7 @@ public class ClientConfigScreen {
 
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
-        builder.getOrCreateCategory(Component.literal("Beacon Beam"))
+        builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.beacon_beam"))
             .addEntry(entryBuilder.startBooleanToggle(
                 Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_one"),
                     CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one)
@@ -66,7 +66,9 @@ public class ClientConfigScreen {
                 .setDefaultValue(true)
                 .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven = value)
                 .build()
-            )
+            );
+
+        builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.raiding"))
             .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests"),
                     CobblemonRaidDensClient.CLIENT_CONFIG.auto_accept_requests)
