@@ -205,7 +205,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             .getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
             .forEach(p1 -> {
                 RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
-                if (raidInstance != null) raidInstance.stopRaid(false);
+                if (raidInstance != null) {
+                    raidInstance.stopRaid(false);
+                    if (CobblemonRaidDens.CONFIG.max_clears_include_fails) this.clears++;
+                }
             });
 
         this.removeDimension();

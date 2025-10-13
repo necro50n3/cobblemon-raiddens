@@ -19,6 +19,8 @@ public class RaidConfig implements ConfigData {
     public int reset_time = 7200;
     @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, ALL). Default: ALL")
     public String cycle_mode = "ALL";
+    @Comment("Whether failed raids count towards the max clears. Default: false")
+    public boolean max_clears_include_fails = false;
     @Comment("[EXPERIMENTAL] Caches raid dimensions instead of deleting them after a raid battle. Not recommended for large/public servers. Default: false")
     public boolean cache_dimensions = false;
 }
