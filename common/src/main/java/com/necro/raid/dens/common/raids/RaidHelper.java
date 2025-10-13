@@ -1,7 +1,12 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.util.IRaidBattle;
+import kotlin.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
@@ -127,9 +132,23 @@ public class RaidHelper extends SavedData {
     }
 
     public static void onPlayerDisconnect(Player player) {
+        refundItem(player);
+        fleeRaidBattle(player);
+    }
+
+    private static void refundItem(Player player) {
         if (!JOIN_QUEUE.containsKey(player)) return;
         JOIN_QUEUE.get(player).refundItem();
         JOIN_QUEUE.remove(player);
+    }
+
+    private static void fleeRaidBattle(Player player) {
+        Pair<PokemonBattle, BattleActor> pair = PlayerExtensionsKt.getBattleState((ServerPlayer) player);
+        if (pair == null || pair.getFirst() == null) return;
+        PokemonBattle battle = pair.getFirst();
+        RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
+        if (raid == null) return;
+        raid.removePlayer((ServerPlayer) player, battle);
     }
 
     public static void onServerClose() {
