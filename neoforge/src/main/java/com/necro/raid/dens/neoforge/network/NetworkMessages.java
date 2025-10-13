@@ -27,6 +27,7 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC, NetworkMessages::handle);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
