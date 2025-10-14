@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "absol",
+        "moves": [
+            "suckerpunch",
+            "nightslash",
+            "slash",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "DARK",
+    "key": "mega_showdown:keystone",
+    "weight": 20.0
+}
