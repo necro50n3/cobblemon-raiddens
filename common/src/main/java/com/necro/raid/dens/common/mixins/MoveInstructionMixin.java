@@ -10,11 +10,14 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,14 +43,24 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
         RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
 
         battle.dispatchGo(() -> {
+            ComponentContents pokemonContents = this.userPokemon.getEffectedPokemon().getDisplayName().getContents();
+            ComponentContents moveContents = this.move.getDisplayName().getContents();
+
             raid.getPlayers().forEach(p ->
                 RaidDenNetworkMessages.RAID_LOG.accept(
                     p,
-                    ((TranslatableContents) this.userPokemon.getEffectedPokemon().getDisplayName().getContents()).getKey(),
-                    ((TranslatableContents) this.move.getDisplayName().getContents()).getKey()
+                    this.resolveContents(pokemonContents),
+                    this.resolveContents(moveContents)
                 )
             );
             return Unit.INSTANCE;
         });
+    }
+
+    @Unique
+    private String resolveContents(ComponentContents contents) {
+        if (contents instanceof TranslatableContents t) return t.getKey();
+        else if (contents instanceof PlainTextContents p) return p.text();
+        else return contents.toString();
     }
 }
