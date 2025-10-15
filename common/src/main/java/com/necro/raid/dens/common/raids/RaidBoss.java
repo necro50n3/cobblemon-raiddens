@@ -93,11 +93,37 @@ public class RaidBoss {
 
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
-        if (properties.getShiny() == null) properties.setShiny(false);
-        if (properties.getLevel() == null) properties.setLevel(CobblemonRaidDens.TIER_CONFIG.get(this.getTier()).bossLevel());
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
+        if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
         properties.setIvs(IVs.createRandomIVs(6));
 
-        Pokemon pokemon = properties.create();
+        Pokemon pokemon;
+        if (CobblemonRaidDens.CONFIG.sync_rewards && properties.getShiny() == null) {
+            pokemon = new Pokemon();
+            properties.apply(pokemon);
+            pokemon.initialize();
+            ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
+            properties.roll(pokemon, null);
+        }
+        else {
+            if (properties.getShiny() == null) properties.setShiny(false);
+            pokemon = properties.create();
+        }
+
+        if (properties.getAbility() == null && level.getRandom().nextDouble() < tierConfig.haRate()) {
+            pokemon.getForm().getAbilities().getMapping().values().forEach(
+                abilities -> {
+                    List<HiddenAbility> hidden = abilities.stream()
+                        .filter(a -> a instanceof HiddenAbility)
+                        .map(a -> (HiddenAbility) a)
+                        .toList();
+                    if (hidden.isEmpty()) return;
+                    HiddenAbility chosen = hidden.get(level.getRandom().nextInt(hidden.size()));
+                    pokemon.setAbility$common(chosen.getTemplate().create(false, chosen.getPriority()));
+                }
+            );
+        }
+
         int healthMulti = this.healthMulti;
         ((IHealthSetter) pokemon).setMaxHealth(healthMulti * pokemon.getMaxHealth());
 
@@ -144,21 +170,23 @@ public class RaidBoss {
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
         pokemon.initialize();
-        ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
-        properties.roll(pokemon, player);
+        if (!CobblemonRaidDens.CONFIG.sync_rewards) {
+            ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
+            properties.roll(pokemon, player);
 
-        if (properties.getAbility() == null && player.getRandom().nextDouble() < tierConfig.haRate()) {
-            pokemon.getForm().getAbilities().getMapping().values().forEach(
-                abilities -> {
-                    List<HiddenAbility> hidden = abilities.stream()
-                        .filter(a -> a instanceof HiddenAbility)
-                        .map(a -> (HiddenAbility) a)
-                        .toList();
-                    if (hidden.isEmpty()) return;
-                    HiddenAbility chosen = hidden.get(player.getRandom().nextInt(hidden.size()));
-                    pokemon.setAbility$common(chosen.getTemplate().create(false, chosen.getPriority()));
-                }
-            );
+            if (properties.getAbility() == null && player.getRandom().nextDouble() < tierConfig.haRate()) {
+                pokemon.getForm().getAbilities().getMapping().values().forEach(
+                    abilities -> {
+                        List<HiddenAbility> hidden = abilities.stream()
+                            .filter(a -> a instanceof HiddenAbility)
+                            .map(a -> (HiddenAbility) a)
+                            .toList();
+                        if (hidden.isEmpty()) return;
+                        HiddenAbility chosen = hidden.get(player.getRandom().nextInt(hidden.size()));
+                        pokemon.setAbility$common(chosen.getTemplate().create(false, chosen.getPriority()));
+                    }
+                );
+            }
         }
 
         for (SpeciesFeature form : this.baseForm) {

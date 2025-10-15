@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidEndEvent;
@@ -228,8 +229,17 @@ public class RaidInstance {
             failed = this.activePlayers.subList(catches, this.activePlayers.size());
         }
 
+        Pokemon cachedReward;
+        if (CobblemonRaidDens.CONFIG.sync_rewards) {
+            cachedReward = this.raidBoss.getRewardPokemon(null);
+            cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
+            cachedReward.setAbility$common(this.bossEntity.getPokemon().getAbility());
+        } else {
+            cachedReward = null;
+        }
+
         success.forEach(player -> {
-            new RewardHandler(this.raidBoss, player, true).sendRewardMessage();
+            new RewardHandler(this.raidBoss, player, true, cachedReward).sendRewardMessage();
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, true));
         });
         failed.forEach(player -> {

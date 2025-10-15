@@ -21,6 +21,8 @@ public class RaidConfig implements ConfigData {
     public String cycle_mode = "ALL";
     @Comment("Whether failed raids count towards the max clears. Default: false")
     public boolean max_clears_include_fails = false;
+    @Comment("Whether the reward Pokemon attributes (IVs/Shiny/etc.) are synced between all players or rolled individually. Default: false")
+    public boolean sync_rewards = false;
     @Comment("[EXPERIMENTAL] Caches raid dimensions instead of deleting them after a raid battle. Not recommended for large/public servers. Default: false")
     public boolean cache_dimensions = false;
 }

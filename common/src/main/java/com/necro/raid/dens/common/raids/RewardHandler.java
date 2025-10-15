@@ -21,10 +21,17 @@ public class RewardHandler {
     private final ServerPlayer player;
     private final boolean isCatchable;
 
-    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable) {
+    private final Pokemon cachedReward;
+
+    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable, Pokemon cachedReward) {
         this.raidBoss = raidBoss;
         this.player = player;
         this.isCatchable = isCatchable;
+        this.cachedReward = cachedReward;
+    }
+
+    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable) {
+        this(raidBoss, player, isCatchable, null);
     }
 
     public void sendRewardMessage() {
@@ -35,18 +42,18 @@ public class RewardHandler {
     }
 
     public boolean givePokemonToPlayer() {
-        if (!(player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
+        if (!(this.player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
+            this.player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
             return false;
         }
         else if (!this.giveItemToPlayer()) return false;
 
-        Pokemon pokemon = this.raidBoss.getRewardPokemon(player);
+        Pokemon pokemon = this.cachedReward == null ? this.raidBoss.getRewardPokemon(this.player) : this.cachedReward;
         pokemon.setCaughtBall(pokeBallItem.getPokeBall());
         PlayerExtensionsKt.party(player).add(pokemon);
-        player.getMainHandItem().consume(1, player);
+        this.player.getMainHandItem().consume(1, this.player);
 
-        RaidDenCriteriaTriggers.triggerRaidShiny(player, pokemon);
+        RaidDenCriteriaTriggers.triggerRaidShiny(this.player, pokemon);
         return true;
     }
 
@@ -55,11 +62,11 @@ public class RewardHandler {
         List<ItemStack> rewards = this.raidBoss.getRandomRewards(this.player.serverLevel());
         rewards.addFirst(raidPouch);
         for (ItemStack item : rewards) {
-            if (!player.getInventory().add(item)) {
-                ItemEntity itemEntity = player.drop(item, false);
+            if (!this.player.getInventory().add(item)) {
+                ItemEntity itemEntity = this.player.drop(item, false);
                 if (itemEntity == null) continue;
                 itemEntity.setNoPickUpDelay();
-                itemEntity.setTarget(player.getUUID());
+                itemEntity.setTarget(this.player.getUUID());
             }
         }
         return true;
