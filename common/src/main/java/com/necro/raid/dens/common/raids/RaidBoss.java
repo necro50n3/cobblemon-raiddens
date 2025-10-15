@@ -138,6 +138,7 @@ public class RaidBoss {
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
+        properties.setIvs(IVs.createRandomIVs(tierConfig.ivs()));
         if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
 
         Pokemon pokemon = new Pokemon();
@@ -397,7 +398,6 @@ public class RaidBoss {
                 properties.setTeraType(type.getSerializedName());
 
                 TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
-                properties.setIvs(IVs.createRandomIVs(tierConfig.ivs()));
                 if (healthMulti <= 0) healthMulti = tierConfig.healthMultiplier();
                 if (shinyRate == -1.0f) shinyRate = tierConfig.shinyRate();
                 if (currency == -1) currency = tierConfig.currency();
