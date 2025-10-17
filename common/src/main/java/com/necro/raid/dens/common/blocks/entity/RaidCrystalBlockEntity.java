@@ -242,7 +242,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private void removeChunkTicket() {
         if (this.getLevel() == null) return;
         ChunkPos chunkPos = new ChunkPos(this.getBlockPos());
-        ((ServerLevel) this.getLevel()).getChunkSource().removeRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode());
+        try {((ServerLevel) this.getLevel()).getChunkSource().removeRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode()); }
+        catch (Throwable ignored) {}
     }
 
     public UUID getRaidHost() {
