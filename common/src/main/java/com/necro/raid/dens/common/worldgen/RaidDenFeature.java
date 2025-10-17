@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.SetRaidBossEvent;
 import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidCycleMode;
 import com.necro.raid.dens.common.raids.RaidTier;
@@ -58,8 +59,13 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
             location = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
             raidBoss = RaidRegistry.getRaidBoss(location);
         }
-
         if (raidBoss == null) return false;
+
+        SetRaidBossEvent event = new SetRaidBossEvent(raidBoss);
+        RaidEvents.SET_RAID_BOSS.emit(event);
+        raidBoss = event.getRaidBoss();
+        if (raidBoss == null) return false;
+
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)

@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.SetRaidBossEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
@@ -150,8 +151,18 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(bossLocation);
-        if (bossLocation == null || raidBoss == null) return;
-        this.setRaidBoss(bossLocation, level.getRandom(), level.getGameTime());
+        if (raidBoss == null) return;
+
+        SetRaidBossEvent event = new SetRaidBossEvent(raidBoss);
+        RaidEvents.SET_RAID_BOSS.emit(event);
+        raidBoss = event.getRaidBoss();
+        if (raidBoss == null) {
+            this.inactiveTicks = 0;
+            this.lastReset = level.getGameTime();
+            return;
+        }
+
+        this.setRaidBoss(raidBoss.getId(), level.getRandom(), level.getGameTime());
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
