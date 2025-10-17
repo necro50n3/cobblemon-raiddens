@@ -2,9 +2,7 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
-import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,7 +35,6 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
             RaidHomeBlockEntity blockEntity = (RaidHomeBlockEntity) level.getBlockEntity(blockPos);
             if (blockEntity == null) return InteractionResult.FAIL;
             boolean success = safeExit(blockEntity, blockPos, (ServerPlayer) player, level);
-            if (success) RaidDenNetworkMessages.JOIN_RAID.accept((ServerPlayer) player, false);
             return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;
@@ -59,17 +56,6 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
         });
 
         RaidUtils.teleportPlayerSafe(player, home, homePos, player.getYHeadRot(), player.getXRot());
-
-        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).isEmpty()) {
-            if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-                raidCrystalBlockEntity.clearRaid();
-            }
-        }
-        else if (level.getEntitiesOfClass(Player.class, new AABB(blockPos).inflate(32)).isEmpty()) {
-            if (home.getBlockEntity(homePos) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-                raidCrystalBlockEntity.setQueueClose();
-            }
-        }
         return true;
     }
 

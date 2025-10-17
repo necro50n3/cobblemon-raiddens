@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RaidExitHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -80,5 +81,11 @@ public class ModEvents {
         event.addListener(new RaidBucketReloadListener());
         event.addListener(new RaidDenPoolReloadListener());
         event.addListener(new RaidTemplateReloadListener());
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer)
+            RaidExitHelper.onDimensionChange(serverPlayer, event.getFrom(), event.getTo());
     }
 }

@@ -199,7 +199,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.getLevel() == null || !this.hasDimension()) return;
 
         this.getDimension().players().forEach((player) ->
-            player.teleportTo((ServerLevel) this.getLevel(), blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() - 0.5, 0, 0)
+            RaidUtils.teleportPlayerSafe(player, (ServerLevel) this.getLevel(), blockPos, player.getYHeadRot(), player.getXRot())
         );
         this.getDimension()
             .getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())

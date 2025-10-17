@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.raids.RaidExitHelper;
 import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
@@ -30,6 +31,8 @@ import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -41,6 +44,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
+    private static boolean check = false;
     @Override
     public void onInitialize() {
         CobblemonRaidDens.init();
@@ -73,6 +77,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreakOrPlace);
         UseBlockCallback.EVENT.register(RaidUtils::canBreakOrPlace);
+        ServerPlayerEvents.AFTER_RESPAWN.register(RaidExitHelper::afterRespawn);
+        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(RaidExitHelper::onDimensionChange);
 
         DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossResourceReloadListener());
