@@ -28,6 +28,7 @@ dependencies {
     modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modCompileOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
+    modCompileOnly(files "../lib/common/CobblemonSizeVariationFabric-1.2.0+1.6.1.jar")
 
     include(modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version")
 }
