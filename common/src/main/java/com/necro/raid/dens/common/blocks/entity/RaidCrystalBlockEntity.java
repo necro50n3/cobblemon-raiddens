@@ -225,7 +225,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
                 RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
                 if (raidInstance != null) {
                     raidInstance.stopRaid(false);
-                    if (CobblemonRaidDens.CONFIG.max_clears_include_fails) this.clears++;
+                    if (CobblemonRaidDens.CONFIG.max_clears_include_fails) {
+                        this.clears++;
+                        this.isShiny = null;
+                    }
                 }
             });
 
