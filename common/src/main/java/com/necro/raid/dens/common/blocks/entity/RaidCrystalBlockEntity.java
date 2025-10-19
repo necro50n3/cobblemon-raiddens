@@ -67,6 +67,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private long lastReset;
     private boolean isOpen;
+    private Boolean isShiny;
     private Consumer<ServerPlayer> aspectSync;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -190,11 +191,17 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
         }
 
+        if (CobblemonRaidDens.CONFIG.sync_rewards) {
+            if (this.isShiny == null) this.isShiny = pokemonEntity.getPokemon().getShiny();
+            else pokemonEntity.getPokemon().setShiny(this.isShiny);
+        }
+
         return true;
     }
 
     public void clearRaid() {
         this.clears++;
+        this.isShiny = null;
         if (this.isAtMaxClears()) RaidHelper.resetClearedRaids(this.getUuid());
         else RaidHelper.clearRaid(this.getUuid(), this.playerQueue);
         this.setQueueClose();
@@ -418,6 +425,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_structure")) this.raidStructure = ResourceLocation.parse(compoundTag.getString("raid_structure"));
         else this.raidStructure = RaidDenRegistry.DEFAULT;
         if (compoundTag.contains("is_open")) this.isOpen = true;
+        if (compoundTag.contains("is_shiny")) this.isShiny = compoundTag.getBoolean("is_shiny");
     }
 
     @Override
@@ -438,6 +446,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.raidStructure != null) compoundTag.putString("raid_structure", this.raidStructure.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
+        if (this.isShiny != null) compoundTag.putBoolean("is_shiny", this.isShiny);
     }
 
     public void setRaidBoss(ResourceLocation raidBoss, RandomSource random, long gameTime) {
@@ -448,6 +457,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.raidBoss = raidBoss;
         if (raidBoss == null) this.raidStructure = null;
         else this.raidStructure = this.getRaidBoss().getRandomDen(random);
+        this.isShiny = null;
         this.setChanged();
     }
 
