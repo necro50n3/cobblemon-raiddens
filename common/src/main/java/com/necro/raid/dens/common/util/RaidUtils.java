@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.util;
 import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
+import com.necro.raid.dens.common.blocks.BlockTags;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
@@ -105,7 +105,7 @@ public class RaidUtils {
 
     @SuppressWarnings("unused")
     public static boolean cannotBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockEntity(hitResult.getBlockPos()) instanceof RaidHomeBlockEntity);
+        return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockState(hitResult.getBlockPos()).is(BlockTags.CAN_INTERACT));
     }
 
     @SuppressWarnings("unused")

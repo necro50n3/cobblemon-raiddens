@@ -44,7 +44,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
-    private static boolean check = false;
     @Override
     public void onInitialize() {
         CobblemonRaidDens.init();

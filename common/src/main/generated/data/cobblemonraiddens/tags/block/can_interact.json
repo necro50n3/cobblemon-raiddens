@@ -1,0 +1,13 @@
+{
+  "values": [
+    "cobblemonraiddens:raid_home_block",
+    {
+      "id": "yigd:grave",
+      "required": false
+    },
+    {
+      "id": "gravestone:gravestone",
+      "required": false
+    }
+  ]
+}
