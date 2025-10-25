@@ -102,22 +102,25 @@ public class DimensionHelper {
         @SuppressWarnings("ResultOfMethodCallIgnored")
         private void saveAndClose(MinecraftServer server) {
             this.isRunning = true;
-            try {
-                ((ServerLevelAccessor) this.level).getEntityManager().close();
-                this.level.getChunkSource().getLightEngine().close();
-                this.level.getChunkSource().chunkMap.close();
 
-                if (ModCompat.DISTANT_HORIZONS.isLoaded()) {
-                    CompletableFuture.runAsync(
-                        () -> RaidDensDistantHorizonsCompat.INSTANCE.unloadLevel(this.level),
-                        Util.backgroundExecutor()
-                    ).thenRun(() -> server.submit(() -> this.unregisterAndDelete(server)));
+            CompletableFuture.runAsync(() -> {
+                try { ((ServerLevelAccessor) this.level).getEntityManager().close(); }
+                catch (Throwable e) { CobblemonRaidDens.LOGGER.error("Error while closing entity manager: ", e); }
+            }, Util.backgroundExecutor()).thenRunAsync(() -> {
+                try {
+                    this.level.getChunkSource().getLightEngine().close();
+                    this.level.getChunkSource().chunkMap.close();
+
+                    if (ModCompat.DISTANT_HORIZONS.isLoaded()) {
+                        CompletableFuture.runAsync(
+                            () -> RaidDensDistantHorizonsCompat.INSTANCE.unloadLevel(this.level),
+                            Util.backgroundExecutor()
+                        ).thenRun(() -> server.submit(() -> this.unregisterAndDelete(server)));
+                    }
+                    else server.submit(() -> this.unregisterAndDelete(server));
                 }
-                else server.submit(() -> this.unregisterAndDelete(server));
-            }
-            catch (Throwable e) {
-                CobblemonRaidDens.LOGGER.error("Error while closing dimension: ", e);
-            }
+                catch (Throwable e) { CobblemonRaidDens.LOGGER.error("Error while closing dimension: ", e); }
+            }, server);
         }
 
         @SuppressWarnings("unchecked")

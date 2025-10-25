@@ -230,6 +230,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
                         this.isShiny = null;
                     }
                 }
+                if (!p1.isRemoved()) p1.discard();
             });
 
         this.removeDimension();
