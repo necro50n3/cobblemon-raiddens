@@ -25,4 +25,6 @@ public class RaidConfig implements ConfigData {
     public boolean sync_rewards = false;
     @Comment("[EXPERIMENTAL] Caches raid dimensions instead of deleting them after a raid battle. Not recommended for large/public servers. Default: false")
     public boolean cache_dimensions = false;
+    @Comment("Whether raid crystals can be broken. Default: true")
+    public boolean can_break = true;
 }
