@@ -138,14 +138,17 @@
     "tag.item.cobblemonraiddens.raid_den_keys": "Raid Den Key",
     "text.autoconfig.cobblemonraiddens/client.title": "Cobblemon Raid Dens Config",
     "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "Beacon Beams",
+    "text.autoconfig.cobblemonraiddens/client.category.gui": "Gui",
     "text.autoconfig.cobblemonraiddens/client.category.raiding": "Raiding",
-    "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Auto-Accept Join Requests",
-    "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Show Raid Logs",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_one": "Tier One Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_two": "Tier Two Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_three": "Tier Three Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_four": "Tier Four Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_five": "Tier Five Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_six": "Tier Six Beacon",
-    "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Tier Seven Beacon"
+    "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Tier Seven Beacon",
+    "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Auto-Accept Join Requests",
+    "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Show Raid Logs",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor": "Raid Status Anchor",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_offset": "Raid Status Offset (%)"
 }

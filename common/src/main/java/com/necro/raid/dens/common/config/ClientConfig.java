@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.client.gui.GuiPosition;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -28,10 +29,18 @@ public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("beacon_beam")
     @Comment("Show Beacon Beam for Tier Seven Raids")
     public boolean show_beam_tier_seven = true;
+
     @ConfigEntry.Category("raiding")
     @Comment("Automatically accept raid join requests")
     public boolean auto_accept_requests = false;
     @ConfigEntry.Category("raiding")
     @Comment("Show raid logs during raids")
     public boolean enable_raid_logs = true;
+
+    @ConfigEntry.Category("gui")
+    @ConfigEntry.Gui.EnumHandler(option=ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
+    public GuiPosition raid_status_anchor = GuiPosition.RIGHT;
+    @ConfigEntry.Category("gui")
+    @ConfigEntry.BoundedDiscrete(max=100)
+    public int raid_status_offset = 40;
 }

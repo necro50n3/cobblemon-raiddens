@@ -1,6 +1,7 @@
 package com.necro.raid.dens.neoforge.config;
 
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
+import com.necro.raid.dens.common.client.gui.GuiPosition;
 import com.necro.raid.dens.common.config.ClientConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -81,6 +82,23 @@ public class ClientConfigScreen {
                     CobblemonRaidDensClient.CLIENT_CONFIG.enable_raid_logs)
                 .setDefaultValue(true)
                 .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.enable_raid_logs = value)
+                .build()
+            );
+
+        builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.gui"))
+            .addEntry(entryBuilder.startEnumSelector(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor"),
+                    GuiPosition.class,
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_anchor)
+                .setDefaultValue(GuiPosition.RIGHT)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_anchor = value)
+                .build()
+            )
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_offset, 0, 100)
+                .setDefaultValue(40)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_offset = value)
                 .build()
             );
 
