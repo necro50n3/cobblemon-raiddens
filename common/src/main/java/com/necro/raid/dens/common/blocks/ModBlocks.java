@@ -13,7 +13,7 @@ public abstract class ModBlocks {
     public static ModBlocks INSTANCE;
 
     public static final BlockBehaviour.Properties PROPERTIES = BlockBehaviour.Properties.of()
-        .sound(SoundType.AMETHYST).strength(CobblemonRaidDens.CONFIG.can_break ? 3.0f : -1.0f, 1200.0f).noLootTable()
+        .sound(SoundType.AMETHYST).strength(CobblemonRaidDens.CONFIG.can_break ? 3.0f : -1.0f, 3600000.0f).noLootTable()
         .noOcclusion().isValidSpawn(ModBlocks::never).isRedstoneConductor(ModBlocks::never)
         .isSuffocating(ModBlocks::never).isViewBlocking(ModBlocks::never)
         .lightLevel(blockState -> blockState.getValue(RaidCrystalBlock.ACTIVE) ? 8 : 0);
