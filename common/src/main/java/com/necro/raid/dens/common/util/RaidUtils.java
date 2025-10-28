@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.BlockTags;
+import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
@@ -109,22 +110,23 @@ public class RaidUtils {
         return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
     }
 
-    public static boolean cannotBreakOrPlace(Player player, Level level) {
+    public static boolean cannotBreak(Player player, Level level) {
         return RaidUtils.isCustomDimension(level) && !player.isCreative();
     }
 
     @SuppressWarnings("unused")
-    public static boolean cannotBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+    public static boolean cannotPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
         return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockState(hitResult.getBlockPos()).is(BlockTags.CAN_INTERACT));
     }
 
     @SuppressWarnings("unused")
-    public static boolean canBreakOrPlace(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
-        return !RaidUtils.cannotBreakOrPlace(player, level);
+    public static boolean canBreak(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+        if (RaidUtils.cannotBreak(player, level)) return false;
+        else return !(blockEntity instanceof RaidCrystalBlockEntity raidCrystal) || raidCrystal.getPlayerCount() == 0;
     }
 
-    public static InteractionResult canBreakOrPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        return RaidUtils.cannotBreakOrPlace(player, level, hand, hitResult) ? InteractionResult.FAIL : InteractionResult.PASS;
+    public static InteractionResult canPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+        return RaidUtils.cannotPlace(player, level, hand, hitResult) ? InteractionResult.FAIL : InteractionResult.PASS;
     }
 
     public static void init() {

@@ -64,7 +64,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (RaidUtils.cannotBreakOrPlace(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec())) {
+        if (RaidUtils.cannotPlace(event.getEntity(), event.getLevel(), event.getHand(), event.getHitVec())) {
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.FAIL);
         }
@@ -72,7 +72,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (RaidUtils.cannotBreakOrPlace(event.getPlayer(), (Level) event.getLevel())) event.setCanceled(true);
+        if (RaidUtils.cannotBreak(event.getPlayer(), (Level) event.getLevel())) event.setCanceled(true);
     }
 
     @SubscribeEvent
