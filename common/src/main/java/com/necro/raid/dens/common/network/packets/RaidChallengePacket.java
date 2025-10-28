@@ -91,7 +91,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
             RaidBoss boss = ((IRaidAccessor) entity).getRaidBoss();
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).raidPartySize())
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()))
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     UUID raidId2 = raidId;

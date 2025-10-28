@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.util.RaidAI;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -42,6 +43,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public int max_catches = -1;
     @Comment("The default script to add to raid bosses without a script. Default: {}")
     public Map<String, String> default_scripts = new HashMap<>();
+    @Comment("The battle AI used by the raid boss (Options: RANDOM, STRONG_O...STRONG_5, RCT). Default: RANDOM")
+    public RaidAI raid_ai = RaidAI.RANDOM;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -90,5 +93,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     }
     public Map<String, String> defaultScripts() {
         return this.default_scripts;
+    }
+    public RaidAI raidAI() {
+        return this.raid_ai;
     }
 }

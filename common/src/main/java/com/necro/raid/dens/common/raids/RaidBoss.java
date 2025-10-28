@@ -24,10 +24,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.util.IHealthSetter;
-import com.necro.raid.dens.common.util.IRaidAccessor;
-import com.necro.raid.dens.common.util.IShinyRate;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
+import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -62,6 +59,7 @@ public class RaidBoss {
     private List<ResourceLocation> dens;
     private final String key;
     private final int currency;
+    private final RaidAI raidAI;
 
     private final List<String> densInner;
 
@@ -70,7 +68,7 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
                     int maxCatches, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens,
-                    String key, int currency) {
+                    String key, int currency, RaidAI raidAI) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -86,6 +84,7 @@ public class RaidBoss {
         this.dens = new ArrayList<>();
         this.key = key;
         this.currency = currency;
+        this.raidAI = raidAI;
 
         this.densInner = dens;
 
@@ -304,6 +303,10 @@ public class RaidBoss {
         return this.currency;
     }
 
+    public RaidAI getRaidAI() {
+        return this.raidAI;
+    }
+
     public ResourceLocation getRandomDen(RandomSource random) {
         if (this.dens.isEmpty()) this.resolveDens();
 
@@ -426,8 +429,9 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
-            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key) -> {
+            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
+            Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getKey)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAIString) -> {
                 properties.setTeraType(type.getSerializedName());
 
                 TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
@@ -436,6 +440,10 @@ public class RaidBoss {
                 if (currency == -1) currency = tierConfig.currency();
                 if (maxCatches == -1) maxCatches = tierConfig.maxCatches();
                 if (script.isEmpty()) script = tierConfig.defaultScripts();
+
+                RaidAI raidAI;
+                if (raidAIString.isEmpty()) raidAI = tierConfig.raidAI();
+                else raidAI = RaidAI.fromString(raidAIString);
 
                 if (shinyRate == 1.0f) properties.setShiny(true);
                 else if (shinyRate == 0.0f) properties.setShiny(false);
@@ -450,7 +458,7 @@ public class RaidBoss {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency);
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency, raidAI);
             })
         );
     }

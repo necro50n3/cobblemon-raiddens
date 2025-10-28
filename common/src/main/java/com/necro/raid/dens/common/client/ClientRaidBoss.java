@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.util.RaidAI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,7 +88,7 @@ public class ClientRaidBoss {
                 return new RaidBoss(
                     properties, tier, type, oFeature.orElse(RaidFeature.DEFAULT), raidForm, new ArrayList<>(), null,
                     0.0, oMaxCatches.orElse(-1), 0, oShinyRate.orElse(0.0f),
-                    new HashMap<>(), new ArrayList<>(), "", 0
+                    new HashMap<>(), new ArrayList<>(), "", 0, RaidAI.RANDOM
                 );
             })
         );

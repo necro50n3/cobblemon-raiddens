@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.util.RaidAI;
+
 import java.util.Map;
 
 public interface TierConfig {
@@ -19,4 +21,5 @@ public interface TierConfig {
     int currency();
     int maxCatches();
     Map<String, String> defaultScripts();
+    RaidAI raidAI();
 }
