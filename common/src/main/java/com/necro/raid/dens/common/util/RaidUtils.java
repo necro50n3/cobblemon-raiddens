@@ -32,6 +32,8 @@ public class RaidUtils {
     private static final Set<String> POKEMON_BLACKLIST = new HashSet<>();
     private static final Set<String> ABILITY_BLACKLIST = new HashSet<>();
     private static final Set<String> MOVE_BLACKLIST = new HashSet<>();
+    private static final Set<String> COMMAND_BLACKLIST = new HashSet<>();
+    private static int MAX_COMMAND_SPLIT;
 
     public static boolean isPokemonBlacklisted(Pokemon pokemon) {
         return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName().toLowerCase());
@@ -43,6 +45,14 @@ public class RaidUtils {
 
     public static boolean isMoveBlacklisted(String move) {
         return MOVE_BLACKLIST.contains(move);
+    }
+
+    public static boolean isCommandBlacklisted(String command) {
+        return COMMAND_BLACKLIST.contains(command);
+    }
+
+    public static int getMaxCommandSplit() {
+        return MAX_COMMAND_SPLIT;
     }
 
     public static boolean hasSkyAccess(LevelReader level, BlockPos blockPos) {
@@ -121,5 +131,12 @@ public class RaidUtils {
         POKEMON_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.pokemon));
         ABILITY_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.abilities));
         MOVE_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.moves));
+        COMMAND_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.commands));
+
+        int maxSplit = 1;
+        for (String command : COMMAND_BLACKLIST) {
+            maxSplit = Math.max(maxSplit, command.split(" ").length);
+        }
+        MAX_COMMAND_SPLIT = Math.min(maxSplit, 4);
     }
 }

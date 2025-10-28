@@ -44,4 +44,6 @@ public class BlacklistConfig implements ConfigData {
         "whirlwind",
         "worryseed"
     };
+    @Comment("List of blacklisted commands in raids.")
+    public String[] commands = {};
 }
