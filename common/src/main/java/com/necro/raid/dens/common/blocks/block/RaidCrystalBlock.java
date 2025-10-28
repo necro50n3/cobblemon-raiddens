@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -216,6 +217,13 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected float getDestroyProgress(BlockState blockState, Player player, BlockGetter level, BlockPos blockPos) {
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal && raidCrystal.isInProgress()) return 0.0f;
+        return super.getDestroyProgress(blockState, player, level, blockPos);
     }
 
     @Override
