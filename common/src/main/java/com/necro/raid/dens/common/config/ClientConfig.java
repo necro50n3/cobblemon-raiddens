@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.config;
 
-import com.necro.raid.dens.common.client.gui.GuiPosition;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -38,9 +37,15 @@ public class ClientConfig implements ConfigData {
     public boolean enable_raid_logs = true;
 
     @ConfigEntry.Category("gui")
-    @ConfigEntry.Gui.EnumHandler(option=ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-    public GuiPosition raid_status_anchor = GuiPosition.RIGHT;
+    @ConfigEntry.BoundedDiscrete(max=100)
+    public int raid_status_x = 100;
     @ConfigEntry.Category("gui")
     @ConfigEntry.BoundedDiscrete(max=100)
-    public int raid_status_offset = 40;
+    public int raid_status_y = 50;
+    @ConfigEntry.Category("gui")
+    @ConfigEntry.BoundedDiscrete(max=100)
+    public int raid_popup_x = 50;
+    @ConfigEntry.Category("gui")
+    @ConfigEntry.BoundedDiscrete(max=100)
+    public int raid_popup_y = 77;
 }

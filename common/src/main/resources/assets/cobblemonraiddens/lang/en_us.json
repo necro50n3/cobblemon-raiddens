@@ -150,6 +150,8 @@
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Tier Seven Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Auto-Accept Join Requests",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Show Raid Logs",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor": "Raid Status Anchor",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_offset": "Raid Status Offset (%)"
+    "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Raid Popup X (%)",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Raid Popup Y (%)",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Raid Status X (%)",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Raid Status Y (%)"
 }

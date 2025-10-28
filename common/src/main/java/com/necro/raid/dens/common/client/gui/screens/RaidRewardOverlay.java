@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.client.gui.screens;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.AbstractRaidButton;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
@@ -32,8 +33,10 @@ public class RaidRewardOverlay extends AbstractOverlay {
     @Override
     public void render(GuiGraphics guiGraphics, int maxX, int maxY, float partialTick) {
         Font font = Minecraft.getInstance().font;
-        int x = (maxX - WIDTH) / 2;
-        int y = (int) (maxY * 0.55);
+//        int x = (maxX - WIDTH) / 2;
+//        int y = (int) (maxY * 0.55);
+        int x = (int) ((maxX - WIDTH) * CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_x / 100.0);
+        int y = (int) ((maxY - HEIGHT) * CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_y / 100.0);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 4000);

@@ -1,7 +1,6 @@
 package com.necro.raid.dens.neoforge.config;
 
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
-import com.necro.raid.dens.common.client.gui.GuiPosition;
 import com.necro.raid.dens.common.config.ClientConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -86,19 +85,32 @@ public class ClientConfigScreen {
             );
 
         builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.gui"))
-            .addEntry(entryBuilder.startEnumSelector(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor"),
-                    GuiPosition.class,
-                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_anchor)
-                .setDefaultValue(GuiPosition.RIGHT)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_anchor = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_x"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_x, 0, 100)
+                .setDefaultValue(100)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_x = value)
                 .build()
             )
             .addEntry(entryBuilder.startIntSlider(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_anchor"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_offset, 0, 100)
-                .setDefaultValue(40)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_offset = value)
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_status_y"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_y, 0, 100)
+                .setDefaultValue(50)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_status_y = value)
+                .build()
+            )
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_popup_x"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_x, 0, 100)
+                .setDefaultValue(50)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_x = value)
+                .build()
+            )
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.raid_popup_y"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_y, 0, 100)
+                .setDefaultValue(77)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.raid_popup_y = value)
                 .build()
             );
 
