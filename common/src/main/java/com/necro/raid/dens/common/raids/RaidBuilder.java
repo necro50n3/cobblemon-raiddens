@@ -56,8 +56,6 @@ public class RaidBuilder {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
 
-        playerActor.setBattleTheme(pokemonEntity.getBattleTheme());
-
         if (errors.isEmpty()) {
             return BattleRegistry.INSTANCE
                 .startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
