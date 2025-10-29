@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public enum RaidAI implements StringRepresentable {
     RANDOM(RandomBattleAI::new),
-    STRONG_5(() -> new StrongBattleAI(5)),
+    STRONG(() -> new StrongBattleAI(5)),
     RCT(() -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
 
     private final Supplier<BattleAI> supplier;
