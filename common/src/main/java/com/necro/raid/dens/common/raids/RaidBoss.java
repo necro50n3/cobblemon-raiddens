@@ -91,6 +91,14 @@ public class RaidBoss {
         this.id = null;
     }
 
+    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
+                    List<SpeciesFeature> raidForm, int maxCatches, float shinyRate) {
+        this(
+            properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), null, 0.0,
+            maxCatches, 0, shinyRate, new HashMap<>(), new ArrayList<>(), "", 0, RaidAI.RANDOM
+        );
+    }
+
     public PokemonEntity getBossEntity(ServerLevel level) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());

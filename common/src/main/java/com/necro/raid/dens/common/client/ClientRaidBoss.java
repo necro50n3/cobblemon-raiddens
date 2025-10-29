@@ -68,7 +68,10 @@ public class ClientRaidBoss {
                 RaidBoss.raidFormCodec().listOf().optionalFieldOf("base_form").forGetter(ClientRaidBoss::getBaseForm),
                 Codec.FLOAT.optionalFieldOf("shiny_rate").forGetter(ClientRaidBoss::getShinyRate),
                 Codec.INT.optionalFieldOf("max_catches").forGetter(ClientRaidBoss::getMaxCatches)
-            ).apply(inst, (properties, tier, type, oFeature, oRaidForm, oBaseForm, oShinyRate, oMaxCatches) -> {
+            ).apply(inst, (
+                properties, tier, type, oFeature,
+                oRaidForm, oBaseForm, oShinyRate, oMaxCatches
+            ) -> {
                 if (oShinyRate.isEmpty()) properties.setShiny(false);
                 else if (oShinyRate.get() == 1.0f) properties.setShiny(true);
 
@@ -86,9 +89,8 @@ public class ClientRaidBoss {
                 });
 
                 return new RaidBoss(
-                    properties, tier, type, oFeature.orElse(RaidFeature.DEFAULT), raidForm, new ArrayList<>(), null,
-                    0.0, oMaxCatches.orElse(-1), 0, oShinyRate.orElse(0.0f),
-                    new HashMap<>(), new ArrayList<>(), "", 0, RaidAI.RANDOM
+                    properties, tier, type, oFeature.orElse(RaidFeature.DEFAULT), raidForm,
+                    oMaxCatches.orElse(-1), oShinyRate.orElse(0.0f)
                 );
             })
         );
