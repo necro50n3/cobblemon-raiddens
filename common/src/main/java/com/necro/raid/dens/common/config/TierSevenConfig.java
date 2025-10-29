@@ -43,7 +43,7 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     public int max_catches = -1;
     @Comment("The default script to add to raid bosses without a script. Default: {}")
     public Map<String, String> default_scripts = new HashMap<>();
-    @Comment("The battle AI used by the raid boss (Options: RANDOM, STRONG_O...STRONG_5, RCT). Default: RANDOM")
+    @Comment("The battle AI used by the raid boss (Options: RANDOM, STRONG, RCT). Default: RANDOM")
     public RaidAI raid_ai = RaidAI.RANDOM;
 
     public boolean requiresKey() {
