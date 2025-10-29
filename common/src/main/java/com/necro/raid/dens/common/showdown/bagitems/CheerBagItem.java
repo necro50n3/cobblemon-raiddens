@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -32,18 +31,13 @@ public record CheerBagItem(CheerType cheerType, String param) implements BagItem
     }
 
     @Override
-    public boolean canUse(@NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
+    public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
         return target.getHealth() > 0;
     }
 
     @Override
     public @NotNull String getShowdownInput(@NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @Nullable String data) {
         return cheerType.getShowdownString() + " " + this.param + " " + this.cheerType.getId() + " " + data;
-    }
-
-    @Override
-    public boolean canStillUse(@NotNull ServerPlayer player, @NotNull PokemonBattle battle, @NotNull BattleActor actor, @NotNull BattlePokemon target, @NotNull ItemStack stack) {
-        return false;
     }
 
     public enum CheerType {

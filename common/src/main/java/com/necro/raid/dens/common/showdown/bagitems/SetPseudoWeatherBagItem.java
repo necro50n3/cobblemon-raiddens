@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,17 +22,12 @@ public record SetPseudoWeatherBagItem(String pseudoWeather) implements BagItem {
     }
 
     @Override
-    public boolean canUse(@NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
+    public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
         return target.getHealth() > 0;
     }
 
     @Override
     public @NotNull String getShowdownInput(@NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @Nullable String data) {
         return String.format("set_pseudo %s", this.pseudoWeather);
-    }
-
-    @Override
-    public boolean canStillUse(@NotNull ServerPlayer player, @NotNull PokemonBattle battle, @NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @NotNull ItemStack stack) {
-        return false;
     }
 }

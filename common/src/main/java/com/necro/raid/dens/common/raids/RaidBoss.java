@@ -141,7 +141,7 @@ public class RaidBoss {
 
         this.setMoveSet(properties, pokemon, true);
         pokemon.getPersistentData().putBoolean("raid", true);
-        pokemon.getAnyChangeObservable().emit(pokemon);
+        pokemon.onChange(null);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setNoAi(true);

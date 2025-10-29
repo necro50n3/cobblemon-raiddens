@@ -5,7 +5,6 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,17 +24,12 @@ public record StatChangeBagItem(Stat stat, int stages) implements BagItem {
     }
 
     @Override
-    public boolean canUse(@NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
+    public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle battle, @NotNull BattlePokemon target) {
         return target.getHealth() > 0;
     }
 
     @Override
     public @NotNull String getShowdownInput(@NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @Nullable String data) {
         return String.format("stat_boost %s %s %s", this.stat.getShowdownId(), this.stages, data);
-    }
-
-    @Override
-    public boolean canStillUse(@NotNull ServerPlayer player, @NotNull PokemonBattle battle, @NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @NotNull ItemStack stack) {
-        return false;
     }
 }

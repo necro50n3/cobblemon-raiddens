@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,18 +22,13 @@ public record ClearBoostBagItem(ClearType clearType) implements BagItem {
     }
 
     @Override
-    public boolean canUse(@NotNull PokemonBattle pokemonBattle, @NotNull BattlePokemon battlePokemon) {
+    public boolean canUse(@NotNull ItemStack stack, @NotNull PokemonBattle pokemonBattle, @NotNull BattlePokemon battlePokemon) {
         return true;
     }
 
     @Override
     public @NotNull String getShowdownInput(@NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @Nullable String data) {
         return this.clearType.getId() + " " + data;
-    }
-
-    @Override
-    public boolean canStillUse(@NotNull ServerPlayer serverPlayer, @NotNull PokemonBattle pokemonBattle, @NotNull BattleActor battleActor, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack itemStack) {
-        return true;
     }
 
     public enum ClearType {

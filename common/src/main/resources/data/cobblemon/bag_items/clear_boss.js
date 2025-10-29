@@ -2,7 +2,7 @@
     use(battle, pokemon, itemId, data) {
         var origin = data[0];
         for (let i in pokemon.boosts) {
-            if (pokemon.boosts[i] >= 0) continue; // Add check to skip positive boosts
+            if (pokemon.boosts[i] >= 0) continue;
             pokemon.boosts[i] = 0;
         }
         pokemon.cureStatus();

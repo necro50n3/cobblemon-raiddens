@@ -52,11 +52,6 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     }
 
     @Override
-    public @Nullable BagItem getBagItem(@NotNull ItemStack stack) {
-        return SimpleBagItemLike.DefaultImpls.getBagItem(this, stack);
-    }
-
-    @Override
     public boolean handleInteraction(@NotNull ServerPlayer player, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack stack) {
         PokemonBattle battle = battlePokemon.getActor().getBattle();
         BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
@@ -68,7 +63,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
             player.sendSystemMessage(LocalizationUtilsKt.battleLang("bagitem.cannot").withStyle(ChatFormatting.RED));
             return false;
         }
-        else if (!bagItem.canUse(battle, battlePokemon)) {
+        else if (!bagItem.canUse(stack, battle, battlePokemon)) {
             player.sendSystemMessage(LocalizationUtilsKt.battleLang("bagitem.invalid").withStyle(ChatFormatting.RED));
             return false;
         }
