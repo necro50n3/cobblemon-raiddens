@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.dimension;
+package com.necro.raid.dens.common.mixins;
 
 import com.necro.raid.dens.common.util.ILevelsSetter;
 import net.minecraft.resources.ResourceKey;

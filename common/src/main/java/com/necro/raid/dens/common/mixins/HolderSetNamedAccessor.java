@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.dimension;
+package com.necro.raid.dens.common.mixins;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;

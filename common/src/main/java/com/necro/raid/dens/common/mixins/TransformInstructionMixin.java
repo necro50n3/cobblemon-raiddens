@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.showdown;
+package com.necro.raid.dens.common.mixins;
 
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;

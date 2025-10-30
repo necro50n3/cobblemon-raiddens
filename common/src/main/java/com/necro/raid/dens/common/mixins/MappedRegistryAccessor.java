@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.dimension;
+package com.necro.raid.dens.common.mixins;
 
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
