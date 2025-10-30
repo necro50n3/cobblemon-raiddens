@@ -58,6 +58,8 @@ dependencies {
     modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:6951007"
     modCompileOnly "curse.maven:cobbledollars-859232:6604564"
     modCompileOnly "curse.maven:distant-horizons-508933:6791190"
+    modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:6734354"
+    modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')

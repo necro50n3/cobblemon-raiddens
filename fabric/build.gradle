@@ -60,6 +60,8 @@ dependencies {
     modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
     modCompileOnly "curse.maven:distant-horizons-508933:6791190"
+    modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:6734355"
+    modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
