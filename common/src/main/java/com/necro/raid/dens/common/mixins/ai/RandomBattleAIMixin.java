@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.mixins.ai;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -13,7 +14,7 @@ import java.util.*;
 @Mixin(RandomBattleAI.class)
 public abstract class RandomBattleAIMixin {
     @Inject(method = "choose", at = @At("HEAD"), remap = false, cancellable = true)
-    private void chooseInject(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
+    private void chooseInject(ActiveBattlePokemon pokemon, PokemonBattle battle, BattleSide aiSide, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
         if (!((IRaidBattle) pokemon.getBattle()).isRaidBattle()) return;
         else if (moveset == null) {
             cir.setReturnValue(PassActionResponse.INSTANCE);
