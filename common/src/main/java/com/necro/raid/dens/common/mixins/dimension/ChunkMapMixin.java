@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins;
+package com.necro.raid.dens.common.mixins.dimension;
 
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.server.level.ChunkMap;
