@@ -21,7 +21,9 @@
         "ServerLevelAccessor",
         "ShowdownInterpreterMixin",
         "TransformEffectMixin",
-        "TransformInstructionMixin"
+        "TransformInstructionMixin",
+        "ai.RandomBattleAIMixin",
+        "ai.StrongBattleAIMixin"
     ],
     "injectors": {
         "defaultRequire": 1
