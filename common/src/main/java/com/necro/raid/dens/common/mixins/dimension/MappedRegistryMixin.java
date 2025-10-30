@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins;
+package com.necro.raid.dens.common.mixins.dimension;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;

@@ -1,4 +1,4 @@
-package com.necro.raid.dens.fabric.mixins;
+package com.necro.raid.dens.neoforge.mixins.client;
 
 import com.cobblemon.mod.common.battles.BattleFormat;
 import com.cobblemon.mod.common.client.keybind.CobblemonBlockingKeyBinding;
@@ -8,7 +8,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.necro.raid.dens.common.network.packets.RaidChallengePacket;
 import com.necro.raid.dens.common.util.IRaidAccessor;
-import com.necro.raid.dens.fabric.network.NetworkMessages;
+import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public abstract class PartySendBindingMixin extends CobblemonBlockingKeyBinding 
     @Inject(method = "processEntityTarget", at = @At("HEAD"), cancellable = true, remap = false)
     private void processEntityTargetInject(LocalPlayer player, Pokemon pokemon, LivingEntity entity, CallbackInfo ci) {
         if (entity instanceof PokemonEntity pokemonEntity && ((IRaidAccessor) pokemonEntity).isRaidBoss()) {
-            if (!pokemonEntity.canBattle(player)) ci.cancel();
+            if (!pokemonEntity.canBattle(player)) return;
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));
             ci.cancel();
         }

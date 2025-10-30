@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins;
+package com.necro.raid.dens.common.mixins.raid;
 
 import com.mojang.brigadier.ParseResults;
 import com.necro.raid.dens.common.CobblemonRaidDens;

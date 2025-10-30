@@ -2,33 +2,33 @@
     "required": true,
     "package": "com.necro.raid.dens.common.mixins",
     "compatibilityLevel": "JAVA_21",
+    "client": [
+        "client.KeyMappingAccessor"
+    ],
     "mixins": [
-        "ChunkMapMixin",
-        "CommandsMixin",
-        "DamageInstructionMixin",
-        "ForcePassActionResponseMixin",
-        "HealInstructionMixin",
-        "HolderSetNamedAccessor",
-        "MappedRegistryAccessor",
-        "MappedRegistryMixin",
-        "MinecraftServerAccessor",
-        "MinecraftServerMixin",
-        "MoveActionResponseMixin",
-        "MoveInstructionMixin",
-        "PokemonBattleMixin",
-        "PokemonEntityMixin",
-        "PokemonMixin",
-        "ServerLevelAccessor",
-        "ShowdownInterpreterMixin",
-        "TransformEffectMixin",
-        "TransformInstructionMixin",
         "ai.RandomBattleAIMixin",
-        "ai.StrongBattleAIMixin"
+        "ai.StrongBattleAIMixin",
+        "dimension.ChunkMapMixin",
+        "dimension.HolderSetNamedAccessor",
+        "dimension.MappedRegistryAccessor",
+        "dimension.MappedRegistryMixin",
+        "dimension.MinecraftServerAccessor",
+        "dimension.MinecraftServerMixin",
+        "dimension.ServerLevelAccessor",
+        "showdown.DamageInstructionMixin",
+        "showdown.ForcePassActionResponseMixin",
+        "showdown.HealInstructionMixin",
+        "showdown.MoveActionResponseMixin",
+        "showdown.MoveInstructionMixin",
+        "showdown.ShowdownInterpreterMixin",
+        "showdown.TransformEffectMixin",
+        "showdown.TransformInstructionMixin",
+        "raid.CommandsMixin",
+        "raid.PokemonBattleMixin",
+        "raid.PokemonEntityMixin",
+        "raid.PokemonMixin"
     ],
     "injectors": {
         "defaultRequire": 1
-    },
-    "client": [
-        "client.KeyMappingAccessor"
-    ]
+    }
 }

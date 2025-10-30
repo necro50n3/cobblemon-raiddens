@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins;
+package com.necro.raid.dens.common.mixins.dimension;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;

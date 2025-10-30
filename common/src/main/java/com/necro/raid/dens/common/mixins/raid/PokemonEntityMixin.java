@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins;
+package com.necro.raid.dens.common.mixins.raid;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
