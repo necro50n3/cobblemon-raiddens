@@ -5,7 +5,6 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.mojang.datafixers.util.Function3;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -36,9 +35,6 @@ public class RCTBattleAIImpl {
         List<Map.Entry<InBattleMove, Double>> list = new ArrayList<>(scores.entrySet());
         list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
         InBattleMove bestMove = list.getFirst().getKey();
-        scores.forEach((move, score) -> {
-            CobblemonRaidDens.LOGGER.info("{} {}", move.id, score);
-        });
 
         List<Targetable> target = bestMove.mustBeUsed() ? null
             : bestMove.getTarget().getTargetList().invoke(pokemon);
