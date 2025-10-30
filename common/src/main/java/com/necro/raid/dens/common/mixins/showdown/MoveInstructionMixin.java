@@ -43,7 +43,7 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
         RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
 
         battle.dispatchGo(() -> {
-            ComponentContents pokemonContents = this.userPokemon.getEffectedPokemon().getDisplayName().getContents();
+            ComponentContents pokemonContents = this.userPokemon.getEffectedPokemon().getDisplayName(false).getContents();
             ComponentContents moveContents = this.move.getDisplayName().getContents();
 
             raid.getPlayers().forEach(p ->
