@@ -7,9 +7,11 @@ import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -55,6 +57,8 @@ public class RaidBuilder {
         if (BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player) != null) {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
+
+        playerActor.setBattleTheme(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "battle.raid.default"));
 
         if (errors.isEmpty()) {
             return BattleRegistry.INSTANCE
