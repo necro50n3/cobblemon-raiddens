@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.compat.ModCompat;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -24,7 +25,7 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (RCT_MIXINS.contains(mixinClassName)) return ModList.get().isLoaded(ModCompat.RCT_API.getModid());
+        if (RCT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.RCT_API.getModid()) != null;
         return true;
     }
 
