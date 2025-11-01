@@ -9,6 +9,8 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.*;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidTier;
@@ -77,6 +79,11 @@ public class CobblemonRaidDens {
         });
         CobblemonEvents.SHINY_CHANCE_CALCULATION.subscribe(Priority.HIGHEST, event -> {
             setRaidShinyRate(event);
+            return Unit.INSTANCE;
+        });
+
+        RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
+            RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
             return Unit.INSTANCE;
         });
     }

@@ -1,10 +1,8 @@
 package com.necro.raid.dens.neoforge;
 
-import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
@@ -26,7 +24,6 @@ import com.necro.raid.dens.neoforge.items.*;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.neoforge.statistics.NeoForgeStatistics;
 import com.necro.raid.dens.neoforge.worldgen.NeoForgeFeatures;
-import kotlin.Unit;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -67,6 +64,7 @@ public class CobblemonRaidDensNeoForge {
         RaidDenTab.CREATIVE_TABS.register(modBus);
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
+
         modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
             event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
             event.dataPackRegistry(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec(), null);
@@ -74,10 +72,5 @@ public class CobblemonRaidDensNeoForge {
         });
 
         NetworkMessages.init();
-
-        RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
-            RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
-            return Unit.INSTANCE;
-        });
     }
 }

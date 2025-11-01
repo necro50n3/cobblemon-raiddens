@@ -1,12 +1,10 @@
 package com.necro.raid.dens.fabric;
 
-import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
@@ -27,7 +25,6 @@ import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
-import kotlin.Unit;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
@@ -90,10 +87,5 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateResourceReloadListener());
 
         NetworkMessages.init();
-
-        RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
-            RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
-            return Unit.INSTANCE;
-        });
     }
 }
