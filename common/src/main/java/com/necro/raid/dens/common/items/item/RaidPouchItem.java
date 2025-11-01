@@ -46,7 +46,6 @@ public class RaidPouchItem extends Item {
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         if (tier == null || feature == null  ||raidType == null ) return InteractionResultHolder.fail(itemStack);
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
             List<ItemStack> rewards = this.getRewardItems(tier, feature, (ServerLevel) level, player);
             if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
@@ -62,6 +61,7 @@ public class RaidPouchItem extends Item {
                 }
             }
 
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
             player.awardStat(Stats.ITEM_USED.get(this));
             itemStack.consume(1, player);
         }
