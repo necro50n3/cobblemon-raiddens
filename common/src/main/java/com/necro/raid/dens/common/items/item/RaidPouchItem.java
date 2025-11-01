@@ -61,10 +61,11 @@ public class RaidPouchItem extends Item {
                     itemEntity.setTarget(player.getUUID());
                 }
             }
+
+            player.awardStat(Stats.ITEM_USED.get(this));
+            itemStack.consume(1, player);
         }
 
-        player.awardStat(Stats.ITEM_USED.get(this));
-        itemStack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 
