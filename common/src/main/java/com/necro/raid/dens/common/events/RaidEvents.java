@@ -9,4 +9,6 @@ public class RaidEvents {
     public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
 
     public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
+    public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
+    public static final ResultCancelableObservable<OpenPouchEvent> OPEN_POUCH = new ResultCancelableObservable<>();
 }
