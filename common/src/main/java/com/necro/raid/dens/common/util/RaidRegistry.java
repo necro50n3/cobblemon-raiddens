@@ -35,14 +35,20 @@ public class RaidRegistry {
         RAID_LIST.add(raidBoss.getId());
         RAID_LOOKUP.put(raidBoss.getId(), raidBoss);
         RAID_INDEX.put(raidBoss.getId(), index);
+    }
 
-        RAIDS_BY_TIER.computeIfAbsent(raidBoss.getTier(), tier -> new BitSet()).set(index);
-        RAIDS_BY_TYPE.computeIfAbsent(raidBoss.getType(), type -> new BitSet()).set(index);
-        RAIDS_BY_FEATURE.computeIfAbsent(raidBoss.getFeature(), feature -> new BitSet()).set(index);
+    public static void registerAll() {
+        for (int index = 0; index < RAID_LIST.size(); index++) {
+            RaidBoss raidBoss = getRaidBoss(RAID_LIST.get(index));
 
-        if (raidBoss.getWeight() > 0.0) {
-            raidBoss.getTier().setPresent();
-            raidBoss.getType().setPresent();
+            RAIDS_BY_TIER.computeIfAbsent(raidBoss.getTier(), tier -> new BitSet()).set(index);
+            RAIDS_BY_TYPE.computeIfAbsent(raidBoss.getType(), type -> new BitSet()).set(index);
+            RAIDS_BY_FEATURE.computeIfAbsent(raidBoss.getFeature(), feature -> new BitSet()).set(index);
+
+            if (raidBoss.getWeight() > 0.0) {
+                raidBoss.getTier().setPresent();
+                raidBoss.getType().setPresent();
+            }
         }
     }
 

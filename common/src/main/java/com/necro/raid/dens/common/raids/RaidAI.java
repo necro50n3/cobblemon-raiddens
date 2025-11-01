@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.util;
+package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.ai.BattleAI;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
@@ -6,7 +6,6 @@ import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
-import com.necro.raid.dens.common.raids.RaidTier;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +36,7 @@ public enum RaidAI implements StringRepresentable {
         catch (IllegalArgumentException e) { return RANDOM; }
     }
 
-    public static Codec<RaidTier> codec() {
-        return Codec.STRING.xmap(RaidTier::fromString, Enum::name);
+    public static Codec<RaidAI> codec() {
+        return Codec.STRING.xmap(RaidAI::fromString, Enum::name);
     }
 }

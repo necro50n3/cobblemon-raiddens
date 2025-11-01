@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.config;
 
-import com.necro.raid.dens.common.util.RaidAI;
+import com.necro.raid.dens.common.raids.RaidAI;
 
 import java.util.Map;
 
