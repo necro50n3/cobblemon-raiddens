@@ -37,6 +37,26 @@ versionRange = "[${geckolib_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
+[[dependencies.cobblemonraiddens]]
+modId = "mega_showdown"
+mandatory = false
+versionRange = "[0,)"
+
+[[dependencies.cobblemonraiddens]]
+modId = "cobbledollars"
+mandatory = false
+versionRange = "[0,)"
+
+[[dependencies.cobblemonraiddens]]
+modId = "cobblemonsizevariation"
+mandatory = false
+versionRange = "[0,)"
+
+[[dependencies.cobblemonraiddens]]
+modId = "rctapi"
+mandatory = false
+versionRange = "[0,)"
+
 [[mixins]]
 config = "${archives_name}-common.mixins.json"
 

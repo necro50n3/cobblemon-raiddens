@@ -35,5 +35,11 @@
     "minecraft": "${minecraft_version}",
     "cobblemon": ">=${cobblemon_version}",
     "geckolib": ">=${geckolib_version}"
+  },
+  "suggests": {
+    "mega_showdown": "*",
+    "cobbledollars": "*",
+    "cobblemonsizevariation": "*",
+    "rctapi": "*"
   }
 }
