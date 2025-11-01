@@ -3,7 +3,8 @@
     "package": "com.necro.raid.dens.common.mixins",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "client.KeyMappingAccessor"
+        "client.KeyMappingAccessor",
+        "client.PartySendBindingMixin"
     ],
     "mixins": [
         "ai.RandomBattleAIMixin",
@@ -15,6 +16,10 @@
         "dimension.MinecraftServerAccessor",
         "dimension.MinecraftServerMixin",
         "dimension.ServerLevelAccessor",
+        "raid.CommandsMixin",
+        "raid.PokemonBattleMixin",
+        "raid.PokemonEntityMixin",
+        "raid.PokemonMixin",
         "showdown.DamageInstructionMixin",
         "showdown.ForcePassActionResponseMixin",
         "showdown.HealInstructionMixin",
@@ -22,11 +27,7 @@
         "showdown.MoveInstructionMixin",
         "showdown.ShowdownInterpreterMixin",
         "showdown.TransformEffectMixin",
-        "showdown.TransformInstructionMixin",
-        "raid.CommandsMixin",
-        "raid.PokemonBattleMixin",
-        "raid.PokemonEntityMixin",
-        "raid.PokemonMixin"
+        "showdown.TransformInstructionMixin"
     ],
     "injectors": {
         "defaultRequire": 1

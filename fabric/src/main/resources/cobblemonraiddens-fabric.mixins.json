@@ -3,9 +3,6 @@
     "package": "com.necro.raid.dens.fabric.mixins",
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.necro.raid.dens.fabric.CobblemonRaidDensFabricMixinPlugin",
-    "client": [
-        "client.PartySendBindingMixin"
-    ],
     "mixins": [
         "ai.RCTBattleAIMixin"
     ],

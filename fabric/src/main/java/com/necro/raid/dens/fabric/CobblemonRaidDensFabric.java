@@ -22,7 +22,6 @@ import com.necro.raid.dens.fabric.events.*;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
 import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
@@ -90,29 +89,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateResourceReloadListener());
 
-        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
-            NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
-        RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
-            NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
-        RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
-            NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
-        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
-            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
-        RaidDenNetworkMessages.RESIZE = (level, entity, scale) ->
-            NetworkMessages.sendPacketToLevel(level, new ResizePacket(entity.getId(), scale));
-        RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
-        RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidLogPacket(pokemon, move));
-
-        RaidDenNetworkMessages.LEAVE_RAID = () -> NetworkMessages.sendPacketToServer(new LeaveRaidPacket());
-        RaidDenNetworkMessages.REQUEST_RESPONSE = (accept, player) ->
-            NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
-        RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
-            NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
-
-        DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
-            NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
+        NetworkMessages.init();
 
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
             RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);

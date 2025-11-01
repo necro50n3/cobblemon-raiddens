@@ -3,9 +3,6 @@
     "package": "com.necro.raid.dens.neoforge.mixins",
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.necro.raid.dens.neoforge.CobblemonRaidDensNeoForgeMixinPlugin",
-    "client": [
-        "client.PartySendBindingMixin"
-    ],
     "mixins": [
         "ai.RCTBattleAIMixin"
     ],
