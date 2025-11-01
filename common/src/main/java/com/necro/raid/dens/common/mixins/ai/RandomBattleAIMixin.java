@@ -22,7 +22,7 @@ public abstract class RandomBattleAIMixin {
 
         List<InBattleMove> filteredMoves = new ArrayList<>(moveset.getMoves().stream()
             .filter(InBattleMove::canBeUsed)
-            .filter(move -> move.mustBeUsed() || !move.getTarget().getTargetList().invoke(pokemon).isEmpty())
+            .filter(move -> move.mustBeUsed() || (move.getTarget().getTargetList().invoke(pokemon) != null && !move.getTarget().getTargetList().invoke(pokemon).isEmpty()))
             .filter(move -> !move.id.equals("lastresort"))
             .toList());
         if (filteredMoves.isEmpty()) cir.setReturnValue(new MoveActionResponse("struggle", null, null));
