@@ -7,6 +7,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidBossAdditions;
+import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
@@ -40,5 +41,6 @@ public class BossAdditionsResourceReloadListener implements SimpleSynchronousRes
         }
 
         RaidRegistry.registerAll();
+        RaidTier.updateRandom();
     }
 }

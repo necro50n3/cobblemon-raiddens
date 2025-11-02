@@ -52,8 +52,6 @@ public class RaidRegistry {
         }
     }
 
-    public static void populateWeightedList() {}
-
     public static RaidBoss getRaidBoss(ResourceLocation location) {
         return RAID_LOOKUP.get(location);
     }

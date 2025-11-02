@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -36,8 +35,5 @@ public class RaidBossReloadListener implements ResourceManagerReloadListener {
                 CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, e);
             }
         });
-
-        RaidRegistry.populateWeightedList();
-        RaidTier.updateRandom();
     }
 }
