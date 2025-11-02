@@ -64,7 +64,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        boolean success = this.startOrJoinRaid(player, blockState, (RaidCrystalBlockEntity) level.getBlockEntity(blockPos), null);
+        if (!(level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal)) return InteractionResult.FAIL;
+        boolean success = this.startOrJoinRaid(player, blockState, raidCrystal, null);
         return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
     }
 
@@ -72,14 +73,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
 
-        RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) level.getBlockEntity(blockPos);
-        if (blockEntity == null || blockEntity.getRaidBoss() == null) return ItemInteractionResult.FAIL;
-        else if (blockEntity.hasDimension() && blockEntity.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return ItemInteractionResult.FAIL;
+        if (raidCrystal.getRaidBoss() == null) return ItemInteractionResult.FAIL;
+        else if (raidCrystal.hasDimension() && raidCrystal.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        if (blockEntity.getRaidBoss().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        else if (!this.handleKey(player, blockEntity, itemStack)) return ItemInteractionResult.FAIL;
+        if (raidCrystal.getRaidBoss().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        else if (!this.handleKey(player, raidCrystal, itemStack)) return ItemInteractionResult.FAIL;
 
-        boolean success = this.startOrJoinRaid(player, blockState, blockEntity, itemStack);
+        boolean success = this.startOrJoinRaid(player, blockState, raidCrystal, itemStack);
         if (success) itemStack.consume(1, player);
         return success ? ItemInteractionResult.CONSUME : ItemInteractionResult.FAIL;
     }
