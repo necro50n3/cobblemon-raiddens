@@ -216,11 +216,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (this.getLevel() == null || !this.hasDimension()) return;
 
-        this.getDimension().players().forEach((player) ->
-            RaidUtils.teleportPlayerSafe(player, (ServerLevel) this.getLevel(), blockPos, player.getYHeadRot(), player.getXRot())
-        );
-        this.getDimension()
-            .getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
+        this.getDimension().getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
             .forEach(p1 -> {
                 RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
                 if (raidInstance != null) {
@@ -232,6 +228,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
                 }
                 if (!p1.isRemoved()) p1.discard();
             });
+
+        this.getDimension().players().forEach((player) ->
+            RaidUtils.teleportPlayerSafe(player, (ServerLevel) this.getLevel(), blockPos, player.getYHeadRot(), player.getXRot())
+        );
 
         this.removeDimension();
         this.setDimension(null);
