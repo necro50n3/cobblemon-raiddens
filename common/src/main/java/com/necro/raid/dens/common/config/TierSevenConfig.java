@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.config;
 
-import com.necro.raid.dens.common.util.RaidAI;
+import com.necro.raid.dens.common.raids.RaidAI;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;

@@ -8,10 +8,7 @@ import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
-import com.necro.raid.dens.neoforge.events.reloader.RaidBossReloadListener;
-import com.necro.raid.dens.neoforge.events.reloader.RaidBucketReloadListener;
-import com.necro.raid.dens.neoforge.events.reloader.RaidDenPoolReloadListener;
-import com.necro.raid.dens.neoforge.events.reloader.RaidTemplateReloadListener;
+import com.necro.raid.dens.neoforge.events.reloader.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -81,6 +78,7 @@ public class ModEvents {
         event.addListener(new RaidBucketReloadListener());
         event.addListener(new RaidDenPoolReloadListener());
         event.addListener(new RaidTemplateReloadListener());
+        event.addListener(new BossAdditionsReloadListener());
     }
 
     @SubscribeEvent

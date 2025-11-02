@@ -10,10 +10,8 @@ import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
-import com.necro.raid.dens.common.util.RaidAI;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 

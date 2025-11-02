@@ -2,6 +2,8 @@ package com.necro.raid.dens.common.items.item;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.events.OpenPouchEvent;
+import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
@@ -10,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -43,8 +46,12 @@ public class RaidPouchItem extends Item {
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         if (tier == null || feature == null  ||raidType == null ) return InteractionResultHolder.fail(itemStack);
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
+            List<ItemStack> rewards = this.getRewardItems(tier, feature, (ServerLevel) level, player);
+            if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
+                return InteractionResultHolder.fail(itemStack);
+            }
+
             for (ItemStack item : this.getRewardItems(tier, feature, (ServerLevel) level, player)) {
                 if (!player.getInventory().add(item)) {
                     ItemEntity itemEntity = player.drop(item, false);
@@ -53,10 +60,12 @@ public class RaidPouchItem extends Item {
                     itemEntity.setTarget(player.getUUID());
                 }
             }
+
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+            player.awardStat(Stats.ITEM_USED.get(this));
+            itemStack.consume(1, player);
         }
 
-        player.awardStat(Stats.ITEM_USED.get(this));
-        itemStack.consume(1, player);
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 

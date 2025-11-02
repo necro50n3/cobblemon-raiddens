@@ -7,6 +7,8 @@ import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -46,10 +48,13 @@ public class RewardHandler {
             this.player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
             return false;
         }
-        else if (!this.giveItemToPlayer()) return false;
 
         Pokemon pokemon = this.cachedReward == null ? this.raidBoss.getRewardPokemon(this.player) : this.cachedReward;
         pokemon.setCaughtBall(pokeBallItem.getPokeBall());
+
+        if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(this.player, pokemon))) return false;
+        else if (!this.giveItemToPlayer()) return false;
+
         PlayerExtensionsKt.party(player).add(pokemon);
         this.player.getMainHandItem().consume(1, this.player);
 

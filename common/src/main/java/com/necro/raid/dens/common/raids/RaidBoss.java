@@ -41,34 +41,34 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import java.util.*;
 
 public class RaidBoss {
-    private final PokemonProperties baseProperties;
+    private PokemonProperties baseProperties;
     private Species displaySpecies;
     private Set<String> displayAspects;
-    private final RaidTier raidTier;
-    private final RaidFeature raidFeature;
-    private final List<SpeciesFeature> raidForm;
-    private final List<SpeciesFeature> baseForm;
-    private final RaidType raidType;
-    private final String lootTableId;
+    private RaidTier raidTier;
+    private RaidFeature raidFeature;
+    private List<SpeciesFeature> raidForm;
+    private List<SpeciesFeature> baseForm;
+    private RaidType raidType;
+    private String lootTableId;
     private LootTable lootTable;
-    private final double weight;
-    private final int maxCatches;
-    private final int healthMulti;
-    private final float shinyRate;
-    private final Map<String, String> script;
+    private Double weight;
+    private Integer maxCatches;
+    private Integer healthMulti;
+    private Float shinyRate;
+    private Map<String, String> script;
     private List<ResourceLocation> dens;
-    private final String key;
-    private final int currency;
-    private final RaidAI raidAI;
+    private String key;
+    private Integer currency;
+    private RaidAI raidAI;
 
-    private final List<String> densInner;
+    private List<String> densInner;
 
     private ResourceLocation id;
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
-                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, double weight,
-                    int maxCatches, int healthMulti, float shinyRate, Map<String, String> script, List<String> dens,
-                    String key, int currency, RaidAI raidAI) {
+                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, Double weight,
+                    Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, String> script, List<String> dens,
+                    String key, Integer currency, RaidAI raidAI) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -279,19 +279,19 @@ public class RaidBoss {
         return this.lootTable.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return this.weight;
     }
 
-    public int getMaxCatches() {
+    public Integer getMaxCatches() {
         return this.maxCatches;
     }
 
-    public int getHealthMulti() {
+    public Integer getHealthMulti() {
         return this.healthMulti;
     }
 
-    public float getShinyRate() {
+    public Float getShinyRate() {
         return this.shinyRate;
     }
 
@@ -307,7 +307,7 @@ public class RaidBoss {
         return this.key;
     }
 
-    public int getCurrency() {
+    public Integer getCurrency() {
         return this.currency;
     }
 
@@ -339,6 +339,77 @@ public class RaidBoss {
 
     public void setId(ResourceLocation id) {
         this.id = id;
+    }
+
+    public void setProperties(PokemonProperties properties) {
+        this.baseProperties = properties;
+    }
+
+    public void setTier(RaidTier tier) {
+        this.raidTier = tier;
+    }
+
+    public void setFeature(RaidFeature feature) {
+        this.raidFeature = feature;
+    }
+
+    public void setForm(List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm) {
+        boolean appendForm = false;
+
+        if (raidForm != null) {
+            this.raidForm = new ArrayList<>(raidForm);
+            appendForm = true;
+        }
+        if (baseForm != null) {
+            this.baseForm = baseForm;
+            appendForm = true;
+        }
+
+        if (appendForm) this.raidForm.addAll(this.baseForm);
+    }
+
+    public void setType(RaidType type) {
+        this.raidType = type;
+    }
+
+    public void setLootTable(String lootTable) {
+        this.lootTableId = lootTable;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public void setMaxCatches(Integer maxCatches) {
+        this.maxCatches = maxCatches;
+    }
+
+    public void setHealthMulti(Integer healthMulti) {
+        this.healthMulti = healthMulti;
+    }
+
+    public void setShinyRate(Float shinyRate) {
+        this.shinyRate = shinyRate;
+    }
+
+    public void setScript(Map<String, String> script) {
+        this.script = script;
+    }
+
+    public void setDens(List<String> dens) {
+        this.densInner = dens;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setCurrency(Integer currency) {
+        this.currency= currency;
+    }
+
+    public void setRaidAI(RaidAI raidAI) {
+        this.raidAI = raidAI;
     }
 
     @SuppressWarnings("unused")
@@ -438,8 +509,8 @@ public class RaidBoss {
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
             Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
-            Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getKey)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAIString) -> {
+            RaidAI.codec().optionalFieldOf("raid_ai", RaidAI.RANDOM).forGetter(RaidBoss::getRaidAI)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAI) -> {
                 properties.setTeraType(type.getSerializedName());
 
                 TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
@@ -448,10 +519,6 @@ public class RaidBoss {
                 if (currency == -1) currency = tierConfig.currency();
                 if (maxCatches == -1) maxCatches = tierConfig.maxCatches();
                 if (script.isEmpty()) script = tierConfig.defaultScripts();
-
-                RaidAI raidAI;
-                if (raidAIString.isEmpty()) raidAI = tierConfig.raidAI();
-                else raidAI = RaidAI.fromString(raidAIString);
 
                 if (shinyRate == 1.0f) properties.setShiny(true);
                 else if (shinyRate == 0.0f) properties.setShiny(false);
