@@ -69,7 +69,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.CAN_RESET, CobblemonRaidDens.CONFIG.reset_time > 0)
+            .setValue(RaidCrystalBlock.CAN_RESET, true)
             .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
