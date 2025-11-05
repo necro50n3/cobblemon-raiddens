@@ -27,7 +27,7 @@ public abstract class RandomBattleAIMixin {
             .filter(move -> !RaidAI.BLOCKED_MOVES.contains(move.id))
             .toList());
         if (filteredMoves.isEmpty()) {
-            cir.setReturnValue(new MoveActionResponse("struggle", null, null));
+            cir.setReturnValue(PassActionResponse.INSTANCE);
             return;
         }
 

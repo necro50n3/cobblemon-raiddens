@@ -23,4 +23,18 @@ public abstract class StrongBattleAIMixin {
             && RaidAI.BLOCKED_MOVES.contains(move.id)
         ) cir.setReturnValue(0.0);
     }
+
+    @Inject(method = "choose", at = @At("RETURN"), remap = false, cancellable = true)
+    private void chooseMoveInject(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
+        if (
+            pokemon.getBattlePokemon() != null
+            && pokemon.getBattlePokemon().getEntity() != null
+            && ((IRaidAccessor) pokemon.getBattlePokemon().getEntity()).isRaidBoss()
+        ) {
+            ShowdownActionResponse response = cir.getReturnValue();
+            if (!(response instanceof MoveActionResponse move)) return;
+            else if (!RaidAI.BLOCKED_MOVES.contains(move.getMoveName())) return;
+            cir.setReturnValue(PassActionResponse.INSTANCE);
+        }
+    }
 }
