@@ -2,11 +2,14 @@ package com.necro.raid.dens.common.mixins;
 
 import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.api.moves.Move;
+import com.cobblemon.mod.common.api.moves.MoveTemplate;
+import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.entity.pokemon.effects.TransformEffect;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RaidAI;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -52,7 +55,12 @@ public abstract class TransformEffectMixin {
         this.mock.setAspects(aspects);
 
         for (int i = 0; i < this.moves.size(); i++) {
-            entity.getPokemon().getMoveSet().setMove(i, this.moves.get(i));
+            Move move = this.moves.get(i);
+            if (RaidAI.BLOCKED_MOVES.contains(move.getName())) {
+                MoveTemplate struggle = Moves.INSTANCE.getByName("struggle");
+                if (struggle != null) move = struggle.create(99);
+            }
+            entity.getPokemon().getMoveSet().setMove(i, move);
         }
         entity.getPokemon().getMoveSet().update();
         entity.getPokemon().setAbility$common(this.ability);

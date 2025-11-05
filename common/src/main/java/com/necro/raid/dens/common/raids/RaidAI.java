@@ -9,6 +9,7 @@ import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public enum RaidAI implements StringRepresentable {
@@ -16,6 +17,7 @@ public enum RaidAI implements StringRepresentable {
     STRONG(() -> new StrongBattleAI(5)),
     RCT(() -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
 
+    public static final Set<String> BLOCKED_MOVES = Set.of("lastresort", "explosion", "selfdestruct", "mistyexplosion");
     private final Supplier<BattleAI> supplier;
 
     RaidAI(Supplier<BattleAI> supplier) {

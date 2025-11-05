@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.mojang.datafixers.util.Function3;
+import com.necro.raid.dens.common.raids.RaidAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -50,6 +51,6 @@ public class RCTBattleAIImpl {
     }
 
     public static void evalMove(InBattleMove move, CallbackInfoReturnable<Double> cir) {
-        if (move.id.equals("lastresort")) cir.setReturnValue(-1.0);
+        if (RaidAI.BLOCKED_MOVES.contains(move.id)) cir.setReturnValue(-1.0);
     }
 }

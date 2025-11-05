@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.mixins.ai;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.ActiveTracker;
 import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
+import com.necro.raid.dens.common.raids.RaidAI;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +20,7 @@ public abstract class StrongBattleAIMixin {
             pokemon.component1() != null
             && pokemon.component1().getEntity() != null
             && ((IRaidAccessor) pokemon.component1().getEntity()).isRaidBoss()
-            && move.id.equals("lastresort")
+            && RaidAI.BLOCKED_MOVES.contains(move.id)
         ) cir.setReturnValue(0.0);
     }
 }
