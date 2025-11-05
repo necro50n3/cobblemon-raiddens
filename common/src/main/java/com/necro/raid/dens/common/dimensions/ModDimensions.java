@@ -54,11 +54,11 @@ public class ModDimensions {
 
     public static void bootstrapType(BootstrapContext<DimensionType> context) {
         context.register(RAIDDIM_TYPE, new DimensionType(
-            OptionalLong.of(12000),
+            OptionalLong.of(6000),
             false,
             false,
             false,
-            true,
+            false,
             1.0,
             true,
             false,
@@ -66,8 +66,8 @@ public class ModDimensions {
             128,
             128,
             BlockTags.AIR,
-            BuiltinDimensionTypes.OVERWORLD_EFFECTS,
-            1.0f,
+            BuiltinDimensionTypes.END_EFFECTS,
+            0.0f,
             new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)
         ));
     }
