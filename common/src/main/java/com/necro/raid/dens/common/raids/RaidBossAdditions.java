@@ -31,6 +31,7 @@ public class RaidBossAdditions {
     }
 
     public void apply(List<ResourceLocation> registry) {
+        if (this.replace() && this.suffix().equals("_")) return;
         List<ResourceLocation> targets = this.include().isEmpty() ? registry : this.include();
 
         for (ResourceLocation loc : targets) {
@@ -274,7 +275,7 @@ public class RaidBossAdditions {
             ResourceLocation.CODEC.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
             ResourceLocation.CODEC.listOf().xmap(HashSet::new, ArrayList::new).optionalFieldOf("exclude", new HashSet<>()).forGetter(RaidBossAdditions::exclude),
             bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions),
-            Codec.BOOL.optionalFieldOf("replace", false).forGetter(RaidBossAdditions::replace),
+            Codec.BOOL.optionalFieldOf("replace", true).forGetter(RaidBossAdditions::replace),
             Codec.STRING.optionalFieldOf("suffix", "").forGetter(RaidBossAdditions::suffix)
         ).apply(inst, RaidBossAdditions::new));
     }
