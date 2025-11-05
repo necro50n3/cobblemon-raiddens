@@ -36,6 +36,7 @@ public class RaidBossAdditions {
         for (ResourceLocation loc : targets) {
             if (this.exclude().contains(loc)) continue;
             RaidBoss boss = RaidRegistry.getRaidBoss(loc);
+            if (boss == null) continue;
             ResourceLocation id = boss.getId();
 
             if (this.replace()) boss = boss.copy();
