@@ -425,6 +425,27 @@ public class RaidBoss {
         return this.raidFeature == RaidFeature.DYNAMAX;
     }
 
+    public RaidBoss copy() {
+        return new RaidBoss(
+            this.baseProperties.copy(),
+            this.raidTier,
+            this.raidType,
+            this.raidFeature,
+            new ArrayList<>(this.raidForm),
+            new ArrayList<>(this.baseForm),
+            this.lootTableId,
+            this.weight,
+            this.maxCatches,
+            this.healthMulti,
+            this.shinyRate,
+            new HashMap<>(this.script),
+            new ArrayList<>(this.densInner),
+            this.key,
+            this.currency,
+            this.raidAI
+        );
+    }
+
     public static String getGender(PokemonProperties properties) {
         if (properties.getGender() == null) return "";
         else return properties.getGender().getSerializedName();

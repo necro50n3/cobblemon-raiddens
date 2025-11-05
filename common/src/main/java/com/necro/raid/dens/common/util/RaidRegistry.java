@@ -52,6 +52,10 @@ public class RaidRegistry {
         }
     }
 
+    public static List<ResourceLocation> getAll() {
+        return RAID_LIST;
+    }
+
     public static RaidBoss getRaidBoss(ResourceLocation location) {
         return RAID_LOOKUP.get(location);
     }

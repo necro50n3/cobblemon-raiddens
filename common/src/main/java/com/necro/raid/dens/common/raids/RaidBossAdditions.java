@@ -13,12 +13,34 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
-public record RaidBossAdditions(List<ResourceLocation> targets, RaidBoss additions) {
-    public void apply() {
-        for (ResourceLocation loc : this.targets) {
-            RaidBoss boss = RaidRegistry.getRaidBoss(loc);
+public class RaidBossAdditions {
+    private final List<ResourceLocation> include;
+    private final HashSet<ResourceLocation> exclude;
+    private final RaidBoss additions;
 
-            PokemonProperties properties = this.additions.getProperties();
+    private final boolean replace;
+    private final String suffix;
+
+    public RaidBossAdditions(List<ResourceLocation> include, HashSet<ResourceLocation> exclude, RaidBoss additions, boolean replace, String suffix) {
+        this.include = include;
+        this.exclude = exclude;
+        this.additions = additions;
+        this.replace = replace;
+        if (replace && !suffix.startsWith("_")) suffix = "_" + suffix;
+        this.suffix = suffix;
+    }
+
+    public void apply(List<ResourceLocation> registry) {
+        List<ResourceLocation> targets = this.include().isEmpty() ? registry : this.include();
+
+        for (ResourceLocation loc : targets) {
+            if (this.exclude().contains(loc)) continue;
+            RaidBoss boss = RaidRegistry.getRaidBoss(loc);
+            ResourceLocation id = boss.getId();
+
+            if (this.replace()) boss = boss.copy();
+
+            PokemonProperties properties = this.additions().getProperties();
             if (properties != null) {
                 if (properties.getSpecies() != null) boss.getProperties().setSpecies(properties.getSpecies());
                 if (properties.getGender() != null) boss.getProperties().setGender(properties.getGender());
@@ -29,21 +51,46 @@ public record RaidBossAdditions(List<ResourceLocation> targets, RaidBoss additio
                 if (properties.getTeraType() != null) boss.getProperties().setTeraType(properties.getTeraType());
             }
 
-            getTier(this.additions).ifPresent(boss::setTier);
-            getFeature(this.additions).ifPresent(boss::setFeature);
-            boss.setForm(getRaidForm(this.additions).orElse(null), getBaseForm(this.additions).orElse(null));
-            getType(this.additions).ifPresent(boss::setType);
-            getLootTable(this.additions).ifPresent(boss::setLootTable);
-            getWeight(this.additions).ifPresent(boss::setWeight);
-            getMaxCatches(this.additions).ifPresent(boss::setMaxCatches);
-            getHealthMulti(this.additions).ifPresent(boss::setHealthMulti);
-            getShinyRate(this.additions).ifPresent(boss::setShinyRate);
-            getScript(this.additions).ifPresent(boss::setScript);
-            getDens(this.additions).ifPresent(boss::setDens);
-            getKey(this.additions).ifPresent(boss::setKey);
-            getCurrency(this.additions).ifPresent(boss::setCurrency);
-            getRaidAI(this.additions).ifPresent(boss::setRaidAI);
+            getTier(this.additions()).ifPresent(boss::setTier);
+            getFeature(this.additions()).ifPresent(boss::setFeature);
+            boss.setForm(getRaidForm(this.additions()).orElse(null), getBaseForm(this.additions()).orElse(null));
+            getType(this.additions()).ifPresent(boss::setType);
+            getLootTable(this.additions()).ifPresent(boss::setLootTable);
+            getWeight(this.additions()).ifPresent(boss::setWeight);
+            getMaxCatches(this.additions()).ifPresent(boss::setMaxCatches);
+            getHealthMulti(this.additions()).ifPresent(boss::setHealthMulti);
+            getShinyRate(this.additions()).ifPresent(boss::setShinyRate);
+            getScript(this.additions()).ifPresent(boss::setScript);
+            getDens(this.additions()).ifPresent(boss::setDens);
+            getKey(this.additions()).ifPresent(boss::setKey);
+            getCurrency(this.additions()).ifPresent(boss::setCurrency);
+            getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
+
+            if (this.replace()) {
+                boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
+                RaidRegistry.register(boss);
+            }
         }
+    }
+
+    private List<ResourceLocation> include() {
+        return this.include;
+    }
+
+    private HashSet<ResourceLocation> exclude() {
+        return this.exclude;
+    }
+
+    private RaidBoss additions() {
+        return this.additions;
+    }
+
+    private boolean replace() {
+        return this.replace;
+    }
+
+    private String suffix() {
+        return this.suffix;
     }
 
     private static Optional<PokemonProperties> getProperties(RaidBoss boss) {
@@ -223,8 +270,11 @@ public record RaidBossAdditions(List<ResourceLocation> targets, RaidBoss additio
 
     public static Codec<RaidBossAdditions> codec() {
         return RecordCodecBuilder.create(inst -> inst.group(
-            ResourceLocation.CODEC.listOf().fieldOf("targets").forGetter(RaidBossAdditions::targets),
-            bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions)
+            ResourceLocation.CODEC.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
+            ResourceLocation.CODEC.listOf().xmap(HashSet::new, ArrayList::new).optionalFieldOf("exclude", new HashSet<>()).forGetter(RaidBossAdditions::exclude),
+            bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions),
+            Codec.BOOL.optionalFieldOf("replace", false).forGetter(RaidBossAdditions::replace),
+            Codec.STRING.optionalFieldOf("suffix", "").forGetter(RaidBossAdditions::suffix)
         ).apply(inst, RaidBossAdditions::new));
     }
 }

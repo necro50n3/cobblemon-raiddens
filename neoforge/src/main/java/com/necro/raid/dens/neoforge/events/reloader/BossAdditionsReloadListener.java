@@ -16,17 +16,20 @@ import org.jetbrains.annotations.NotNull;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class BossAdditionsReloadListener implements ResourceManagerReloadListener {
     @Override
     public void onResourceManagerReload(@NotNull ResourceManager manager) {
+        List<ResourceLocation> baseList = new ArrayList<>(RaidRegistry.getAll());
+
         manager.listResources("raid/boss_additions", path -> path.toString().endsWith(".json")).forEach((id, resource) -> {
             try (InputStream input = resource.open()) {
                 JsonObject jsonObject = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
-                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace("raid/boss_additions/", "").replace(".json", ""));
                 Optional<RaidBossAdditions> additionsOpt = RaidBossAdditions.codec().decode(JsonOps.INSTANCE, jsonObject).result().map(Pair::getFirst);
-                additionsOpt.ifPresent(RaidBossAdditions::apply);
+                additionsOpt.ifPresent((additions) -> additions.apply(baseList));
             } catch (Exception e) {
                 CobblemonRaidDens.LOGGER.error("Failed to load boss additions {}", id, e);
             }

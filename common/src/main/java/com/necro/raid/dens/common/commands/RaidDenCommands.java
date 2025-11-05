@@ -38,9 +38,8 @@ import org.jetbrains.annotations.Nullable;
 public class RaidDenCommands {
     public static final SuggestionProvider<CommandSourceStack> RAID_BOSSES = (context, builder) -> {
         String remaining = builder.getRemaining().toLowerCase();
-        Registry<RaidBoss> registry = context.getSource().getServer().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
 
-        for (ResourceLocation id : registry.keySet()) {
+        for (ResourceLocation id : RaidRegistry.getAll()) {
             if (id.toString().toLowerCase().startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
