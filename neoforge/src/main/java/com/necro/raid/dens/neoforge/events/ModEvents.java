@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RaidBossAdditions;
 import com.necro.raid.dens.common.raids.RaidExitHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
@@ -51,6 +52,7 @@ public class ModEvents {
         MinecraftServer server = event.getServer();
         RaidHelper.initHelper(server);
         RaidRegistry.initRaidBosses(server);
+        RaidBossAdditions.applyAll();
         RaidBucketRegistry.init(server);
     }
 

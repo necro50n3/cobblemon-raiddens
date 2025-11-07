@@ -17,8 +17,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -30,15 +28,13 @@ public class BossAdditionsResourceReloadListener implements SimpleSynchronousRes
 
     @Override
     public void onResourceManagerReload(ResourceManager manager) {
-        List<ResourceLocation> baseList = new ArrayList<>(RaidRegistry.getAll());
-
         for(ResourceLocation id : manager.listResources("raid/boss_additions", path -> path.getPath().endsWith(".json")).keySet()) {
             try (Stream<Resource> stream = manager.getResource(id).stream(); InputStream input = stream.findFirst().get().open()) {
                 JsonObject jsonObject = (JsonObject) JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8));
                 Optional<Pair<RaidBossAdditions, JsonElement>> result = RaidBossAdditions.codec().decode(JsonOps.INSTANCE, jsonObject).result();
                 if (result.isEmpty()) continue;
                 RaidBossAdditions additions = result.get().getFirst();
-                additions.apply(baseList);
+                additions.queue();
             } catch(Exception e) {
                 CobblemonRaidDens.LOGGER.error("Failed to load boss additions {}", id, e);
             }

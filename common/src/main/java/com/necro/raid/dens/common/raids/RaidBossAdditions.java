@@ -9,11 +9,19 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.util.RaidRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class RaidBossAdditions {
+    private static HolderSet.Named<RaidBoss> BLACKLIST;
+    private static boolean CACHED = false;
+    private static final List<Consumer<List<ResourceLocation>>> ADDITION_QUEUE = new ArrayList<>();
+
     private final List<ResourceLocation> include;
     private final HashSet<ResourceLocation> exclude;
     private final RaidBoss additions;
@@ -26,21 +34,39 @@ public class RaidBossAdditions {
         this.exclude = exclude;
         this.additions = additions;
         this.replace = replace;
-        if (replace && !suffix.startsWith("_")) suffix = "_" + suffix;
+        if (!replace && !suffix.startsWith("_")) suffix = "_" + suffix;
         this.suffix = suffix;
     }
 
-    public void apply(List<ResourceLocation> registry) {
-        if (this.replace() && this.suffix().equals("_")) return;
+    public void queue() {
+        ADDITION_QUEUE.add(this::apply);
+    }
+
+    public static void applyAll() {
+        List<ResourceLocation> registry = new ArrayList<>(RaidRegistry.getAll());
+        ADDITION_QUEUE.forEach(entry -> entry.accept(registry));
+        ADDITION_QUEUE.clear();
+    }
+
+    private void apply(List<ResourceLocation> registry) {
+        if (!this.replace() && this.suffix().equals("_")) return;
         List<ResourceLocation> targets = this.include().isEmpty() ? registry : this.include();
+
+        if (!CACHED) {
+            TagKey<RaidBoss> blacklistTag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist"));
+            BLACKLIST = RaidRegistry.REGISTRY.getTag(blacklistTag).orElse(null);
+            CACHED = true;
+        }
 
         for (ResourceLocation loc : targets) {
             if (this.exclude().contains(loc)) continue;
             RaidBoss boss = RaidRegistry.getRaidBoss(loc);
             if (boss == null) continue;
+            Holder<RaidBoss> holder = RaidRegistry.REGISTRY.getHolder(boss.getId()).orElse(null);
+            if (BLACKLIST != null && holder != null && BLACKLIST.contains(holder)) continue;
             ResourceLocation id = boss.getId();
 
-            if (this.replace()) boss = boss.copy();
+            if (!this.replace()) boss = boss.copy();
 
             PokemonProperties properties = this.additions().getProperties();
             if (properties != null) {
@@ -68,7 +94,7 @@ public class RaidBossAdditions {
             getCurrency(this.additions()).ifPresent(boss::setCurrency);
             getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
 
-            if (this.replace()) {
+            if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
                 RaidRegistry.register(boss);
             }
@@ -228,9 +254,7 @@ public class RaidBossAdditions {
                 Codec.STRING.optionalFieldOf("key").forGetter(RaidBossAdditions::getKey),
                 RaidAI.codec().optionalFieldOf("raid_ai").forGetter(RaidBossAdditions::getRaidAI)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAI) -> {
-
-
-            Integer hm = healthMulti.orElse(null);
+                Integer hm = healthMulti.orElse(null);
                 Float sr = shinyRate.orElse(null);
                 Integer c = currency.orElse(null);
                 Integer mc = maxCatches.orElse(null);
