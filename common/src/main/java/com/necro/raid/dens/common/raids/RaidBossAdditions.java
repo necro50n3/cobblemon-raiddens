@@ -9,18 +9,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.util.RaidRegistry;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public class RaidBossAdditions {
-    private static HolderSet.Named<RaidBoss> BLACKLIST;
+    private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
-    private static final List<Consumer<List<ResourceLocation>>> ADDITION_QUEUE = new ArrayList<>();
 
     private final List<ResourceLocation> include;
     private final HashSet<ResourceLocation> exclude;
@@ -38,23 +33,12 @@ public class RaidBossAdditions {
         this.suffix = suffix;
     }
 
-    public void queue() {
-        ADDITION_QUEUE.add(this::apply);
-    }
-
-    public static void applyAll() {
-        List<ResourceLocation> registry = new ArrayList<>(RaidRegistry.getAll());
-        ADDITION_QUEUE.forEach(entry -> entry.accept(registry));
-        ADDITION_QUEUE.clear();
-    }
-
-    private void apply(List<ResourceLocation> registry) {
+    public void apply(List<ResourceLocation> registry) {
         if (!this.replace() && this.suffix().equals("_")) return;
         List<ResourceLocation> targets = this.include().isEmpty() ? registry : this.include();
 
         if (!CACHED) {
-            TagKey<RaidBoss> blacklistTag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist"));
-            BLACKLIST = RaidRegistry.REGISTRY.getTag(blacklistTag).orElse(null);
+            BLACKLIST = RaidRegistry.getTagEntries(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist"));
             CACHED = true;
         }
 
@@ -62,9 +46,8 @@ public class RaidBossAdditions {
             if (this.exclude().contains(loc)) continue;
             RaidBoss boss = RaidRegistry.getRaidBoss(loc);
             if (boss == null) continue;
-            Holder<RaidBoss> holder = RaidRegistry.REGISTRY.getHolder(boss.getId()).orElse(null);
-            if (BLACKLIST != null && holder != null && BLACKLIST.contains(holder)) continue;
             ResourceLocation id = boss.getId();
+            if (BLACKLIST.contains(id)) continue;
 
             if (!this.replace()) boss = boss.copy();
 

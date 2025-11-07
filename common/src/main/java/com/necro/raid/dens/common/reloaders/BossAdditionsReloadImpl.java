@@ -9,6 +9,8 @@ import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class BossAdditionsReloadImpl extends AbstractReloadImpl {
@@ -21,8 +23,10 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
+        List<ResourceLocation> registry = new ArrayList<>(RaidRegistry.getAll());
+
         Optional<RaidBossAdditions> additionsOpt = RaidBossAdditions.codec().decode(JsonOps.INSTANCE, object).result().map(Pair::getFirst);
-        additionsOpt.ifPresent(RaidBossAdditions::queue);
+        additionsOpt.ifPresent(additions -> additions.apply(registry));
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidBossAdditions;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidRegistry;
@@ -57,7 +56,6 @@ public class ModEvents {
 
     public static void initRaidBosses(MinecraftServer server) {
         RaidRegistry.initRaidBosses(server);
-        RaidBossAdditions.applyAll();
         RaidBucketRegistry.init(server);
     }
 }

@@ -74,6 +74,10 @@ public class RaidRegistry {
         return RAID_TAGS.get(tag).contains(boss);
     }
 
+    public static Set<ResourceLocation> getTagEntries(ResourceLocation tag) {
+        return RAID_TAGS.getOrDefault(tag, new HashSet<>());
+    }
+
     private static float[] buildWeights(int[] matches, Level level) {
         float[] weights = new float[matches.length];
         float sum = 0f;
