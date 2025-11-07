@@ -23,7 +23,8 @@
         "TransformEffectMixin",
         "TransformInstructionMixin",
         "ai.RandomBattleAIMixin",
-        "ai.StrongBattleAIMixin"
+        "ai.StrongBattleAIMixin",
+        "tags.TagEntryMixin"
     ],
     "injectors": {
         "defaultRequire": 1
