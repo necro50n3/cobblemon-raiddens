@@ -49,12 +49,12 @@ public abstract class AbstractReloadImpl {
         return this.type.suffix();
     }
 
-    private void loadJson(InputStream input, ResourceLocation key) {
+    protected void loadJson(InputStream input, ResourceLocation key) {
         JsonObject object = JsonParser.parseReader(new InputStreamReader(input, StandardCharsets.UTF_8)).getAsJsonObject();
         this.onLoad(key, object);
     }
 
-    private void loadNbt(InputStream input, ResourceLocation key) throws IOException {
+    protected void loadNbt(InputStream input, ResourceLocation key) throws IOException {
         CompoundTag nbt = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
         this.onLoad(key, nbt);
     }

@@ -17,14 +17,14 @@ public class RaidBossAdditions {
     private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
 
-    private final List<ResourceLocation> include;
-    private final HashSet<ResourceLocation> exclude;
+    private final List<String> include;
+    private final List<String> exclude;
     private final RaidBoss additions;
 
     private final boolean replace;
     private final String suffix;
 
-    public RaidBossAdditions(List<ResourceLocation> include, HashSet<ResourceLocation> exclude, RaidBoss additions, boolean replace, String suffix) {
+    public RaidBossAdditions(List<String> include, List<String> exclude, RaidBoss additions, boolean replace, String suffix) {
         this.include = include;
         this.exclude = exclude;
         this.additions = additions;
@@ -35,7 +35,24 @@ public class RaidBossAdditions {
 
     public void apply(List<ResourceLocation> registry) {
         if (!this.replace() && this.suffix().equals("_")) return;
-        List<ResourceLocation> targets = this.include().isEmpty() ? registry : this.include();
+        List<ResourceLocation> targets = new ArrayList<>();
+        if (this.include().isEmpty()) {
+            targets = registry;
+        }
+        else {
+            for (String target : this.include()) {
+                ResourceLocation id = ResourceLocation.parse(target.startsWith("#") ? target.substring(1) : target);
+                if (target.startsWith("#")) targets.addAll(RaidRegistry.getTagEntries(id));
+                else if (RaidRegistry.getRaidBoss(id) != null) targets.add(id);
+            }
+        }
+
+        Set<ResourceLocation> excluded = new HashSet<>();
+        for (String exclude : this.exclude()) {
+            ResourceLocation id = ResourceLocation.parse(exclude.startsWith("#") ? exclude.substring(1) : exclude);
+            if (exclude.startsWith("#")) excluded.addAll(RaidRegistry.getTagEntries(id));
+            else if (RaidRegistry.getRaidBoss(id) != null) excluded.add(id);
+        }
 
         if (!CACHED) {
             BLACKLIST = RaidRegistry.getTagEntries(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist"));
@@ -43,7 +60,7 @@ public class RaidBossAdditions {
         }
 
         for (ResourceLocation loc : targets) {
-            if (this.exclude().contains(loc)) continue;
+            if (excluded.contains(loc)) continue;
             RaidBoss boss = RaidRegistry.getRaidBoss(loc);
             if (boss == null) continue;
             ResourceLocation id = boss.getId();
@@ -84,11 +101,11 @@ public class RaidBossAdditions {
         }
     }
 
-    private List<ResourceLocation> include() {
+    private List<String> include() {
         return this.include;
     }
 
-    private HashSet<ResourceLocation> exclude() {
+    private List<String> exclude() {
         return this.exclude;
     }
 
@@ -279,8 +296,8 @@ public class RaidBossAdditions {
 
     public static Codec<RaidBossAdditions> codec() {
         return RecordCodecBuilder.create(inst -> inst.group(
-            ResourceLocation.CODEC.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
-            ResourceLocation.CODEC.listOf().xmap(HashSet::new, ArrayList::new).optionalFieldOf("exclude", new HashSet<>()).forGetter(RaidBossAdditions::exclude),
+            Codec.STRING.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
+            Codec.STRING.listOf().optionalFieldOf("exclude", new ArrayList<>()).forGetter(RaidBossAdditions::exclude),
             bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions),
             Codec.BOOL.optionalFieldOf("replace", true).forGetter(RaidBossAdditions::replace),
             Codec.STRING.optionalFieldOf("suffix", "").forGetter(RaidBossAdditions::suffix)
