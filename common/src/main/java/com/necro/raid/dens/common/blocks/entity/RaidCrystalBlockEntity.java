@@ -34,6 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -182,6 +183,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             return false;
         }
 
+        this.addChunkTicket(BlockPos.containing(RaidDenRegistry.getBossPos(this.raidStructure)), this.getDimension());
+        this.getDimension().getAllEntities().forEach(entity -> {
+            if (entity != null && !entity.isRemoved()) entity.discard();
+        });
+
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.getDimension());
         pokemonEntity.moveTo(RaidDenRegistry.getBossPos(this.getRaidStructure()));
         this.getDimension().addFreshEntity(pokemonEntity);
@@ -216,17 +222,24 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (this.getLevel() == null || !this.hasDimension()) return;
 
-        this.getDimension().getEntitiesOfClass(PokemonEntity.class, new AABB(BlockPos.ZERO).inflate(32), p1 -> ((IRaidAccessor) p1).isRaidBoss())
+        BlockPos bossPos = BlockPos.containing(RaidDenRegistry.getBossPos(this.raidStructure));
+        ChunkPos chunkPos = new ChunkPos(bossPos);
+        this.getDimension().getChunk(chunkPos.x, chunkPos.z, ChunkStatus.FULL, true);
+        this.getDimension().getEntitiesOfClass(PokemonEntity.class, new AABB(bossPos).inflate(16))
             .forEach(p1 -> {
-                RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
-                if (raidInstance != null) {
-                    raidInstance.stopRaid(false);
-                    if (CobblemonRaidDens.CONFIG.max_clears_include_fails) {
-                        this.clears++;
-                        this.isShiny = null;
+                if (((IRaidAccessor) p1).isRaidBoss()) {
+                    RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) p1).getRaidId());
+                    if (raidInstance != null) {
+                        raidInstance.stopRaid(false);
+                        if (CobblemonRaidDens.CONFIG.max_clears_include_fails) {
+                            this.clears++;
+                            this.isShiny = null;
+                        }
                     }
                 }
-                if (!p1.isRemoved()) p1.discard();
+
+                if (p1.getOwner() != null) p1.recallWithAnimation();
+                else if (!p1.isRemoved()) p1.discard();
             });
 
         this.getDimension().players().forEach((player) ->
@@ -255,10 +268,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
     }
 
+    public void addChunkTicket(BlockPos blockPos, ServerLevel level) {
+        if (level == null) return;
+        ChunkPos chunkPos = new ChunkPos(blockPos);
+        level.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode());
+    }
+
     public void addChunkTicket() {
-        if (this.getLevel() == null) return;
-        ChunkPos chunkPos = new ChunkPos(this.getBlockPos());
-        ((ServerLevel) this.getLevel()).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 2, "raid".hashCode());
+        this.addChunkTicket(this.getBlockPos(), (ServerLevel) this.getLevel());
     }
 
     private void removeChunkTicket() {
