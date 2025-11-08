@@ -61,12 +61,11 @@ public class RaidBossAdditions {
 
         for (ResourceLocation loc : targets) {
             if (excluded.contains(loc)) continue;
-            RaidBoss boss = RaidRegistry.getRaidBoss(loc);
-            if (boss == null) continue;
-            ResourceLocation id = boss.getId();
-            if (BLACKLIST.contains(id)) continue;
-
-            if (!this.replace()) boss = boss.copy();
+            RaidBoss temp = RaidRegistry.getRaidBoss(loc);
+            if (temp == null) continue;
+            ResourceLocation id = temp.getId();
+            if (!this.replace() && BLACKLIST.contains(id)) continue;
+            final RaidBoss boss = this.replace() ? temp : temp.copy();
 
             PokemonProperties properties = this.additions().getProperties();
             if (properties != null) {
@@ -84,7 +83,7 @@ public class RaidBossAdditions {
             boss.setForm(getRaidForm(this.additions()).orElse(null), getBaseForm(this.additions()).orElse(null));
             getType(this.additions()).ifPresent(boss::setType);
             getLootTable(this.additions()).ifPresent(boss::setLootTable);
-            getWeight(this.additions()).ifPresent(boss::setWeight);
+            getWeight(this.additions()).ifPresent(weight -> boss.setWeight(boss.getWeight() * weight));
             getMaxCatches(this.additions()).ifPresent(boss::setMaxCatches);
             getHealthMulti(this.additions()).ifPresent(boss::setHealthMulti);
             getShinyRate(this.additions()).ifPresent(boss::setShinyRate);
@@ -260,7 +259,7 @@ public class RaidBossAdditions {
                 Integer mc = maxCatches.orElse(null);
                 Map<String, String> s = script.orElse(null);
 
-            RaidTier t = tier.orElse(null);
+                RaidTier t = tier.orElse(null);
                 if (t != null) {
                     TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(t);
                     if (hm == null) hm = tierConfig.healthMultiplier();
@@ -270,7 +269,7 @@ public class RaidBossAdditions {
                     if (s == null) s = tierConfig.defaultScripts();
                 }
 
-            PokemonProperties p = properties.orElse(new PokemonProperties());
+                PokemonProperties p = properties.orElse(new PokemonProperties());
                 type.ifPresent(t1 -> p.setTeraType(t1.getSerializedName()));
                 if (sr == null) {
                 } else if (sr == 1.0f) p.setShiny(true);
