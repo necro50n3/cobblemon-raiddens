@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.mixins.ai;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.cobblemon.mod.common.battles.ai.strongBattleAI.TrackerPokemon;
@@ -25,7 +26,7 @@ public abstract class StrongBattleAIMixin {
     }
 
     @Inject(method = "choose", at = @At("RETURN"), remap = false, cancellable = true)
-    private void chooseMoveInject(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
+    private void chooseMoveInject(ActiveBattlePokemon pokemon, PokemonBattle battle, BattleSide aiSide, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
         if (
             pokemon.getBattlePokemon() != null
             && pokemon.getBattlePokemon().getEntity() != null
