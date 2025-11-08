@@ -351,6 +351,8 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, boolean canReset) {
+        if (!raidTier.isPresent()) CobblemonRaidDens.LOGGER.info("No raid bosses for that tier could be found. Rolling random tier.");
+
         BlockState blockState = level.getBlockState(blockPos);
         if (cycleMode == null) cycleMode = blockState.hasProperty(RaidCrystalBlock.CYCLE_MODE)
             ? level.getBlockState(blockPos).getValue(RaidCrystalBlock.CYCLE_MODE)
