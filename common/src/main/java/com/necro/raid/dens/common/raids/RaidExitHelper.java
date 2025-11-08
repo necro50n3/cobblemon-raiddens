@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -54,8 +55,10 @@ public class RaidExitHelper {
         if (home == null) return;
 
         if (home.getBlockEntity(homeBlock.getHomePos()) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-            if (from.getEntitiesOfClass(LivingEntity.class, new AABB(BlockPos.ZERO).inflate(32), RaidExitHelper::isAlive).isEmpty()) raidCrystalBlockEntity.clearRaid();
-            else if (from.getEntitiesOfClass(Player.class, new AABB(BlockPos.ZERO).inflate(32)).isEmpty()) raidCrystalBlockEntity.setQueueClose();
+            if (from.getEntitiesOfClass(LivingEntity.class, new AABB(BlockPos.ZERO).inflate(48), RaidExitHelper::isAlive).isEmpty()) raidCrystalBlockEntity.clearRaid();
+            else if (from.getEntitiesOfClass(Player.class, new AABB(BlockPos.ZERO).inflate(48)).isEmpty()) raidCrystalBlockEntity.setQueueClose();
+            raidCrystalBlockEntity.addChunkTicket();
+            raidCrystalBlockEntity.addChunkTicket(BlockPos.containing(RaidDenRegistry.getBossPos(raidCrystalBlockEntity.getRaidStructure())), from);
         }
 
         RaidDenNetworkMessages.JOIN_RAID.accept(player, false);

@@ -57,7 +57,9 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Override
     public boolean isRaidBoss() {
-        return this.getPokemon().getAspects().contains("raid") || this.getPokemon().getForcedAspects().contains("raid");
+        return this.getPokemon().getAspects().contains("raid")
+            || this.getPokemon().getForcedAspects().contains("raid")
+            || this.raidBoss != null;
     }
 
     @Override

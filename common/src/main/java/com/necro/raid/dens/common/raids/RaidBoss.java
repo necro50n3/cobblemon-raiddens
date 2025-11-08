@@ -315,6 +315,10 @@ public class RaidBoss {
         return this.raidAI;
     }
 
+    public String getRaidAIString() {
+        return this.raidAI.getSerializedName();
+    }
+
     public ResourceLocation getRandomDen(RandomSource random) {
         if (this.dens.isEmpty()) this.resolveDens();
 
@@ -425,6 +429,27 @@ public class RaidBoss {
         return this.raidFeature == RaidFeature.DYNAMAX;
     }
 
+    public RaidBoss copy() {
+        return new RaidBoss(
+            this.baseProperties.copy(),
+            this.raidTier,
+            this.raidType,
+            this.raidFeature,
+            new ArrayList<>(this.raidForm),
+            new ArrayList<>(this.baseForm),
+            this.lootTableId,
+            this.weight,
+            this.maxCatches,
+            this.healthMulti,
+            this.shinyRate,
+            new HashMap<>(this.script),
+            new ArrayList<>(this.densInner),
+            this.key,
+            this.currency,
+            this.raidAI
+        );
+    }
+
     public static String getGender(PokemonProperties properties) {
         if (properties.getGender() == null) return "";
         else return properties.getGender().getSerializedName();
@@ -509,8 +534,8 @@ public class RaidBoss {
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
             Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
-            RaidAI.codec().optionalFieldOf("raid_ai", RaidAI.RANDOM).forGetter(RaidBoss::getRaidAI)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAI) -> {
+            Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getRaidAIString)
+            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAIString) -> {
                 properties.setTeraType(type.getSerializedName());
 
                 TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
@@ -532,6 +557,10 @@ public class RaidBoss {
                 else if (feature == RaidFeature.MEGA && raidForm.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
                     raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
                 }
+
+                RaidAI raidAI;
+                if (raidAIString.isEmpty()) raidAI = tierConfig.raidAI();
+                else raidAI = RaidAI.fromString(raidAIString);
 
                 return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency, raidAI);
             })

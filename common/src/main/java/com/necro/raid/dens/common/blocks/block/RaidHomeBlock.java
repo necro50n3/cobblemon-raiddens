@@ -32,9 +32,9 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
-            RaidHomeBlockEntity blockEntity = (RaidHomeBlockEntity) level.getBlockEntity(blockPos);
-            if (blockEntity == null) return InteractionResult.FAIL;
-            boolean success = safeExit(blockEntity, blockPos, (ServerPlayer) player, level);
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
+            if (!(blockEntity instanceof RaidHomeBlockEntity homeBlock)) return InteractionResult.FAIL;
+            boolean success = safeExit(homeBlock, blockPos, (ServerPlayer) player, level);
             return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
         }
         return InteractionResult.SUCCESS;

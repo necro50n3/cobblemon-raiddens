@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.raids.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidFeature;
 import com.necro.raid.dens.common.raids.RaidTier;
 import com.necro.raid.dens.common.raids.RaidType;
@@ -120,38 +119,16 @@ public class RaidBucket {
         Set<ResourceLocation> result = new HashSet<>();
         for (String entry : this.includeBossesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
-            if (entry.startsWith("#")) {
-                TagKey<RaidBoss> tag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, id);
-                RaidRegistry.REGISTRY.getTag(tag).ifPresent(holderSet ->
-                    holderSet.forEach(holder -> {
-                        if (holder.unwrapKey().isEmpty()) return;
-                        ResourceLocation loc = holder.unwrapKey().get().location();
-                        if (RaidRegistry.getRaidBoss(loc) != null) result.add(loc);
-                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result.add(holder.value().getId());
-                    }));
-            }
-            else {
-                if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
-            }
+            if (entry.startsWith("#")) result.addAll(RaidRegistry.getTagEntries(id));
+            else if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
         }
         this.includeBosses = result;
 
         Set<ResourceLocation> result2 = new HashSet<>();
         for (String entry : this.excludeBossesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
-            if (entry.startsWith("#")) {
-                TagKey<RaidBoss> tag = TagKey.create(RaidRegistry.RAID_BOSS_KEY, id);
-                RaidRegistry.REGISTRY.getTag(tag).ifPresent(holderSet ->
-                    holderSet.forEach(holder -> {
-                        if (holder.unwrapKey().isEmpty()) return;
-                        ResourceLocation loc = holder.unwrapKey().get().location();
-                        if (RaidRegistry.getRaidBoss(loc) != null) result2.add(loc);
-                        else if (RaidRegistry.getRaidBoss(holder.value().getId()) != null) result2.add(holder.value().getId());
-                    }));
-            }
-            else {
-                if (RaidRegistry.getRaidBoss(id) != null) result2.add(id);
-            }
+            if (entry.startsWith("#")) result2.addAll(RaidRegistry.getTagEntries(id));
+            else if (RaidRegistry.getRaidBoss(id) != null) result2.add(id);
         }
         this.excludeBosses = result2;
     }

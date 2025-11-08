@@ -27,7 +27,8 @@
         "showdown.MoveInstructionMixin",
         "showdown.ShowdownInterpreterMixin",
         "showdown.TransformEffectMixin",
-        "showdown.TransformInstructionMixin"
+        "showdown.TransformInstructionMixin",
+        "tags.TagEntryMixin"
     ],
     "injectors": {
         "defaultRequire": 1

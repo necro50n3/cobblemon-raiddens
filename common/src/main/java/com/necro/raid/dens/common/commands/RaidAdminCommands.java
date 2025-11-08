@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
@@ -17,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class RaidAdminCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -122,6 +124,9 @@ public class RaidAdminCommands {
             RaidHelper.resetClearedRaids(raidCrystal.getUuid());
             context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
             raidCrystal.resetClears();
+
+            BlockState blockState = raidCrystal.getBlockState();
+            dimension.setBlock(blockPos, blockState.setValue(RaidCrystalBlock.ACTIVE, true), 2);
             return 1;
         }
         else return 0;

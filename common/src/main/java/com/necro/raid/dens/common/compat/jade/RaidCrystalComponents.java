@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
@@ -46,9 +47,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
     @SuppressWarnings("ConstantConditions")
     private IElement getIconClient(BlockAccessor accessor, IElement currentIcon) {
-        RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) accessor.getBlockEntity();
+        BlockEntity blockEntity = accessor.getBlockEntity();
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return currentIcon;
         if (RaidRegistry.REGISTRY == null) RaidRegistry.REGISTRY = blockEntity.getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
-        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(blockEntity.getRaidBossLocation());
+        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return currentIcon;
 
         if (raidBoss.getDisplayAspects() == null) raidBoss.createDisplayAspects();
@@ -89,11 +91,12 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
     @SuppressWarnings("ConstantConditions")
     private void appendTooltipClient(ITooltip tooltip, BlockAccessor accessor) {
-        RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) accessor.getBlockEntity();
+        BlockEntity blockEntity = accessor.getBlockEntity();
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
         BlockState blockState = accessor.getBlockState();
 
-        if (RaidRegistry.REGISTRY == null) RaidRegistry.REGISTRY = blockEntity.getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
-        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(blockEntity.getRaidBossLocation());
+        if (RaidRegistry.REGISTRY == null) RaidRegistry.REGISTRY = raidCrystal.getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
+        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return;
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
@@ -172,10 +175,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) blockAccessor.getBlockEntity();
-        if (blockEntity == null) return;
-        RaidBoss raidBoss = blockEntity.getRaidBoss();
+    public void appendServerData(CompoundTag compoundTag, BlockAccessor accessor) {
+        BlockEntity blockEntity = accessor.getBlockEntity();
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
+        RaidBoss raidBoss = raidCrystal.getRaidBoss();
         if (raidBoss == null) return;
         if (raidBoss.getDisplaySpecies() == null) raidBoss.createDisplayAspects();
 
@@ -199,8 +202,8 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         }
         compoundTag.put("boss_aspects", bossAspects);
 
-        if (blockEntity.getPlayerCount() > 0) compoundTag.putInt("player_count", blockEntity.getPlayerCount());
-        if (blockEntity.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(blockEntity.getTicksUntilNextReset()));
+        if (raidCrystal.getPlayerCount() > 0) compoundTag.putInt("player_count", raidCrystal.getPlayerCount());
+        if (raidCrystal.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(raidCrystal.getTicksUntilNextReset()));
         if (raidBoss.getMaxCatches() >= 0) compoundTag.putInt("max_catches", raidBoss.getMaxCatches());
     }
 

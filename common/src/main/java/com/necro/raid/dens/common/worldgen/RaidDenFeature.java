@@ -16,6 +16,7 @@ import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -66,19 +67,17 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         raidBoss = event.getRaidBoss();
         if (raidBoss == null) return false;
 
-
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.CAN_RESET, CobblemonRaidDens.CONFIG.reset_time > 0)
+            .setValue(RaidCrystalBlock.CAN_RESET, true)
             .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 
-        RaidCrystalBlockEntity blockEntity = ((RaidCrystalBlockEntity) level.getBlockEntity(blockPos));
-        if (blockEntity != null) {
-            blockEntity.setRaidBoss(location, level.getRandom(), level.getLevel().getGameTime());
-            blockEntity.setRaidBucket(bucket);
-        }
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return false;
+        raidCrystal.setRaidBoss(location, level.getRandom(), level.getLevel().getGameTime());
+        raidCrystal.setRaidBucket(bucket);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, raidBoss));
         return true;

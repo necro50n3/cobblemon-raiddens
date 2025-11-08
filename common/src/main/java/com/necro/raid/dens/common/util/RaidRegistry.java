@@ -24,6 +24,7 @@ public class RaidRegistry {
     static final List<ResourceLocation> RAID_LIST = new ArrayList<>();
     static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
     static final Map<ResourceLocation, Integer> RAID_INDEX = new HashMap<>();
+    static Map<ResourceLocation, Set<ResourceLocation>> RAID_TAGS = new HashMap<>();
 
     static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
     static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
@@ -52,7 +53,9 @@ public class RaidRegistry {
         }
     }
 
-    public static void populateWeightedList() {}
+    public static List<ResourceLocation> getAll() {
+        return RAID_LIST;
+    }
 
     public static RaidBoss getRaidBoss(ResourceLocation location) {
         return RAID_LOOKUP.get(location);
@@ -60,6 +63,19 @@ public class RaidRegistry {
 
     public static boolean exists(ResourceLocation location) {
         return RAID_LOOKUP.containsKey(location);
+    }
+
+    public static void setTags(Map<ResourceLocation, Set<ResourceLocation>> tags) {
+        RAID_TAGS = tags;
+    }
+
+    public static boolean isTag(ResourceLocation tag, ResourceLocation boss) {
+        if (!RAID_TAGS.containsKey(tag)) return false;
+        return RAID_TAGS.get(tag).contains(boss);
+    }
+
+    public static Set<ResourceLocation> getTagEntries(ResourceLocation tag) {
+        return RAID_TAGS.getOrDefault(tag, new HashSet<>());
     }
 
     private static float[] buildWeights(int[] matches, Level level) {

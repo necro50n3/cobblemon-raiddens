@@ -17,6 +17,7 @@ import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCo
 import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.events.*;
+import com.necro.raid.dens.fabric.events.reloader.*;
 import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
@@ -76,16 +77,17 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(RaidExitHelper::onDimensionChange);
 
         DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossResourceReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());
 
         DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketResourceReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketReloadListener());
 
         DynamicRegistries.register(RaidDenRegistry.DEN_KEY, RaidDenPool.codec());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidDenPoolResourceReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidDenPoolReloadListener());
 
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateResourceReloadListener());
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BossAdditionsResourceReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTagReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BossAdditionsReloadListener());
 
         NetworkMessages.init();
     }

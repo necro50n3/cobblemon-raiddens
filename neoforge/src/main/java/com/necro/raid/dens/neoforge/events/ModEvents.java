@@ -78,6 +78,7 @@ public class ModEvents {
         event.addListener(new RaidBucketReloadListener());
         event.addListener(new RaidDenPoolReloadListener());
         event.addListener(new RaidTemplateReloadListener());
+        event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
     }
 
