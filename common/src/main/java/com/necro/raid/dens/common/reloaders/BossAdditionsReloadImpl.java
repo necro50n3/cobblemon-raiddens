@@ -14,8 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class BossAdditionsReloadImpl extends AbstractReloadImpl {
+    private List<ResourceLocation> registry;
+
     public BossAdditionsReloadImpl() {
         super("raid/boss_additions", DataType.JSON);
+        this.registry = null;
     }
 
     @Override
@@ -23,10 +26,9 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        List<ResourceLocation> registry = new ArrayList<>(RaidRegistry.getAll());
-
+        if (this.registry == null) this.registry = new ArrayList<>(RaidRegistry.getAll());
         Optional<RaidBossAdditions> additionsOpt = RaidBossAdditions.codec().decode(JsonOps.INSTANCE, object).result().map(Pair::getFirst);
-        additionsOpt.ifPresent(additions -> additions.apply(registry));
+        additionsOpt.ifPresent(additions -> additions.apply(this.registry));
     }
 
     @Override
