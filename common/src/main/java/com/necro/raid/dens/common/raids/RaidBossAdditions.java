@@ -10,10 +10,13 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class RaidBossAdditions {
+    private static final Logger log = LoggerFactory.getLogger(RaidBossAdditions.class);
     private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
 
@@ -76,6 +79,7 @@ public class RaidBossAdditions {
                 if (properties.getLevel() != null) boss.getProperties().setLevel(properties.getLevel());
                 if (properties.getMoves() != null) boss.getProperties().setMoves(properties.getMoves());
                 if (properties.getTeraType() != null) boss.getProperties().setTeraType(properties.getTeraType());
+                if (properties.getHeldItem() != null) boss.getProperties().setHeldItem(properties.getHeldItem());
             }
 
             getTier(this.additions()).ifPresent(boss::setTier);
@@ -202,6 +206,10 @@ public class RaidBossAdditions {
         return Optional.ofNullable(properties.getNature());
     }
 
+    private static Optional<String> heldItem(PokemonProperties properties) {
+        return Optional.ofNullable(properties.getHeldItem());
+    }
+
     private static Optional<Integer> level(PokemonProperties properties) {
         return Optional.ofNullable(properties.getLevel());
     }
@@ -216,9 +224,10 @@ public class RaidBossAdditions {
                 Codec.STRING.optionalFieldOf("gender").forGetter(RaidBossAdditions::gender),
                 Codec.STRING.optionalFieldOf("ability").forGetter(RaidBossAdditions::ability),
                 Codec.STRING.optionalFieldOf("nature").forGetter(RaidBossAdditions::nature),
+                Codec.STRING.optionalFieldOf("heldItem").forGetter(RaidBossAdditions::heldItem),
                 Codec.INT.optionalFieldOf("level").forGetter(RaidBossAdditions::level),
                 Codec.STRING.listOf().optionalFieldOf("moves").forGetter(RaidBossAdditions::moves)
-            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
+            ).apply(inst, (species, gender, ability, nature, heldItem, level, moves) -> {
                 PokemonProperties properties = new PokemonProperties();
                 species.ifPresent(properties::setSpecies);
                 try {
@@ -229,6 +238,7 @@ public class RaidBossAdditions {
                 nature.ifPresent(properties::setNature);
                 level.ifPresent(properties::setLevel);
                 moves.ifPresent(properties::setMoves);
+                heldItem.ifPresent(properties::setHeldItem);
                 return properties;
             })
         );
