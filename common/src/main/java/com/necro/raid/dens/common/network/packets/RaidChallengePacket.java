@@ -11,6 +11,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -66,10 +67,20 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         if (!(entity instanceof PokemonEntity pokemonEntity) || pokemonEntity.getOwner() != null) return;
         else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
 
+        RaidBoss boss = ((IRaidAccessor) entity).getRaidBoss();
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier());
+
         UUID raidId = ((IRaidAccessor) pokemonEntity).getRaidId();
-        if (RaidHelper.ACTIVE_RAIDS.containsKey(raidId) && RaidHelper.ACTIVE_RAIDS.get(raidId).hasFailed(player)) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
-            return;
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        if (raid != null) {
+            if (raid.hasFailed(player)) {
+                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
+                return;
+            }
+            else if (raid.getPlayers().size() >= tierConfig.raidPartySize()) {
+                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.lobby_is_full").withStyle(ChatFormatting.RED));
+                return;
+            }
         }
 
         Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
@@ -90,8 +101,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
-            RaidBoss boss = ((IRaidAccessor) entity).getRaidBoss();
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()))
+
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, tierConfig)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     UUID raidId2 = raidId;
