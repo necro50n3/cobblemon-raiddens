@@ -12,7 +12,6 @@ import com.cobblemon.mod.common.api.pokemon.feature.*;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
-import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
@@ -104,7 +103,7 @@ public class RaidBoss {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
-        properties.setIvs(IVs.createRandomIVs(6));
+        properties.setMinPerfectIVs(6);
 
         Pokemon pokemon;
         if (CobblemonRaidDens.CONFIG.sync_rewards && properties.getShiny() == null) {
@@ -174,7 +173,7 @@ public class RaidBoss {
     public Pokemon getRewardPokemon(ServerPlayer player) {
         PokemonProperties properties = this.baseProperties.copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
-        properties.setIvs(IVs.createRandomIVs(tierConfig.ivs()));
+        properties.setMinPerfectIVs(tierConfig.ivs());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
 
         Pokemon pokemon = new Pokemon();
