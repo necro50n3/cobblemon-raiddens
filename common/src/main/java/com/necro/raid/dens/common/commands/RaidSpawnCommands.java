@@ -25,57 +25,61 @@ public class RaidSpawnCommands {
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("pos", Vec3Argument.vec3())
                     .then(Commands.argument("dimension", DimensionArgument.dimension())
-                        .then(Commands.argument("boss", ResourceLocationArgument.id())
-                            .suggests(RaidDenCommands.RAID_BOSSES)
-                            .executes(context -> spawnBoss(
-                                Vec3Argument.getVec3(context, "pos"),
-                                DimensionArgument.getDimension(context, "dimension"),
-                                ResourceLocationArgument.getId(context, "boss"),
-                                true, true
-                            ))
-                            .then(Commands.argument("noAI", BoolArgumentType.bool())
+                        .then(Commands.literal("boss")
+                            .then(Commands.argument("boss", ResourceLocationArgument.id())
+                                .suggests(RaidDenCommands.RAID_BOSSES)
                                 .executes(context -> spawnBoss(
                                     Vec3Argument.getVec3(context, "pos"),
                                     DimensionArgument.getDimension(context, "dimension"),
                                     ResourceLocationArgument.getId(context, "boss"),
-                                    BoolArgumentType.getBool(context, "noAI"), true
+                                    true, true
                                 ))
-                                .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
+                                .then(Commands.argument("noAI", BoolArgumentType.bool())
                                     .executes(context -> spawnBoss(
                                         Vec3Argument.getVec3(context, "pos"),
                                         DimensionArgument.getDimension(context, "dimension"),
                                         ResourceLocationArgument.getId(context, "boss"),
-                                        BoolArgumentType.getBool(context, "noAI"),
-                                        BoolArgumentType.getBool(context, "isInvulnerable")
+                                        BoolArgumentType.getBool(context, "noAI"), true
                                     ))
+                                    .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
+                                        .executes(context -> spawnBoss(
+                                            Vec3Argument.getVec3(context, "pos"),
+                                            DimensionArgument.getDimension(context, "dimension"),
+                                            ResourceLocationArgument.getId(context, "boss"),
+                                            BoolArgumentType.getBool(context, "noAI"),
+                                            BoolArgumentType.getBool(context, "isInvulnerable")
+                                        ))
+                                    )
                                 )
                             )
                         )
                     )
                     .requires(CommandSourceStack::isPlayer)
-                    .then(Commands.argument("boss", ResourceLocationArgument.id())
-                        .suggests(RaidDenCommands.RAID_BOSSES)
-                        .executes(context -> spawnBoss(
-                            context,
-                            Vec3Argument.getVec3(context, "pos"),
-                            ResourceLocationArgument.getId(context, "boss"),
-                            true, true
-                        ))
-                        .then(Commands.argument("noAI", BoolArgumentType.bool())
+                    .then(Commands.literal("boss")
+                        .then(Commands.argument("boss", ResourceLocationArgument.id())
+                            .suggests(RaidDenCommands.RAID_BOSSES)
                             .executes(context -> spawnBoss(
                                 context,
                                 Vec3Argument.getVec3(context, "pos"),
                                 ResourceLocationArgument.getId(context, "boss"),
-                                BoolArgumentType.getBool(context, "noAI"), true
+                                true, true
                             ))
-                            .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
+                            .then(Commands.argument("noAI", BoolArgumentType.bool())
                                 .executes(context -> spawnBoss(
                                     context,
                                     Vec3Argument.getVec3(context, "pos"),
                                     ResourceLocationArgument.getId(context, "boss"),
-                                    BoolArgumentType.getBool(context, "noAI"),
-                                    BoolArgumentType.getBool(context, "isInvulnerable")
+                                    BoolArgumentType.getBool(context, "noAI"), true
                                 ))
+                                .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
+                                    .executes(context -> spawnBoss(
+                                        context,
+                                        Vec3Argument.getVec3(context, "pos"),
+                                        ResourceLocationArgument.getId(context, "boss"),
+                                        BoolArgumentType.getBool(context, "noAI"),
+                                        BoolArgumentType.getBool(context, "isInvulnerable")
+                                    ))
+                                )
                             )
                         )
                     )

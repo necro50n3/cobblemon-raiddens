@@ -58,7 +58,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
     @Override
     public void handleServer(ServerPlayer player) {
-        if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player)) {
+        if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player) && RaidUtils.isCustomDimension(player.level())) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.not_participating").withStyle(ChatFormatting.RED));
             return;
         }
@@ -101,7 +101,6 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
-
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, tierConfig)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
