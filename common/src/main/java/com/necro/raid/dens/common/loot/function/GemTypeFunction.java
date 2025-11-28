@@ -37,7 +37,7 @@ public class GemTypeFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    protected @NotNull ItemStack run(ItemStack itemStack, LootContext lootContext) {
+    protected @NotNull ItemStack run(@NotNull ItemStack itemStack, LootContext lootContext) {
         Entity entity = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
         if (entity == null) return itemStack;
         if (!(entity instanceof LivingEntity livingEntity)) return itemStack;

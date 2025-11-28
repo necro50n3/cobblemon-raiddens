@@ -54,15 +54,14 @@ public class RaidBuilder {
             );
         }
 
-        if (BattleRegistry.INSTANCE.getBattleByParticipatingPlayer(player) != null) {
+        if (BattleRegistry.getBattleByParticipatingPlayer(player) != null) {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
 
         playerActor.setBattleTheme(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "battle.raid.default"));
 
         if (errors.isEmpty()) {
-            return BattleRegistry.INSTANCE
-                .startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
+            return BattleRegistry.startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
         }
         else return errors;
     }

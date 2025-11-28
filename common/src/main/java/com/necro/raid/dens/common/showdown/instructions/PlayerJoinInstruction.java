@@ -105,14 +105,4 @@ public class PlayerJoinInstruction implements ActionEffectInstruction {
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });
     }
-
-    @Override
-    public void addMolangQueries(@NotNull MoLangRuntime runtime) {
-        ActionEffectInstruction.DefaultImpls.addMolangQueries(this, runtime);
-    }
-
-    @Override
-    public void invoke(@NotNull PokemonBattle battle) {
-        ActionEffectInstruction.DefaultImpls.invoke(this, battle);
-    }
 }

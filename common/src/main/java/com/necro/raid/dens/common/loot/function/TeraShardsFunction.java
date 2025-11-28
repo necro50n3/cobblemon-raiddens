@@ -35,7 +35,7 @@ public class TeraShardsFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    protected @NotNull ItemStack run(ItemStack itemStack, LootContext lootContext) {
+    protected @NotNull ItemStack run(@NotNull ItemStack itemStack, @NotNull LootContext lootContext) {
         if (!ModCompat.MEGA_SHOWDOWN.isLoaded()) return itemStack;
 
         Entity entity = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
