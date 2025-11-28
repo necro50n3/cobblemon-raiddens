@@ -144,8 +144,6 @@ public class RaidBoss {
         pokemon.onChange(null);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
-        pokemonEntity.setNoAi(true);
-        pokemonEntity.setInvulnerable(true);
         pokemonEntity.setDrops(new DropTable());
         pokemonEntity.addTag("alphas.non_wild");
 

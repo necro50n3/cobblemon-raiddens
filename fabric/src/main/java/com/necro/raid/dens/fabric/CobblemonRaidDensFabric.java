@@ -4,6 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
+import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
@@ -69,6 +70,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::commonTick);
         CommandRegistrationCallback.EVENT.register(RaidAdminCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);
+        CommandRegistrationCallback.EVENT.register(RaidSpawnCommands::register);
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreak);
         UseBlockCallback.EVENT.register(RaidUtils::canPlace);
         ServerPlayerEvents.AFTER_RESPAWN.register(RaidExitHelper::afterRespawn);

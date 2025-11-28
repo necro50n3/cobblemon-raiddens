@@ -189,6 +189,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         });
 
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(this.getDimension());
+        pokemonEntity.setNoAi(true);
+        pokemonEntity.setInvulnerable(true);
         pokemonEntity.moveTo(RaidDenRegistry.getBossPos(this.getRaidStructure()));
         this.getDimension().addFreshEntity(pokemonEntity);
 
@@ -427,7 +429,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         if (compoundTag.contains("raid_host_uuid")) {
             this.raidHost = UUID.fromString(compoundTag.getString("raid_host_uuid"));
             this.queueFindDimension = true;
@@ -450,7 +452,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         if (this.raidHost != null) compoundTag.putString("raid_host_uuid", this.raidHost.toString());
         else if (this.getDimension() != null) compoundTag.putString("raid_host_uuid", this.dimensionKey.location().getPath());
 
@@ -487,7 +489,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         if (this.raidBoss != null) tag.putString("raid_boss", this.raidBoss.toString());
         return tag;
