@@ -33,7 +33,7 @@ public class RaidCrystalBlockFabric extends RaidCrystalBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new RaidCrystalBlockEntityFabric(blockPos, blockState);
     }
 

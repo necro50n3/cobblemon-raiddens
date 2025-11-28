@@ -24,6 +24,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.UniqueKeyAdapter;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;
@@ -57,7 +58,7 @@ public class RaidBoss {
     private Float shinyRate;
     private Map<String, String> script;
     private List<ResourceLocation> dens;
-    private String key;
+    private UniqueKeyAdapter key;
     private Integer currency;
     private RaidAI raidAI;
 
@@ -68,7 +69,7 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, Double weight,
                     Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, String> script, List<String> dens,
-                    String key, Integer currency, RaidAI raidAI) {
+                    UniqueKeyAdapter key, Integer currency, RaidAI raidAI) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -95,7 +96,7 @@ public class RaidBoss {
                     List<SpeciesFeature> raidForm, int maxCatches, float shinyRate) {
         this(
             properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), null, 0.0,
-            maxCatches, 0, shinyRate, new HashMap<>(), new ArrayList<>(), "", 0, RaidAI.RANDOM
+            maxCatches, 0, shinyRate, new HashMap<>(), new ArrayList<>(), new UniqueKeyAdapter(), 0, RaidAI.RANDOM
         );
     }
 
@@ -301,7 +302,7 @@ public class RaidBoss {
         return this.densInner;
     }
 
-    public String getKey() {
+    public UniqueKeyAdapter getKey() {
         return this.key;
     }
 
@@ -402,7 +403,7 @@ public class RaidBoss {
         this.densInner = dens;
     }
 
-    public void setKey(String key) {
+    public void setKey(UniqueKeyAdapter key) {
         this.key = key;
     }
 
@@ -531,7 +532,7 @@ public class RaidBoss {
             Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
             Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
-            Codec.STRING.optionalFieldOf("key", "").forGetter(RaidBoss::getKey),
+            UniqueKeyAdapter.CODEC.optionalFieldOf("key", new UniqueKeyAdapter()).forGetter(RaidBoss::getKey),
             Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getRaidAIString)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAIString) -> {
                 properties.setTeraType(type.getSerializedName());

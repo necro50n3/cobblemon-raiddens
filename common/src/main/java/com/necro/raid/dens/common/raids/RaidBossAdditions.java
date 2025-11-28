@@ -8,6 +8,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.UniqueKeyAdapter;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -172,7 +173,7 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getDens());
     }
 
-    private static Optional<String> getKey(RaidBoss boss) {
+    private static Optional<UniqueKeyAdapter> getKey(RaidBoss boss) {
         return Optional.ofNullable(boss.getKey());
     }
 
@@ -250,7 +251,7 @@ public class RaidBossAdditions {
                 Codec.INT.optionalFieldOf("max_catches").forGetter(RaidBossAdditions::getMaxCatches),
                 Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script").forGetter(RaidBossAdditions::getScript),
                 Codec.STRING.listOf().optionalFieldOf("den").forGetter(RaidBossAdditions::getDens),
-                Codec.STRING.optionalFieldOf("key").forGetter(RaidBossAdditions::getKey),
+                UniqueKeyAdapter.CODEC.optionalFieldOf("key").forGetter(RaidBossAdditions::getKey),
                 RaidAI.codec().optionalFieldOf("raid_ai").forGetter(RaidBossAdditions::getRaidAI)
             ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAI) -> {
                 Integer hm = healthMulti.orElse(null);

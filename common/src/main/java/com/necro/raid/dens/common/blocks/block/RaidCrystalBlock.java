@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.data.UniqueKeyAdapter;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -12,22 +13,16 @@ import com.necro.raid.dens.common.util.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -62,7 +57,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal)) return InteractionResult.FAIL;
         boolean success = this.startOrJoinRaid(player, blockState, raidCrystal, null);
@@ -70,7 +65,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemStack, @NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
@@ -193,25 +188,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
         RaidBoss boss = blockEntity.getRaidBoss();
-        String key = boss.getKey();
+        UniqueKeyAdapter key = boss.getKey();
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
-            else if (key.startsWith("#")) {
-                TagKey<Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(key.substring(1)));
-                if (!itemStack.is(tag)) {
-                    player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-                    return false;
-                }
-                else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
+            else if (!key.matches(itemStack)) {
+                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                return false;
             }
-            else {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key));
-                if (item != Items.AIR && !itemStack.is(item)) {
-                    player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", item.getDefaultInstance().getHoverName()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-                    return false;
-                }
-                else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
-            }
+            else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
         }
         else if (CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.no_key"));
@@ -221,7 +205,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+    protected void onRemove(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState2, boolean bl) {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid(blockPos);
             RaidHelper.resetClearedRaids(blockEntity.getUuid());
@@ -239,17 +223,17 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return null;
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(BlockState blockState) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    protected boolean isPathfindable(BlockState blockState, PathComputationType pathComputationType) {
+    protected boolean isPathfindable(@NotNull BlockState blockState, @NotNull PathComputationType pathComputationType) {
         return false;
     }
 }

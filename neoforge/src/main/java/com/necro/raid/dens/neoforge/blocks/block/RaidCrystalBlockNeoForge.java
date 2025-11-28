@@ -33,7 +33,7 @@ public class RaidCrystalBlockNeoForge extends RaidCrystalBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new RaidCrystalBlockEntityNeoForge(blockPos, blockState);
     }
 
