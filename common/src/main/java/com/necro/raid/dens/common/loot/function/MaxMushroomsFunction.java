@@ -34,7 +34,7 @@ public class MaxMushroomsFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    protected @NotNull ItemStack run(ItemStack itemStack, LootContext lootContext) {
+    protected @NotNull ItemStack run(@NotNull ItemStack itemStack, @NotNull LootContext lootContext) {
         if (!ModCompat.MEGA_SHOWDOWN.isLoaded()) return itemStack;
 
         Entity entity = lootContext.getParamOrNull(LootContextParams.THIS_ENTITY);
@@ -56,7 +56,7 @@ public class MaxMushroomsFunction extends LootItemConditionalFunction {
             default -> 3;
         };
         if (count == 0) return itemStack;
-        itemStack = RaidDensMSDCompat.INSTANCE.getMaxMushroom();
+        itemStack = RaidDensMSDCompat.getMaxMushroom();
         itemStack.setCount(count);
         return itemStack;
     }

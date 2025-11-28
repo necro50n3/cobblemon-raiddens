@@ -64,7 +64,7 @@ public class TeraShardsFunction extends LootItemConditionalFunction {
             default -> 30;
         };
         if (count == 0) return itemStack;
-        itemStack = RaidDensMSDCompat.INSTANCE.getTeraShard(raidType);
+        itemStack = RaidDensMSDCompat.getTeraShard(raidType);
         itemStack.setCount(count);
         return itemStack;
     }

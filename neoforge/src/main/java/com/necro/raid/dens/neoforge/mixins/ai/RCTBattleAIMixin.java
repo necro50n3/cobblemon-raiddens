@@ -1,5 +1,6 @@
 package com.necro.raid.dens.neoforge.mixins.ai;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.gitlab.srcmc.rctapi.api.ai.RCTBattleAI;
@@ -16,7 +17,7 @@ public abstract class RCTBattleAIMixin {
     protected abstract double evalMove(BattlePokemon from, BattlePokemon to, InBattleMove move);
 
     @Inject(method = "choose", at = @At("HEAD"), remap = false, cancellable = true)
-    private void chooseInject(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
+    private void chooseInject(ActiveBattlePokemon pokemon, PokemonBattle battle, BattleSide aiSide, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
         RCTBattleAIImpl.choose(pokemon, moveset, this::evalMove, cir);
     }
 

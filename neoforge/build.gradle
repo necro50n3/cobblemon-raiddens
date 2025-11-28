@@ -38,10 +38,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven {
-        name = "Illusive Soulworks maven"
-        url = "https://maven.theillusivec4.top/"
-    }
+    maven { url 'https://maven.impactdev.net/repository/development/' }
 }
 
 dependencies {
@@ -54,11 +51,11 @@ dependencies {
     include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
-    modRuntimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
-    modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:6951007"
-    modCompileOnly "curse.maven:cobbledollars-859232:6604564"
+    modRuntimeOnly "io.wispforest:accessories-neoforge:1.1.0-beta.52+1.21.1"
+    modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7260210"
+    modImplementation "curse.maven:cobbledollars-859232:6604564"
     modCompileOnly "curse.maven:distant-horizons-508933:6791190"
-    modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:6734354"
+    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
     modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }

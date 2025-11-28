@@ -38,10 +38,6 @@ repositories {
         name = "Terraformers"
         url = "https://maven.terraformersmc.com/"
     }
-    maven {
-        name = "Ladysnake Libs"
-        url = "https://maven.ladysnake.org/releases"
-    }
     mavenCentral()
 }
 
@@ -55,12 +51,12 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:11.0.3"
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+fabric"
-    modRuntimeOnly "dev.emi:trinkets:3.10.0"
-    modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:6951008"
-    modCompileOnly "curse.maven:cobbledollars-859232:6604561"
+    modRuntimeOnly "io.wispforest:accessories-fabric:1.1.0-beta.52+1.21.1"
+    modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7260211"
+    modImplementation "curse.maven:cobbledollars-859232:6604561"
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
     modCompileOnly "curse.maven:distant-horizons-508933:6791190"
-    modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:6734355"
+    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }

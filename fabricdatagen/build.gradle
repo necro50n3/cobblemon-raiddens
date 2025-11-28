@@ -49,10 +49,6 @@ repositories {
         name = "Terraformers"
         url = "https://maven.terraformersmc.com/"
     }
-    maven {
-        name = "Ladysnake Libs"
-        url = "https://maven.ladysnake.org/releases"
-    }
     mavenCentral()
 }
 
@@ -63,7 +59,7 @@ dependencies {
     modImplementation "com.cobblemon:fabric:$rootProject.cobblemon_version"
     modImplementation "software.bernie.geckolib:geckolib-fabric-$rootProject.geckolib_version"
     include(modApi "me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version")
-    modImplementation "dev.emi:trinkets:3.10.0"
+    modRuntimeOnly "io.wispforest:accessories-fabric:1.1.0-beta.52+1.21.1"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:6951008"
     modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modImplementation "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"

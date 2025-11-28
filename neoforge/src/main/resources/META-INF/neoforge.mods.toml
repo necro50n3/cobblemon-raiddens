@@ -40,22 +40,30 @@ side = "BOTH"
 [[dependencies.cobblemonraiddens]]
 modId = "mega_showdown"
 mandatory = false
-versionRange = "[0,)"
+type = "optional"
+versionRange = "[1.0+1.7+1.21.1,)"
 
 [[dependencies.cobblemonraiddens]]
 modId = "cobbledollars"
 mandatory = false
-versionRange = "[0,)"
+type = "optional"
+versionRange = "[2.0.0,)"
 
 [[dependencies.cobblemonraiddens]]
 modId = "cobblemonsizevariation"
 mandatory = false
-versionRange = "[0,)"
+type = "optional"
+versionRange = "[1.4.0,)"
 
 [[dependencies.cobblemonraiddens]]
 modId = "rctapi"
 mandatory = false
-versionRange = "[0,)"
+type = "optional"
+versionRange = "[0.14.0,)"
+
+[[dependencies.cobblemonraiddens]]
+modId = "wthit"
+type = "discouraged"
 
 [[mixins]]
 config = "${archives_name}-common.mixins.json"

@@ -14,7 +14,6 @@ import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
 import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCompat;
-import com.necro.raid.dens.fabric.compat.megashowdown.FabricMSDCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.events.*;
 import com.necro.raid.dens.fabric.events.reloader.*;
@@ -48,7 +47,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
-        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) FabricMSDCompat.init();
         if (ModCompat.DISTANT_HORIZONS.isLoaded()) FabricDistantHorizonsCompat.init();
 
         NetworkMessages.registerPayload();

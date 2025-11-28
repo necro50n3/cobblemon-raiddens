@@ -149,8 +149,8 @@ public class RaidBoss {
         pokemonEntity.setDrops(new DropTable());
         pokemonEntity.addTag("alphas.non_wild");
 
-        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupTera(pokemonEntity, pokemon);
-        else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.INSTANCE.setupDmax(pokemonEntity);
+        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemonEntity, pokemon);
+        else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity);
 
         ((IRaidAccessor) pokemonEntity).setRaidBoss(this.id);
         float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
@@ -218,7 +218,7 @@ public class RaidBoss {
         if (moves != null) {
             MoveSet moveSet = pokemon.getMoveSet();
             moveSet.clear();
-            List<MoveTemplate> moveTemplates = moves.stream().map(Moves.INSTANCE::getByName).toList();
+            List<MoveTemplate> moveTemplates = moves.stream().map(Moves::getByName).toList();
             moveSet.doWithoutEmitting(() -> {
                 for (int i = 0; i < moves.size(); i++) {
                     MoveTemplate mt = moveTemplates.get(i);
