@@ -16,7 +16,7 @@ public abstract class RaidDensMSDCompat {
         Vec3 entityPos = pokemonEntity.position();
         pokemonEntity.level().playSound(
             null, entityPos.x(), entityPos.y(), entityPos.z(),
-            MegaShowdownSounds.TERASTALLIZATION.value(),
+            MegaShowdownSounds.TERASTALLIZATION.get(),
             SoundSource.PLAYERS, 0.2f, 1f
         );
 
@@ -28,7 +28,7 @@ public abstract class RaidDensMSDCompat {
         Vec3 entityPos = pokemonEntity.position();
         pokemonEntity.level().playSound(
             null, entityPos.x(), entityPos.y(), entityPos.z(),
-            MegaShowdownSounds.DYNAMAX.value(),
+            MegaShowdownSounds.DYNAMAX.get(),
             SoundSource.PLAYERS, 0.4f, 0.5f + (float) Math.random() * 0.5f
         );
 
@@ -37,29 +37,29 @@ public abstract class RaidDensMSDCompat {
 
     public static ItemStack getTeraShard(RaidType raidType) {
         return switch (raidType) {
-            case FIGHTING -> MegaShowdownItems.FIGHTING_TERA_SHARD.value().getDefaultInstance();
-            case FLYING -> MegaShowdownItems.FLYING_TERA_SHARD.value().getDefaultInstance();
-            case POISON -> MegaShowdownItems.POISON_TERA_SHARD.value().getDefaultInstance();
-            case GROUND -> MegaShowdownItems.GROUND_TERA_SHARD.value().getDefaultInstance();
-            case ROCK -> MegaShowdownItems.ROCK_TERA_SHARD.value().getDefaultInstance();
-            case BUG -> MegaShowdownItems.BUG_TERA_SHARD.value().getDefaultInstance();
-            case GHOST -> MegaShowdownItems.GHOST_TERA_SHARD.value().getDefaultInstance();
-            case STEEL -> MegaShowdownItems.STEEL_TERA_SHARD.value().getDefaultInstance();
-            case FIRE -> MegaShowdownItems.FIRE_TERA_SHARD.value().getDefaultInstance();
-            case WATER -> MegaShowdownItems.WATER_TERA_SHARD.value().getDefaultInstance();
-            case GRASS -> MegaShowdownItems.GRASS_TERA_SHARD.value().getDefaultInstance();
-            case ELECTRIC -> MegaShowdownItems.ELECTRIC_TERA_SHARD.value().getDefaultInstance();
-            case PSYCHIC -> MegaShowdownItems.PSYCHIC_TERA_SHARD.value().getDefaultInstance();
-            case ICE -> MegaShowdownItems.ICE_TERA_SHARD.value().getDefaultInstance();
-            case DRAGON -> MegaShowdownItems.DRAGON_TERA_SHARD.value().getDefaultInstance();
-            case DARK -> MegaShowdownItems.DARK_TERA_SHARD.value().getDefaultInstance();
-            case FAIRY -> MegaShowdownItems.FAIRY_TERA_SHARD.value().getDefaultInstance();
-            case STELLAR -> MegaShowdownItems.STELLAR_TERA_SHARD.value().getDefaultInstance();
-            default -> MegaShowdownItems.NORMAL_TERA_SHARD.value().getDefaultInstance();
+            case FIGHTING -> MegaShowdownItems.FIGHTING_TERA_SHARD.get().getDefaultInstance();
+            case FLYING -> MegaShowdownItems.FLYING_TERA_SHARD.get().getDefaultInstance();
+            case POISON -> MegaShowdownItems.POISON_TERA_SHARD.get().getDefaultInstance();
+            case GROUND -> MegaShowdownItems.GROUND_TERA_SHARD.get().getDefaultInstance();
+            case ROCK -> MegaShowdownItems.ROCK_TERA_SHARD.get().getDefaultInstance();
+            case BUG -> MegaShowdownItems.BUG_TERA_SHARD.get().getDefaultInstance();
+            case GHOST -> MegaShowdownItems.GHOST_TERA_SHARD.get().getDefaultInstance();
+            case STEEL -> MegaShowdownItems.STEEL_TERA_SHARD.get().getDefaultInstance();
+            case FIRE -> MegaShowdownItems.FIRE_TERA_SHARD.get().getDefaultInstance();
+            case WATER -> MegaShowdownItems.WATER_TERA_SHARD.get().getDefaultInstance();
+            case GRASS -> MegaShowdownItems.GRASS_TERA_SHARD.get().getDefaultInstance();
+            case ELECTRIC -> MegaShowdownItems.ELECTRIC_TERA_SHARD.get().getDefaultInstance();
+            case PSYCHIC -> MegaShowdownItems.PSYCHIC_TERA_SHARD.get().getDefaultInstance();
+            case ICE -> MegaShowdownItems.ICE_TERA_SHARD.get().getDefaultInstance();
+            case DRAGON -> MegaShowdownItems.DRAGON_TERA_SHARD.get().getDefaultInstance();
+            case DARK -> MegaShowdownItems.DARK_TERA_SHARD.get().getDefaultInstance();
+            case FAIRY -> MegaShowdownItems.FAIRY_TERA_SHARD.get().getDefaultInstance();
+            case STELLAR -> MegaShowdownItems.STELLAR_TERA_SHARD.get().getDefaultInstance();
+            default -> MegaShowdownItems.NORMAL_TERA_SHARD.get().getDefaultInstance();
         };
     }
 
     public static ItemStack getMaxMushroom() {
-        return MegaShowdownBlocks.MAX_MUSHROOM.value().asItem().getDefaultInstance();
+        return MegaShowdownBlocks.MAX_MUSHROOM.get().asItem().getDefaultInstance();
     }
 }
