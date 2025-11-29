@@ -130,8 +130,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
 
         if (!this.isActive(blockState)) return;
-        if (++this.soundTicks % 60 == 0) {
-            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0f, 1.0f);
+        if (++this.soundTicks % 120 == 0) {
+            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.5f, 1.0f);
             this.soundTicks = 0;
         }
     }
