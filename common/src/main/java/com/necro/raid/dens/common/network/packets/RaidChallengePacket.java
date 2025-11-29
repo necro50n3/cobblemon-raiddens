@@ -77,7 +77,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                 player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
                 return;
             }
-            else if (raid.getPlayers().size() >= tierConfig.raidPartySize()) {
+            else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
                 player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.lobby_is_full").withStyle(ChatFormatting.RED));
                 return;
             }
