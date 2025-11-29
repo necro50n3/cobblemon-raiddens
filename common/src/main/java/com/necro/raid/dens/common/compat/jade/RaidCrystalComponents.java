@@ -66,7 +66,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (!serverData.contains("boss_aspects") || !serverData.contains("boss_species")) return currentIcon;
 
         IElementHelper elements = IElementHelper.get();
-        Species species = PokemonSpecies.INSTANCE.getByIdentifier(ResourceLocationExtensionsKt.asIdentifierDefaultingNamespace(serverData.getString("boss_species"), Cobblemon.MODID));
+        Species species = PokemonSpecies.getByIdentifier(ResourceLocationExtensionsKt.asIdentifierDefaultingNamespace(serverData.getString("boss_species"), Cobblemon.MODID));
         if (species == null) return currentIcon;
 
         Set<String> aspects = new HashSet<>();

@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = CobblemonRaidDens.MOD_ID)
+@EventBusSubscriber(modid = CobblemonRaidDens.MOD_ID)
 public class NetworkMessages {
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
