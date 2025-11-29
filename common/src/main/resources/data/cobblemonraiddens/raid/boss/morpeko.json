@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "banette",
+        "moves": [
+            "bulletseed",
+            "spark",
+            "bite",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

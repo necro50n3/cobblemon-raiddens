@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "mrmime",
+        "moves": [
+            "freezedry",
+            "suckerpunch",
+            "psybeam",
+            "doublekick"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "galarian",
+            "value": true
+        }
+    ]
+}

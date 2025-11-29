@@ -1,19 +1,19 @@
 {
     "pokemon": {
-        "species": "growlithe",
+        "species": "grimer",
         "moves": [
             "crunch",
-            "flamewheel",
-            "retaliate",
-            "firefang"
+            "knockoff",
+            "poisonfang",
+            "acidspray"
         ]
     },
     "raid_tier": "TIER_THREE",
-    "raid_type": "FIRE",
+    "raid_type": "POISON",
     "weight": 20.0,
     "base_form": [
         {
-            "name": "hisuian",
+            "name": "alolan",
             "value": true
         }
     ]

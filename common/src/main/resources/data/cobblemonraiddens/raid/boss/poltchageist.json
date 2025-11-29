@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "poltchageist",
+        "moves": [
+            "absorb",
+            "foulplay",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

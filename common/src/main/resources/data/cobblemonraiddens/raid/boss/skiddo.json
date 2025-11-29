@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "skiddo",
+        "moves": [
+            "seedbomb",
+            "bulldoze",
+            "takedown",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

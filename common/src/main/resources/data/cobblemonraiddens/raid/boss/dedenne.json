@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "dedenne",
+        "moves": [
+            "playrough",
+            "discharge",
+            "snore",
+            "voltswitch"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

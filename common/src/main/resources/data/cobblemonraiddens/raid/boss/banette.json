@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "banette",
+        "moves": [
+            "suckerpunch",
+            "shadowball",
+            "hex",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}

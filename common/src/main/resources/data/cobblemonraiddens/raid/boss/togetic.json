@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "togetic",
+        "moves": [
+            "doubleedge",
+            "ancientpower",
+            "pound",
+            "fairywind"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

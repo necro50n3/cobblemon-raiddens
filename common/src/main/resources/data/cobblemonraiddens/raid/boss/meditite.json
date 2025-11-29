@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "meditite",
+        "moves": [
+            "psybeam",
+            "forcepalm",
+            "feint",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

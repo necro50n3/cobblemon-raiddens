@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "azumarill",
+        "moves": [
+            "playrough",
+            "aquatail",
+            "bounce",
+            "slam"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

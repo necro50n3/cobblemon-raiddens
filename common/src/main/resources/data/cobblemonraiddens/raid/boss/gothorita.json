@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "gothorita",
+        "moves": [
+            "psyshock",
+            "psybeam",
+            "confusion",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

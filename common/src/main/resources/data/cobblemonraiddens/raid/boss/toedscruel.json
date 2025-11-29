@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "toedscruel",
+        "moves": [
+            "earthpower",
+            "gigadrain",
+            "hex",
+            "mudshot"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

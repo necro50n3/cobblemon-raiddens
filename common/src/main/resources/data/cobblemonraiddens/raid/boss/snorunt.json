@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "snorunt",
+        "moves": [
+            "iceshard",
+            "headbutt",
+            "powdersnow",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

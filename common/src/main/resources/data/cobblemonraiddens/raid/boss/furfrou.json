@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "furfrou",
+        "moves": [
+            "suckerpunch",
+            "takedown",
+            "retaliate",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

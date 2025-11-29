@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "cyclizar",
+        "moves": [
+            "dragonclaw",
+            "uturn",
+            "bite",
+            "quickattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DRAGON",
+    "weight": 20.0
+}

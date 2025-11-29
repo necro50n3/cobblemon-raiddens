@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "togedemaru",
+        "moves": [
+            "discharge",
+            "zingzap",
+            "pinmissile",
+            "spark"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

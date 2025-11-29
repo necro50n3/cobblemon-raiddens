@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "scovillain",
+        "moves": [
+            "seedbomb",
+            "crunch",
+            "zenheadbutt",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "clobbopus",
+        "moves": [
+            "brickbreak",
+            "bind",
+            "feint",
+            "rocksmash"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

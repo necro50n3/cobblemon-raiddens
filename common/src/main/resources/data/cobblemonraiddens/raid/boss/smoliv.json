@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "smoliv",
+        "moves": [
+            "megadrain",
+            "absorb",
+            "razorleaf",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "duosion",
+        "moves": [
+            "psyshock",
+            "psybeam",
+            "confusion",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "spidops",
+        "moves": [
+            "headbutt",
+            "bugbite",
+            "feint",
+            "assurance"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

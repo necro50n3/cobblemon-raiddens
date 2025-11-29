@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "silicobra",
+        "moves": [
+            "headbutt",
+            "bulldoze",
+            "brutalswing",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

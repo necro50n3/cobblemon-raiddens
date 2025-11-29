@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "minccino",
+        "moves": [
+            "doubleslap",
+            "pound",
+            "swift",
+            "echoedvoice"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

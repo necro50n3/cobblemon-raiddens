@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "manectric",
+        "moves": [
+            "discharge",
+            "shockwave",
+            "thunderfang",
+            "bite"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

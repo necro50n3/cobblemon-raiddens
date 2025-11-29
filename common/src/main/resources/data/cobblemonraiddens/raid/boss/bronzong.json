@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "bronzong",
+        "moves": [
+            "feintattack",
+            "tackle",
+            "payback",
+            "extrasensory"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "STEEL",
+    "weight": 20.0
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "shuppet",
+        "moves": [
+            "feintattack",
+            "shadowsneak",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "haxorus",
+        "moves": [
+            "gigaimpact",
+            "outrage",
+            "dragonpulse",
+            "dualchop"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DRAGON",
+    "weight": 20.0
+}

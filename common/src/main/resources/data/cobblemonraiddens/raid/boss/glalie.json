@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "glalie",
+        "moves": [
+            "icefang",
+            "bite",
+            "frostbreath",
+            "icywind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

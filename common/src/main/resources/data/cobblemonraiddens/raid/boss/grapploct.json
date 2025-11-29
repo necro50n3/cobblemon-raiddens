@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "grapploct",
+        "moves": [
+            "superpower",
+            "submission",
+            "brickbreak",
+            "bind"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

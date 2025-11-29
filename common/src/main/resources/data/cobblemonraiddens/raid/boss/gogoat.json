@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "gogoat",
+        "moves": [
+            "leafblade",
+            "hornleech",
+            "doubleedge",
+            "seedbomb"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

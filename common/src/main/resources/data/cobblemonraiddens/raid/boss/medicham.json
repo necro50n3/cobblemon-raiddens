@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "medicham",
+        "moves": [
+            "highjumpkick",
+            "zenheadbutt",
+            "psybeam",
+            "forcepalm"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

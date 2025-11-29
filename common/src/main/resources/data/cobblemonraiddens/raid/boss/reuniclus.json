@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "reuniclus",
+        "moves": [
+            "psychic",
+            "psyshock",
+            "psybeam",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

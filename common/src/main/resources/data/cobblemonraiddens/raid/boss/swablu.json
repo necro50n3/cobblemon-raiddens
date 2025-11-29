@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "swablu",
+        "moves": [
+            "dragonbreath",
+            "round",
+            "furyattack",
+            "disarmingvoice"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

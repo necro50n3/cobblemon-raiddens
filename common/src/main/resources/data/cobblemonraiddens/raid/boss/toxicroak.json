@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "toxicroak",
+        "moves": [
+            "poisonjab",
+            "mudbomb",
+            "suckerpunch",
+            "venoshock"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON",
+    "weight": 20.0
+}

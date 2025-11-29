@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "solosis",
+        "moves": [
+            "psyshock",
+            "psybeam",
+            "confusion",
+            "rollout"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

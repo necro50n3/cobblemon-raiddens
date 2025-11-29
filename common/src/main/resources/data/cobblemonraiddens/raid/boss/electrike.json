@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "electrike",
+        "moves": [
+            "bite",
+            "shockwave",
+            "quickattack",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "drampa",
+        "moves": [
+            "fly",
+            "dragonpulse",
+            "extrasensory",
+            "dragonbreath"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

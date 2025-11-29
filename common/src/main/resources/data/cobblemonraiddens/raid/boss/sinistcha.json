@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "sinistcha",
+        "moves": [
+            "hex",
+            "megadrain",
+            "absorb",
+            "matchagotcha"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

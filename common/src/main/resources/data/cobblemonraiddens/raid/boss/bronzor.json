@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "bronzor",
+        "moves": [
+            "payback",
+            "tackle",
+            "confusion"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "STEEL",
+    "weight": 20.0
+}

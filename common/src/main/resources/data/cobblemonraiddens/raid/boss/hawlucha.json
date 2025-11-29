@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "hawlucha",
+        "moves": [
+            "flyingpress",
+            "bounce",
+            "submission",
+            "brickbreak"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

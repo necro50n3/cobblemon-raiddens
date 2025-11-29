@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "mienfoo",
+        "moves": [
+            "drainpunch",
+            "uturn",
+            "forcepalm",
+            "doubleslap"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

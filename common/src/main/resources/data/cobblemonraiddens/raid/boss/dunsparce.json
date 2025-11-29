@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "dunsparce",
+        "moves": [
+            "hyperdrill",
+            "drillrun",
+            "rollout",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

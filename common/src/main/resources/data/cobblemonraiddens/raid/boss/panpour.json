@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "panpour",
+        "moves": [
+            "bite",
+            "furyswipes",
+            "watergun",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

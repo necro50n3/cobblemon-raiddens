@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "inkay",
+        "moves": [
+            "psybeam",
+            "pluck",
+            "payback",
+            "wrap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

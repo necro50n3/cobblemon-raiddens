@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "rellor",
+        "moves": [
+            "bugbite",
+            "rollout",
+            "tackle",
+            "mudshot"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

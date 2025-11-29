@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "zebstrika",
+        "moves": [
+            "stomp",
+            "spark",
+            "pursuit",
+            "flamecharge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

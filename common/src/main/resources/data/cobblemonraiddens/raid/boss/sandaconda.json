@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "sandaconda",
+        "moves": [
+            "slam",
+            "brutalswing",
+            "headbutt",
+            "bulldoze"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

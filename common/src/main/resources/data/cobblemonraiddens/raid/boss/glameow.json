@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "glameow",
+        "moves": [
+            "furyswipes",
+            "feintattack",
+            "scratch",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

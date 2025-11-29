@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "dudunsparce",
+        "moves": [
+            "boomburst",
+            "hurricane",
+            "ancientpower",
+            "dragonrush"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

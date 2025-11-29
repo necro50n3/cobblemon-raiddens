@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "vanilluxe",
+        "moves": [
+            "blizzard",
+            "icebeam",
+            "uproar",
+            "mirrorshot"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

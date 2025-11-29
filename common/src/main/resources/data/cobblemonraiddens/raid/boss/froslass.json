@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "froslass",
+        "moves": [
+            "wakeupslap",
+            "frostbreath",
+            "icywind",
+            "drainingkiss"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

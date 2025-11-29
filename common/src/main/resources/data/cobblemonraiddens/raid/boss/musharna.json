@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "musharna",
+        "moves": [
+            "psybeam",
+            "psychic",
+            "dreameater",
+            "futuresight"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

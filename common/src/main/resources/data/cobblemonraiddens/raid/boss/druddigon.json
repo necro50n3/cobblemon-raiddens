@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "druddigon",
+        "moves": [
+            "ironhead",
+            "crunch",
+            "chipaway",
+            "dragonclaw"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DRAGON",
+    "weight": 20.0
+}

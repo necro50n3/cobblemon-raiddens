@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "hoppip",
+        "moves": [
+            "bulletseed",
+            "fairywind",
+            "absorb",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

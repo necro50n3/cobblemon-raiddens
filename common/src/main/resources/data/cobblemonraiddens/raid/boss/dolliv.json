@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "dolliv",
+        "moves": [
+            "energyball",
+            "seedbomb",
+            "megadrain",
+            "razorleaf"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

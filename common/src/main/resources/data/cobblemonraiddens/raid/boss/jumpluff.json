@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "jumpluff",
+        "moves": [
+            "gigadrain",
+            "uturn",
+            "acrobatics",
+            "megadrain"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

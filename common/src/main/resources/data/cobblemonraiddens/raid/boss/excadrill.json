@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "excadrill",
+        "moves": [
+            "dig",
+            "rockslide",
+            "crushclaw",
+            "metalclaw"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

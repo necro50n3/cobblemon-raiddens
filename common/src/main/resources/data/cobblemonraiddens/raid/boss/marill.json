@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "marill",
+        "moves": [
+            "slam",
+            "bubble",
+            "bubblebeam",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

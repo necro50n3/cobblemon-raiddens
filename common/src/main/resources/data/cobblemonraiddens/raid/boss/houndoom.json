@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "houndoom",
+        "moves": [
+            "foulplay",
+            "comeuppance",
+            "feintattack",
+            "firefang"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

@@ -1,0 +1,11 @@
+{
+    "pokemon": {
+        "species": "togepi",
+        "moves": [
+            "pound"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

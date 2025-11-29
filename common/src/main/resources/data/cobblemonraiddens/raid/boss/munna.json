@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "munna",
+        "moves": [
+            "psybeam",
+            "storedpower"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

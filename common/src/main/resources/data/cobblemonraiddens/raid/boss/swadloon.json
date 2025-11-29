@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "swadloon",
+        "moves": [
+            "strugglebug",
+            "tackle",
+            "razorleaf",
+            "bugbite"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

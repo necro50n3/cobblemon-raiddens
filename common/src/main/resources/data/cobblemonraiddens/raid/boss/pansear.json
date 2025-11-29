@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "pansear",
+        "moves": [
+            "bite",
+            "furyswipes",
+            "incinerate",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "FIRE",
+    "weight": 20.0
+}

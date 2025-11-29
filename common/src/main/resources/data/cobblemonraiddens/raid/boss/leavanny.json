@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "leavanny",
+        "moves": [
+            "xscissor",
+            "leafblade",
+            "fellstinger",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

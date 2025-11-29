@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "toedscool",
+        "moves": [
+            "hex",
+            "mudshot",
+            "megadrain",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

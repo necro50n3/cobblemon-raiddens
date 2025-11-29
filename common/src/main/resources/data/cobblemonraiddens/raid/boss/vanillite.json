@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "vanillite",
+        "moves": [
+            "avalanche",
+            "icywind",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

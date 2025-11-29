@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "muk",
+        "moves": [
+            "gunkshot",
+            "crunch",
+            "knockoff",
+            "poisonfang"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON",
+    "weight": 20.0,
+    "base_form": [
+        {
+            "name": "alolan",
+            "value": true
+        }
+    ]
+}

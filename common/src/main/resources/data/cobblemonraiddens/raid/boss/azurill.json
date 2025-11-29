@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "azurill",
+        "moves": [
+            "slam",
+            "bubble",
+            "bubblebeam",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

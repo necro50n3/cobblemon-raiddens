@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "trubbish",
+        "moves": [
+            "belch",
+            "sludgebomb",
+            "takedown",
+            "sludge"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "POISON",
+    "weight": 20.0
+}

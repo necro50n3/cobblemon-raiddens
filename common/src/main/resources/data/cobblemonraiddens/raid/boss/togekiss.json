@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "togekiss",
+        "moves": [
+            "triattack",
+            "ancientpower",
+            "aurasphere",
+            "fairywind"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

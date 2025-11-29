@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "skwovet",
+        "moves": [
+            "bodyslam",
+            "bite",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

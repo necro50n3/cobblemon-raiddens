@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "sinistea",
+        "moves": [
+            "megadrain",
+            "astonish"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "grumpig",
+        "moves": [
+            "psyshock",
+            "snore",
+            "powergem",
+            "zenheadbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC",
+    "weight": 20.0
+}

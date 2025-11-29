@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "croagunk",
+        "moves": [
+            "venoshock",
+            "feintattack",
+            "revenge",
+            "pursuit"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "POISON",
+    "weight": 20.0
+}

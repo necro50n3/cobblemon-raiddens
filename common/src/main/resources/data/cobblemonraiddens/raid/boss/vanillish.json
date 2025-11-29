@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "vanillish",
+        "moves": [
+            "uproar",
+            "mirrorshot",
+            "icywind",
+            "iciclespear"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

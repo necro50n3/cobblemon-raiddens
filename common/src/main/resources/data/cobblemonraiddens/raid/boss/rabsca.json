@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "rabsca",
+        "moves": [
+            "bugbuzz",
+            "extrasensory",
+            "psybeam",
+            "strugglebug"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

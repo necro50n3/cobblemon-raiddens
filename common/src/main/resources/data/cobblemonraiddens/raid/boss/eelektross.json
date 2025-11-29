@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "eelektross",
+        "moves": [
+            "wildcharge",
+            "headbutt",
+            "thrash",
+            "acid"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

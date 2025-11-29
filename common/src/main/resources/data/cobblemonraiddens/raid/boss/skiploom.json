@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "skiploom",
+        "moves": [
+            "uturn",
+            "acrobatics",
+            "megadrain",
+            "bulletseed"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

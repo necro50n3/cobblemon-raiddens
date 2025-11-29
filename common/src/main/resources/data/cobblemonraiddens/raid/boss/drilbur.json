@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "drilbur",
+        "moves": [
+            "dig",
+            "rockslide",
+            "crushclaw",
+            "metalclaw"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

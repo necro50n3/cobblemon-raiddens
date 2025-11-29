@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "purugly",
+        "moves": [
+            "bodyslam",
+            "slash",
+            "furyswipes",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

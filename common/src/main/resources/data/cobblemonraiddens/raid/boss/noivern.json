@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "noivern",
+        "moves": [
+            "boomburst",
+            "hurricane",
+            "airslash",
+            "razorwind"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "FLYING",
+    "weight": 20.0
+}

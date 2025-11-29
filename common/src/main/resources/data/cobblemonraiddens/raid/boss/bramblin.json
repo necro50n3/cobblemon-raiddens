@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "bramblin",
+        "moves": [
+            "infestation",
+            "bulletseed",
+            "rapidspin",
+            "absorb"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

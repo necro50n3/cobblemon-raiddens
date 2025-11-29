@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "simisear",
+        "moves": [
+            "lick",
+            "furyswipes",
+            "flameburst"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE",
+    "weight": 20.0
+}

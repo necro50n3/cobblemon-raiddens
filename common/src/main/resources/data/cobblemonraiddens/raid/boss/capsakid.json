@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "capsakid",
+        "moves": [
+            "razorleaf",
+            "bite",
+            "leafage"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

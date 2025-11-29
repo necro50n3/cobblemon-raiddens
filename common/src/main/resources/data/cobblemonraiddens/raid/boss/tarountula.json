@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "tarountula",
+        "moves": [
+            "feint",
+            "assurance",
+            "strugglebug",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "chewtle",
+        "moves": [
+            "bite",
+            "tackle",
+            "watergun"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

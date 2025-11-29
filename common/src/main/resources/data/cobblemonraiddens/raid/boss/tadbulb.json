@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "tadbulb",
+        "moves": [
+            "watergun",
+            "thundershock",
+            "tackle",
+            "mudslap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}

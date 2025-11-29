@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "toxel",
+        "moves": [
+            "acid",
+            "belch",
+            "nuzzle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "ELECTRIC",
+    "weight": 20.0
+}
