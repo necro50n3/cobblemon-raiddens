@@ -23,6 +23,7 @@ public abstract class StrongBattleAIMixin {
                 && ((IRaidAccessor) pokemon.getPokemon().getEntity()).isRaidBoss()
             && RaidAI.BLOCKED_MOVES.contains(move.id)
         ) cir.setReturnValue(0.0);
+        else if (!move.canBeUsed()) cir.setReturnValue(0.0);
     }
 
     @Inject(method = "choose", at = @At("RETURN"), remap = false, cancellable = true)

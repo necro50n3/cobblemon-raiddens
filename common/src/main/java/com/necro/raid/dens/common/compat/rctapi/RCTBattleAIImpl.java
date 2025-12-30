@@ -51,6 +51,6 @@ public class RCTBattleAIImpl {
     }
 
     public static void evalMove(InBattleMove move, CallbackInfoReturnable<Double> cir) {
-        if (RaidAI.BLOCKED_MOVES.contains(move.id)) cir.setReturnValue(-1.0);
+        if (RaidAI.BLOCKED_MOVES.contains(move.id) || !move.canBeUsed()) cir.setReturnValue(-1.0);
     }
 }

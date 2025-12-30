@@ -29,7 +29,7 @@ public class RewardHandler {
         this.raidBoss = raidBoss;
         this.player = player;
         this.isCatchable = isCatchable;
-        this.cachedReward = cachedReward;
+        this.cachedReward = cachedReward == null ? null : cachedReward.clone(true, null);
     }
 
     public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable) {
