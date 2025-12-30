@@ -54,8 +54,8 @@ public class RaidSpawnCommands {
                             )
                         )
                     )
-                    .requires(CommandSourceStack::isPlayer)
                     .then(Commands.literal("boss")
+                        .requires(CommandSourceStack::isPlayer)
                         .then(Commands.argument("boss", ResourceLocationArgument.id())
                             .suggests(RaidDenCommands.RAID_BOSSES)
                             .executes(context -> spawnBoss(

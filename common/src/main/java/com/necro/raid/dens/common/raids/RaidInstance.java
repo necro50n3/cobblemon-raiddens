@@ -233,7 +233,6 @@ public class RaidInstance {
         if (CobblemonRaidDens.CONFIG.sync_rewards) {
             cachedReward = this.raidBoss.getRewardPokemon(null);
             cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
-            cachedReward.setAbility$common(this.bossEntity.getPokemon().getAbility());
             cachedReward.setGender(this.bossEntity.getPokemon().getGender());
             cachedReward.setNature(this.bossEntity.getPokemon().getNature());
         } else {
