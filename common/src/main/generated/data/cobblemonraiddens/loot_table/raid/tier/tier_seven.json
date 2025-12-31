@@ -479,6 +479,40 @@
           ],
           "name": "cobblemonraiddens:cheer_heal",
           "weight": 5
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 10.0,
+                "min": 5.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:additive_iv_candies",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 10.0,
+                "min": 5.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:subtractive_iv_candies",
+          "weight": 2
         }
       ],
       "rolls": {

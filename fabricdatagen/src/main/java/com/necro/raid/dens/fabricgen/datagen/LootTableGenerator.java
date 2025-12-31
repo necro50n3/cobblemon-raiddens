@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
+import com.cobblemon.mod.common.api.tags.CobblemonItemTags;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.loot.function.GemTypeFunction;
@@ -12,11 +13,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.*;
@@ -415,6 +418,14 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:additive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
+                        .setWeight(2)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:subtractive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
+                        .setWeight(1)
+                        .build())
                 .build()
             )
         );
@@ -538,6 +549,14 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                     .with(LootItem.lootTableItem(ModItems.HEAL_CHEER.value())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
                         .setWeight(5)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:additive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
+                        .setWeight(2)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:subtractive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
+                        .setWeight(1)
                         .build())
                 .build()
             )
@@ -670,6 +689,14 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                     .with(LootItem.lootTableItem(ModItems.HEAL_CHEER.value())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 3f)))
                         .setWeight(5)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:additive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2f, 4f)))
+                        .setWeight(5)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:subtractive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2f, 4f)))
+                        .setWeight(2)
                         .build())
                 .build()
             )
@@ -806,6 +833,14 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                     .with(LootItem.lootTableItem(ModItems.HEAL_CHEER.value())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 3f)))
                         .setWeight(5)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:additive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(5f, 10f)))
+                        .setWeight(5)
+                        .build())
+                    .with(TagEntry.expandTag(TagKey.create(Registries.ITEM, ResourceLocation.parse("cobblemon:subtractive_iv_candies")))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(5f, 10f)))
+                        .setWeight(2)
                         .build())
                 .build()
             )

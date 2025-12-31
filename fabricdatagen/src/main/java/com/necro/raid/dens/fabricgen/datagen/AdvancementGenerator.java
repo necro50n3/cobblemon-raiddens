@@ -1,9 +1,7 @@
 package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
-import com.cobblemon.yajatkaul.mega_showdown.item.DynamaxItems;
-import com.cobblemon.yajatkaul.mega_showdown.item.MegaStones;
-import com.cobblemon.yajatkaul.mega_showdown.item.TeraMoves;
+import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.advancements.RaidFeatureTrigger;
 import com.necro.raid.dens.common.advancements.RaidTierTrigger;
@@ -168,7 +166,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         AdvancementHolder teraRaidAchievement = Advancement.Builder.advancement()
             .display(
-                TeraMoves.TERA_ORB,
+                MegaShowdownItems.TERA_ORB.get(),
                 Component.translatable("advancement.cobblemonraiddens.raid_tera.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_tera.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -181,7 +179,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         AdvancementHolder dynamaxRaidAchievement = Advancement.Builder.advancement()
             .display(
-                DynamaxItems.DYNAMAX_BAND,
+                MegaShowdownItems.DYNAMAX_BAND.get(),
                 Component.translatable("advancement.cobblemonraiddens.raid_dynamax.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_dynamax.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -194,7 +192,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         Advancement.Builder.advancement()
             .display(
-                MegaStones.MEGA_STONE,
+                MegaShowdownItems.MEGA_STONE.get(),
                 Component.translatable("advancement.cobblemonraiddens.raid_mega.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_mega.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),

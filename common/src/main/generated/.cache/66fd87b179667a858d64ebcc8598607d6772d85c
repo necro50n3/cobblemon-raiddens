@@ -1,11 +1,11 @@
-// 1.21.1	2025-11-05T21:06:02.6956226	Cobblemon Raid Dens/minecraft:chest Loot Table
-418fb7f5b57cf7c17ced916190d70633825ac6e6 data\cobblemonraiddens\loot_table\raid\tier\tier_six.json
+// 1.21.1	2026-01-01T00:57:28.5731341	Cobblemon Raid Dens/minecraft:chest Loot Table
+00cb370336d9dba00b7618e50ada5434fba55072 data\cobblemonraiddens\loot_table\raid\tier\tier_six.json
 ceee0a23db012365e4492dc25196031baa8e0796 data\cobblemonraiddens\loot_table\raid\feature\dynamax.json
-e0afc505cf0b7577ce9e490ed5f3d8e3c60a21d6 data\cobblemonraiddens\loot_table\raid\tier\tier_seven.json
+d8c1a7bb438f315091e4dcbb77c71e4b0dec1125 data\cobblemonraiddens\loot_table\raid\tier\tier_seven.json
 6e9bcb4eafacca7d0e3e530694e96f0618f42c2f data\cobblemonraiddens\loot_table\raid\tier\tier_three.json
-108943a4d2a492286c0fab6c1a6adb02ebfba822 data\cobblemonraiddens\loot_table\raid\tier\tier_five.json
+17f2264634ec371a19c139ab633a70b267999715 data\cobblemonraiddens\loot_table\raid\tier\tier_five.json
 9304dfcd4a47c3bf30936ea29655a6f80bcabfc0 data\cobblemonraiddens\loot_table\raid\tier\tier_one.json
-b423ee3518b328695d359bde8ee3183a13d0d3c3 data\cobblemonraiddens\loot_table\raid\tier\tier_four.json
+280372bd9d4f448ff882237d591bb8fde2b955c6 data\cobblemonraiddens\loot_table\raid\tier\tier_four.json
 c4957df1c7381695ff5b7e821bac8ab24ab3759e data\cobblemonraiddens\loot_table\raid\feature\tera.json
 98dcc1e9e1d9dfd533e4fb15307738eb61991ec9 data\cobblemonraiddens\loot_table\raid\feature\mega.json
 ce6ec557bf26ad2b4e3b8cae917d64f747fca369 data\cobblemonraiddens\loot_table\raid\type\gems.json
