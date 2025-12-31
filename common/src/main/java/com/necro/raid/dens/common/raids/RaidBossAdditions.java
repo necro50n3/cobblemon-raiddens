@@ -18,6 +18,7 @@ public class RaidBossAdditions {
     private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
 
+    private final int priority;
     private final List<String> include;
     private final List<String> exclude;
     private final RaidBoss additions;
@@ -25,7 +26,8 @@ public class RaidBossAdditions {
     private final boolean replace;
     private final String suffix;
 
-    public RaidBossAdditions(List<String> include, List<String> exclude, RaidBoss additions, boolean replace, String suffix) {
+    public RaidBossAdditions(int priority, List<String> include, List<String> exclude, RaidBoss additions, boolean replace, String suffix) {
+        this.priority = priority;
         this.include = include;
         this.exclude = exclude;
         this.additions = additions;
@@ -99,6 +101,10 @@ public class RaidBossAdditions {
                 RaidRegistry.register(boss);
             }
         }
+    }
+
+    public int priority() {
+        return this.priority;
     }
 
     private List<String> include() {
@@ -296,6 +302,7 @@ public class RaidBossAdditions {
 
     public static Codec<RaidBossAdditions> codec() {
         return RecordCodecBuilder.create(inst -> inst.group(
+            Codec.INT.optionalFieldOf("priority", 0).forGetter(RaidBossAdditions::priority),
             Codec.STRING.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
             Codec.STRING.listOf().optionalFieldOf("exclude", new ArrayList<>()).forGetter(RaidBossAdditions::exclude),
             bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions),
