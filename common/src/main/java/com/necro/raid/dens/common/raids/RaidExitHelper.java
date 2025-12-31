@@ -55,8 +55,8 @@ public class RaidExitHelper {
         if (home == null) return;
 
         if (home.getBlockEntity(homeBlock.getHomePos()) instanceof RaidCrystalBlockEntity raidCrystalBlockEntity) {
-            if (from.getEntitiesOfClass(LivingEntity.class, new AABB(BlockPos.ZERO).inflate(48), RaidExitHelper::isAlive).isEmpty()) raidCrystalBlockEntity.clearRaid();
-            else if (from.getEntitiesOfClass(Player.class, new AABB(BlockPos.ZERO).inflate(48)).isEmpty()) raidCrystalBlockEntity.setQueueClose();
+            if (from.getEntitiesOfClass(LivingEntity.class, new AABB(BlockPos.ZERO).inflate(64), RaidExitHelper::isAlive).isEmpty()) raidCrystalBlockEntity.clearRaid();
+            else if (from.getEntitiesOfClass(Player.class, new AABB(BlockPos.ZERO).inflate(64)).isEmpty()) raidCrystalBlockEntity.setQueueClose();
             raidCrystalBlockEntity.addChunkTicket();
             raidCrystalBlockEntity.addChunkTicket(BlockPos.containing(RaidDenRegistry.getBossPos(raidCrystalBlockEntity.getRaidStructure())), from);
         }

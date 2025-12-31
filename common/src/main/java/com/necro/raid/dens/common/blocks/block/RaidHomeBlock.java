@@ -46,7 +46,7 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
         ServerLevel home = level.getServer().getLevel(blockEntity.getHome());
         if (home == null) return false;
 
-        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(32)).stream().anyMatch(LivingEntity::isDeadOrDying)) {
+        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(64)).stream().anyMatch(LivingEntity::isDeadOrDying)) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.cannot_leave_yet").withStyle(ChatFormatting.RED));
             return false;
         }
