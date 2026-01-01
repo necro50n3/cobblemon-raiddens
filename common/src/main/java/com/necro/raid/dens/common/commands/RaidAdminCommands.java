@@ -1,10 +1,14 @@
 package com.necro.raid.dens.common.commands;
 
+import com.cobblemon.mod.common.api.permission.Permission;
+import com.cobblemon.mod.common.api.permission.PermissionLevel;
+import com.cobblemon.mod.common.util.PermissionUtilsKt;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -21,41 +25,49 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RaidAdminCommands {
+    private static final Permission RESET_CLEARS = new RaidDenPermission("command.resetclears", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
+    private static final Permission REMOVE = new RaidDenPermission("command.remove", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
+    private static final Permission REFRESH = new RaidDenPermission("command.refreshother", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd")
-            .then(Commands.literal("resetclears")
-                .requires(source -> source.hasPermission(2))
-                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                    .then(Commands.argument("dimension", DimensionArgument.dimension())
-                        .executes(context -> resetClearsForAll(
-                            context,
-                            BlockPosArgument.getBlockPos(context, "pos"),
-                            DimensionArgument.getDimension(context, "dimension")
-                        ))
-                        .then(Commands.argument("player", EntityArgument.player())
-                            .executes(RaidAdminCommands::resetClearsForPlayerAndPos)
+            .then(PermissionUtilsKt.permission(
+                Commands.literal("resetclears")
+                    .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
+                            .executes(context -> resetClearsForAll(
+                                context,
+                                BlockPosArgument.getBlockPos(context, "pos"),
+                                DimensionArgument.getDimension(context, "dimension")
+                            ))
+                            .then(Commands.argument("player", EntityArgument.player())
+                                .executes(RaidAdminCommands::resetClearsForPlayerAndPos)
+                            )
                         )
+                        .requires(CommandSourceStack::isPlayer)
+                        .executes(context -> resetClearsForAll(
+                            context, BlockPosArgument.getBlockPos(context, "pos")
+                        ))
                     )
-                    .requires(CommandSourceStack::isPlayer)
-                    .executes(context -> resetClearsForAll(
-                        context, BlockPosArgument.getBlockPos(context, "pos")
-                    ))
-                )
-                .then(Commands.argument("player", EntityArgument.player())
-                    .executes(RaidAdminCommands::resetClearsForPlayer)
-                )
-            )
-            .then(Commands.literal("remove")
-                .requires(source -> source.hasPermission(2))
-                .then(Commands.argument("dimension", DimensionArgument.dimension())
-                    .executes(RaidAdminCommands::removeDimension)
-                )
-            )
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes(RaidAdminCommands::resetClearsForPlayer)
+                    ),
+                RESET_CLEARS, true
+            ))
+            .then(PermissionUtilsKt.permission(
+                Commands.literal("remove")
+                    .then(Commands.argument("dimension", DimensionArgument.dimension())
+                        .executes(RaidAdminCommands::removeDimension)
+                    ),
+                REMOVE, true
+            ))
             .then(Commands.literal("refresh")
-                .then(Commands.argument("player", EntityArgument.player())
-                    .requires(source -> source.hasPermission(2))
-                    .executes(context -> refreshPlayer(context, EntityArgument.getPlayer(context, "player")))
-                )
+                .then(PermissionUtilsKt.permission(
+                    Commands.argument("player", EntityArgument.player())
+                        .requires(source -> source.hasPermission(2))
+                        .executes(context -> refreshPlayer(context, EntityArgument.getPlayer(context, "player"))),
+                    REFRESH, true
+                ))
                 .requires(CommandSourceStack::isPlayer)
                 .executes(RaidAdminCommands::refreshPlayer)
             )
