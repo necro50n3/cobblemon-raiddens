@@ -16,9 +16,4 @@ public class RaidBagItems {
     public static final BagItem SET_GRASSY_TERRAIN = new SetTerrainBagItem("grassyterrain");
     public static final BagItem SET_MISTY_TERRAIN = new SetTerrainBagItem("mistyterrain");
     public static final BagItem SET_PSYCHIC_TERRAIN = new SetTerrainBagItem("psychicterrain");
-
-    public static final BagItem SET_GRAVITY = new SetTerrainBagItem("gravity");
-    public static final BagItem SET_MAGIC_ROOM = new SetTerrainBagItem("magicroom");
-    public static final BagItem SET_TRICK_ROOM = new SetTerrainBagItem("trickroom");
-    public static final BagItem SET_WONDER_ROOM = new SetTerrainBagItem("wonderroom");
 }

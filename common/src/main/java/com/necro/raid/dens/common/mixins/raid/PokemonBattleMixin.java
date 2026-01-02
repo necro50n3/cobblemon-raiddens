@@ -61,7 +61,8 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
         if (!this.isRaidBattle()) return;
 
         if (!this.instructionQueue.isEmpty()) {
-            this.instructionQueue.removeFirst().accept(this.raidInstance, (PokemonBattle) (Object) this);
+            BiConsumer<RaidInstance, PokemonBattle> instruction = this.instructionQueue.removeFirst();
+            if (instruction != null) instruction.accept(this.raidInstance, (PokemonBattle) (Object) this);
         }
         this.raidInstance.runScriptByTurn((PokemonBattle) (Object) this, newTurnNumber);
     }

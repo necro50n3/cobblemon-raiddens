@@ -23,6 +23,7 @@ import com.necro.raid.dens.common.showdown.RaidBagItems;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.bagitems.PlayerJoinBagItem;
 import com.necro.raid.dens.common.showdown.bagitems.StatChangeBagItem;
+import com.necro.raid.dens.common.showdown.bagitems.UseMoveBagItem;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -79,7 +80,7 @@ public class RaidInstance {
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
         raidBoss.getScript().forEach((key, func) -> {
-            if (!INSTRUCTION_MAP.containsKey(func)) return;
+            if (!INSTRUCTION_MAP.containsKey(func) && !func.startsWith("USE_MOVE")) return;
             try {
                 if (key.startsWith("turn:")) {
                     this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
@@ -111,7 +112,7 @@ public class RaidInstance {
 
         this.damageCache.put(player.getUUID(), this.currentHealth);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
-        if (this.scriptByTurn.containsKey(0)) ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(this.scriptByTurn.get(0)));
+        if (this.scriptByTurn.containsKey(0)) ((IRaidBattle) battle).addToQueue(this.getInstructions(this.scriptByTurn.get(0)));
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
@@ -260,16 +261,29 @@ public class RaidInstance {
         return this.raidBoss;
     }
 
+    private BiConsumer<RaidInstance, PokemonBattle> getInstructions(@NotNull String func) {
+        if (func.startsWith("USE_MOVE")) {
+            String[] params = func.split("_");
+            if (params.length != 4) return null;
+            String move = params[2].toLowerCase();
+            int target = Integer.parseInt(params[3]);
+            return (r, b) -> r.useSimpleBagItem(b, new UseMoveBagItem(move, target));
+        }
+        else {
+            return INSTRUCTION_MAP.get(func);
+        }
+    }
+
     public void runScriptByTurn(PokemonBattle battle, int turn) {
         String func = this.scriptByTurn.remove(turn);
         if (func == null) return;
-        ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func));
+        ((IRaidBattle) battle).addToQueue(this.getInstructions(func));
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(func -> this.battles.forEach(battle -> ((IRaidBattle) battle).addToQueue(INSTRUCTION_MAP.get(func))));
+            .forEach(func -> this.battles.forEach(battle -> ((IRaidBattle) battle).addToQueue(this.getInstructions(func))));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
