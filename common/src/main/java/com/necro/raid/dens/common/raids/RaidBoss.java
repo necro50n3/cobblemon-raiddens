@@ -174,7 +174,7 @@ public class RaidBoss {
         PokemonProperties properties = this.baseProperties.copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         properties.setMinPerfectIVs(tierConfig.ivs());
-        if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
+        properties.setLevel(tierConfig.rewardLevel());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
