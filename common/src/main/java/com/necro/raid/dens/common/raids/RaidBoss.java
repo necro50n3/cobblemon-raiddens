@@ -81,9 +81,6 @@ public class RaidBoss {
         this.healthMulti = healthMulti;
         this.shinyRate = shinyRate;
         this.script = script;
-        if (this.script != null) this.script.put("turn:0", "USE_MOVE_SWORDSDANCE_2");
-        if (this.script != null) this.script.put("turn:1", "USE_MOVE_DRAGONASCENT_1");
-        if (this.script != null) this.script.put("turn:2", "USE_MOVE_MAGICROOM_2");
         this.dens = new ArrayList<>();
         this.key = key;
         this.currency = currency;
