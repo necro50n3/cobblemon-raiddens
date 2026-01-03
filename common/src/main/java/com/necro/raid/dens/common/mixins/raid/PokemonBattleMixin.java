@@ -11,10 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 @Mixin(PokemonBattle.class)
 public abstract class PokemonBattleMixin implements IRaidBattle {
@@ -33,9 +30,6 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     @Unique
     private boolean queueTera;
 
-    @Unique
-    private List<BiConsumer<RaidInstance, PokemonBattle>> instructionQueue = new ArrayList<>();
-
     @Override
     public boolean isRaidBattle() {
         return this.raidInstance != null;
@@ -51,19 +45,9 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
         this.raidInstance = raidInstance;
     }
 
-    @Override
-    public void addToQueue(BiConsumer<RaidInstance, PokemonBattle> instruction) {
-        this.instructionQueue.add(instruction);
-    }
-
     @Inject(method = "turn", at = @At("RETURN"), remap = false)
     private void turnInject(int newTurnNumber, CallbackInfo ci) {
         if (!this.isRaidBattle()) return;
-
-        if (!this.instructionQueue.isEmpty()) {
-            BiConsumer<RaidInstance, PokemonBattle> instruction = this.instructionQueue.removeFirst();
-            if (instruction != null) instruction.accept(this.raidInstance, (PokemonBattle) (Object) this);
-        }
         this.raidInstance.runScriptByTurn((PokemonBattle) (Object) this, newTurnNumber);
     }
 

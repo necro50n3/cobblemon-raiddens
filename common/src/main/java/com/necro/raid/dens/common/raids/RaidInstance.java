@@ -3,13 +3,11 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
-import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
 import com.cobblemon.mod.common.battles.ShowdownActionResponse;
-import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
@@ -19,11 +17,8 @@ import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.showdown.RaidBagItems;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
-import com.necro.raid.dens.common.showdown.bagitems.PlayerJoinBagItem;
-import com.necro.raid.dens.common.showdown.bagitems.StatChangeBagItem;
-import com.necro.raid.dens.common.showdown.bagitems.UseMoveBagItem;
+import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -37,10 +32,10 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class RaidInstance {
-    private static final Map<String, BiConsumer<RaidInstance, PokemonBattle>> INSTRUCTION_MAP = new HashMap<>();
+    private static final Map<String, Consumer<PokemonBattle>> INSTRUCTION_MAP = new HashMap<>();
 
     private final PokemonEntity bossEntity;
     private final RaidBoss raidBoss;
@@ -112,11 +107,18 @@ public class RaidInstance {
 
         this.damageCache.put(player.getUUID(), this.currentHealth);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
-        if (this.scriptByTurn.containsKey(0)) ((IRaidBattle) battle).addToQueue(this.getInstructions(this.scriptByTurn.get(0)));
+        if (this.scriptByTurn.containsKey(0)) {
+            Consumer<PokemonBattle> script = this.getInstructions(this.scriptByTurn.get(0));
+            if (script != null) script.accept(battle);
+        }
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
+    }
+
+    public void addPlayer(PokemonBattle battle) {
+        this.addPlayer(battle.getPlayers().getFirst(), battle);
     }
 
     private void applyHealthMulti(ServerPlayer newPlayer) {
@@ -130,12 +132,8 @@ public class RaidInstance {
 
         this.battles.forEach(b -> {
             ServerPlayer player = b.getPlayers().getFirst();
-            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.playerJoin(battle, player, newPlayer));
+            this.playerJoin(b, player, newPlayer);
         });
-    }
-
-    public void addPlayer(PokemonBattle battle) {
-        this.addPlayer(battle.getPlayers().getFirst(), battle);
     }
 
     public void removePlayer(ServerPlayer player, PokemonBattle battle) {
@@ -261,13 +259,14 @@ public class RaidInstance {
         return this.raidBoss;
     }
 
-    private BiConsumer<RaidInstance, PokemonBattle> getInstructions(@NotNull String func) {
+    private Consumer<PokemonBattle> getInstructions(@NotNull String func) {
         if (func.startsWith("USE_MOVE")) {
             String[] params = func.split("_");
             if (params.length != 4) return null;
             String move = params[2].toLowerCase();
             int target = Integer.parseInt(params[3]);
-            return (r, b) -> r.useSimpleBagItem(b, new UseMoveBagItem(move, target));
+            
+            return battle -> new UseMoveShowdownEvent(move, target).send(battle);
         }
         else {
             return INSTRUCTION_MAP.get(func);
@@ -277,39 +276,45 @@ public class RaidInstance {
     public void runScriptByTurn(PokemonBattle battle, int turn) {
         String func = this.scriptByTurn.remove(turn);
         if (func == null) return;
-        ((IRaidBattle) battle).addToQueue(this.getInstructions(func));
+        Consumer<PokemonBattle> script = this.getInstructions(func);
+        if (script != null) script.accept(battle);
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(func -> this.battles.forEach(battle -> ((IRaidBattle) battle).addToQueue(this.getInstructions(func))));
+            .forEach(func -> this.battles.forEach(battle -> {
+                if (func == null) return;
+                Consumer<PokemonBattle> script = this.getInstructions(func);
+                if (script != null) script.accept(battle);
+            }));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
 
-    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, BagItem bagItem, String data) {
+    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String data) {
         int cheersLeft = this.cheersLeft.getOrDefault(player.getUUID(), 0);
         if (cheersLeft <= 0) return false;
         this.cheersLeft.put(player.getUUID(), --cheersLeft);
 
         this.cheer(oBattle, bagItem, data, false);
+
+        Consumer<PokemonBattle> cheer = switch (bagItem.cheerType()) {
+            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(1, "").send(battle);
+            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(1, "").send(battle);
+            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(0.5f, "").send(battle);
+        };
+
         for (PokemonBattle b : this.battles) {
             if (b == oBattle) continue;
-            ((IRaidBattle) b).addToQueue((raid, battle) -> raid.cheer(battle, bagItem, data, true));
+            cheer.accept(b);
         }
+
         return true;
     }
 
     public void playerJoin(PokemonBattle battle, ServerPlayer player, Player newPlayer) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String data = String.format("%s %s", (int) this.currentHealth, newPlayer.getName().getString());
-        this.sendAction(side1, side2, new BagItemActionResponse(new PlayerJoinBagItem(), bp, data));
+        new PlayerJoinShowdownEvent(this.currentHealth, newPlayer.getName().getString()).send(battle);
         this.damageCache.put(player.getUUID(), (float) Math.floor(this.currentHealth));
     }
 
@@ -322,68 +327,6 @@ public class RaidInstance {
             entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1f, 1f);
         }
         this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
-    }
-
-    private void changeBossStat(@NotNull PokemonBattle battle, Stat stat, int stages) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = bp.getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
-    }
-
-    private void changePlayerStat(@NotNull PokemonBattle battle, Stat stat, int stages) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side1.getActivePokemon();
-        List<ActiveBattlePokemon> origin = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = origin.getFirst().getBattlePokemon().getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(new StatChangeBagItem(stat, stages), bp, key));
-    }
-
-    private void clearBossStats(@NotNull PokemonBattle battle) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = bp.getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(RaidBagItems.CLEAR_BOSS, bp, key));
-    }
-
-    private void clearPlayerStats(@NotNull PokemonBattle battle) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side1.getActivePokemon();
-        List<ActiveBattlePokemon> origin = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        else if (origin.isEmpty() || origin.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        String key = origin.getFirst().getBattlePokemon().getUuid().toString();
-        this.sendAction(side1, side2, new BagItemActionResponse(RaidBagItems.CLEAR_PLAYER, bp, key));
-    }
-
-    private void useSimpleBagItem(@NotNull PokemonBattle battle, BagItem item) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
-        BattleActor side2 = battle.getSide2().getActors()[0];
-        List<ActiveBattlePokemon> target = side2.getActivePokemon();
-        if (side1.getRequest() == null || side2.getRequest() == null) return;
-        else if (target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        BattlePokemon bp = target.getFirst().getBattlePokemon();
-        this.sendAction(side1, side2, new BagItemActionResponse(item, bp, null));
-    }
-
-    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response) {
-        this.sendAction(side1, side2, response, true);
     }
 
     private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
@@ -423,47 +366,47 @@ public class RaidInstance {
     }
 
     static {
-        INSTRUCTION_MAP.put("RESET_BOSS", RaidInstance::clearBossStats);
-        INSTRUCTION_MAP.put("RESET_PLAYER", RaidInstance::clearPlayerStats);
+        INSTRUCTION_MAP.put("RESET_BOSS", battle -> new ClearBossShowdownEvent().send(battle));
+        INSTRUCTION_MAP.put("RESET_PLAYER", battle -> new ClearPlayerShowdownEvent().send(battle));
 
-        INSTRUCTION_MAP.put("BOSS_ATK_1", (r, b) -> r.changeBossStat(b, Stats.ATTACK, 1));
-        INSTRUCTION_MAP.put("BOSS_ATK_2", (r, b) -> r.changeBossStat(b, Stats.ATTACK, 2));
-        INSTRUCTION_MAP.put("BOSS_DEF_1", (r, b) -> r.changeBossStat(b, Stats.DEFENCE, 1));
-        INSTRUCTION_MAP.put("BOSS_DEF_2", (r, b) -> r.changeBossStat(b, Stats.DEFENCE, 2));
-        INSTRUCTION_MAP.put("BOSS_SPA_1", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_ATTACK, 1));
-        INSTRUCTION_MAP.put("BOSS_SPA_2", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_ATTACK, 2));
-        INSTRUCTION_MAP.put("BOSS_SPD_1", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_DEFENCE, 1));
-        INSTRUCTION_MAP.put("BOSS_SPD_2", (r, b) -> r.changeBossStat(b, Stats.SPECIAL_DEFENCE, 2));
-        INSTRUCTION_MAP.put("BOSS_SPE_1", (r, b) -> r.changeBossStat(b, Stats.SPEED, 1));
-        INSTRUCTION_MAP.put("BOSS_SPE_2", (r, b) -> r.changeBossStat(b, Stats.SPEED, 2));
-        INSTRUCTION_MAP.put("BOSS_ACC_1", (r, b) -> r.changeBossStat(b, Stats.ACCURACY, 1));
-        INSTRUCTION_MAP.put("BOSS_ACC_2", (r, b) -> r.changeBossStat(b, Stats.ACCURACY, 2));
-        INSTRUCTION_MAP.put("BOSS_EVA_1", (r, b) -> r.changeBossStat(b, Stats.EVASION, 1));
-        INSTRUCTION_MAP.put("BOSS_EVA_2", (r, b) -> r.changeBossStat(b, Stats.EVASION, 2));
+        INSTRUCTION_MAP.put("BOSS_ATK_1", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_ATK_2", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_DEF_1", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_DEF_2", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPA_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPA_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPD_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPD_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPE_1", battle -> new StatBoostShowdownEvent(Stats.SPEED, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_SPE_2", battle -> new StatBoostShowdownEvent(Stats.SPEED, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_ACC_1", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_ACC_2", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, 2, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_EVA_1", battle -> new StatBoostShowdownEvent(Stats.EVASION, 1, 2).send(battle));
+        INSTRUCTION_MAP.put("BOSS_EVA_2", battle -> new StatBoostShowdownEvent(Stats.EVASION, 2, 2).send(battle));
 
-        INSTRUCTION_MAP.put("PLAYER_ATK_1", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -1));
-        INSTRUCTION_MAP.put("PLAYER_ATK_2", (r, b) -> r.changePlayerStat(b, Stats.ATTACK, -2));
-        INSTRUCTION_MAP.put("PLAYER_DEF_1", (r, b) -> r.changePlayerStat(b, Stats.DEFENCE, -1));
-        INSTRUCTION_MAP.put("PLAYER_DEF_2", (r, b) -> r.changePlayerStat(b, Stats.DEFENCE, -2));
-        INSTRUCTION_MAP.put("PLAYER_SPA_1", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_ATTACK, -1));
-        INSTRUCTION_MAP.put("PLAYER_SPA_2", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_ATTACK, -2));
-        INSTRUCTION_MAP.put("PLAYER_SPD_1", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_DEFENCE, -1));
-        INSTRUCTION_MAP.put("PLAYER_SPD_2", (r, b) -> r.changePlayerStat(b, Stats.SPECIAL_DEFENCE, -2));
-        INSTRUCTION_MAP.put("PLAYER_SPE_1", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -1));
-        INSTRUCTION_MAP.put("PLAYER_SPE_2", (r, b) -> r.changePlayerStat(b, Stats.SPEED, -2));
-        INSTRUCTION_MAP.put("PLAYER_ACC_1", (r, b) -> r.changePlayerStat(b, Stats.ACCURACY, -1));
-        INSTRUCTION_MAP.put("PLAYER_ACC_2", (r, b) -> r.changePlayerStat(b, Stats.ACCURACY, -2));
-        INSTRUCTION_MAP.put("PLAYER_EVA_1", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -1));
-        INSTRUCTION_MAP.put("PLAYER_EVA_2", (r, b) -> r.changePlayerStat(b, Stats.EVASION, -2));
+        INSTRUCTION_MAP.put("PLAYER_ATK_1", battle -> new StatBoostShowdownEvent(Stats.ATTACK, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_ATK_2", battle -> new StatBoostShowdownEvent(Stats.ATTACK, -2, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_DEF_1", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_DEF_2", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, -2, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPA_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPA_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, -2, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPD_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPD_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, -2, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPE_1", battle -> new StatBoostShowdownEvent(Stats.SPEED, 1, -1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_SPE_2", battle -> new StatBoostShowdownEvent(Stats.SPEED, 2, -1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_ACC_1", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_ACC_2", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, -2, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_EVA_1", battle -> new StatBoostShowdownEvent(Stats.EVASION, -1, 1).send(battle));
+        INSTRUCTION_MAP.put("PLAYER_EVA_2", battle -> new StatBoostShowdownEvent(Stats.EVASION, -2, 1).send(battle));
 
-        INSTRUCTION_MAP.put("SET_RAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_RAIN));
-        INSTRUCTION_MAP.put("SET_SANDSTORM", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SANDSTORM));
-        INSTRUCTION_MAP.put("SET_SNOW", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SNOW));
-        INSTRUCTION_MAP.put("SET_SUN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_SUN));
+        INSTRUCTION_MAP.put("SET_RAIN", battle -> new SetWeatherShowdownEvent("raindance").send(battle));
+        INSTRUCTION_MAP.put("SET_SANDSTORM", battle -> new SetWeatherShowdownEvent("sandstorm").send(battle));
+        INSTRUCTION_MAP.put("SET_SNOW", battle -> new SetWeatherShowdownEvent("snow").send(battle));
+        INSTRUCTION_MAP.put("SET_SUN", battle -> new SetWeatherShowdownEvent("sunnyday").send(battle));
 
-        INSTRUCTION_MAP.put("SET_ELECTRIC_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_ELECTRIC_TERRAIN));
-        INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_GRASSY_TERRAIN));
-        INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_MISTY_TERRAIN));
-        INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", (r, b) -> r.useSimpleBagItem(b, RaidBagItems.SET_PSYCHIC_TERRAIN));
+        INSTRUCTION_MAP.put("SET_ELECTRIC_TERRAIN", battle -> new SetTerrainShowdownEvent("electricterrain").send(battle));
+        INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", battle -> new SetTerrainShowdownEvent("grassyterrain").send(battle));
+        INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", battle -> new SetTerrainShowdownEvent("mistyterrain").send(battle));
+        INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", battle -> new SetTerrainShowdownEvent("psychicterrain").send(battle));
     }
 }

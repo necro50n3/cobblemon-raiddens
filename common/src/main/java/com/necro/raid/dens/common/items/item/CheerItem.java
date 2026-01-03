@@ -23,7 +23,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -71,7 +70,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).getRaidId();
         String data = player.getName().getString();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(raidId);
-        if (!raid.runCheer(player, battle, this.getBagItem(), data)) {
+        if (!raid.runCheer(player, battle, (CheerBagItem) this.getBagItem(), data)) {
             player.sendSystemMessage(Component.translatable("battle.cobblemonraiddens.cheer.cannot").withStyle(ChatFormatting.RED));
             return false;
         }
@@ -80,10 +79,10 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (!level.isClientSide()) {
-            PokemonBattle battle = BattleRegistry.INSTANCE.getBattleByParticipatingPlayer((ServerPlayer) player);
+            PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player);
             if (battle == null) return InteractionResultHolder.fail(itemStack);
             BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
             BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
@@ -102,7 +101,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext context, List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(Component.translatable("item.cobblemonraiddens.cheer.tooltip").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable(String.format("item.cobblemonraiddens.%s.tooltip", this.cheerType.getId())).withStyle(ChatFormatting.GRAY));
     }
