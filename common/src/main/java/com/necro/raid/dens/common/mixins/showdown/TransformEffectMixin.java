@@ -57,7 +57,7 @@ public abstract class TransformEffectMixin {
         for (int i = 0; i < this.moves.size(); i++) {
             Move move = this.moves.get(i);
             if (RaidAI.BLOCKED_MOVES.contains(move.getName())) {
-                MoveTemplate struggle = Moves.INSTANCE.getByName("tackle");
+                MoveTemplate struggle = Moves.getByName("tackle");
                 if (struggle != null) move = struggle.create(99);
             }
             entity.getPokemon().getMoveSet().setMove(i, move);

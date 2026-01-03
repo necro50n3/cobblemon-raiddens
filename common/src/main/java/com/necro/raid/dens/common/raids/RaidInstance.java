@@ -265,6 +265,8 @@ public class RaidInstance {
             new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
+
+        if (this.bossEntity != null && !this.bossEntity.isRemoved()) this.bossEntity.discard();
     }
 
     private void sortPlayers() {
