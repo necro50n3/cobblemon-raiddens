@@ -42,6 +42,7 @@ public class RaidInstance {
     private final ServerBossEvent bossEvent;
     private final List<PokemonBattle> battles;
     private final Map<UUID, Float> damageCache;
+    private final Map<UUID, Float> damageTracker;
     private final List<ServerPlayer> activePlayers;
     private final List<UUID> failedPlayers;
 
@@ -64,6 +65,7 @@ public class RaidInstance {
 
         this.battles = new ArrayList<>();
         this.damageCache = new HashMap<>();
+        this.damageTracker = new HashMap<>();
 
         this.activePlayers = new ArrayList<>();
         this.failedPlayers = new ArrayList<>();
@@ -106,6 +108,7 @@ public class RaidInstance {
         this.bossEvent.addPlayer(player);
 
         this.damageCache.put(player.getUUID(), this.currentHealth);
+        this.damageTracker.put(player.getUUID(), 0f);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
         if (this.scriptByTurn.containsKey(0)) {
             Consumer<PokemonBattle> script = this.getInstructions(this.scriptByTurn.get(0));
@@ -158,6 +161,7 @@ public class RaidInstance {
 
         float damage = this.damageCache.get(player.getUUID()) - remainingHealth;
         this.damageCache.put(player.getUUID(), remainingHealth);
+        this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
         this.activePlayers.forEach(p -> RaidDenNetworkMessages.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
@@ -223,7 +227,7 @@ public class RaidInstance {
             failed = this.activePlayers;
         }
         else {
-            Collections.shuffle(this.activePlayers);
+            this.sortPlayers();
             success = this.activePlayers.subList(0, catches);
             failed = this.activePlayers.subList(catches, this.activePlayers.size());
         }
@@ -246,6 +250,18 @@ public class RaidInstance {
             new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
+    }
+
+    private void sortPlayers() {
+        if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.DAMAGE) {
+            this.activePlayers.sort((a, b) -> Float.compare(
+                this.damageTracker.getOrDefault(b.getUUID(), 0f),
+                this.damageTracker.getOrDefault(a.getUUID(), 0f)
+            ));
+        }
+        else {
+            Collections.shuffle(this.activePlayers);
+        }
     }
 
     private void handleFailed() {

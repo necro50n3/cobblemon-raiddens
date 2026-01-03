@@ -35,7 +35,7 @@ public class TierSixConfig implements ConfigData, TierConfig {
     public int reward_level = 75;
     @Comment("Reward Pokemon number of max IVs. Default: 5")
     public int ivs = 5;
-    @Comment("The default shiny chance for raid bosses (Set to -1 to use the Cobblemon rate). Default: -1.0")
+    @Comment("The default shiny chance for raid bosses as 1 in X (Set to -1 to use the Cobblemon rate). Default: -1.0")
     public float shiny_rate = -1.0f;
     @Comment("How much currency is rewarded for clearing a raid boss (Requires CobbleDollars). Default: 50000")
     public int currency = 50000;

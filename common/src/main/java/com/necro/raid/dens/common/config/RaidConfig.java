@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.raids.RewardDistribution;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -27,4 +28,6 @@ public class RaidConfig implements ConfigData {
     public boolean cache_dimensions = false;
     @Comment("Whether raid crystals can be broken. Default: true")
     public boolean can_break = true;
+    @Comment("The reward distribution algorithm (RANDOM/DAMAGE). Default: RANDOM")
+    public RewardDistribution reward_distribution = RewardDistribution.RANDOM;
 }
