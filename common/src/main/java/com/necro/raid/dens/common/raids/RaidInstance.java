@@ -218,13 +218,28 @@ public class RaidInstance {
         int catches = this.raidBoss.getMaxCatches();
         List<ServerPlayer> success;
         List<ServerPlayer> failed;
-        if (catches < 0 || this.activePlayers.size() < catches) {
-            success = this.activePlayers;
-            failed = List.of();
-        }
-        else if (catches == 0) {
+        if (catches == 0) {
             success = List.of();
             failed = this.activePlayers;
+        }
+        else if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.SURVIVOR) {
+            List<ServerPlayer> survivors = new ArrayList<>();
+            failed = new ArrayList<>();
+            for (ServerPlayer player : this.activePlayers) {
+                if (this.failedPlayers.contains(player.getUUID())) failed.add(player);
+                else survivors.add(player);
+            }
+
+            if (catches > 0 && survivors.size() > catches) {
+                Collections.shuffle(survivors);
+                success = survivors.subList(0, catches);
+                failed.addAll(survivors.subList(catches, survivors.size()));
+            }
+            else success = survivors;
+        }
+        else if (catches < 0 || this.activePlayers.size() < catches) {
+            success = this.activePlayers;
+            failed = List.of();
         }
         else {
             this.sortPlayers();

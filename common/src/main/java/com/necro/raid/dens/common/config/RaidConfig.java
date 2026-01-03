@@ -28,6 +28,6 @@ public class RaidConfig implements ConfigData {
     public boolean cache_dimensions = false;
     @Comment("Whether raid crystals can be broken. Default: true")
     public boolean can_break = true;
-    @Comment("The reward distribution algorithm (RANDOM/DAMAGE). Default: RANDOM")
+    @Comment("The reward distribution algorithm (RANDOM/DAMAGE/SURVIVOR). Default: RANDOM")
     public RewardDistribution reward_distribution = RewardDistribution.RANDOM;
 }
