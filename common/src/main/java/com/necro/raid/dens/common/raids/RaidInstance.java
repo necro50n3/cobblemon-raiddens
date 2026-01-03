@@ -300,9 +300,9 @@ public class RaidInstance {
         this.cheer(oBattle, bagItem, data, false);
 
         Consumer<PokemonBattle> cheer = switch (bagItem.cheerType()) {
-            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(1, "").send(battle);
-            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(1, "").send(battle);
-            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(0.5f, "").send(battle);
+            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(Integer.parseInt(bagItem.param()), "").send(battle);
+            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(Integer.parseInt(bagItem.param()), "").send(battle);
+            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(Double.parseDouble(bagItem.param()), "").send(battle);
         };
 
         for (PokemonBattle b : this.battles) {
