@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.config;
 
 import com.cobblemon.mod.common.api.mark.Mark;
+import com.necro.raid.dens.common.data.ScriptAdapter;
 import com.necro.raid.dens.common.raids.RaidAI;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface TierConfig {
     float shinyRate();
     int currency();
     int maxCatches();
-    Map<String, String> defaultScripts();
+    Map<String, ScriptAdapter> defaultScripts();
     RaidAI raidAI();
     List<Mark> marks();
 }

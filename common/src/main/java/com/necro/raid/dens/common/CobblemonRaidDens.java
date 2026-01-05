@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.*;
+import com.necro.raid.dens.common.data.ScriptAdapter;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
@@ -20,7 +21,11 @@ import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +49,24 @@ public class CobblemonRaidDens {
         AutoConfig.register(BlacklistConfig.class, JanksonConfigSerializer::new);
         BLACKLIST_CONFIG = AutoConfig.getConfigHolder(BlacklistConfig.class).getConfig();
 
-        AutoConfig.register(TierOneConfig.class, JanksonConfigSerializer::new);
+        Jankson jankson = Jankson.builder()
+            .registerSerializer(ScriptAdapter.class, (script, marshaller) -> script.serialize())
+            .registerDeserializer(JsonElement.class, ScriptAdapter.class, (json, marshaller) -> ScriptAdapter.deserialize(json))
+            .build();
+
+        AutoConfig.register(TierOneConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_ONE, AutoConfig.getConfigHolder(TierOneConfig.class).getConfig());
-        AutoConfig.register(TierTwoConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierTwoConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_TWO, AutoConfig.getConfigHolder(TierTwoConfig.class).getConfig());
-        AutoConfig.register(TierThreeConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierThreeConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_THREE, AutoConfig.getConfigHolder(TierThreeConfig.class).getConfig());
-        AutoConfig.register(TierFourConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierFourConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_FOUR, AutoConfig.getConfigHolder(TierFourConfig.class).getConfig());
-        AutoConfig.register(TierFiveConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierFiveConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_FIVE, AutoConfig.getConfigHolder(TierFiveConfig.class).getConfig());
-        AutoConfig.register(TierSixConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierSixConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_SIX, AutoConfig.getConfigHolder(TierSixConfig.class).getConfig());
-        AutoConfig.register(TierSevenConfig.class, JanksonConfigSerializer::new);
+        AutoConfig.register(TierSevenConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_SEVEN, AutoConfig.getConfigHolder(TierSevenConfig.class).getConfig());
 
         RaidUtils.init();

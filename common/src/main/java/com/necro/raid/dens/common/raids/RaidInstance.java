@@ -49,8 +49,8 @@ public class RaidInstance {
     private float currentHealth;
     private float maxHealth;
     private final float initMaxHealth;
-    private final Map<Integer, String> scriptByTurn;
-    private final NavigableMap<Double, String> scriptByHp;
+    private final Map<Integer, List<String>> scriptByTurn;
+    private final NavigableMap<Double, List<String>> scriptByHp;
 
     private final Map<UUID, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
@@ -76,16 +76,20 @@ public class RaidInstance {
 
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
-        raidBoss.getScript().forEach((key, func) -> {
-            if (!INSTRUCTION_MAP.containsKey(func) && !func.startsWith("USE_MOVE")) return;
+        raidBoss.getScript().forEach((key, scripts) -> {
+            List<String> functions = new ArrayList<>();
+            for (String function : scripts.functions()) {
+                if (!INSTRUCTION_MAP.containsKey(function) && !function.startsWith("USE_MOVE")) return;
+                functions.add(function);
+            }
             try {
                 if (key.startsWith("turn:")) {
-                    this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), func);
+                    this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), functions);
                 }
                 else if (key.startsWith("hp:")) {
                     double threshold = Double.parseDouble(key.split(":")[1]);
                     if ((this.currentHealth / this.maxHealth) < threshold) return;
-                    this.scriptByHp.put(threshold, func);
+                    this.scriptByHp.put(threshold, functions);
                 }
             }
             catch (Exception ignored) {}
@@ -111,8 +115,10 @@ public class RaidInstance {
         this.damageTracker.put(player.getUUID(), 0f);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
         if (this.scriptByTurn.containsKey(0)) {
-            Consumer<PokemonBattle> script = this.getInstructions(this.scriptByTurn.get(0));
-            if (script != null) script.accept(battle);
+            for (String function : this.scriptByTurn.remove(0)) {
+                Consumer<PokemonBattle> script = this.getInstructions(function);
+                if (script != null) script.accept(battle);
+            }
         }
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
@@ -307,19 +313,24 @@ public class RaidInstance {
     }
 
     public void runScriptByTurn(PokemonBattle battle, int turn) {
-        String func = this.scriptByTurn.remove(turn);
-        if (func == null) return;
-        Consumer<PokemonBattle> script = this.getInstructions(func);
-        if (script != null) script.accept(battle);
+        List<String> functions = this.scriptByTurn.remove(turn);
+        if (functions == null) return;
+        for (String function : functions) {
+            if (function == null) continue;
+            Consumer<PokemonBattle> script = this.getInstructions(function);
+            if (script != null) script.accept(battle);
+        }
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(func -> this.battles.forEach(battle -> {
-                if (func == null) return;
-                Consumer<PokemonBattle> script = this.getInstructions(func);
-                if (script != null) script.accept(battle);
+            .forEach(functions -> this.battles.forEach(battle -> {
+                for (String function : functions) {
+                    if (function == null) continue;
+                    Consumer<PokemonBattle> script = this.getInstructions(function);
+                    if (script != null) script.accept(battle);
+                }
             }));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);

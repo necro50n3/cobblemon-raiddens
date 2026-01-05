@@ -24,6 +24,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.ScriptAdapter;
 import com.necro.raid.dens.common.data.UniqueKeyAdapter;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
@@ -56,7 +57,7 @@ public class RaidBoss {
     private Integer maxCatches;
     private Integer healthMulti;
     private Float shinyRate;
-    private Map<String, String> script;
+    private Map<String, ScriptAdapter> script;
     private List<ResourceLocation> dens;
     private UniqueKeyAdapter key;
     private Integer currency;
@@ -69,7 +70,7 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, Double weight,
-                    Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, String> script, List<String> dens,
+                    Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, ScriptAdapter> script, List<String> dens,
                     UniqueKeyAdapter key, Integer currency, RaidAI raidAI, List<Mark> marks) {
         this.baseProperties = properties;
         this.raidTier = tier;
@@ -299,7 +300,7 @@ public class RaidBoss {
         return this.shinyRate;
     }
 
-    public Map<String, String> getScript() {
+    public Map<String, ScriptAdapter> getScript() {
         return this.script;
     }
 
@@ -404,7 +405,7 @@ public class RaidBoss {
         this.shinyRate = shinyRate;
     }
 
-    public void setScript(Map<String, String> script) {
+    public void setScript(Map<String, ScriptAdapter> script) {
         this.script = script;
     }
 
@@ -544,7 +545,7 @@ public class RaidBoss {
             Codec.FLOAT.optionalFieldOf("shiny_rate", -1.0f).forGetter(RaidBoss::getShinyRate),
             Codec.INT.optionalFieldOf("currency", -1).forGetter(RaidBoss::getCurrency),
             Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
-            Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
+            Codec.unboundedMap(Codec.STRING, ScriptAdapter.CODEC).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
             Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
             UniqueKeyAdapter.CODEC.optionalFieldOf("key", new UniqueKeyAdapter()).forGetter(RaidBoss::getKey),
             Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getRaidAIString)

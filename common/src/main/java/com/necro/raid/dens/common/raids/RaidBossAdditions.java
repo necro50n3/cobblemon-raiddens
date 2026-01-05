@@ -9,6 +9,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.ScriptAdapter;
 import com.necro.raid.dens.common.data.UniqueKeyAdapter;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -173,7 +174,7 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getShinyRate());
     }
 
-    private static Optional<Map<String, String>> getScript(RaidBoss boss) {
+    private static Optional<Map<String, ScriptAdapter>> getScript(RaidBoss boss) {
         return Optional.ofNullable(boss.getScript());
     }
 
@@ -261,7 +262,7 @@ public class RaidBossAdditions {
                 Codec.FLOAT.optionalFieldOf("shiny_rate").forGetter(RaidBossAdditions::getShinyRate),
                 Codec.INT.optionalFieldOf("currency").forGetter(RaidBossAdditions::getCurrency),
                 Codec.INT.optionalFieldOf("max_catches").forGetter(RaidBossAdditions::getMaxCatches),
-                Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("script").forGetter(RaidBossAdditions::getScript),
+                Codec.unboundedMap(Codec.STRING, ScriptAdapter.CODEC).optionalFieldOf("script").forGetter(RaidBossAdditions::getScript),
                 Codec.STRING.listOf().optionalFieldOf("den").forGetter(RaidBossAdditions::getDens),
                 UniqueKeyAdapter.CODEC.optionalFieldOf("key").forGetter(RaidBossAdditions::getKey),
                 RaidAI.codec().optionalFieldOf("raid_ai").forGetter(RaidBossAdditions::getRaidAI)
@@ -270,7 +271,7 @@ public class RaidBossAdditions {
                 Float sr = shinyRate.orElse(null);
                 Integer c = currency.orElse(null);
                 Integer mc = maxCatches.orElse(null);
-                Map<String, String> s = script.orElse(null);
+                Map<String, ScriptAdapter> s = script.orElse(null);
 
                 RaidTier t = tier.orElse(null);
                 if (t != null) {

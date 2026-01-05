@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.config;
 
 import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.mark.Marks;
+import com.necro.raid.dens.common.data.ScriptAdapter;
 import com.necro.raid.dens.common.raids.RaidAI;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -44,7 +45,7 @@ public class TierOneConfig implements ConfigData, TierConfig {
     @Comment("The max number of Pokemon that can be caught from a raid battle. Default -1.")
     public int max_catches = -1;
     @Comment("The default script to add to raid bosses without a script. Default: {}")
-    public Map<String, String> default_scripts = new HashMap<>();
+    public Map<String, ScriptAdapter> default_scripts = new HashMap<>();
     @Comment("The battle AI used by the raid boss (Options: RANDOM, STRONG, RCT). Default: RANDOM")
     public RaidAI raid_ai = RaidAI.RANDOM;
     @Comment("The list of marks the reward Pokemon will have. Default: [].")
@@ -95,7 +96,7 @@ public class TierOneConfig implements ConfigData, TierConfig {
     public int maxCatches() {
         return this.max_catches;
     }
-    public Map<String, String> defaultScripts() {
+    public Map<String, ScriptAdapter> defaultScripts() {
         return this.default_scripts;
     }
     public RaidAI raidAI() {
