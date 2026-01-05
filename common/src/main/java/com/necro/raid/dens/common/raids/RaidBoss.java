@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
+import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
@@ -60,6 +61,7 @@ public class RaidBoss {
     private UniqueKeyAdapter key;
     private Integer currency;
     private RaidAI raidAI;
+    private List<Mark> marks;
 
     private List<String> densInner;
 
@@ -68,7 +70,7 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, Double weight,
                     Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, String> script, List<String> dens,
-                    UniqueKeyAdapter key, Integer currency, RaidAI raidAI) {
+                    UniqueKeyAdapter key, Integer currency, RaidAI raidAI, List<Mark> marks) {
         this.baseProperties = properties;
         this.raidTier = tier;
         this.raidType = raidType;
@@ -85,6 +87,7 @@ public class RaidBoss {
         this.key = key;
         this.currency = currency;
         this.raidAI = raidAI;
+        this.marks = marks;
 
         this.densInner = dens;
 
@@ -94,8 +97,9 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
                     List<SpeciesFeature> raidForm, int maxCatches, float shinyRate) {
         this(
-            properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), null, 0.0,
-            maxCatches, 0, shinyRate, new HashMap<>(), new ArrayList<>(), new UniqueKeyAdapter(), 0, RaidAI.RANDOM
+            properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), null, 0.0, maxCatches,
+            0, shinyRate, new HashMap<>(), new ArrayList<>(), new UniqueKeyAdapter(), 0, RaidAI.RANDOM,
+            new ArrayList<>()
         );
     }
 
@@ -208,6 +212,8 @@ public class RaidBoss {
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         this.setMoveSet(properties, pokemon, false);
+        for (Mark mark : this.getMarks()) pokemon.exchangeMark(mark, true);
+
         return pokemon;
     }
 
@@ -317,6 +323,10 @@ public class RaidBoss {
         return this.raidAI.getSerializedName();
     }
 
+    public List<Mark> getMarks() {
+        return this.marks;
+    }
+
     public ResourceLocation getRandomDen(RandomSource random) {
         if (this.dens.isEmpty()) this.resolveDens();
 
@@ -414,6 +424,10 @@ public class RaidBoss {
         this.raidAI = raidAI;
     }
 
+    public void setMarks(List<Mark> marks) {
+        this.marks = marks;
+    }
+
     @SuppressWarnings("unused")
     public boolean isMega() {
         return this.raidFeature == RaidFeature.MEGA;
@@ -444,7 +458,8 @@ public class RaidBoss {
             new ArrayList<>(this.densInner),
             this.key,
             this.currency,
-            this.raidAI
+            this.raidAI,
+            this.marks
         );
     }
 
@@ -560,7 +575,9 @@ public class RaidBoss {
                 if (raidAIString.isEmpty()) raidAI = tierConfig.raidAI();
                 else raidAI = RaidAI.fromString(raidAIString);
 
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency, raidAI);
+                List<Mark> marks = CobblemonRaidDens.TIER_CONFIG.get(tier).marks();
+
+                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency, raidAI, marks);
             })
         );
     }

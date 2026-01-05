@@ -1,12 +1,14 @@
 package com.necro.raid.dens.common.config;
 
+import com.cobblemon.mod.common.api.mark.Mark;
+import com.cobblemon.mod.common.api.mark.Marks;
 import com.necro.raid.dens.common.raids.RaidAI;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Config(name="cobblemonraiddens/tier_one")
 public class TierOneConfig implements ConfigData, TierConfig {
@@ -45,6 +47,8 @@ public class TierOneConfig implements ConfigData, TierConfig {
     public Map<String, String> default_scripts = new HashMap<>();
     @Comment("The battle AI used by the raid boss (Options: RANDOM, STRONG, RCT). Default: RANDOM")
     public RaidAI raid_ai = RaidAI.RANDOM;
+    @Comment("The list of marks the reward Pokemon will have. Default: [].")
+    public String[] marks = {};
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -96,5 +100,8 @@ public class TierOneConfig implements ConfigData, TierConfig {
     }
     public RaidAI raidAI() {
         return this.raid_ai;
+    }
+    public List<Mark> marks() {
+        return Arrays.stream(this.marks).map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
     }
 }
