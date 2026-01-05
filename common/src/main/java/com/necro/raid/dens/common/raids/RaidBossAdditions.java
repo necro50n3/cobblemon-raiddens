@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
@@ -95,6 +96,7 @@ public class RaidBossAdditions {
             getKey(this.additions()).ifPresent(boss::setKey);
             getCurrency(this.additions()).ifPresent(boss::setCurrency);
             getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
+            getMarks(this.additions()).ifPresent(boss::setMarks);
 
             if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
@@ -189,6 +191,10 @@ public class RaidBossAdditions {
 
     private static Optional<RaidAI> getRaidAI(RaidBoss boss) {
         return Optional.ofNullable(boss.getRaidAI());
+    }
+
+    private static Optional<List<Mark>> getMarks(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMarks());
     }
 
     private static Optional<String> species(PokemonProperties properties) {
@@ -294,7 +300,7 @@ public class RaidBossAdditions {
                 return new RaidBoss(
                     p, t, type.orElse(null), feature.orElse(null), rf, baseForm.orElse(null),
                     bonusItems.orElse(null), weight.orElse(null), mc, hm, sr, s, dens.orElse(null),
-                    key.orElse(null), c, raidAI.orElse(null)
+                    key.orElse(null), c, raidAI.orElse(null), null
                 );
             })
         );

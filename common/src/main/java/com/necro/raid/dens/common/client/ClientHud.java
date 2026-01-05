@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.client.gui.RaidScreenComponents;
 import com.necro.raid.dens.common.client.gui.buttons.PopupButton;
 import com.necro.raid.dens.common.client.gui.buttons.RaidButton;
 import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
+import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import net.minecraft.client.Minecraft;
@@ -69,6 +70,7 @@ public class ClientHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/accept_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.pokemon"),
             button -> {
+                if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRewardOverlay)) return;
                 LocalPlayer player = Minecraft.getInstance().player;
                 assert player != null;
                 ItemStack stack = player.getMainHandItem();
@@ -91,6 +93,7 @@ public class ClientHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/deny_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.item"),
             button -> {
+                if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRewardOverlay)) return;
                 RaidDenNetworkMessages.REWARD_RESPONSE.accept(false);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
@@ -105,6 +108,7 @@ public class ClientHud {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/gui/popup/wide_button_hover.png"),
             Component.translatable("screen.cobblemonraiddens.reward.force_item"),
             button -> {
+                if (RaidDenGuiManager.OVERLAY_QUEUE.isEmpty() || !(RaidDenGuiManager.OVERLAY_QUEUE.getFirst() instanceof RaidRewardOverlay)) return;
                 RaidDenNetworkMessages.REWARD_RESPONSE.accept(false);
                 RaidDenGuiManager.OVERLAY_QUEUE.removeFirst();
                 button.setFocused(false);
