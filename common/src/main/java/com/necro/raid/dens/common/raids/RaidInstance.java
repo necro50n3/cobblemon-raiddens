@@ -336,17 +336,17 @@ public class RaidInstance {
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
 
-    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String data) {
+    public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
         int cheersLeft = this.cheersLeft.getOrDefault(player.getUUID(), 0);
         if (cheersLeft <= 0) return false;
         this.cheersLeft.put(player.getUUID(), --cheersLeft);
 
-        this.cheer(oBattle, bagItem, data, false);
+        this.cheer(oBattle, bagItem, origin, false);
 
         Consumer<PokemonBattle> cheer = switch (bagItem.cheerType()) {
-            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(Integer.parseInt(bagItem.param()), "").send(battle);
-            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(Integer.parseInt(bagItem.param()), "").send(battle);
-            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(Double.parseDouble(bagItem.param()), "").send(battle);
+            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(origin).send(battle);
+            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(origin).send(battle);
+            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(origin).send(battle);
         };
 
         for (PokemonBattle b : this.battles) {
@@ -362,15 +362,15 @@ public class RaidInstance {
         this.damageCache.put(player.getUUID(), (float) Math.floor(this.currentHealth));
     }
 
-    public void cheer(PokemonBattle battle, BagItem bagItem, String data, boolean skipEnemyAction) {
+    public void cheer(PokemonBattle battle, BagItem bagItem, String origin, boolean skipEnemyAction) {
         BattleActor side1 = battle.getSide1().getActors()[0];
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
-        if (bagItem instanceof CheerBagItem cheerBagItem && cheerBagItem.cheerType() == CheerBagItem.CheerType.HEAL && target.getFirst().getBattlePokemon().getEntity() instanceof PokemonEntity entity) {
+        if (bagItem instanceof CheerBagItem(CheerBagItem.CheerType cheerType) && cheerType == CheerBagItem.CheerType.HEAL && target.getFirst().getBattlePokemon().getEntity() instanceof PokemonEntity entity) {
             entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1f, 1f);
         }
-        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), data), skipEnemyAction);
+        this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), origin), skipEnemyAction);
     }
 
     private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
@@ -410,8 +410,8 @@ public class RaidInstance {
     }
 
     static {
-        INSTRUCTION_MAP.put("RESET_BOSS", battle -> new ClearBossShowdownEvent().send(battle));
-        INSTRUCTION_MAP.put("RESET_PLAYER", battle -> new ClearPlayerShowdownEvent().send(battle));
+        INSTRUCTION_MAP.put("RESET_BOSS", battle -> new ResetBossShowdownEvent().send(battle));
+        INSTRUCTION_MAP.put("RESET_PLAYER", battle -> new ResetPlayerShowdownEvent().send(battle));
 
         INSTRUCTION_MAP.put("BOSS_ATK_1", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 1, 2).send(battle));
         INSTRUCTION_MAP.put("BOSS_ATK_2", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 2, 2).send(battle));
@@ -452,5 +452,8 @@ public class RaidInstance {
         INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", battle -> new SetTerrainShowdownEvent("grassyterrain").send(battle));
         INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", battle -> new SetTerrainShowdownEvent("mistyterrain").send(battle));
         INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", battle -> new SetTerrainShowdownEvent("psychicterrain").send(battle));
+
+        INSTRUCTION_MAP.put("SHIELD_UP", battle -> new ShieldAddShowdownEvent().send(battle));
+        INSTRUCTION_MAP.put("SHIELD_DOWN", battle -> new ShieldRemoveShowdownEvent().send(battle));
     }
 }

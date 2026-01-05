@@ -80,6 +80,7 @@ public class ModEvents {
         event.addListener(new RaidTemplateReloadListener());
         event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
+        event.addListener(new StatusEffectsReloadListener());
     }
 
     @SubscribeEvent

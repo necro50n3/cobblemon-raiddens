@@ -10,15 +10,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public record CheerBagItem(CheerType cheerType, String param) implements BagItem {
-
-    public CheerBagItem(CheerType cheerType, int param) {
-        this(cheerType, String.valueOf(param));
-    }
-
-    public CheerBagItem(CheerType cheerType, double param) {
-        this(cheerType, String.valueOf(param));
-    }
+public record CheerBagItem(CheerType cheerType) implements BagItem {
 
     @Override
     public @NotNull String getItemName() {
@@ -37,12 +29,12 @@ public record CheerBagItem(CheerType cheerType, String param) implements BagItem
 
     @Override
     public @NotNull String getShowdownInput(@NotNull BattleActor actor, @NotNull BattlePokemon pokemon, @Nullable String data) {
-        return cheerType.getShowdownString() + " " + this.param + " " + this.cheerType.getId() + " " + data;
+        return cheerType.getShowdownString() + " " + data;
     }
 
     public enum CheerType {
-        ATTACK("cheer_attack", "cheer_stat atk spa"),
-        DEFENSE("cheer_defense", "cheer_stat def spd"),
+        ATTACK("cheer_attack", "cheer_attack"),
+        DEFENSE("cheer_defense", "cheer_defense"),
         HEAL("cheer_heal", "cheer_heal");
 
         private final String id;

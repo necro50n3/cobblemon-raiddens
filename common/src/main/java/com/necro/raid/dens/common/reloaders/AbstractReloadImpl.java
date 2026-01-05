@@ -67,7 +67,8 @@ public abstract class AbstractReloadImpl {
 
     protected enum DataType {
         JSON(".json"),
-        NBT(".nbt");
+        NBT(".nbt"),
+        JAVASCRIPT(".js");
 
         private final String suffix;
 

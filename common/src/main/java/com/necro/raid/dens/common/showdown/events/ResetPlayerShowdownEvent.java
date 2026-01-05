@@ -2,19 +2,20 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
-public class ClearBossShowdownEvent implements ShowdownEvent {
+public class ResetPlayerShowdownEvent implements ShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
                 "battle.add('raidenergy', '%1$s'); " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[0].pokemon) { " +
                     "if (!p) continue; " +
                     "for (let i in p.boosts) { " +
-                        "if (p.boosts[i] >= 0) continue; " +
+                        "if (p.boosts[i] <= 0) continue; " +
                         "p.boosts[i] = 0; " +
                     "} " +
-                    "p.cureStatus(); " +
-                    "battle.add('clearboss', p, '%1$s'); " +
+                    "p.removeVolatile('cheerattack'); " +
+                    "p.removeVolatile('cheerdefense'); " +
+                    "battle.add('clearplayer', p, '%1$s'); " +
                 "}",
             battle.getSide2().getActors()[0].getUuid()
         );

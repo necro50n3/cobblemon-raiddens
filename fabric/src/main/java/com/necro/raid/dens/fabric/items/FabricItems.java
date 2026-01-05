@@ -14,9 +14,9 @@ import net.minecraft.world.item.Item;
 public class FabricItems {
     public static void registerItems() {
         ModItems.RAID_POUCH = registerRaidPouch("raid_pouch", new RaidPouchItem());
-        ModItems.ATTACK_CHEER = registerRaidPouch("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK, 1));
-        ModItems.DEFENSE_CHEER = registerRaidPouch("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE, 1));
-        ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL, 0.5));
+        ModItems.ATTACK_CHEER = registerRaidPouch("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK));
+        ModItems.DEFENSE_CHEER = registerRaidPouch("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE));
+        ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
     }
 
     private static Holder<Item> registerRaidPouch(String name, Item item) {

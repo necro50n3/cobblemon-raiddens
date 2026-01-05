@@ -37,12 +37,8 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         this.bagItem = bagItem;
     }
 
-    public CheerItem(CheerBagItem.CheerType cheerType, int data) {
-        this(cheerType, new CheerBagItem(cheerType, data));
-    }
-
-    public CheerItem(CheerBagItem.CheerType cheerType, double data) {
-        this(cheerType, new CheerBagItem(cheerType, data));
+    public CheerItem(CheerBagItem.CheerType cheerType) {
+        this(cheerType, new CheerBagItem(cheerType));
     }
 
     @Override

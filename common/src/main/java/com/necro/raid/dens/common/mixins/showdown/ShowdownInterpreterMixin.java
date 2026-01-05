@@ -28,6 +28,9 @@ public class ShowdownInterpreterMixin {
         updateInstructionParser.put("cheer", (battle, instruction, message, messageIterator) ->
             new CheerInstruction(message)
         );
+        updateInstructionParser.put("cheerboost", (battle, instruction, message, messageIterator) ->
+            new CheerBoostInstruction(battle, message)
+        );
         updateInstructionParser.put("clearboss", (battle, instruction, message, messageIterator) ->
             new ResetBossInstruction(battle, message)
         );
@@ -39,6 +42,12 @@ public class ShowdownInterpreterMixin {
         );
         updateInstructionParser.put("playerjoin", (battle, instruction, message, messageIterator) ->
             new PlayerJoinInstruction(battle, message)
+        );
+        updateInstructionParser.put("shieldadd", (battle, instruction, message, messageIterator) ->
+            new ShieldAddInstruction(battle, message)
+        );
+        updateInstructionParser.put("shieldremove", (battle, instruction, message, messageIterator) ->
+            new ShieldRemoveInstruction(battle, message)
         );
     }
 }
