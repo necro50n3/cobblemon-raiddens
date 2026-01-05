@@ -66,8 +66,8 @@ public abstract class DamageInstructionMixin implements ActionEffectInstruction 
                 Component lang = null;
 
                 if (Set.of("brn", "psn", "tox").contains(effect.getId())) {
-                    Status status = Statuses.INSTANCE.getStatus(effect.getId());
-                    if (status != null) lang = LocalizationUtilsKt.battleLang(String.format("status.%s.hurt", status.getName().getPath()), pokemonName);
+                    Status status = Statuses.getStatus(effect.getId());
+                    if (status != null) lang = LocalizationUtilsKt.lang(String.format("status.%s.hurt", status.getName().getPath()), pokemonName);
                 }
                 else if (Set.of("aftermath", "innardsout").contains(effect.getId())) lang = LocalizationUtilsKt.battleLang("damage.generic", pokemonName);
                 else if (Set.of("chloroblast", "steelbeam").contains(effect.getId())) lang = LocalizationUtilsKt.battleLang("damage.mindblown", pokemonName);
