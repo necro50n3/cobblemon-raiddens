@@ -21,7 +21,6 @@
         "raid.PokemonEntityMixin",
         "raid.PokemonMixin",
         "showdown.ForcePassActionResponseMixin",
-        "showdown.GraalShowdownServiceMixin",
         "showdown.GraalShowdownUnbundlerMixin",
         "showdown.HealInstructionMixin",
         "showdown.MoveActionResponseMixin",
