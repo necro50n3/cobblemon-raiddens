@@ -165,10 +165,7 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
 
             float damage = Float.parseFloat(damageStr);
             boolean causedFaint = raidInstance.getCurrentHealth() < damage;
-            if (causedFaint) {
-                battlePokemon.getEffectedPokemon().setCurrentHealth(0);
-                raidInstance.queueStopRaid();
-            }
+            if (causedFaint) battlePokemon.getEffectedPokemon().setCurrentHealth(0);
 
             ServerPlayer player = battle.getPlayers().getFirst();
             raidInstance.syncHealth(player, battle, damage);
