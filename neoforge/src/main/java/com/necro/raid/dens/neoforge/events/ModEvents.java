@@ -2,9 +2,10 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidExitHelper;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidExitHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -42,6 +43,7 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
+        RaidJoinHelper.onPlayerDisconnect(event.getEntity());
         RaidHelper.onPlayerDisconnect(event.getEntity());
         DimensionHelper.removeDelayed(event.getEntity().getServer(), (ServerPlayer) event.getEntity());
     }
@@ -49,6 +51,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void onServerStart(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
+        RaidJoinHelper.initHelper(server);
         RaidHelper.initHelper(server);
         RaidRegistry.initRaidBosses(server);
         RaidBucketRegistry.init(server);

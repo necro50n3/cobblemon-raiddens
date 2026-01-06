@@ -1,4 +1,4 @@
-package com.necro.raid.dens.fabric.dimensions;
+package com.necro.raid.dens.fabricgen.dimensions;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
@@ -21,18 +21,5 @@ public class FabricDimensions {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_dim_chunk"),
             RaidDenChunkGenerator.CODEC
         );
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static ServerLevel createRaidDimension(RaidCrystalBlockEntity blockEntity) {
-        MinecraftServer server = blockEntity.getLevel().getServer();
-        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(blockEntity.getRaidHost().toString());
-
-        ServerLevel level = ModDimensions.createRaidDimension(server, levelKey);
-        ModDimensions.placeRaidDenStructure(blockEntity, level);
-        DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
-
-        ServerWorldEvents.LOAD.invoker().onWorldLoad(server, level);
-        return level;
     }
 }

@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.ServerPacket;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -40,7 +40,7 @@ public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
     public void handleServer(ServerPlayer player) {
         assert player.getServer() != null;
         handleDim: {
-            if (RaidUtils.isCustomDimension(player.level())) {
+            if (RaidUtils.isRaidDimension(player.level())) {
                 BlockEntity blockEntity = player.level().getBlockEntity(BlockPos.ZERO);
 
                 if (blockEntity instanceof RaidHomeBlockEntity homeBlock) RaidHomeBlock.safeExit(homeBlock, BlockPos.ZERO, player, player.level());
@@ -52,7 +52,7 @@ public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
             else {
                 ResourceKey<Level> key = ModDimensions.createLevelKey(String.valueOf(player.getUUID()));
                 ServerLevel level = player.getServer().getLevel(key);
-                if (level == null || !level.players().isEmpty() || !RaidUtils.isCustomDimension(level)) break handleDim;
+                if (level == null || !level.players().isEmpty() || !RaidUtils.isRaidDimension(level)) break handleDim;
 
                 BlockEntity blockEntity = level.getBlockEntity(BlockPos.ZERO);
                 if (blockEntity instanceof RaidHomeBlockEntity homeBlock) RaidHomeBlock.safeExit(homeBlock, BlockPos.ZERO, player, player.level());

@@ -12,7 +12,7 @@ import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.statistics.RaidStatistics;

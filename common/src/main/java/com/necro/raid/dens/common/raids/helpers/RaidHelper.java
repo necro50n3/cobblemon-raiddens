@@ -1,10 +1,13 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.raids.helpers;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RequestHandler;
+import com.necro.raid.dens.common.raids.RewardHandler;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Pair;
 import net.minecraft.ChatFormatting;
@@ -15,32 +18,19 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class RaidHelper extends SavedData {
     public static RaidHelper INSTANCE;
 
-    public static final Map<Player, JoinRequestInstance> JOIN_QUEUE = new HashMap<>();
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
     public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
     public static final Map<UUID, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
-    public final Set<UUID> RAID_HOSTS = new HashSet<>();
-    public final Set<UUID> RAID_PARTICIPANTS = new HashSet<>();
     public final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
-
-    public static boolean isInQueue(Player player) {
-        return JOIN_QUEUE.containsKey(player);
-    }
-
-    public static void addToQueue(Player player, @Nullable ItemStack key) {
-        JOIN_QUEUE.put(player, new JoinRequestInstance(player, key));
-    }
 
     public static void initRequest(ServerPlayer host, RaidCrystalBlockEntity blockEntity) {
         if (REQUEST_QUEUE.containsKey(host.getUUID())) return;
@@ -60,16 +50,6 @@ public class RaidHelper extends SavedData {
 
     public static void removeRequests(UUID host) {
         REQUEST_QUEUE.remove(host);
-    }
-
-    public static void addHost(Player player) {
-        INSTANCE.RAID_HOSTS.add(player.getUUID());
-        INSTANCE.setDirty();
-    }
-
-    public static void addParticipant(Player player) {
-        INSTANCE.RAID_PARTICIPANTS.add(player.getUUID());
-        INSTANCE.setDirty();
     }
 
     public static boolean hasClearedRaid(UUID uuid, Player player) {
@@ -100,46 +80,8 @@ public class RaidHelper extends SavedData {
         INSTANCE.setDirty();
     }
 
-    public static boolean isAlreadyHosting(Player player) {
-        return isAlreadyHosting(player.getUUID());
-    }
-
-    public static boolean isAlreadyHosting(UUID player) {
-        return INSTANCE.RAID_HOSTS.contains(player);
-    }
-
-    public static boolean isAlreadyParticipating(Player player) {
-        return isAlreadyParticipating(player.getUUID());
-    }
-
-    public static boolean isAlreadyParticipating(UUID player) {
-        return INSTANCE.RAID_PARTICIPANTS.contains(player);
-    }
-
-    public static void removeHost(UUID player) {
-        INSTANCE.RAID_HOSTS.remove(player);
-        INSTANCE.setDirty();
-    }
-
-    public static void removeParticipant(UUID player) {
-        INSTANCE.RAID_PARTICIPANTS.remove(player);
-        INSTANCE.setDirty();
-    }
-
-    public static void finishRaid(Set<UUID> players) {
-        INSTANCE.RAID_PARTICIPANTS.removeAll(players);
-        INSTANCE.setDirty();
-    }
-
     public static void onPlayerDisconnect(Player player) {
-        refundItem(player);
         fleeRaidBattle(player);
-    }
-
-    private static void refundItem(Player player) {
-        if (!JOIN_QUEUE.containsKey(player)) return;
-        JOIN_QUEUE.get(player).refundItem();
-        JOIN_QUEUE.remove(player);
     }
 
     private static void fleeRaidBattle(Player player) {
@@ -149,15 +91,6 @@ public class RaidHelper extends SavedData {
         RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
         if (raid == null) return;
         raid.removePlayer((ServerPlayer) player, battle);
-    }
-
-    public static void onServerClose() {
-        JOIN_QUEUE.forEach((player, instance) -> instance.refundItem());
-        JOIN_QUEUE.clear();
-    }
-
-    public static void serverTick() {
-        JOIN_QUEUE.values().removeIf(instance -> !instance.tick());
     }
 
     public static void commonTick() {
@@ -173,47 +106,12 @@ public class RaidHelper extends SavedData {
         return component.withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC);
     }
 
-    public static class JoinRequestInstance {
-        private final Player player;
-        private final ItemStack itemStack;
-        private int tick;
-
-        public JoinRequestInstance(Player player, @Nullable ItemStack itemStack) {
-            this.player = player;
-            if (itemStack == null) this.itemStack = null;
-            else {
-                this.itemStack = itemStack.copy();
-                this.itemStack.setCount(1);
-            }
-            this.tick = 0;
-        }
-
-        public void refundItem() {
-            if (this.itemStack != null) player.addItem(this.itemStack);
-        }
-
-        public boolean tick() {
-            if (++this.tick > 1200) {
-                this.player.sendSystemMessage(getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
-                return false;
-            }
-            return true;
-        }
-    }
-
     public static RaidHelper create() {
         return new RaidHelper();
     }
 
     public static RaidHelper load(CompoundTag compoundTag, HolderLookup.Provider provider) {
         RaidHelper data = create();
-
-        if (compoundTag.contains("raid_hosts")) {
-            compoundTag.getList("raid_hosts", Tag.TAG_STRING).forEach(host -> data.RAID_HOSTS.add(UUID.fromString(host.getAsString())));
-        }
-        if (compoundTag.contains("raid_participants")) {
-            compoundTag.getList("raid_participants", Tag.TAG_STRING).forEach(p -> data.RAID_PARTICIPANTS.add(UUID.fromString(p.getAsString())));
-        }
 
         ListTag clearedRaids = compoundTag.getList("cleared_raids", Tag.TAG_COMPOUND);
         for (Tag t : clearedRaids) {
@@ -238,15 +136,7 @@ public class RaidHelper extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        ListTag raidHostsTag = new ListTag();
-        RAID_HOSTS.forEach(uuid -> raidHostsTag.add(StringTag.valueOf(uuid.toString())));
-        compoundTag.put("raid_hosts", raidHostsTag);
-
-        ListTag raidParticipantsTag = new ListTag();
-        RAID_PARTICIPANTS.forEach(uuid -> raidParticipantsTag.add(StringTag.valueOf(uuid.toString())));
-        compoundTag.put("raid_participants", raidParticipantsTag);
-
+    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         ListTag clearedRaidsTag = new ListTag();
         for (Map.Entry<UUID, Set<UUID>> entry : CLEARED_RAIDS.entrySet()) {
             CompoundTag e = new CompoundTag();
@@ -265,6 +155,7 @@ public class RaidHelper extends SavedData {
         return compoundTag;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static Factory<RaidHelper> type() {
         return new Factory<>(
             RaidHelper::create,

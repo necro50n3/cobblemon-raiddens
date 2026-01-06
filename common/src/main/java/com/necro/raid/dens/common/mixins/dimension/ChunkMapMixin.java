@@ -19,6 +19,6 @@ public class ChunkMapMixin {
 
     @Inject(method = "isExistingChunkFull", at = @At("HEAD"), cancellable = true)
     private void isExistingChunkFullInject(ChunkPos chunkPos, CallbackInfoReturnable<Boolean> cir) {
-        if (RaidUtils.isCustomDimension(this.level)) cir.setReturnValue(false);
+        if (RaidUtils.isRaidDimension(this.level)) cir.setReturnValue(false);
     }
 }

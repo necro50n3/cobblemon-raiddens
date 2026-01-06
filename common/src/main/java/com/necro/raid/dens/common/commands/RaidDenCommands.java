@@ -350,7 +350,7 @@ public class RaidDenCommands {
 
     @SuppressWarnings("unused")
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation raidBoss, RaidCycleMode cycleMode, boolean canReset) {
-        if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
+        if (level.getBiome(blockPos).is(ModDimensions.RAID_DIM_BIOME)) return 0;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal, blockPos, raidBoss, cycleMode, canReset);
@@ -393,7 +393,7 @@ public class RaidDenCommands {
 
     @SuppressWarnings("unused")
     private static int createRaidDenWithBucket(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation bucket, boolean canReset) {
-        if (level.getBiome(blockPos).is(ModDimensions.RAIDDIM_BIOME)) return 0;
+        if (level.getBiome(blockPos).is(ModDimensions.RAID_DIM_BIOME)) return 0;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenWithBucketFromExisting(level, raidCrystal.getBlockState(), blockPos, bucket, canReset);

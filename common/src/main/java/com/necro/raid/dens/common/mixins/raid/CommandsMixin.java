@@ -18,7 +18,7 @@ public class CommandsMixin {
     @Inject(method = "performCommand", at = @At("HEAD"), cancellable = true)
     private void performCommand(ParseResults<CommandSourceStack> parseResults, String cmd, CallbackInfo ci) {
         ServerPlayer player = parseResults.getContext().getSource().getPlayer();
-        if (player == null || !RaidUtils.isCustomDimension(player.level()) || CobblemonRaidDens.BLACKLIST_CONFIG.commands.length == 0) return;
+        if (player == null || !RaidUtils.isRaidDimension(player.level()) || CobblemonRaidDens.BLACKLIST_CONFIG.commands.length == 0) return;
 
         String[] parts = cmd.toLowerCase().split(" ");
         StringBuilder prefix = new StringBuilder();

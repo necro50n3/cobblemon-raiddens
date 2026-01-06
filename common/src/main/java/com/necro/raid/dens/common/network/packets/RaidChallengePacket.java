@@ -17,7 +17,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -58,7 +58,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
     @Override
     public void handleServer(ServerPlayer player) {
-        if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player) && RaidUtils.isCustomDimension(player.level())) {
+        if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player) && RaidUtils.isRaidDimension(player.level())) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.not_participating").withStyle(ChatFormatting.RED));
             return;
         }

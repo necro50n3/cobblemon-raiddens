@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.events.SetRaidBossEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;

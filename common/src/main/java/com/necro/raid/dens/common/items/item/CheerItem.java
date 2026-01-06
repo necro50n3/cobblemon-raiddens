@@ -6,7 +6,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.util.IRaidAccessor;

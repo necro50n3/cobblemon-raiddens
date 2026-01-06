@@ -13,5 +13,5 @@ public class NeoForgeChunkGenerator {
     public static final DeferredRegister<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATORS =
         DeferredRegister.create(Registries.CHUNK_GENERATOR, CobblemonRaidDens.MOD_ID);
     public static final DeferredHolder<MapCodec<? extends ChunkGenerator>, MapCodec<RaidDenChunkGenerator>> CHUNK_GENERATOR =
-        CHUNK_GENERATORS.register("raiddim_chunk", () -> RaidDenChunkGenerator.CODEC);
+        CHUNK_GENERATORS.register("raid_dim_chunk", () -> RaidDenChunkGenerator.CODEC);
 }
