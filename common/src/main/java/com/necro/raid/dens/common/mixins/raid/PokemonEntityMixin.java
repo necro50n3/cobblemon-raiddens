@@ -5,8 +5,8 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.util.IHealthSetter;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.util.RaidRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -103,6 +103,6 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
         if (this.getPokemon() == null) return;
         CompoundTag tag = nbt.getCompound(DataKeys.POKEMON);
-        if (tag.contains("max_health_buffer")) ((IHealthSetter) this.getPokemon()).setMaxHealth(tag.getInt("max_health_buffer"));
+        if (tag.contains("raid_shiny_rate")) ((IShinyRate) this.getPokemon()).setRaidShinyRate(tag.getFloat("raid_shiny_rate"));
     }
 }

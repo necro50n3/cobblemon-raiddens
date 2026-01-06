@@ -137,9 +137,6 @@ public class RaidBoss {
             );
         }
 
-        int healthMulti = this.healthMulti;
-        ((IHealthSetter) pokemon).setMaxHealth(healthMulti * pokemon.getMaxHealth());
-
         for (SpeciesFeature form : this.raidForm) {
             ((CustomPokemonProperty) form).apply(pokemon);
         }
