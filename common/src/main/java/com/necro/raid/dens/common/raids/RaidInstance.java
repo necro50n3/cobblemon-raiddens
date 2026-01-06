@@ -97,6 +97,15 @@ public class RaidInstance {
                     if ((this.currentHealth / this.maxHealth) < threshold) return;
                     this.scriptByHp.put(threshold, functions);
                 }
+                else if (key.startsWith("after:") || key.startsWith("repeat:")) {
+                    int time = Integer.parseInt(key.split(":")[1]) * 20;
+                    this.runQueue.add(new DelayedRunnable(() -> {
+                        for (String function : functions) {
+                            Consumer<PokemonBattle> instruction = this.getInstructions(function);
+                            if (instruction != null) this.battles.forEach(instruction);
+                        }
+                    }, time, key.startsWith("repeat:")));
+                }
             }
             catch (Exception ignored) {}
         });
