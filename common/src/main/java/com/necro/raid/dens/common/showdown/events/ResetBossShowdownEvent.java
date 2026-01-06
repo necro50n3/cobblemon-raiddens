@@ -13,7 +13,7 @@ public class ResetBossShowdownEvent implements ShowdownEvent {
                         "if (p.boosts[i] >= 0) continue; " +
                         "p.boosts[i] = 0; " +
                     "} " +
-                    "p.cureStatus(); " +
+                    "if (p.status !== 'shield') p.cureStatus(); " +
                     "battle.add('clearboss', p, '%1$s'); " +
                 "}",
             battle.getSide2().getActors()[0].getUuid()
