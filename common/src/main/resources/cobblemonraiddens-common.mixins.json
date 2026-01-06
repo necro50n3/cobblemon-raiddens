@@ -22,6 +22,7 @@
         "raid.PokemonMixin",
         "showdown.DamageInstructionMixin",
         "showdown.ForcePassActionResponseMixin",
+        "showdown.GraalShowdownServiceMixin",
         "showdown.HealInstructionMixin",
         "showdown.MoveActionResponseMixin",
         "showdown.MoveInstructionMixin",
