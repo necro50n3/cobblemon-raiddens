@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.events;
 
-import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 
 public class SetRaidBossEvent {
     private RaidBoss raidBoss;

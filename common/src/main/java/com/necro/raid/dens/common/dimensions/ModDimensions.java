@@ -7,7 +7,7 @@ import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.mixins.dimension.MappedRegistryAccessor;
 import com.necro.raid.dens.common.mixins.dimension.MinecraftServerAccessor;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;

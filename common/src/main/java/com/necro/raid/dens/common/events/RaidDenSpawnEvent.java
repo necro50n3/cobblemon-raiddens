@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.events;
 
-import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;

@@ -1,10 +1,9 @@
-package com.necro.raid.dens.common.util;
+package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.raids.RaidFeature;
-import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;

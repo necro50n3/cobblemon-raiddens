@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.data.raid;
 
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;

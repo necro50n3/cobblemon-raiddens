@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
@@ -24,8 +24,9 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.data.ScriptAdapter;
-import com.necro.raid.dens.common.data.UniqueKeyAdapter;
+import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
+import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
 import net.minecraft.core.registries.Registries;

@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.util.RaidBucket;
-import com.necro.raid.dens.common.util.RaidBucketRegistry;
+import com.necro.raid.dens.common.data.raid.RaidBucket;
+import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;

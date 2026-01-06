@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.mixins.ai;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
-import com.necro.raid.dens.common.raids.RaidAI;
+import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.api.battles.model.ai.BattleAI;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;

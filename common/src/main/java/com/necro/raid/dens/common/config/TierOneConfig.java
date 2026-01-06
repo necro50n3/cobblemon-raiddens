@@ -2,8 +2,8 @@ package com.necro.raid.dens.common.config;
 
 import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.mark.Marks;
-import com.necro.raid.dens.common.data.ScriptAdapter;
-import com.necro.raid.dens.common.raids.RaidAI;
+import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
+import com.necro.raid.dens.common.data.raid.RaidAI;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;

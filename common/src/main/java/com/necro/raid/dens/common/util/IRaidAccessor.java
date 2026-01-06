@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.util;
 
-import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;

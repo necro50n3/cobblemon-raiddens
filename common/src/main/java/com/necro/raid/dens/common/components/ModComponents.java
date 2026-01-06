@@ -1,8 +1,8 @@
 package com.necro.raid.dens.common.components;
 
-import com.necro.raid.dens.common.raids.RaidFeature;
-import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
+import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 

@@ -7,7 +7,7 @@ import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

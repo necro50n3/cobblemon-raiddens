@@ -5,7 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.mojang.datafixers.util.Function3;
-import com.necro.raid.dens.common.raids.RaidAI;
+import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 

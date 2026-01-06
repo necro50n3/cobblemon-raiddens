@@ -1,9 +1,9 @@
-package com.necro.raid.dens.common.util;
+package com.necro.raid.dens.common.registry;
 
-import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.raids.RaidFeature;
-import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
+import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,16 +18,16 @@ public class RaidRegistry {
     public static final ResourceKey<Registry<RaidBoss>> RAID_BOSS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "boss"));
     public static Registry<RaidBoss> REGISTRY;
 
-    static final Map<RaidTier, BitSet> RAIDS_BY_TIER = new EnumMap<>(RaidTier.class);
-    static final Map<RaidType, BitSet> RAIDS_BY_TYPE = new EnumMap<>(RaidType.class);
-    static final Map<RaidFeature, BitSet> RAIDS_BY_FEATURE = new EnumMap<>(RaidFeature.class);
-    static final List<ResourceLocation> RAID_LIST = new ArrayList<>();
-    static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
-    static final Map<ResourceLocation, Integer> RAID_INDEX = new HashMap<>();
-    static Map<ResourceLocation, Set<ResourceLocation>> RAID_TAGS = new HashMap<>();
+    public static final Map<RaidTier, BitSet> RAIDS_BY_TIER = new EnumMap<>(RaidTier.class);
+    public static final Map<RaidType, BitSet> RAIDS_BY_TYPE = new EnumMap<>(RaidType.class);
+    public static final Map<RaidFeature, BitSet> RAIDS_BY_FEATURE = new EnumMap<>(RaidFeature.class);
+    public static final List<ResourceLocation> RAID_LIST = new ArrayList<>();
+    public static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
+    public static final Map<ResourceLocation, Integer> RAID_INDEX = new HashMap<>();
+    public static Map<ResourceLocation, Set<ResourceLocation>> RAID_TAGS = new HashMap<>();
 
-    static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
-    static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
+    public static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
+    public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
 
     public static void register(RaidBoss raidBoss) {
         if (raidBoss.getProperties().getSpecies() == null) return;
@@ -89,7 +89,7 @@ public class RaidRegistry {
         return weights;
     }
 
-    static ResourceLocation roll(RandomSource random, float[] weights, int[] indexes) {
+    public static ResourceLocation roll(RandomSource random, float[] weights, int[] indexes) {
         float roll = random.nextFloat() * weights[weights.length - 1];
         int idx = Arrays.binarySearch(weights, roll);
         if (idx < 0) idx = -idx - 1;
@@ -97,7 +97,7 @@ public class RaidRegistry {
         return RAID_LIST.get(indexes[idx]);
     }
 
-    static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, BitSet bitSet, @Nullable String cacheKey) {
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, BitSet bitSet, @Nullable String cacheKey) {
         int size = bitSet.cardinality();
         if (size == 0) return null;
         int[] matches = new int[size];

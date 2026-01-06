@@ -1,8 +1,8 @@
 package com.necro.raid.dens.common.config;
 
 import com.cobblemon.mod.common.api.mark.Mark;
-import com.necro.raid.dens.common.data.ScriptAdapter;
-import com.necro.raid.dens.common.raids.RaidAI;
+import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
+import com.necro.raid.dens.common.data.raid.RaidAI;
 
 import java.util.List;
 import java.util.Map;

@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.items;
 
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.raids.RaidTier;
+import com.necro.raid.dens.common.data.raid.RaidTier;
 import net.minecraft.advancements.critereon.ItemSubPredicate;
 import net.minecraft.world.item.ItemStack;
 

@@ -6,10 +6,10 @@ import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.raids.RaidBoss;
-import com.necro.raid.dens.common.raids.RaidFeature;
-import com.necro.raid.dens.common.raids.RaidTier;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
+import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.data.raid.RaidType;
 
 import java.util.ArrayList;
 import java.util.List;

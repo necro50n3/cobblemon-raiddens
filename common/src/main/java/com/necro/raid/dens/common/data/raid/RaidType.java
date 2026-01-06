@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;

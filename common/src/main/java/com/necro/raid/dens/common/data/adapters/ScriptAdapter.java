@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.data;
+package com.necro.raid.dens.common.data.adapters;
 
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Either;

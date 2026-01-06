@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.advancements;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.raids.RaidFeature;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;

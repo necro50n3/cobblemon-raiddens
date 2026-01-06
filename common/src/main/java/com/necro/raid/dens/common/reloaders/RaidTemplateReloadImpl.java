@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 

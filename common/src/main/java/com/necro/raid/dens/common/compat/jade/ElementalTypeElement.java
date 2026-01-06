@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.compat.jade;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;

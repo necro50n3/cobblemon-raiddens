@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.util;
+package com.necro.raid.dens.common.registry;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.structure.RaidDenPool;

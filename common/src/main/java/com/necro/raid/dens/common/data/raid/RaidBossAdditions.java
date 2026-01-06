@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
@@ -9,9 +9,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.data.ScriptAdapter;
-import com.necro.raid.dens.common.data.UniqueKeyAdapter;
-import com.necro.raid.dens.common.util.RaidRegistry;
+import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
+import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;

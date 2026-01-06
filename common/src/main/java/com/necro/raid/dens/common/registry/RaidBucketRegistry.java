@@ -1,5 +1,7 @@
-package com.necro.raid.dens.common.util;
+package com.necro.raid.dens.common.registry;
 
+import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
+import com.necro.raid.dens.common.data.raid.RaidBucket;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;

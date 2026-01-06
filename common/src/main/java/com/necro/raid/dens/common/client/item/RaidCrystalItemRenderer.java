@@ -4,7 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.item.RaidCrystalBlockItem;
 import com.necro.raid.dens.common.items.model.RaidCrystalItemModel;
-import com.necro.raid.dens.common.raids.RaidType;
+import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 

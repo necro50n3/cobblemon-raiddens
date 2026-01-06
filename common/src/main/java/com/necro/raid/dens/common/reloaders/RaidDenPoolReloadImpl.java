@@ -5,7 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.structure.RaidDenPool;
-import com.necro.raid.dens.common.util.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;

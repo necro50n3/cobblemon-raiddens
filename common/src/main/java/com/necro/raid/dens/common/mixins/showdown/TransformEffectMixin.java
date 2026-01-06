@@ -9,7 +9,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.entity.pokemon.effects.TransformEffect;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidAI;
+import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;

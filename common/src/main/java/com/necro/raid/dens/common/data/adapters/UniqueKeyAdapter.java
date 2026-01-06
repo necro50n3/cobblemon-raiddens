@@ -1,9 +1,8 @@
-package com.necro.raid.dens.common.data;
+package com.necro.raid.dens.common.data.adapters;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
 import net.minecraft.world.item.ItemStack;
 
