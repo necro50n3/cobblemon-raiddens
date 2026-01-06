@@ -106,17 +106,17 @@ public class RaidUtils {
         return itemStack.is(ItemTags.RAID_DEN_KEY) || itemStack.getOrDefault(ModComponents.RAID_DEN_KEY.value(), false);
     }
 
-    public static boolean isCustomDimension(Level level) {
-        return level.dimensionTypeRegistration().is(ModDimensions.RAIDDIM_TYPE);
+    public static boolean isRaidDimension(Level level) {
+        return level.dimensionTypeRegistration().is(ModDimensions.RAID_DIM_TYPE);
     }
 
     public static boolean cannotBreak(Player player, Level level) {
-        return RaidUtils.isCustomDimension(level) && !player.isCreative();
+        return RaidUtils.isRaidDimension(level) && !player.isCreative();
     }
 
     @SuppressWarnings("unused")
     public static boolean cannotPlace(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
-        return RaidUtils.isCustomDimension(level) && !player.isCreative() && !(level.getBlockState(hitResult.getBlockPos()).is(BlockTags.CAN_INTERACT));
+        return RaidUtils.isRaidDimension(level) && !player.isCreative() && !(level.getBlockState(hitResult.getBlockPos()).is(BlockTags.CAN_INTERACT));
     }
 
     @SuppressWarnings("unused")

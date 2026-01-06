@@ -12,7 +12,8 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.*;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
@@ -102,12 +103,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             blockEntity.syncAspects((ServerPlayer) player);
             return true;
         }
-        else if (RaidHelper.isAlreadyHosting(player)) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"));
-            return false;
-        }
-        else if (RaidHelper.isAlreadyParticipating(player)) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_participating"));
+        else if (RaidJoinHelper.isParticipating(player)) {
+            // System message is handled by checker
             return false;
         }
         else if (blockEntity.canSetRaidHost()) {
@@ -117,10 +114,6 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
         else if (blockEntity.isFull()) {
             player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
-            return false;
-        }
-        else if (RaidHelper.isInQueue(player)) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
             return false;
         }
         return this.requestJoinRaid(player, blockEntity, key);
@@ -135,7 +128,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
 
-        RaidHelper.addToQueue(player, key);
+        RaidJoinHelper.addToQueue(player, key);
         RaidHelper.addRequest(raidHost, player);
         RaidDenNetworkMessages.REQUEST_PACKET.accept(raidHost, player.getName().getString());
         return true;
@@ -154,16 +147,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
         if (!success) return false;
 
-        ServerLevel level;
-        try {
-            level = this.getOrCreateDimension(blockEntity);
-            if (level == null) throw new Exception("Level is null");
-        }
-        catch (Exception e) {
-            CobblemonRaidDens.LOGGER.error("Error creating or getting dim:", e);
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.pending_removal").withStyle(ChatFormatting.RED));
-            return false;
-        }
+        // implement dimension region
 
         DimensionHelper.removeFromCache(level.dimension());
         blockEntity.setDimension(level);
@@ -173,7 +157,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return false;
         }
 
-        RaidHelper.addHost(player);
+        RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), true);
         RaidHelper.initRequest((ServerPlayer) player, blockEntity);
         blockEntity.addChunkTicket();
         blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos()).setUnsaved(true);
@@ -183,12 +167,6 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         blockEntity.syncAspects((ServerPlayer) player);
         return true;
     }
-
-    private ServerLevel getOrCreateDimension(RaidCrystalBlockEntity blockEntity) {
-        return blockEntity.getDimension() != null ? blockEntity.getDimension() : this.createDimension(blockEntity);
-    }
-
-    protected abstract ServerLevel createDimension(RaidCrystalBlockEntity blockEntity);
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
         RaidBoss boss = blockEntity.getRaidBoss();

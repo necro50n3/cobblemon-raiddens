@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.raids.helpers;
 
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
@@ -45,7 +45,7 @@ public class RaidExitHelper {
     }
 
     private static void onDimensionChange(ServerPlayer player, ServerLevel from) {
-        if (!RaidUtils.isCustomDimension(from)) return;
+        if (!RaidUtils.isRaidDimension(from)) return;
         else if (RECENT_DEATHS.remove(player.getUUID())) return;
 
         BlockEntity blockEntity = from.getBlockEntity(BlockPos.ZERO);

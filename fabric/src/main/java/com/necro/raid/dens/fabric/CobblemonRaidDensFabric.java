@@ -8,7 +8,7 @@ import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
-import com.necro.raid.dens.common.raids.RaidExitHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidExitHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;

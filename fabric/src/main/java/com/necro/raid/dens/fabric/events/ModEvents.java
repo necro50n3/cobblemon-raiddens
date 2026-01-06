@@ -4,7 +4,8 @@ import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -24,6 +25,7 @@ public class ModEvents {
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
+        RaidJoinHelper.onPlayerDisconnect(listener.getPlayer());
         RaidHelper.onPlayerDisconnect(listener.getPlayer());
         DimensionHelper.removeDelayed(server, listener.getPlayer());
     }
@@ -33,15 +35,16 @@ public class ModEvents {
     }
 
     public static void initRaidHelper(MinecraftServer server) {
+        RaidJoinHelper.initHelper(server);
         RaidHelper.initHelper(server);
     }
 
     public static void onServerClose(MinecraftServer server) {
-        RaidHelper.onServerClose();
+        RaidJoinHelper.onServerClose();
     }
 
     public static void serverTick(MinecraftServer server) {
-        RaidHelper.serverTick();
+        RaidJoinHelper.serverTick();
     }
 
     public static void commonTick(MinecraftServer server) {

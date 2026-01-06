@@ -10,7 +10,8 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -80,17 +81,14 @@ public class RaidAdminCommands {
     }
 
     private static int refreshPlayer(CommandContext<CommandSourceStack> context, ServerPlayer player) {
-        if (RaidUtils.isCustomDimension(player.serverLevel())) {
+        if (RaidUtils.isRaidDimension(player.serverLevel())) {
             context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.player_in_raid"));
             return 0;
         }
 
-        RaidHelper.removeHost(player.getUUID());
-        RaidHelper.removeParticipant(player.getUUID());
-        if (RaidHelper.JOIN_QUEUE.containsKey(player)) {
-            RaidHelper.JOIN_QUEUE.get(player).refundItem();
-            RaidHelper.JOIN_QUEUE.remove(player);
-        }
+        RaidJoinHelper.removeParticipant(player);
+        RaidJoinHelper.removeFromQueue(player);
+
         context.getSource().sendSystemMessage(
             RaidHelper.getSystemMessage(Component.translatable("message.cobblemonraiddens.command.refresh_player", player.getName()))
         );
@@ -146,7 +144,7 @@ public class RaidAdminCommands {
 
     private static int removeDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel level = DimensionArgument.getDimension(context, "dimension");
-        if (!RaidUtils.isCustomDimension(level)) {
+        if (!RaidUtils.isRaidDimension(level)) {
             context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.invalid_dimension"));
             return 0;
         }

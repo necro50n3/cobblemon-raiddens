@@ -127,7 +127,7 @@ public class RaidSpawnCommands {
     }
 
     private static int spawnBoss(Vec3 vec3, ServerLevel dimension, ResourceLocation boss, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
-        if (RaidUtils.isCustomDimension(dimension)) return 0;
+        if (RaidUtils.isRaidDimension(dimension)) return 0;
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(boss);
         if (raidBoss == null) return 0;
 

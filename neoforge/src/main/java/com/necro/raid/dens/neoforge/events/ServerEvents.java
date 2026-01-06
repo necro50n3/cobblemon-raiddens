@@ -1,7 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,11 +12,11 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class ServerEvents {
     @SubscribeEvent
     public static void onServerClose(ServerStoppingEvent event) {
-        RaidHelper.onServerClose();
+        RaidJoinHelper.onServerClose();
     }
 
     @SubscribeEvent
     public static void serverTick(ServerTickEvent.Post event) {
-        RaidHelper.serverTick();
+        RaidJoinHelper.serverTick();
     }
 }

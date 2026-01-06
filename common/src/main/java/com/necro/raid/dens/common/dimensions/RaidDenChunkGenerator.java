@@ -26,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RaidDenChunkGenerator extends ChunkGenerator {
     public static final MapCodec<RaidDenChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance ->
-        instance.group(RegistryOps.retrieveElement(ModDimensions.RAIDDIM_BIOME)).apply(instance, instance.stable(RaidDenChunkGenerator::new))
+        instance.group(RegistryOps.retrieveElement(ModDimensions.RAID_DIM_BIOME)).apply(instance, instance.stable(RaidDenChunkGenerator::new))
     );
 
     public RaidDenChunkGenerator(Holder.Reference<Biome> biome) {

@@ -9,7 +9,7 @@ import com.necro.raid.dens.common.client.gui.buttons.RaidButton;
 import com.necro.raid.dens.common.client.gui.screens.RaidRequestOverlay;
 import com.necro.raid.dens.common.client.gui.screens.RaidRewardOverlay;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;

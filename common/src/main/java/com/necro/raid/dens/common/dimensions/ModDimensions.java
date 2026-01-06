@@ -10,18 +10,14 @@ import com.necro.raid.dens.common.mixins.dimension.MinecraftServerAccessor;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.ChunkProgressListener;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
@@ -33,61 +29,24 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.OptionalLong;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
 public class ModDimensions {
-    public static final ResourceKey<DimensionType> RAIDDIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
-        ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raiddim_type"));
+    public static final ResourceKey<DimensionType> RAID_DIM_TYPE = ResourceKey.create(Registries.DIMENSION_TYPE,
+        ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_dimension_type"));
 
-    public static final ResourceKey<Biome> RAIDDIM_BIOME = ResourceKey.create(Registries.BIOME,
+    public static final ResourceKey<Biome> RAID_DIM_BIOME = ResourceKey.create(Registries.BIOME,
         ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den"));
 
-    public static void bootstrapType(BootstrapContext<DimensionType> context) {
-        context.register(RAIDDIM_TYPE, new DimensionType(
-            OptionalLong.of(6000),
-            false,
-            false,
-            false,
-            false,
-            1.0,
-            true,
-            false,
-            -64,
-            128,
-            128,
-            BlockTags.AIR,
-            BuiltinDimensionTypes.END_EFFECTS,
-            0.0f,
-            new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)
-        ));
-    }
-
-    public static void bootstrapBiome(BootstrapContext<Biome> context) {
-        BiomeSpecialEffects.Builder builder = (new BiomeSpecialEffects.Builder())
-            .waterColor(4159204)
-            .waterFogColor(329011)
-            .fogColor(12638463)
-            .skyColor(0)
-            .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-
-        context.register(RAIDDIM_BIOME, new Biome.BiomeBuilder()
-            .hasPrecipitation(false)
-            .downfall(0.4f)
-            .temperature(0.7f)
-            .generationSettings(BiomeGenerationSettings.EMPTY)
-            .mobSpawnSettings(MobSpawnSettings.EMPTY)
-            .specialEffects(builder.build())
-            .build()
-        );
-    }
+    public static final ResourceKey<LevelStem> RAID_DIM = ResourceKey.create(Registries.LEVEL_STEM,
+        ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_dimension"));
 
     public static LevelStem raidDimBuilder(MinecraftServer server, ResourceKey<LevelStem> dimensionKey) {
         RegistryAccess registries = server.registryAccess();
         return new LevelStem(
-            registries.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(RAIDDIM_TYPE),
-            new RaidDenChunkGenerator(registries.registryOrThrow(Registries.BIOME).getHolderOrThrow(RAIDDIM_BIOME))
+            registries.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(RAID_DIM_TYPE),
+            new RaidDenChunkGenerator(registries.registryOrThrow(Registries.BIOME).getHolderOrThrow(RAID_DIM_BIOME))
         );
     }
 
