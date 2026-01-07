@@ -2,36 +2,23 @@ package com.necro.raid.dens.common.compat.megashowdown;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
 import com.github.yajatkaul.mega_showdown.block.MegaShowdownBlocks;
 import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
-import com.github.yajatkaul.mega_showdown.sound.MegaShowdownSounds;
 import com.github.yajatkaul.mega_showdown.utils.GlowHandler;
 import com.necro.raid.dens.common.raids.RaidType;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 public abstract class RaidDensMSDCompat {
     public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
-        Vec3 entityPos = pokemonEntity.position();
-        pokemonEntity.level().playSound(
-            null, entityPos.x(), entityPos.y(), entityPos.z(),
-            MegaShowdownSounds.TERASTALLIZATION.get(),
-            SoundSource.PLAYERS, 0.2f, 1f
-        );
-
+        AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
+        AspectPropertyType.INSTANCE.fromString("play_tera").apply(pokemon);
         pokemon.getPersistentData().putBoolean("is_tera", true);
         GlowHandler.applyTeraGlow(pokemonEntity);
     }
 
-    public static void setupDmax(PokemonEntity pokemonEntity) {
-        Vec3 entityPos = pokemonEntity.position();
-        pokemonEntity.level().playSound(
-            null, entityPos.x(), entityPos.y(), entityPos.z(),
-            MegaShowdownSounds.DYNAMAX.get(),
-            SoundSource.PLAYERS, 0.4f, 0.5f + (float) Math.random() * 0.5f
-        );
-
+    public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
+        AspectPropertyType.INSTANCE.fromString("msd:dmax").apply(pokemon);
         GlowHandler.applyDynamaxGlow(pokemonEntity);
     }
 
