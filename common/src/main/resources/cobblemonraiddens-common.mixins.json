@@ -20,6 +20,7 @@
         "raid.PokemonBattleMixin",
         "raid.PokemonEntityMixin",
         "raid.PokemonMixin",
+        "showdown.DamageInstructionMixin",
         "showdown.ForcePassActionResponseMixin",
         "showdown.GraalShowdownUnbundlerMixin",
         "showdown.HealInstructionMixin",
