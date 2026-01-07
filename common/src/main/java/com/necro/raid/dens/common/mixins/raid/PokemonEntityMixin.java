@@ -34,75 +34,75 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     public abstract Pokemon getPokemon();
 
     @Unique
-    private UUID raidId;
+    private UUID crd_raidId;
 
     @Unique
-    private ResourceLocation raidBoss;
+    private ResourceLocation crd_raidBoss;
 
     protected PokemonEntityMixin(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
     @Override
-    public UUID getRaidId() {
-        return this.raidId;
+    public UUID crd_getRaidId() {
+        return this.crd_raidId;
     }
 
     @Override
-    public void setRaidId(UUID raidId) {
-        this.raidId = null;
+    public void crd_setRaidId(UUID raidId) {
+        this.crd_raidId = null;
         this.setBattleId(raidId);
-        this.raidId = raidId;
+        this.crd_raidId = raidId;
     }
 
     @Override
-    public boolean isRaidBoss() {
+    public boolean crd_isRaidBoss() {
         return this.getPokemon().getAspects().contains("raid")
             || this.getPokemon().getForcedAspects().contains("raid")
-            || this.raidBoss != null;
+            || this.crd_raidBoss != null;
     }
 
     @Override
-    public RaidBoss getRaidBoss() {
-        return RaidRegistry.getRaidBoss(this.raidBoss);
+    public RaidBoss crd_getRaidBoss() {
+        return RaidRegistry.getRaidBoss(this.crd_raidBoss);
     }
 
     @Override
-    public void setRaidBoss(ResourceLocation raidBoss) {
-        this.raidBoss = raidBoss;
+    public void crd_setRaidBoss(ResourceLocation raidBoss) {
+        this.crd_raidBoss = raidBoss;
     }
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)
     private void canBattleInject(Player player, CallbackInfoReturnable<Boolean> cir) {
         if (this.level().isClientSide()) cir.setReturnValue(true);
-        if (this.getRaidId() == null) return;
+        if (this.crd_getRaidId() == null) return;
         else if (this.getHealth() <= 0F || this.isDeadOrDying() || PlayerExtensionsKt.isPartyBusy(player)) cir.setReturnValue(false);
         cir.setReturnValue(true);
     }
 
     @Inject(method = "setBattleId", at = @At("HEAD"), cancellable = true, remap = false)
     private void setBattleInject(UUID battleId, CallbackInfo ci) {
-        if (this.getRaidId() != null) ci.cancel();
+        if (this.crd_getRaidId() != null) ci.cancel();
     }
 
     @Inject(method = "isBattling", at = @At("HEAD"), cancellable = true, remap = false)
     private void isBattlingInject(CallbackInfoReturnable<Boolean> cir) {
-        if (this.getRaidId() != null) cir.setReturnValue(true);
+        if (this.crd_getRaidId() != null) cir.setReturnValue(true);
     }
 
     @Inject(method = "saveWithoutId", at = @At("RETURN"))
     private void saveWithoutIdInject(CompoundTag nbt, CallbackInfoReturnable<CompoundTag> cir) {
-        if (this.raidId != null) nbt.putString("raid_id", this.raidId.toString());
-        if (this.raidBoss != null) nbt.putString("raid_boss", this.raidBoss.toString());
+        if (this.crd_raidId != null) nbt.putString("raid_id", this.crd_raidId.toString());
+        if (this.crd_raidBoss != null) nbt.putString("raid_boss", this.crd_raidBoss.toString());
     }
 
     @Inject(method = "load", at = @At("RETURN"))
     private void loadInject(CompoundTag nbt, CallbackInfo ci) {
-        if (nbt.contains("raid_id")) this.raidId = UUID.fromString(nbt.getString("raid_id"));
-        if (nbt.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(nbt.getString("raid_boss"));
+        if (nbt.contains("raid_id")) this.crd_raidId = UUID.fromString(nbt.getString("raid_id"));
+        if (nbt.contains("raid_boss")) this.crd_raidBoss = ResourceLocation.parse(nbt.getString("raid_boss"));
 
         if (this.getPokemon() == null) return;
         CompoundTag tag = nbt.getCompound(DataKeys.POKEMON);
-        if (tag.contains("raid_shiny_rate")) ((IShinyRate) this.getPokemon()).setRaidShinyRate(tag.getFloat("raid_shiny_rate"));
+        if (tag.contains("raid_shiny_rate")) ((IShinyRate) this.getPokemon()).crd_setRaidShinyRate(tag.getFloat("raid_shiny_rate"));
     }
 }

@@ -1,27 +1,16 @@
 package com.necro.raid.dens.neoforge.dimensions;
 
-import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.dimensions.ModDimensions;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.LevelEvent;
+import com.mojang.serialization.MapCodec;
+import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.dimensions.RaidDenChunkGenerator;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class NeoForgeDimensions {
-    @SuppressWarnings({"deprecation", "ConstantConditions"})
-    public static ServerLevel createRaidDimension(RaidCrystalBlockEntity blockEntity) {
-        MinecraftServer server = blockEntity.getLevel().getServer();
-        ResourceKey<Level> levelKey = ModDimensions.createLevelKey(blockEntity.getRaidHost().toString());
-
-        ServerLevel level = ModDimensions.createRaidDimension(server, levelKey);
-        ModDimensions.placeRaidDenStructure(blockEntity, level);
-        DimensionHelper.SYNC_DIMENSIONS.accept(server, levelKey, true);
-
-        server.markWorldsDirty();
-        NeoForge.EVENT_BUS.post(new LevelEvent.Load(level));
-        return level;
-    }
+    public static final DeferredRegister<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATORS =
+        DeferredRegister.create(Registries.CHUNK_GENERATOR, CobblemonRaidDens.MOD_ID);
+    public static final DeferredHolder<MapCodec<? extends ChunkGenerator>, MapCodec<RaidDenChunkGenerator>> CHUNK_GENERATOR =
+        CHUNK_GENERATORS.register("raid_dimension_chunk", () -> RaidDenChunkGenerator.CODEC);
 }

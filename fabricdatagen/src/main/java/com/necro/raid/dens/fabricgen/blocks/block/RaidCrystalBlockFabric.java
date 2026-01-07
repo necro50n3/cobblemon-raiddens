@@ -2,11 +2,9 @@ package com.necro.raid.dens.fabricgen.blocks.block;
 
 import com.mojang.serialization.MapCodec;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
-import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.fabricgen.blocks.FabricBlocks;
 import com.necro.raid.dens.fabricgen.blocks.entity.RaidCrystalBlockEntityFabric;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -24,11 +22,6 @@ public class RaidCrystalBlockFabric extends RaidCrystalBlock {
     @Override
     protected @NotNull MapCodec<RaidCrystalBlockFabric> codec() {
         return CODEC;
-    }
-
-    @Override
-    protected ServerLevel createDimension(RaidCrystalBlockEntity blockEntity) {
-        return null;
     }
 
     @Override

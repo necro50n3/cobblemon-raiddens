@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GraalShowdownUnbundler.class)
 public class GraalShowdownUnbundlerMixin {
     @Unique
-    private boolean loadedStatuses = false;
+    private boolean crd_loadedStatuses = false;
 
     @Inject(method = "attemptUnbundle", at = @At("TAIL"), remap = false)
     private void attemptUnbundleInject(CallbackInfo ci) {
-        if (!this.loadedStatuses) {
+        if (!this.crd_loadedStatuses) {
             new FabricShowdownLoader().load();
-            this.loadedStatuses = true;
+            this.crd_loadedStatuses = true;
         }
     }
 }

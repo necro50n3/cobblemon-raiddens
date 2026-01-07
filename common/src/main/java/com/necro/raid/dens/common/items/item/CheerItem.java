@@ -50,7 +50,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     public boolean handleInteraction(@NotNull ServerPlayer player, @NotNull BattlePokemon battlePokemon, @NotNull ItemStack stack) {
         PokemonBattle battle = battlePokemon.getActor().getBattle();
         BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
-        if (raidPokemon == null || raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).isRaidBoss()) return false;
+        if (raidPokemon == null || raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).crd_isRaidBoss()) return false;
 
         BagItem bagItem = this.getBagItem(stack);
         if (bagItem == null) return false;
@@ -63,7 +63,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
             return false;
         }
 
-        UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).getRaidId();
+        UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).crd_getRaidId();
         String data = player.getName().getString();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(raidId);
         if (!raid.runCheer(player, battle, (CheerBagItem) this.getBagItem(), data)) {
@@ -83,7 +83,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
             BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
             BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
             if (battlePokemon == null || raidPokemon == null) return InteractionResultHolder.fail(itemStack);
-            else if (raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).isRaidBoss()) {
+            else if (raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).crd_isRaidBoss()) {
                 return InteractionResultHolder.fail(itemStack);
             }
 

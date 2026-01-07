@@ -6,13 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.UUID;
 
 public interface IRaidAccessor {
-    UUID getRaidId();
-
-    void setRaidId(UUID raidId);
-
-    RaidBoss getRaidBoss();
-
-    void setRaidBoss(ResourceLocation raidBoss);
-
-    boolean isRaidBoss();
+    UUID crd_getRaidId();
+    void crd_setRaidId(UUID raidId);
+    RaidBoss crd_getRaidBoss();
+    void crd_setRaidBoss(ResourceLocation raidBoss);
+    boolean crd_isRaidBoss();
 }

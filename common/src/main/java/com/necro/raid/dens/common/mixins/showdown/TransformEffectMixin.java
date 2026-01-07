@@ -28,34 +28,34 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(TransformEffect.class)
 public abstract class TransformEffectMixin {
     @Unique
-    private float raidScale;
+    private float crd_raidScale;
 
     @Unique
-    private List<Move> moves;
+    private List<Move> crd_moves;
 
     @Unique
-    private Ability ability;
+    private Ability crd_ability;
 
     @Shadow(remap = false)
     private PokemonProperties mock;
 
     @Inject(method = "<init>(Lcom/cobblemon/mod/common/pokemon/Pokemon;Z)V", at = @At("RETURN"), remap = false)
     private void initInject(Pokemon mimic, boolean canCry, CallbackInfo ci) {
-        this.raidScale = Mth.clamp(80f / mimic.getSpecies().getHeight(), 1.0f, 5.0f);
-        this.moves = mimic.getMoveSet().getMoves();
-        this.ability = mimic.getAbility();
+        this.crd_raidScale = Mth.clamp(80f / mimic.getSpecies().getHeight(), 1.0f, 5.0f);
+        this.crd_moves = mimic.getMoveSet().getMoves();
+        this.crd_ability = mimic.getAbility();
     }
 
     @Inject(method = "apply", at = @At("HEAD"), remap = false)
     private void applyInject(PokemonEntity entity, CompletableFuture<PokemonEntity> future, CallbackInfo ci) {
-        if (!((IRaidAccessor) entity).isRaidBoss()) return;
+        if (!((IRaidAccessor) entity).crd_isRaidBoss()) return;
 
         Set<String> aspects = new HashSet<>(this.mock.getAspects());
         aspects.add("raid");
         this.mock.setAspects(aspects);
 
-        for (int i = 0; i < this.moves.size(); i++) {
-            Move move = this.moves.get(i);
+        for (int i = 0; i < this.crd_moves.size(); i++) {
+            Move move = this.crd_moves.get(i);
             if (RaidAI.BLOCKED_MOVES.contains(move.getName())) {
                 MoveTemplate struggle = Moves.getByName("tackle");
                 if (struggle != null) move = struggle.create(99);
@@ -63,11 +63,11 @@ public abstract class TransformEffectMixin {
             entity.getPokemon().getMoveSet().setMove(i, move);
         }
         entity.getPokemon().getMoveSet().update();
-        entity.getPokemon().setAbility$common(this.ability);
+        entity.getPokemon().setAbility$common(this.crd_ability);
 
-        if (this.raidScale > 0) {
-            entity.getPokemon().setScaleModifier(this.raidScale);
-            RaidDenNetworkMessages.RESIZE.accept((ServerLevel) entity.level(), entity, this.raidScale);
+        if (this.crd_raidScale > 0) {
+            entity.getPokemon().setScaleModifier(this.crd_raidScale);
+            RaidDenNetworkMessages.RESIZE.accept((ServerLevel) entity.level(), entity, this.crd_raidScale);
         }
         entity.refreshDimensions();
     }

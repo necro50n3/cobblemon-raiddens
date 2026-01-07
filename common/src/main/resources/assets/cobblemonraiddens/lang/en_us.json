@@ -97,7 +97,6 @@
     "message.cobblemonraiddens.raid.forbidden_move": "%s cannot be selected in a raid battle.",
     "message.cobblemonraiddens.raid.forbidden_pokemon": "You cannot use %s in raid battles.",
     "message.cobblemonraiddens.raid.has_fainted": "You have already fainted!",
-    "message.cobblemonraiddens.raid.cannot_leave_yet": "Please wait a moment before leaving the raid.",
     "message.cobblemonraiddens.raid.is_not_active": "The raid den is not active right now.",
     "message.cobblemonraiddens.raid.lobby_is_full": "This lobby is already full!",
     "message.cobblemonraiddens.raid.no_host": "The host could not be reached...",

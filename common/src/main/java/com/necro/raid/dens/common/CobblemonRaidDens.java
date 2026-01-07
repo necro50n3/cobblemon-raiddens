@@ -99,7 +99,7 @@ public class CobblemonRaidDens {
     @SuppressWarnings("ConstantConditions")
     private static void raidFailEvent(PokemonBattle battle) {
         try {
-            UUID battleId = ((IRaidAccessor) battle.getSide2().getActivePokemon().getFirst().getBattlePokemon().getEntity()).getRaidId();
+            UUID battleId = ((IRaidAccessor) battle.getSide2().getActivePokemon().getFirst().getBattlePokemon().getEntity()).crd_getRaidId();
             if (RaidHelper.ACTIVE_RAIDS.containsKey(battleId)) {
                 RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(battleId);
                 raidInstance.removePlayer(battle);
@@ -110,13 +110,13 @@ public class CobblemonRaidDens {
 
     private static void cancelLootDrops(LootDroppedEvent event) {
         if (!(event.getEntity() instanceof PokemonEntity pokemonEntity)) return;
-        else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
+        else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
         event.cancel();
     }
 
     private static void setRaidShinyRate(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((chance, player, pokemon) -> {
-            Float shinyRate = ((IShinyRate) pokemon).getRaidShinyRate();
+            Float shinyRate = ((IShinyRate) pokemon).crd_getRaidShinyRate();
             return shinyRate == null || shinyRate < 0 ? chance : shinyRate;
         });
     }

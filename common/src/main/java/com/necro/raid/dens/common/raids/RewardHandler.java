@@ -13,6 +13,7 @@ import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -47,7 +48,7 @@ public class RewardHandler {
 
     public boolean givePokemonToPlayer() {
         if (!(this.player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
-            this.player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
+            this.player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
             return false;
         }
 

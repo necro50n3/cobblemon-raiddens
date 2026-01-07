@@ -33,14 +33,14 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
 
     @Inject(method = "invoke", at = @At("RETURN"), remap = false)
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
         if (this.userPokemon == null || this.userPokemon.getEntity() == null) return;
-        else if (((IRaidAccessor) this.userPokemon.getEntity()).isRaidBoss()) return;
+        else if (((IRaidAccessor) this.userPokemon.getEntity()).crd_isRaidBoss()) return;
 
         ServerPlayer player = this.userPokemon.getEffectedPokemon().getOwnerPlayer();
         if (player == null) return;
 
-        RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
 
         battle.dispatchGo(() -> {
             ComponentContents pokemonContents = this.userPokemon.getEffectedPokemon().getDisplayName(false).getContents();
@@ -49,8 +49,8 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
             raid.getPlayers().forEach(p ->
                 RaidDenNetworkMessages.RAID_LOG.accept(
                     p,
-                    this.resolveContents(pokemonContents),
-                    this.resolveContents(moveContents)
+                    this.crd_resolveContents(pokemonContents),
+                    this.crd_resolveContents(moveContents)
                 )
             );
             return Unit.INSTANCE;
@@ -58,7 +58,7 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
     }
 
     @Unique
-    private String resolveContents(ComponentContents contents) {
+    private String crd_resolveContents(ComponentContents contents) {
         if (contents instanceof TranslatableContents t) return t.getKey();
         else if (contents instanceof PlainTextContents p) return p.text();
         else return contents.toString();

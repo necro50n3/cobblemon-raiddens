@@ -116,7 +116,7 @@ public class RaidBoss {
             pokemon = new Pokemon();
             properties.apply(pokemon);
             pokemon.initialize();
-            ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
+            ((IShinyRate) pokemon).crd_setRaidShinyRate(this.shinyRate);
             properties.roll(pokemon, null);
         }
         else {
@@ -153,7 +153,7 @@ public class RaidBoss {
         if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemonEntity, pokemon);
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
 
-        ((IRaidAccessor) pokemonEntity).setRaidBoss(this.id);
+        ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
         float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
         pokemonEntity.refreshDimensions();
@@ -183,7 +183,7 @@ public class RaidBoss {
         properties.apply(pokemon);
         pokemon.initialize();
         if (!CobblemonRaidDens.CONFIG.sync_rewards) {
-            ((IShinyRate) pokemon).setRaidShinyRate(this.shinyRate);
+            ((IShinyRate) pokemon).crd_setRaidShinyRate(this.shinyRate);
             properties.roll(pokemon, player);
 
             if (properties.getAbility() == null && player.getRandom().nextDouble() < tierConfig.haRate()) {

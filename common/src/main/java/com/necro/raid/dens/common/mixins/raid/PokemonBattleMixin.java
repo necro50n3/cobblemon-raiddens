@@ -25,48 +25,48 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     public abstract UUID getBattleId();
 
     @Unique
-    private RaidInstance raidInstance;
+    private RaidInstance crd_raidInstance;
 
     @Unique
-    private boolean queueTera;
+    private boolean crd_queueTera;
 
     @Override
-    public boolean isRaidBattle() {
-        return this.raidInstance != null;
+    public boolean crd_isRaidBattle() {
+        return this.crd_raidInstance != null;
     }
 
     @Override
-    public RaidInstance getRaidBattle() {
-        return this.raidInstance;
+    public RaidInstance crd_getRaidBattle() {
+        return this.crd_raidInstance;
     }
 
     @Override
-    public void setRaidBattle(RaidInstance raidInstance) {
-        this.raidInstance = raidInstance;
+    public void crd_setRaidBattle(RaidInstance raidInstance) {
+        this.crd_raidInstance = raidInstance;
     }
 
     @Inject(method = "turn", at = @At("RETURN"), remap = false)
     private void turnInject(int newTurnNumber, CallbackInfo ci) {
-        if (!this.isRaidBattle()) return;
-        this.raidInstance.runScriptByTurn((PokemonBattle) (Object) this, newTurnNumber);
+        if (!this.crd_isRaidBattle()) return;
+        this.crd_raidInstance.runScriptByTurn((PokemonBattle) (Object) this, newTurnNumber);
     }
 
     @Inject(method = "writeShowdownAction", at = @At("HEAD"), remap = false, cancellable = true)
     private void triggerTerastallization(String[] messages, CallbackInfo ci) {
-        if (this.getTurn() != 1 && !this.queueTera) return;
-        else if (!this.isRaidBattle()) return;
+        if (this.getTurn() != 1 && !this.crd_queueTera) return;
+        else if (!this.crd_isRaidBattle()) return;
         else if (!messages[0].startsWith(">p2")) return;
-        else if (!this.raidInstance.getRaidBoss().isTera()) return;
+        else if (!this.crd_raidInstance.getRaidBoss().isTera()) return;
 
         if (!messages[0].startsWith(">p2 move")) {
-            this.queueTera = true;
+            this.crd_queueTera = true;
             return;
         }
 
         this.log(String.join("\n", messages));
         String[] messageList = {messages[0] + " terastal"};
         ShowdownService.Companion.getService().send(this.getBattleId(), messageList);
-        this.queueTera = false;
+        this.crd_queueTera = false;
         ci.cancel();
     }
 }

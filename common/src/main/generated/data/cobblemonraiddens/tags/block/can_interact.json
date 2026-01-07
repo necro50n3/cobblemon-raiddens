@@ -1,6 +1,7 @@
 {
   "values": [
     "cobblemonraiddens:raid_home_block",
+    "cobblemonraiddens:raid_crystal_block",
     {
       "id": "yigd:grave",
       "required": false

@@ -133,10 +133,10 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
 
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
-        RaidInstance raidInstance = ((IRaidBattle) battle).getRaidBattle();
+        RaidInstance raidInstance = ((IRaidBattle) battle).crd_getRaidBattle();
         BattlePokemon battlePokemon = this.publicMessage.battlePokemon(0, this.actor.battle);
         if (battlePokemon == null || battlePokemon.getEntity() == null) return;
-        else if (!((IRaidAccessor) battlePokemon.getEntity()).isRaidBoss()) return;
+        else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         String args = this.privateMessage.argumentAt(1);
         assert args != null;

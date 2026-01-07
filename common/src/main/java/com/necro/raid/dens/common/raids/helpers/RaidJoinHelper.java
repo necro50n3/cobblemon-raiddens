@@ -27,19 +27,23 @@ public class RaidJoinHelper extends SavedData {
         JOIN_QUEUE.put(player, new JoinRequest(player, key));
     }
 
-    public static void removeFromQueue(Player player) {
+    public static void removeFromQueue(Player player, boolean refund) {
         JoinRequest joinRequest = JOIN_QUEUE.remove(player);
         if (joinRequest == null) return;
-        joinRequest.refundItem();
+        if (refund) joinRequest.refundItem();
     }
 
-    public static boolean addParticipant(Player player, UUID raid, boolean isHost) {
-        boolean isParticipating = isParticipating(player);
+    public static boolean addParticipant(Player player, UUID raid, boolean isHost, boolean sendMessage) {
+        boolean isParticipating = isParticipatingOrInQueue(player, sendMessage);
         if (!isParticipating) {
             INSTANCE.RAID_PARTICIPANTS.put(player.getUUID(), new Participant(raid, isHost));
             INSTANCE.setDirty();
         }
-        return isParticipating;
+        return !isParticipating;
+    }
+
+    public static Participant getParticipant(Player player) {
+        return INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
     }
 
     public static void removeParticipant(Player player) {
@@ -47,23 +51,36 @@ public class RaidJoinHelper extends SavedData {
         INSTANCE.setDirty();
     }
 
-    public static void removeParticipants(Collection<Player> players) {
+    public static void removeParticipants(Collection<? extends Player> players) {
         players.forEach(player -> INSTANCE.RAID_PARTICIPANTS.remove(player.getUUID()));
         INSTANCE.setDirty();
     }
 
-    public static boolean isParticipating(Player player) {
-        if (JOIN_QUEUE.containsKey(player)) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
-            return false;
-        }
-
+    public static boolean isParticipating(Player player, UUID raid) {
         Participant participant = INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
-        if (participant == null) return true;
+        if (participant == null) return false;
+        return participant.raid() == raid;
+    }
 
-        if (participant.isHost()) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"));
-        else player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_participating"));
-        return false;
+    public static boolean isParticipating(Player player, boolean sendMessage) {
+        Participant participant = INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
+        if (participant == null) return false;
+
+        if (participant.isHost()) {
+            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"));
+        }
+        else {
+            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_participating"));
+        }
+        return true;
+    }
+
+    public static boolean isParticipatingOrInQueue(Player player, boolean sendMessage) {
+        if (isInQueue(player)) {
+            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
+            return true;
+        }
+        return isParticipating(player, sendMessage);
     }
 
     public static void onServerClose() {
@@ -85,7 +102,7 @@ public class RaidJoinHelper extends SavedData {
         JOIN_QUEUE.remove(player);
     }
 
-    private record Participant(UUID raid, boolean isHost) {}
+    public record Participant(UUID raid, boolean isHost) {}
 
     public static class JoinRequest {
         private final Player player;
@@ -120,7 +137,7 @@ public class RaidJoinHelper extends SavedData {
     }
 
     public static void initHelper(MinecraftServer server) {
-        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidJoinHelper.type(), CobblemonRaidDens.MOD_ID);
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidJoinHelper.type(), CobblemonRaidDens.MOD_ID + ".join_helper");
         INSTANCE.setDirty();
     }
 

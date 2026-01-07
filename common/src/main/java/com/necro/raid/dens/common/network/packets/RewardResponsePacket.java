@@ -4,6 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RewardHandler;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,7 +34,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
     public void handleServer(ServerPlayer player) {
         RewardHandler handler = RaidHelper.REWARD_QUEUE.get(player.getUUID());
         if (handler == null) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.already_received_reward"));
+            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.already_received_reward"));
             return;
         }
 
@@ -44,14 +45,14 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
 
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
         if (handler.givePokemonToPlayer()) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"));
+            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"));
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
         }
     }
 
     private void getItems(RewardHandler handler, ServerPlayer player) {
         if (handler.giveItemToPlayer()) {
-            player.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.reward.reward_item"));
+            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"));
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
         }
     }

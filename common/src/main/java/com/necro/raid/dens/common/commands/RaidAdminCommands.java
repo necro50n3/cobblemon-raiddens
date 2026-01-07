@@ -9,9 +9,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class RaidAdminCommands {
     private static final Permission RESET_CLEARS = new RaidDenPermission("command.resetclears", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
-    private static final Permission REMOVE = new RaidDenPermission("command.remove", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
     private static final Permission REFRESH = new RaidDenPermission("command.refreshother", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -55,13 +54,6 @@ public class RaidAdminCommands {
                     ),
                 RESET_CLEARS, true
             ))
-            .then(PermissionUtilsKt.permission(
-                Commands.literal("remove")
-                    .then(Commands.argument("dimension", DimensionArgument.dimension())
-                        .executes(RaidAdminCommands::removeDimension)
-                    ),
-                REMOVE, true
-            ))
             .then(Commands.literal("refresh")
                 .then(PermissionUtilsKt.permission(
                     Commands.argument("player", EntityArgument.player())
@@ -87,10 +79,10 @@ public class RaidAdminCommands {
         }
 
         RaidJoinHelper.removeParticipant(player);
-        RaidJoinHelper.removeFromQueue(player);
+        RaidJoinHelper.removeFromQueue(player, true);
 
         context.getSource().sendSystemMessage(
-            RaidHelper.getSystemMessage(Component.translatable("message.cobblemonraiddens.command.refresh_player", player.getName()))
+            ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.command.refresh_player", player.getName()))
         );
         return 1;
     }
@@ -104,7 +96,7 @@ public class RaidAdminCommands {
     private static int resetClearsForPlayer(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerPlayer player = EntityArgument.getPlayer(context, "player");
         RaidHelper.resetPlayerAllClearedRaids(player.getUUID());
-        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+        context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
         return 1;
     }
 
@@ -115,7 +107,7 @@ public class RaidAdminCommands {
 
         if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
             RaidHelper.resetPlayerClearedRaid(raidCrystal.getUuid(), player.getUUID());
-            context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
             raidCrystal.resetClears();
             return 1;
         }
@@ -132,7 +124,7 @@ public class RaidAdminCommands {
     private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel dimension) {
         if (dimension.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
             RaidHelper.resetClearedRaids(raidCrystal.getUuid());
-            context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.reset_clears"));
             raidCrystal.resetClears();
 
             BlockState blockState = raidCrystal.getBlockState();
@@ -140,21 +132,5 @@ public class RaidAdminCommands {
             return 1;
         }
         else return 0;
-    }
-
-    private static int removeDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ServerLevel level = DimensionArgument.getDimension(context, "dimension");
-        if (!RaidUtils.isRaidDimension(level)) {
-            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.invalid_dimension"));
-            return 0;
-        }
-        else if (!level.players().isEmpty()) {
-            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.players_in_dimension"));
-            return 0;
-        }
-        DimensionHelper.queueForRemoval(level.dimension(), level);
-        DimensionHelper.SYNC_DIMENSIONS.accept(context.getSource().getServer(), level.dimension(), false);
-        context.getSource().sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.command.remove_dimension"));
-        return 1;
     }
 }

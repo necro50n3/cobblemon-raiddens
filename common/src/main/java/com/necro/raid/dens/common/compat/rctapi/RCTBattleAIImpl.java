@@ -16,7 +16,7 @@ public class RCTBattleAIImpl {
                               Function3<BattlePokemon, BattlePokemon, InBattleMove, Double> eval,
                               CallbackInfoReturnable<ShowdownActionResponse> cir
     ) {
-        if (!((IRaidBattle) pokemon.getBattle()).isRaidBattle()) return;
+        if (!((IRaidBattle) pokemon.getBattle()).crd_isRaidBattle()) return;
         else if (moveset == null) {
             cir.setReturnValue(PassActionResponse.INSTANCE);
             return;

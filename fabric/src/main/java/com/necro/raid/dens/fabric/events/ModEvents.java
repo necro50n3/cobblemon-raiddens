@@ -2,7 +2,6 @@ package com.necro.raid.dens.fabric.events;
 
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -19,7 +18,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
-        if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
+        if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
         if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage();
@@ -28,11 +27,6 @@ public class ModEvents {
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
         RaidJoinHelper.onPlayerDisconnect(listener.getPlayer());
         RaidHelper.onPlayerDisconnect(listener.getPlayer());
-        DimensionHelper.removeDelayed(server, listener.getPlayer());
-    }
-
-    public static void onServerStopping(MinecraftServer server) {
-        DimensionHelper.removeDelayed(server);
     }
 
     public static void initRaidHelper(MinecraftServer server) {
@@ -43,6 +37,7 @@ public class ModEvents {
 
     public static void onServerClose(MinecraftServer server) {
         RaidJoinHelper.onServerClose();
+        RaidHelper.onServerClose(server);
     }
 
     public static void serverTick(MinecraftServer server) {
@@ -51,7 +46,6 @@ public class ModEvents {
 
     public static void commonTick(MinecraftServer server) {
         RaidHelper.commonTick();
-        DimensionHelper.removePending(server);
     }
 
     public static void clientTick(Minecraft client) {

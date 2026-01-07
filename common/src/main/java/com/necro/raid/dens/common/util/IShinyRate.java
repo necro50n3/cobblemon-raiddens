@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.util;
 
 public interface IShinyRate {
-    Float getRaidShinyRate();
-
-    void setRaidShinyRate(float raidShinyRate);
+    Float crd_getRaidShinyRate();
+    void crd_setRaidShinyRate(float raidShinyRate);
 }

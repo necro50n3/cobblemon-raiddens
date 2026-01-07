@@ -23,7 +23,7 @@ public abstract class PartySendBindingMixin extends CobblemonBlockingKeyBinding 
 
     @Inject(method = "processEntityTarget", at = @At("HEAD"), cancellable = true, remap = false)
     private void processEntityTargetInject(LocalPlayer player, Pokemon pokemon, LivingEntity entity, CallbackInfo ci) {
-        if (entity instanceof PokemonEntity pokemonEntity && ((IRaidAccessor) pokemonEntity).isRaidBoss()) {
+        if (entity instanceof PokemonEntity pokemonEntity && ((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) {
             if (!pokemonEntity.canBattle(player)) return;
             RaidDenNetworkMessages.RAID_CHALLENGE.accept(pokemonEntity, pokemon);
             ci.cancel();

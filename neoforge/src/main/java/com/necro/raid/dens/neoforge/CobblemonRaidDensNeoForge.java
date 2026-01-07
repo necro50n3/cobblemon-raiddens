@@ -4,8 +4,6 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.network.*;
-import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
@@ -13,9 +11,8 @@ import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
-import com.necro.raid.dens.neoforge.compat.distanthorizons.NeoForgeDistantHorizonsCompat;
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
-import com.necro.raid.dens.neoforge.dimensions.NeoForgeChunkGenerator;
+import com.necro.raid.dens.neoforge.dimensions.NeoForgeDimensions;
 import com.necro.raid.dens.neoforge.events.CommandsRegistrationEvent;
 import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
@@ -39,7 +36,6 @@ public class CobblemonRaidDensNeoForge {
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
         }
-        if (ModCompat.DISTANT_HORIZONS.isLoaded()) NeoForgeDistantHorizonsCompat.init();
 
         NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
@@ -50,7 +46,7 @@ public class CobblemonRaidDensNeoForge {
         NeoForgePredicates.PREDICATES.register(modBus);
         NeoForgeComponents.registerDataComponents();
         NeoForgeComponents.DATA_COMPONENT_TYPES.register(modBus);
-        NeoForgeChunkGenerator.CHUNK_GENERATORS.register(modBus);
+        NeoForgeDimensions.CHUNK_GENERATORS.register(modBus);
         NeoForgeFeatures.registerFeatures();
         NeoForgeFeatures.FEATURES.register(modBus);
         NeoForgeLootFunctions.registerLootFunctions();

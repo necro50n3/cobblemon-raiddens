@@ -16,7 +16,7 @@ import java.util.*;
 public abstract class RandomBattleAIMixin {
     @Inject(method = "choose", at = @At("HEAD"), remap = false, cancellable = true)
     private void chooseInject(ActiveBattlePokemon pokemon, PokemonBattle battle, BattleSide aiSide, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
-        if (!((IRaidBattle) pokemon.getBattle()).isRaidBattle()) return;
+        if (!((IRaidBattle) pokemon.getBattle()).crd_isRaidBattle()) return;
         else if (moveset == null) {
             cir.setReturnValue(PassActionResponse.INSTANCE);
             return;

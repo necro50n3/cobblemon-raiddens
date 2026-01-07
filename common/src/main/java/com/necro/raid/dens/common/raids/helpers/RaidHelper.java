@@ -1,20 +1,15 @@
 package com.necro.raid.dens.common.raids.helpers;
 
-import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
-import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.RewardHandler;
-import com.necro.raid.dens.common.util.IRaidBattle;
-import kotlin.Pair;
-import net.minecraft.ChatFormatting;
+import com.necro.raid.dens.common.util.IRaidTeleporter;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +25,8 @@ public class RaidHelper extends SavedData {
     public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
     public static final Map<UUID, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
-    public final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
+    private final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
+    private final Map<UUID, RaidState> RAID_CLOSE_QUEUE = new HashMap<>();
 
     public static void initRequest(ServerPlayer host, RaidCrystalBlockEntity blockEntity) {
         if (REQUEST_QUEUE.containsKey(host.getUUID())) return;
@@ -52,26 +48,33 @@ public class RaidHelper extends SavedData {
         REQUEST_QUEUE.remove(host);
     }
 
-    public static boolean hasClearedRaid(UUID uuid, Player player) {
-        Set<UUID> cleared = INSTANCE.CLEARED_RAIDS.getOrDefault(uuid, new HashSet<>());
+    public static boolean hasClearedRaid(UUID raid, Player player) {
+        Set<UUID> cleared = INSTANCE.CLEARED_RAIDS.getOrDefault(raid, new HashSet<>());
         return cleared.contains(player.getUUID());
     }
 
-    public static void clearRaid(UUID uuid, Collection<UUID> players) {
-        if (!INSTANCE.CLEARED_RAIDS.containsKey(uuid)) INSTANCE.CLEARED_RAIDS.put(uuid, new HashSet<>());
-        INSTANCE.CLEARED_RAIDS.get(uuid).addAll(players);
+    public static void closeRaid(UUID raid, RaidState raidState) {
+        RaidInstance instance = ACTIVE_RAIDS.remove(raid);
+        if (instance == null) return;
+
+        INSTANCE.RAID_CLOSE_QUEUE.put(raid, raidState);
+    }
+
+    public static void clearRaid(UUID raid, Collection<? extends Player> players) {
+        if (!INSTANCE.CLEARED_RAIDS.containsKey(raid)) INSTANCE.CLEARED_RAIDS.put(raid, new HashSet<>());
+        for (Player player : players) INSTANCE.CLEARED_RAIDS.get(raid).add(player.getUUID());
         INSTANCE.setDirty();
     }
 
-    public static void resetClearedRaids(UUID uuid) {
+    public static void resetClearedRaids(UUID raid) {
         if (INSTANCE == null) return;
-        INSTANCE.CLEARED_RAIDS.remove(uuid);
+        INSTANCE.CLEARED_RAIDS.remove(raid);
         INSTANCE.setDirty();
     }
 
-    public static void resetPlayerClearedRaid(UUID uuid, UUID player) {
-        if (!INSTANCE.CLEARED_RAIDS.containsKey(uuid)) return;
-        INSTANCE.CLEARED_RAIDS.get(uuid).remove(player);
+    public static void resetPlayerClearedRaid(UUID raid, UUID player) {
+        if (!INSTANCE.CLEARED_RAIDS.containsKey(raid)) return;
+        INSTANCE.CLEARED_RAIDS.get(raid).remove(player);
         INSTANCE.setDirty();
     }
 
@@ -80,17 +83,29 @@ public class RaidHelper extends SavedData {
         INSTANCE.setDirty();
     }
 
-    public static void onPlayerDisconnect(Player player) {
-        fleeRaidBattle(player);
+    public static boolean hasRaidState(UUID raid) {
+        return INSTANCE.RAID_CLOSE_QUEUE.containsKey(raid);
     }
 
-    private static void fleeRaidBattle(Player player) {
-        Pair<PokemonBattle, BattleActor> pair = PlayerExtensionsKt.getBattleState((ServerPlayer) player);
-        if (pair == null || pair.getFirst() == null) return;
-        PokemonBattle battle = pair.getFirst();
-        RaidInstance raid = ((IRaidBattle) battle).getRaidBattle();
-        if (raid == null) return;
-        raid.removePlayer((ServerPlayer) player, battle);
+    public static RaidState getRaidState(UUID raid) {
+        RaidState state = INSTANCE.RAID_CLOSE_QUEUE.remove(raid);
+        INSTANCE.setDirty();
+        return state;
+    }
+
+    public static void onPlayerDisconnect(ServerPlayer player) {
+        forceLeaveRaid(player);
+    }
+
+    public static void onServerClose(MinecraftServer server) {
+        server.getPlayerList().getPlayers().forEach(RaidHelper::forceLeaveRaid);
+    }
+
+    private static void forceLeaveRaid(ServerPlayer player) {
+        if (RaidUtils.isRaidDimension(player.level())) {
+            RaidUtils.leaveRaid(player);
+            ((IRaidTeleporter) player).crd_returnHome();
+        }
     }
 
     public static void commonTick() {
@@ -98,16 +113,13 @@ public class RaidHelper extends SavedData {
         raids.forEach(RaidInstance::tick);
     }
 
-    public static Component getSystemMessage(String translatable) {
-        return getSystemMessage(Component.translatable(translatable));
-    }
-
-    public static Component getSystemMessage(MutableComponent component) {
-        return component.withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC);
-    }
-
     public static RaidHelper create() {
         return new RaidHelper();
+    }
+
+    public static void initHelper(MinecraftServer server) {
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(),  CobblemonRaidDens.MOD_ID + ".raid_helper");
+        INSTANCE.setDirty();
     }
 
     public static RaidHelper load(CompoundTag compoundTag, HolderLookup.Provider provider) {
@@ -127,12 +139,17 @@ public class RaidHelper extends SavedData {
             data.CLEARED_RAIDS.put(UUID.fromString(uuid), players);
         }
 
-        return data;
-    }
+        ListTag raidCloseQueue = compoundTag.getList("raid_close_queue", Tag.TAG_COMPOUND);
+        for (Tag t : raidCloseQueue) {
+            CompoundTag entry = (CompoundTag) t;
+            String uuid = entry.getString("uuid");
+            if (uuid.isEmpty()) continue;
+            RaidState state = RaidState.fromString(entry.getString("state"));
 
-    public static void initHelper(MinecraftServer server) {
-        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(), CobblemonRaidDens.MOD_ID);
-        INSTANCE.setDirty();
+            data.RAID_CLOSE_QUEUE.put(UUID.fromString(uuid), state);
+        }
+
+        return data;
     }
 
     @Override
@@ -151,6 +168,16 @@ public class RaidHelper extends SavedData {
             clearedRaidsTag.add(e);
         }
         compoundTag.put("cleared_raids", clearedRaidsTag);
+
+        ListTag raidCloseQueue = new ListTag();
+        for (Map.Entry<UUID, RaidState> entry : RAID_CLOSE_QUEUE.entrySet()) {
+            CompoundTag e = new CompoundTag();
+            e.putString("uuid", entry.getKey().toString());
+            e.putString("state", entry.getValue().getSerializedName());
+
+            raidCloseQueue.add(e);
+        }
+        compoundTag.put("raid_close_queue", raidCloseQueue);
 
         return compoundTag;
     }

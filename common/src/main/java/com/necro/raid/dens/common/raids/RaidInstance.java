@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
-import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
@@ -19,6 +18,8 @@ import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidScriptHelper;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -29,16 +30,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class RaidInstance {
-    private static final Map<String, Consumer<PokemonBattle>> INSTRUCTION_MAP = new HashMap<>();
-
     private final PokemonEntity bossEntity;
+    private final UUID host;
+    private final UUID raid;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
     private final List<PokemonBattle> battles;
@@ -49,15 +50,19 @@ public class RaidInstance {
     private float currentHealth;
     private float maxHealth;
     private final float initMaxHealth;
-    private final Map<Integer, List<String>> scriptByTurn;
-    private final NavigableMap<Double, List<String>> scriptByHp;
+    private final Map<Integer, List<Consumer<PokemonBattle>>> scriptByTurn;
+    private final NavigableMap<Double, List<Consumer<PokemonBattle>>> scriptByHp;
 
     private final Map<UUID, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
 
-    public RaidInstance(PokemonEntity entity) {
+    private RaidState raidState;
+
+    public RaidInstance(PokemonEntity entity, UUID host) {
         this.bossEntity = entity;
-        this.raidBoss = ((IRaidAccessor) entity).getRaidBoss();
+        this.host = host;
+        this.raid = ((IRaidAccessor) entity).crd_getRaidId();
+        this.raidBoss = ((IRaidAccessor) entity).crd_getRaidBoss();
         this.bossEvent = new ServerBossEvent(
             ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
@@ -82,14 +87,17 @@ public class RaidInstance {
             }
         }, 20, true));
 
+        this.raidState = RaidState.NOT_STARTED;
+
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
         raidBoss.getScript().forEach((key, scripts) -> {
-            List<String> functions = new ArrayList<>();
-            for (String function : scripts.functions()) {
-                if (!INSTRUCTION_MAP.containsKey(function) && !function.startsWith("USE_MOVE")) return;
-                functions.add(function);
-            }
+            List<Consumer<PokemonBattle>> functions = scripts.functions().stream()
+                .map(this::getInstructions)
+                .filter(Objects::nonNull)
+                .toList();
+            if (functions.isEmpty()) return;
+
             try {
                 if (key.startsWith("turn:")) {
                     this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), functions);
@@ -102,10 +110,7 @@ public class RaidInstance {
                 else if (key.startsWith("after:") || key.startsWith("repeat:")) {
                     int time = Integer.parseInt(key.split(":")[1]) * 20;
                     this.runQueue.add(new DelayedRunnable(() -> {
-                        for (String function : functions) {
-                            Consumer<PokemonBattle> instruction = this.getInstructions(function);
-                            if (instruction != null) this.battles.forEach(instruction);
-                        }
+                        for (Consumer<PokemonBattle> function : functions) this.battles.forEach(function);
                     }, time, key.startsWith("repeat:")));
                 }
             }
@@ -113,32 +118,35 @@ public class RaidInstance {
         });
     }
 
-    public void addPlayer(ServerPlayer player, PokemonBattle battle) {
+    public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
+        this.addPlayer(player);
+        this.addBattle(battle);
+    }
+
+    public void addPlayer(ServerPlayer player) {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
-        ((IRaidBattle) battle).setRaidBattle(this);
-        new StartRaidShowdownEvent().send(battle);
-        this.battles.add(battle);
         this.bossEvent.addPlayer(player);
 
         this.damageTracker.put(player.getUUID(), 0f);
-        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) this.applyHealthMulti(player);
-        if (this.scriptByTurn.containsKey(0)) {
-            for (String function : this.scriptByTurn.remove(0)) {
-                Consumer<PokemonBattle> script = this.getInstructions(function);
-                if (script != null) script.accept(battle);
-            }
-        }
+        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f)
+            this.applyHealthMulti(player.getName().getString());
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
+
     }
 
-    public void addPlayer(PokemonBattle battle) {
-        this.addPlayer(battle.getPlayers().getFirst(), battle);
+    public void addBattle(PokemonBattle battle) {
+        ((IRaidBattle) battle).crd_setRaidBattle(this);
+        new StartRaidShowdownEvent().send(battle);
+        this.battles.add(battle);
+
+        this.runScriptByTurn(battle, 0);
+        if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }
 
-    private void applyHealthMulti(ServerPlayer newPlayer) {
+    private void applyHealthMulti(String newPlayer) {
         float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier()).multiplayerHealthMultiplier() - 1f) * this.activePlayers.size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
@@ -147,11 +155,14 @@ public class RaidInstance {
         this.battles.forEach(battle -> this.playerJoin(battle, newPlayer));
     }
 
-    public void removePlayer(ServerPlayer player, PokemonBattle battle) {
-        this.battles.remove(battle);
-        ((IRaidBattle) battle).setRaidBattle(null);
+    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
         this.bossEvent.removePlayer(player);
-        this.failedPlayers.add(player.getUUID());
+        if (this.raidState != RaidState.NOT_STARTED) this.failedPlayers.add(player.getUUID());
+        if (this.failedPlayers.size() >= this.activePlayers.size()) this.closeRaid();
+
+        if (battle == null) return;
+        this.battles.remove(battle);
+        ((IRaidBattle) battle).crd_setRaidBattle(null);
     }
 
     public void removePlayer(PokemonBattle battle) {
@@ -159,11 +170,11 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player) {
-        this.bossEvent.removePlayer(player);
+        this.removePlayer(player, null);
     }
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
-        if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).isRaidBattle()) this.addPlayer(player, battle);
+        if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).crd_isRaidBattle()) this.addPlayerAndBattle(player, battle);
         this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
@@ -209,15 +220,17 @@ public class RaidInstance {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
         if (raidSuccess) this.bossEntity.setHealth(0f);
-        RaidHelper.ACTIVE_RAIDS.remove(((IRaidAccessor) this.bossEntity).getRaidId());
         this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
 
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
+
+        this.closeRaid();
     }
 
     private void handleSuccess() {
+        this.raidState = RaidState.SUCCESS;
         int catches = this.raidBoss.getMaxCatches();
         List<ServerPlayer> success;
         List<ServerPlayer> failed;
@@ -285,6 +298,7 @@ public class RaidInstance {
     }
 
     private void handleFailed() {
+        this.raidState = RaidState.FAILED;
         this.activePlayers.forEach(player -> {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
@@ -295,40 +309,26 @@ public class RaidInstance {
         return this.raidBoss;
     }
 
+    public RaidState getRaidState() {
+        return this.raidState;
+    }
+
     private Consumer<PokemonBattle> getInstructions(@NotNull String function) {
-        if (function.startsWith("USE_MOVE")) {
-            String[] params = function.split("_");
-            if (params.length != 4) return null;
-            String move = params[2].toLowerCase();
-            int target = Integer.parseInt(params[3]);
-            
-            return battle -> new UseMoveShowdownEvent(move, target).send(battle);
-        }
-        else {
-            return INSTRUCTION_MAP.get(function);
-        }
+        return RaidScriptHelper.decode(function);
     }
 
     public void runScriptByTurn(PokemonBattle battle, int turn) {
-        List<String> functions = this.scriptByTurn.remove(turn);
+        List<Consumer<PokemonBattle>> functions = this.scriptByTurn.remove(turn);
         if (functions == null) return;
-        for (String function : functions) {
-            if (function == null) continue;
-            Consumer<PokemonBattle> script = this.getInstructions(function);
-            if (script != null) script.accept(battle);
-        }
+        functions.forEach(function -> function.accept(battle));
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(functions -> this.battles.forEach(battle -> {
-                for (String function : functions) {
-                    if (function == null) continue;
-                    Consumer<PokemonBattle> script = this.getInstructions(function);
-                    if (script != null) script.accept(battle);
-                }
-            }));
+            .forEach(functions -> this.battles.forEach(battle ->
+                functions.forEach(function -> function.accept(battle))
+            ));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
@@ -354,8 +354,8 @@ public class RaidInstance {
         return true;
     }
 
-    public void playerJoin(PokemonBattle battle, Player newPlayer) {
-        new PlayerJoinShowdownEvent(newPlayer.getName().getString()).send(battle);
+    public void playerJoin(PokemonBattle battle, String newPlayer) {
+        new PlayerJoinShowdownEvent(newPlayer).send(battle);
     }
 
     public void cheer(PokemonBattle battle, BagItem bagItem, String origin, boolean skipEnemyAction) {
@@ -378,6 +378,14 @@ public class RaidInstance {
         }
         side1.getBattle().checkForInputDispatch();
         side1.sendUpdate(new BattleApplyPassResponsePacket());
+    }
+
+    public void closeRaid() {
+        if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
+
+        RaidHelper.closeRaid(this.raid, this.raidState);
+        RaidHelper.removeRequests(this.host);
+        RaidJoinHelper.removeParticipants(this.activePlayers);
     }
 
     private static class DelayedRunnable {
@@ -403,53 +411,5 @@ public class RaidInstance {
             if (this.repeat) this.tick = 0;
             return !this.repeat;
         }
-    }
-
-    static {
-        INSTRUCTION_MAP.put("RESET_BOSS", battle -> new ResetBossShowdownEvent().send(battle));
-        INSTRUCTION_MAP.put("RESET_PLAYER", battle -> new ResetPlayerShowdownEvent().send(battle));
-
-        INSTRUCTION_MAP.put("BOSS_ATK_1", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_ATK_2", battle -> new StatBoostShowdownEvent(Stats.ATTACK, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_DEF_1", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_DEF_2", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPA_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPA_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPD_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPD_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPE_1", battle -> new StatBoostShowdownEvent(Stats.SPEED, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_SPE_2", battle -> new StatBoostShowdownEvent(Stats.SPEED, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_ACC_1", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_ACC_2", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, 2, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_EVA_1", battle -> new StatBoostShowdownEvent(Stats.EVASION, 1, 2).send(battle));
-        INSTRUCTION_MAP.put("BOSS_EVA_2", battle -> new StatBoostShowdownEvent(Stats.EVASION, 2, 2).send(battle));
-
-        INSTRUCTION_MAP.put("PLAYER_ATK_1", battle -> new StatBoostShowdownEvent(Stats.ATTACK, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_ATK_2", battle -> new StatBoostShowdownEvent(Stats.ATTACK, -2, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_DEF_1", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_DEF_2", battle -> new StatBoostShowdownEvent(Stats.DEFENCE, -2, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPA_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPA_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_ATTACK, -2, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPD_1", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPD_2", battle -> new StatBoostShowdownEvent(Stats.SPECIAL_DEFENCE, -2, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPE_1", battle -> new StatBoostShowdownEvent(Stats.SPEED, 1, -1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_SPE_2", battle -> new StatBoostShowdownEvent(Stats.SPEED, 2, -1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_ACC_1", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_ACC_2", battle -> new StatBoostShowdownEvent(Stats.ACCURACY, -2, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_EVA_1", battle -> new StatBoostShowdownEvent(Stats.EVASION, -1, 1).send(battle));
-        INSTRUCTION_MAP.put("PLAYER_EVA_2", battle -> new StatBoostShowdownEvent(Stats.EVASION, -2, 1).send(battle));
-
-        INSTRUCTION_MAP.put("SET_RAIN", battle -> new SetWeatherShowdownEvent("raindance").send(battle));
-        INSTRUCTION_MAP.put("SET_SANDSTORM", battle -> new SetWeatherShowdownEvent("sandstorm").send(battle));
-        INSTRUCTION_MAP.put("SET_SNOW", battle -> new SetWeatherShowdownEvent("snow").send(battle));
-        INSTRUCTION_MAP.put("SET_SUN", battle -> new SetWeatherShowdownEvent("sunnyday").send(battle));
-
-        INSTRUCTION_MAP.put("SET_ELECTRIC_TERRAIN", battle -> new SetTerrainShowdownEvent("electricterrain").send(battle));
-        INSTRUCTION_MAP.put("SET_GRASSY_TERRAIN", battle -> new SetTerrainShowdownEvent("grassyterrain").send(battle));
-        INSTRUCTION_MAP.put("SET_MISTY_TERRAIN", battle -> new SetTerrainShowdownEvent("mistyterrain").send(battle));
-        INSTRUCTION_MAP.put("SET_PSYCHIC_TERRAIN", battle -> new SetTerrainShowdownEvent("psychicterrain").send(battle));
-
-        INSTRUCTION_MAP.put("SHIELD_UP", battle -> new ShieldAddShowdownEvent().send(battle));
-        INSTRUCTION_MAP.put("SHIELD_DOWN", battle -> new ShieldRemoveShowdownEvent().send(battle));
     }
 }

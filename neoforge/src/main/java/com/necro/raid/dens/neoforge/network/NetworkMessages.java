@@ -2,7 +2,6 @@ package com.necro.raid.dens.neoforge.network;
 
 import com.cobblemon.mod.common.battles.BattleFormat;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -23,7 +22,6 @@ public class NetworkMessages {
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar payloadRegistrar = event.registrar(CobblemonRaidDens.MOD_ID).versioned("1.0.0").optional();
 
-        payloadRegistrar.playToClient(SyncRaidDimensionsPacket.PACKET_TYPE, SyncRaidDimensionsPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handle);
@@ -61,9 +59,6 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
-
-        DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
-            NetworkMessages.sendPacketToAll(new SyncRaidDimensionsPacket(levelKey, create));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

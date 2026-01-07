@@ -1,18 +1,11 @@
 package com.necro.raid.dens.common.blocks.block;
 
-import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
-import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
+import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,7 +13,6 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,47 +22,28 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
-            BlockEntity blockEntity = level.getBlockEntity(blockPos);
-            if (!(blockEntity instanceof RaidHomeBlockEntity homeBlock)) return InteractionResult.FAIL;
-            boolean success = safeExit(homeBlock, blockPos, (ServerPlayer) player, level);
-            return success ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+            if (!RaidUtils.isRaidDimension(level)) return InteractionResult.FAIL;
+            RaidUtils.leaveRaid(player);
+            ((IRaidTeleporter) player).crd_returnHome();
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.SUCCESS;
     }
 
-    public static boolean safeExit(RaidHomeBlockEntity blockEntity, BlockPos blockPos, ServerPlayer player, Level level) {
-        BlockPos homePos = blockEntity.getHomePos();
-        if (homePos == null || level.getServer() == null) return false;
-        ServerLevel home = level.getServer().getLevel(blockEntity.getHome());
-        if (home == null) return false;
-
-        if (level.getEntitiesOfClass(LivingEntity.class, new AABB(blockPos).inflate(64)).stream().anyMatch(LivingEntity::isDeadOrDying)) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.cannot_leave_yet").withStyle(ChatFormatting.RED));
-            return false;
-        }
-
-        PlayerExtensionsKt.party(player).forEach(pokemon -> {
-            if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
-        });
-
-        RaidUtils.teleportPlayerSafe(player, home, homePos, player.getYHeadRot(), player.getXRot());
-        return true;
-    }
-
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemStack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return null;
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(BlockState blockState) {
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 }

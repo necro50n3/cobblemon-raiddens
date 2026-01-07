@@ -27,7 +27,7 @@ public abstract class ForcePassActionResponseMixin {
         if (battlePokemon == null) return;
         PokemonEntity pokemonEntity = battlePokemon.getEntity();
         if (pokemonEntity == null) return;
-        else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
+        else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
 
         BattleActor battleActor = activeBattlePokemon.getActor();
         ServerPlayer player = battleActor.getBattle().getPlayers().getFirst();

@@ -1,6 +1,6 @@
 {
   "type": "cobblemonraiddens:raid_dimension_type",
   "generator": {
-    "type": "cobblemonraiddens:raid_dim_chunk"
+    "type": "cobblemonraiddens:raid_dimension_chunk"
   }
 }

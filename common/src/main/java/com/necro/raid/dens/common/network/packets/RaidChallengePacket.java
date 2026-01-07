@@ -19,6 +19,7 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -58,29 +59,31 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
     @Override
     public void handleServer(ServerPlayer player) {
-        if (!RaidHelper.isAlreadyParticipating(player) && !RaidHelper.isAlreadyHosting(player) && RaidUtils.isRaidDimension(player.level())) {
+        if (!RaidJoinHelper.isParticipating(player, false) && RaidUtils.isRaidDimension(player.level())) {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.not_participating").withStyle(ChatFormatting.RED));
             return;
         }
 
         Entity entity = player.level().getEntity(this.targetedEntityId);
         if (!(entity instanceof PokemonEntity pokemonEntity) || pokemonEntity.getOwner() != null) return;
-        else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
+        else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
 
-        RaidBoss boss = ((IRaidAccessor) entity).getRaidBoss();
+        RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier());
 
-        UUID raidId = ((IRaidAccessor) pokemonEntity).getRaidId();
+        UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
-        if (raid != null) {
-            if (raid.hasFailed(player)) {
-                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
-                return;
-            }
-            else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
-                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.lobby_is_full").withStyle(ChatFormatting.RED));
-                return;
-            }
+        if (raid == null) {
+            player.sendSystemMessage(Component.literal("An unknown error has occurred."));
+            return;
+        }
+        else if (raid.hasFailed(player)) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
+            return;
+        }
+        else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
+            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.lobby_is_full").withStyle(ChatFormatting.RED));
+            return;
         }
 
         Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
@@ -104,14 +107,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, tierConfig)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
-                    UUID raidId2 = raidId;
-                    if (!RaidHelper.ACTIVE_RAIDS.containsKey(raidId2)) {
-                        ((IRaidAccessor) pokemonEntity).setRaidId(battle.getBattleId());
-                        raidId2 = ((IRaidAccessor) pokemonEntity).getRaidId();
-                        RaidHelper.ACTIVE_RAIDS.put(raidId2, new RaidInstance(pokemonEntity));
-                    }
-                    RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(raidId2);
-                    raidInstance.addPlayer(battle);
+                    raid.addBattle(battle);
                     RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
                     return Unit.INSTANCE;
                 })

@@ -26,4 +26,8 @@ public class RequestHandler {
     public Player getPlayer(String player) {
         return this.players.get(player);
     }
+
+    public int getPlayerCount() {
+        return players.size() + 1;
+    }
 }

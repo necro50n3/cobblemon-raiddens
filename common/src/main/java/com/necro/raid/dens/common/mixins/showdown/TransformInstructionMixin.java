@@ -22,7 +22,7 @@ public class TransformInstructionMixin {
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
         BattlePokemon pokemon = this.message.battlePokemon(0, battle);
         if (pokemon == null || pokemon.getEntity() == null) return;
-        else if (!((IRaidAccessor) pokemon.getEntity()).isRaidBoss()) return;
+        else if (!((IRaidAccessor) pokemon.getEntity()).crd_isRaidBoss()) return;
         if (pokemon.getEntity().getEffects().getMockEffect() != null) ci.cancel();
     }
 }

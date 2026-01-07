@@ -27,18 +27,18 @@ public class RaidRegionHelper extends SavedData {
     private final Map<UUID, Integer> INDEX_MAP = new HashMap<>();
     private final Map<Integer, RaidRegion> REGION_MAP = new HashMap<>();
 
-    public static boolean createRegion(UUID raid, ResourceLocation structure, BlockPos homePos, ServerLevel homeLevel) {
+    public static RaidRegion createRegion(UUID raid, ResourceLocation structure) {
         OptionalInt optionalIndex = IntStream.range(0, RAID_CAP)
             .filter(i -> !INSTANCE.REGION_MAP.containsKey(i))
             .findFirst();
-        if (optionalIndex.isEmpty()) return false;
+        if (optionalIndex.isEmpty()) return null;
 
         int index = optionalIndex.getAsInt();
-        RaidRegion region = new RaidRegion(coordFromIndex(index), structure, homePos, homeLevel.dimension().location());
+        RaidRegion region = new RaidRegion(coordFromIndex(index), structure);
         INSTANCE.INDEX_MAP.put(raid, index);
         INSTANCE.REGION_MAP.put(index, region);
         INSTANCE.setDirty();
-        return true;
+        return region;
     }
 
     public static RaidRegion getRegion(UUID raid) {
@@ -90,7 +90,7 @@ public class RaidRegionHelper extends SavedData {
     }
 
     public static void initHelper(MinecraftServer server) {
-        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidRegionHelper.type(), CobblemonRaidDens.MOD_ID);
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidRegionHelper.type(), CobblemonRaidDens.MOD_ID + ".region_helper");
         INSTANCE.setDirty();
     }
 
@@ -109,7 +109,7 @@ public class RaidRegionHelper extends SavedData {
         for (Tag t : region) {
             CompoundTag entry = (CompoundTag) t;
             int indexValue = entry.getInt("index");
-            RaidRegion regionValue = RaidRegion.load(entry.getCompound("region"), provider);
+            RaidRegion regionValue = RaidRegion.load(entry.getCompound("region"));
             data.REGION_MAP.put(indexValue, regionValue);
         }
 

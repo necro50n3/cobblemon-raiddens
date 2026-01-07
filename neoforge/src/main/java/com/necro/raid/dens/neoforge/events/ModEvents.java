@@ -2,9 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.helpers.RaidExitHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
@@ -30,13 +28,12 @@ public class ModEvents {
     @SubscribeEvent
     public static void commonTick(ServerTickEvent.Post event) {
         RaidHelper.commonTick();
-        DimensionHelper.removePending(event.getServer());
     }
 
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (RaidHelper.isAlreadyHosting(player) || RaidHelper.isAlreadyParticipating(player) || RaidHelper.JOIN_QUEUE.containsKey(player)) {
+        if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
         if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage();
@@ -45,8 +42,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
         RaidJoinHelper.onPlayerDisconnect(event.getEntity());
-        RaidHelper.onPlayerDisconnect(event.getEntity());
-        DimensionHelper.removeDelayed(event.getEntity().getServer(), (ServerPlayer) event.getEntity());
+        RaidHelper.onPlayerDisconnect((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent
@@ -61,8 +57,9 @@ public class ModEvents {
     }
 
     @SubscribeEvent
-    public static void onServerStopping(ServerStoppingEvent event) {
-        DimensionHelper.removeDelayed(event.getServer());
+    public static void onServerClose(ServerStoppingEvent event) {
+        RaidJoinHelper.onServerClose();
+        RaidHelper.onServerClose(event.getServer());
     }
 
     @SubscribeEvent
@@ -87,11 +84,5 @@ public class ModEvents {
         event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
         event.addListener(new StatusEffectsReloadListener());
-    }
-
-    @SubscribeEvent
-    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer)
-            RaidExitHelper.onDimensionChange(serverPlayer, event.getFrom(), event.getTo());
     }
 }

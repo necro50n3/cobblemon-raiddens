@@ -14,20 +14,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class PokemonMixin implements IShinyRate {
 
     @Unique
-    private Float raidShinyRate;
+    private Float crd_raidShinyRate;
 
     @Override
-    public Float getRaidShinyRate() {
-        return this.raidShinyRate;
+    public Float crd_getRaidShinyRate() {
+        return this.crd_raidShinyRate;
     }
 
     @Override
-    public void setRaidShinyRate(float raidShinyRate) {
-        this.raidShinyRate = raidShinyRate;
+    public void crd_setRaidShinyRate(float raidShinyRate) {
+        this.crd_raidShinyRate = raidShinyRate;
     }
 
     @Inject(method = "saveToNBT", at = @At("HEAD"), remap = false)
     private void saveToNBTInject(RegistryAccess registryAccess, CompoundTag nbt, CallbackInfoReturnable<CompoundTag> cir) {
-        if (this.raidShinyRate != null) nbt.putFloat("raid_shiny_rate", this.raidShinyRate);
+        if (this.crd_raidShinyRate != null) nbt.putFloat("raid_shiny_rate", this.crd_raidShinyRate);
     }
 }

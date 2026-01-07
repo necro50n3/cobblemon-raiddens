@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Block;
 
 public class BlockTags {
     public static final TagKey<Block> CAN_INTERACT = createTag("can_interact");
+    public static final TagKey<Block> RAID_CRYSTAL = createTag("raid_crystal");
 
     public static TagKey<Block> createTag(String name) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name));

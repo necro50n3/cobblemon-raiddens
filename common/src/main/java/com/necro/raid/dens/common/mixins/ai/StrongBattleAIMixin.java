@@ -18,7 +18,7 @@ public abstract class StrongBattleAIMixin {
         if (
             pokemon.getPokemon() != null
                 && pokemon.getPokemon().getEntity() != null
-                && ((IRaidAccessor) pokemon.getPokemon().getEntity()).isRaidBoss()
+                && ((IRaidAccessor) pokemon.getPokemon().getEntity()).crd_isRaidBoss()
             && RaidAI.BLOCKED_MOVES.contains(move.id)
         ) cir.setReturnValue(0.0);
         else if (!move.canBeUsed()) cir.setReturnValue(0.0);
@@ -29,7 +29,7 @@ public abstract class StrongBattleAIMixin {
         if (
             pokemon.getBattlePokemon() != null
             && pokemon.getBattlePokemon().getEntity() != null
-            && ((IRaidAccessor) pokemon.getBattlePokemon().getEntity()).isRaidBoss()
+            && ((IRaidAccessor) pokemon.getBattlePokemon().getEntity()).crd_isRaidBoss()
         ) {
             ShowdownActionResponse response = cir.getReturnValue();
             if (!(response instanceof MoveActionResponse move)) return;

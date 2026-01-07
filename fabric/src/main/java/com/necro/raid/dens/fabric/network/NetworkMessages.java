@@ -1,7 +1,6 @@
 package com.necro.raid.dens.fabric.network;
 
 import com.cobblemon.mod.common.battles.BattleFormat;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -16,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkMessages {
     public static void registerPayload() {
-        PayloadTypeRegistry.playS2C().register(SyncRaidDimensionsPacket.PACKET_TYPE, SyncRaidDimensionsPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
@@ -37,7 +35,6 @@ public class NetworkMessages {
     }
 
     public static void registerS2CPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(SyncRaidDimensionsPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(SyncHealthPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handle);
@@ -70,9 +67,6 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
-
-        DimensionHelper.SYNC_DIMENSIONS = (server, levelKey, create) ->
-            NetworkMessages.sendPacketToAll(server, new SyncRaidDimensionsPacket(levelKey, create));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

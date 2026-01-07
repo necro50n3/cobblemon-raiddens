@@ -8,7 +8,6 @@ import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
-import com.necro.raid.dens.common.raids.helpers.RaidExitHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
@@ -18,7 +17,6 @@ import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
-import com.necro.raid.dens.fabric.compat.distanthorizons.FabricDistantHorizonsCompat;
 import com.necro.raid.dens.fabric.components.FabricComponents;
 import com.necro.raid.dens.fabric.events.*;
 import com.necro.raid.dens.fabric.events.reloader.*;
@@ -32,8 +30,6 @@ import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -52,7 +48,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
-        if (ModCompat.DISTANT_HORIZONS.isLoaded()) FabricDistantHorizonsCompat.init();
 
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
@@ -68,7 +63,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);
-        ServerLifecycleEvents.SERVER_STOPPING.register(ModEvents::onServerStopping);
+        ServerLifecycleEvents.SERVER_STOPPING.register(ModEvents::onServerClose);
         ServerPlayConnectionEvents.JOIN.register(ModEvents::onPlayerJoin);
         ServerPlayConnectionEvents.DISCONNECT.register(ModEvents::onPlayerDisconnect);
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::commonTick);
@@ -77,8 +72,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidSpawnCommands::register);
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreak);
         UseBlockCallback.EVENT.register(RaidUtils::canPlace);
-        ServerPlayerEvents.AFTER_RESPAWN.register(RaidExitHelper::afterRespawn);
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(RaidExitHelper::onDimensionChange);
 
         DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());

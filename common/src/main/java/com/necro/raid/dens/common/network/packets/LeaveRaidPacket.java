@@ -1,23 +1,15 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.blocks.block.RaidHomeBlock;
-import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
-import com.necro.raid.dens.common.dimensions.DimensionHelper;
-import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.ServerPacket;
-import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
@@ -38,30 +30,10 @@ public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
 
     @Override
     public void handleServer(ServerPlayer player) {
-        assert player.getServer() != null;
-        handleDim: {
-            if (RaidUtils.isRaidDimension(player.level())) {
-                BlockEntity blockEntity = player.level().getBlockEntity(BlockPos.ZERO);
-
-                if (blockEntity instanceof RaidHomeBlockEntity homeBlock) RaidHomeBlock.safeExit(homeBlock, BlockPos.ZERO, player, player.level());
-                else {
-                    ServerLevel level = player.getServer().overworld();
-                    RaidUtils.teleportPlayerSafe(player, level, level.getSharedSpawnPos(), player.getYHeadRot(), player.getXRot());
-                }
-            }
-            else {
-                ResourceKey<Level> key = ModDimensions.createLevelKey(String.valueOf(player.getUUID()));
-                ServerLevel level = player.getServer().getLevel(key);
-                if (level == null || !level.players().isEmpty() || !RaidUtils.isRaidDimension(level)) break handleDim;
-
-                BlockEntity blockEntity = level.getBlockEntity(BlockPos.ZERO);
-                if (blockEntity instanceof RaidHomeBlockEntity homeBlock) RaidHomeBlock.safeExit(homeBlock, BlockPos.ZERO, player, player.level());
-                else if (CobblemonRaidDens.CONFIG.cache_dimensions) DimensionHelper.addToCache(level);
-                else DimensionHelper.queueForRemoval(key, level);
-            }
+        ServerLevel level = player.serverLevel();
+        RaidUtils.leaveRaid(player);
+        if (RaidUtils.isRaidDimension(level)) {
+            ((IRaidTeleporter) player).crd_returnHome();
         }
-
-        RaidHelper.removeHost(player.getUUID());
-        RaidHelper.removeParticipant(player.getUUID());
     }
 }

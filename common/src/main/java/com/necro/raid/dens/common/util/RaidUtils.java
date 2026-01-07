@@ -2,18 +2,29 @@ package com.necro.raid.dens.common.util;
 
 import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
+import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.BlockTags;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidState;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -28,6 +39,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class RaidUtils {
     private static final Set<String> POKEMON_BLACKLIST = new HashSet<>();
@@ -61,11 +73,22 @@ public class RaidUtils {
         return blockPos.getY() >= topY;
     }
 
-    public static void teleportPlayerToRaid(ServerPlayer player, ServerLevel level, Vec3 playerPos) {
+    public static void teleportPlayerToRaid(ServerPlayer player, MinecraftServer server, RaidRegion region) {
+        ServerLevel level = ModDimensions.getRaidDimension(server);
+        if (level == null) return;
+
+        ((IRaidTeleporter) player).crd_setHomePos(player.position());
+        ((IRaidTeleporter) player).crd_setHomeLevel(player.level().dimension().location());
+
+        Vec3 playerPos = region.getPlayerPos();
         player.teleportTo(level, playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
     }
 
-    public static void teleportPlayerSafe(Player player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {
+    public static void teleportPlayerSafe(ServerPlayer player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {
+        PlayerExtensionsKt.party(player).forEach(pokemon -> {
+            if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
+        });
+
         int groundY = level.getChunk(targetPos).getHeight(Heightmap.Types.MOTION_BLOCKING, targetPos.getX(), targetPos.getZ());
         BlockPos groundPos = targetPos.atY((int) Mth.absMax(groundY, targetPos.getY()));
 
@@ -100,6 +123,44 @@ public class RaidUtils {
         return !block.is(Blocks.LAVA) &&
             block.getCollisionShape(world, pos).isEmpty() &&
             above.getCollisionShape(world, pos.above()).isEmpty();
+    }
+
+    public static void leaveRaid(Player player) {
+        RaidDenNetworkMessages.JOIN_RAID.accept((ServerPlayer) player, false);
+
+        RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(player);
+        if (participant == null) return;
+        UUID raid = participant.raid();
+
+        RaidRegion region = RaidRegionHelper.getRegion(raid);
+        if (region == null) {
+            leaveRaidFallback(player);
+            return;
+        }
+
+        ServerLevel level = ModDimensions.getRaidDimension(player.getServer());
+        if (level == null) return;
+
+        RaidInstance instance = RaidHelper.ACTIVE_RAIDS.get(raid);
+        if (instance == null) {
+            leaveRaidFallback(player);
+            return;
+        }
+        else if (instance.getRaidState() != RaidState.NOT_STARTED) return;
+
+        int players = level.getEntitiesOfClass(Player.class, region.bound(), p -> RaidJoinHelper.isParticipating(p, false)).size();
+        if (players > (isRaidDimension(player.level()) ? 1 : 0)) return;
+
+        int items = level.getEntitiesOfClass(ItemEntity.class, region.bound()).size();
+        if (items > 0 && isRaidDimension(player.level())) return;
+
+        instance.removePlayer((ServerPlayer) player);
+        instance.closeRaid();
+    }
+
+    private static void leaveRaidFallback(Player player) {
+        RaidHelper.removeRequests(player.getUUID());
+        RaidJoinHelper.removeParticipant(player);
     }
 
     public static boolean isRaidDenKey(ItemStack itemStack) {

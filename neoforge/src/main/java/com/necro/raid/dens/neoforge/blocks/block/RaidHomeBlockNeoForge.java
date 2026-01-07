@@ -21,7 +21,7 @@ public class RaidHomeBlockNeoForge extends RaidHomeBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return new RaidHomeBlockEntityNeoForge(blockPos, blockState);
     }
 }

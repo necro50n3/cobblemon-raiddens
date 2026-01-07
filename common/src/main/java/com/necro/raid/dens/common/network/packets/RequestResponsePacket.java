@@ -2,12 +2,15 @@ package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RequestHandler;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -16,7 +19,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public record RequestResponsePacket(boolean accept, String player) implements CustomPacketPayload, ServerPacket {
@@ -51,40 +53,40 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
 
     private void acceptRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
         if (blockEntity.isFull()) {
-            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
+            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
             return;
         }
 
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, false, blockEntity.getRaidBoss()));
         if (!success) return;
 
-        if (RaidHelper.JOIN_QUEUE.containsKey(player) && !RaidHelper.isAlreadyParticipating(player)) {
-            assert player.getServer() != null;
-            RaidHelper.JOIN_QUEUE.remove(player);
-            RaidHelper.addParticipant(player);
-            blockEntity.addPlayer(player);
+        RaidRegion region = RaidRegionHelper.getRegion(blockEntity.getUuid());
 
-            Vec3 playerPos = RaidDenRegistry.getPlayerPos(blockEntity.getRaidStructure());
-            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, blockEntity.getDimension(), playerPos);
+        if (region != null && RaidJoinHelper.isInQueue(player) && !RaidJoinHelper.isParticipating(player, false)) {
+            assert player.getServer() != null;
+            RaidJoinHelper.removeFromQueue(player, false);
+            if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), false, false)) return;
+
+            RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid()).addPlayer((ServerPlayer) player);
+            RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);
             blockEntity.syncAspects((ServerPlayer) player);
         }
         else {
-            RaidHelper.JOIN_QUEUE.remove(player);
-            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
+            RaidJoinHelper.removeFromQueue(player, false);
+            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
         }
     }
 
     private void denyRequest(ServerPlayer host, Player player) {
-        if (RaidHelper.JOIN_QUEUE.containsKey(player)) {
-            RaidHelper.JOIN_QUEUE.get(player).refundItem();
-            RaidHelper.JOIN_QUEUE.remove(player);
-            player.sendSystemMessage(RaidHelper.getSystemMessage(
+        if (RaidJoinHelper.isInQueue(player)) {
+            RaidJoinHelper.removeFromQueue(player, true);
+            player.sendSystemMessage(ComponentUtils.getSystemMessage(
                 Component.translatable("message.cobblemonraiddens.raid.rejected_request", host.getName()))
             );
-            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.confirm_deny_request"));
+            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.confirm_deny_request"));
         }
         else {
-            host.sendSystemMessage(RaidHelper.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
+            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
         }
     }
 }

@@ -33,7 +33,7 @@ public abstract class MoveActionResponseMixin {
         if (battlePokemon == null) return;
         PokemonEntity pokemonEntity = battlePokemon.getEntity();
         if (pokemonEntity == null) return;
-        else if (!((IRaidAccessor) pokemonEntity).isRaidBoss()) return;
+        else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
         else if (!RaidUtils.isMoveBlacklisted(this.moveName)) return;
 
         BattleActor battleActor = activeBattlePokemon.getActor();

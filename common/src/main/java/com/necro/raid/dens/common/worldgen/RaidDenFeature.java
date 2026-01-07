@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
@@ -30,7 +31,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<BlockStateConfiguration> context) {
+    public boolean place(@NotNull FeaturePlaceContext<BlockStateConfiguration> context) {
         if (!CobblemonRaidDens.CONFIG.enable_spawning) return false;
         else if (Arrays.stream(RaidTier.values()).noneMatch(RaidTier::isPresent)) return false;
         else if (Arrays.stream(RaidType.values()).noneMatch(RaidType::isPresent)) return false;
@@ -76,7 +77,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return false;
-        raidCrystal.setRaidBoss(location, level.getRandom(), level.getLevel().getGameTime());
+        raidCrystal.setRaidBoss(location, level.getLevel().getGameTime());
         raidCrystal.setRaidBucket(bucket);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, raidBoss));
