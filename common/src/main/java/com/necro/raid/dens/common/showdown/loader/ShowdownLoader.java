@@ -10,9 +10,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 // Implementation of Mega Showdown's Showdown Loader when MSD is not installed.
-public class ShowdownLoader {
+public abstract class ShowdownLoader {
+    protected abstract boolean isMegaShowdownLoaded();
+
     public void load() {
-        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) return;
+        if (this.isMegaShowdownLoaded()) return;
+        CobblemonRaidDens.LOGGER.info("Initiating showdown files");
 
         Path showdown_sim = Path.of("./showdown/sim");
         Path showdown_data = Path.of("./showdown/data");

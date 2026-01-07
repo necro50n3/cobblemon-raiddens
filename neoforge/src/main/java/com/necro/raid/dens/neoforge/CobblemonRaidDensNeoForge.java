@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.raids.RaidBoss;
+import com.necro.raid.dens.common.showdown.loader.ShowdownLoader;
 import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.RaidBucket;
 import com.necro.raid.dens.common.util.RaidBucketRegistry;
@@ -17,6 +18,7 @@ import com.necro.raid.dens.neoforge.compat.distanthorizons.NeoForgeDistantHorizo
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
 import com.necro.raid.dens.neoforge.dimensions.NeoForgeChunkGenerator;
 import com.necro.raid.dens.neoforge.events.CommandsRegistrationEvent;
+import com.necro.raid.dens.neoforge.loader.NeoForgeShowdownLoader;
 import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import com.necro.raid.dens.neoforge.items.*;

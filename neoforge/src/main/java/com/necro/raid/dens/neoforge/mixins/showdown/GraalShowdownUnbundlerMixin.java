@@ -1,7 +1,7 @@
-package com.necro.raid.dens.common.mixins.showdown;
+package com.necro.raid.dens.neoforge.mixins.showdown;
 
 import com.cobblemon.mod.common.battles.runner.graal.GraalShowdownUnbundler;
-import com.necro.raid.dens.common.showdown.loader.ShowdownLoader;
+import com.necro.raid.dens.neoforge.loader.NeoForgeShowdownLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +16,7 @@ public class GraalShowdownUnbundlerMixin {
     @Inject(method = "attemptUnbundle", at = @At("TAIL"), remap = false)
     private void attemptUnbundleInject(CallbackInfo ci) {
         if (!this.loadedStatuses) {
-            new ShowdownLoader().load();
+            new NeoForgeShowdownLoader().load();
             this.loadedStatuses = true;
         }
     }
