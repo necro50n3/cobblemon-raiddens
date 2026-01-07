@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidExitHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.dimensions.DimensionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -53,6 +54,8 @@ public class ModEvents {
         MinecraftServer server = event.getServer();
         RaidJoinHelper.initHelper(server);
         RaidHelper.initHelper(server);
+        RaidRegionHelper.initHelper(server);
+
         RaidRegistry.initRaidBosses(server);
         RaidBucketRegistry.init(server);
     }
