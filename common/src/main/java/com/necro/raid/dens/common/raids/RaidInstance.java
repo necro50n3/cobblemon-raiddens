@@ -162,10 +162,6 @@ public class RaidInstance {
         this.bossEvent.removePlayer(player);
     }
 
-    public float getCurrentHealth() {
-        return this.currentHealth;
-    }
-
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
         if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).isRaidBattle()) this.addPlayer(player, battle);
         this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);

@@ -4,7 +4,8 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.necro.raid.dens.neoforge.CobblemonRaidDensNeoForgeMixinPlugin",
     "mixins": [
-        "ai.RCTBattleAIMixin"
+        "ai.RCTBattleAIMixin",
+        "showdown.GraalShowdownUnbundlerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

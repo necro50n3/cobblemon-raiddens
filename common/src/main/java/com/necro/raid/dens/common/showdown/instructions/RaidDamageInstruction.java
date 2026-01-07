@@ -164,16 +164,19 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
             }
 
             float damage = Float.parseFloat(damageStr);
-            boolean causedFaint = raidInstance.getCurrentHealth() < damage;
+            boolean causedFaint = raidInstance.getRemainingHealth() < damage;
             if (causedFaint) {
-                battlePokemon.getEffectedPokemon().setCurrentHealth(0);
-                raidInstance.queueStopRaid();
+                battle.getDispatches().clear();
+                battle.dispatchToFront(() -> {
+                    battlePokemon.getEffectedPokemon().setCurrentHealth(0);
+                    battlePokemon.sendUpdate();
+                    return DispatchResultKt.getGO();
+                });
             }
 
             ServerPlayer player = battle.getPlayers().getFirst();
             raidInstance.syncHealth(player, battle, damage);
             battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
-
 
             if (lastCauser instanceof MoveInstruction && ((MoveInstruction) lastCauser).getActionEffect() != null && !causedFaint) {
                 return new UntilDispatch(() -> ((MoveInstruction) lastCauser).getFuture().isDone());
