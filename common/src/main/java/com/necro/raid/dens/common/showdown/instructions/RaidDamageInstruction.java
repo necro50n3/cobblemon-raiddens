@@ -167,7 +167,7 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
             boolean causedFaint = raidInstance.getRemainingHealth() < damage;
             if (causedFaint) {
                 battle.getDispatches().clear();
-                battle.dispatch(() -> {
+                battle.dispatchToFront(() -> {
                     battlePokemon.getEffectedPokemon().setCurrentHealth(0);
                     battlePokemon.sendUpdate();
                     return DispatchResultKt.getGO();
