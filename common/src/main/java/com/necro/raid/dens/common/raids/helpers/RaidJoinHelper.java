@@ -1,23 +1,16 @@
 package com.necro.raid.dens.common.raids.helpers;
 
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.ComponentUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.saveddata.SavedData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class RaidJoinHelper extends SavedData {
-    public static RaidJoinHelper INSTANCE;
+public class RaidJoinHelper {
     private static final Map<Player, JoinRequest> JOIN_QUEUE = new HashMap<>();
-
-    private final Map<UUID, Participant> RAID_PARTICIPANTS = new HashMap<>();
+    private static final Map<UUID, Participant> RAID_PARTICIPANTS = new HashMap<>();
 
     public static boolean isInQueue(Player player) {
         return JOIN_QUEUE.containsKey(player);
@@ -35,35 +28,30 @@ public class RaidJoinHelper extends SavedData {
 
     public static boolean addParticipant(Player player, UUID raid, boolean isHost, boolean sendMessage) {
         boolean isParticipating = isParticipatingOrInQueue(player, sendMessage);
-        if (!isParticipating) {
-            INSTANCE.RAID_PARTICIPANTS.put(player.getUUID(), new Participant(raid, isHost));
-            INSTANCE.setDirty();
-        }
+        if (!isParticipating) RAID_PARTICIPANTS.put(player.getUUID(), new Participant(raid, isHost));
         return !isParticipating;
     }
 
     public static Participant getParticipant(Player player) {
-        return INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
+        return RAID_PARTICIPANTS.get(player.getUUID());
     }
 
     public static void removeParticipant(Player player) {
-        INSTANCE.RAID_PARTICIPANTS.remove(player.getUUID());
-        INSTANCE.setDirty();
+        RAID_PARTICIPANTS.remove(player.getUUID());
     }
 
     public static void removeParticipants(Collection<? extends Player> players) {
-        players.forEach(player -> INSTANCE.RAID_PARTICIPANTS.remove(player.getUUID()));
-        INSTANCE.setDirty();
+        players.forEach(player -> RAID_PARTICIPANTS.remove(player.getUUID()));
     }
 
     public static boolean isParticipating(Player player, UUID raid) {
-        Participant participant = INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
+        Participant participant = RAID_PARTICIPANTS.get(player.getUUID());
         if (participant == null) return false;
         return participant.raid() == raid;
     }
 
     public static boolean isParticipating(Player player, boolean sendMessage) {
-        Participant participant = INSTANCE.RAID_PARTICIPANTS.get(player.getUUID());
+        Participant participant = RAID_PARTICIPANTS.get(player.getUUID());
         if (participant == null) return false;
 
         if (participant.isHost()) {
@@ -86,6 +74,7 @@ public class RaidJoinHelper extends SavedData {
     public static void onServerClose() {
         JOIN_QUEUE.forEach((player, instance) -> instance.refundItem());
         JOIN_QUEUE.clear();
+        RAID_PARTICIPANTS.clear();
     }
 
     public static void serverTick() {
@@ -130,52 +119,5 @@ public class RaidJoinHelper extends SavedData {
             }
             return true;
         }
-    }
-
-    public static RaidJoinHelper create() {
-        return new RaidJoinHelper();
-    }
-
-    public static void initHelper(MinecraftServer server) {
-        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidJoinHelper.type(), CobblemonRaidDens.MOD_ID + ".join_helper");
-        INSTANCE.setDirty();
-    }
-
-    public static RaidJoinHelper load(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        RaidJoinHelper data = create();
-
-        ListTag raidParticipants = compoundTag.getList("raid_participants", Tag.TAG_COMPOUND);
-        for (Tag t : raidParticipants) {
-            CompoundTag entry = (CompoundTag) t;
-            UUID participant = entry.getUUID("participant");
-            UUID raid = entry.getUUID("raid");
-            boolean isHost = entry.getBoolean("is_host");
-
-            data.RAID_PARTICIPANTS.put(participant, new Participant(raid, isHost));
-        }
-
-        return data;
-    }
-
-    @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
-        ListTag raidParticipantsTag = new ListTag();
-        for (Map.Entry<UUID, Participant> entry : RAID_PARTICIPANTS.entrySet()) {
-            CompoundTag e = new CompoundTag();
-            e.putUUID("participant", entry.getKey());
-            e.putUUID("raid", entry.getValue().raid());
-            e.putBoolean("is_host", entry.getValue().isHost());
-        }
-        compoundTag.put("raid_participants", raidParticipantsTag);
-        return compoundTag;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    public static Factory<RaidJoinHelper> type() {
-        return new Factory<>(
-            RaidJoinHelper::create,
-            RaidJoinHelper::load,
-            null
-        );
     }
 }

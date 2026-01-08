@@ -190,7 +190,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
         if (region != null) {
             level.getEntitiesOfClass(ServerPlayer.class, region.bound())
-                .forEach(player -> ((IRaidTeleporter) player).crd_returnHome());
+                .forEach(player -> {
+                    RaidUtils.leaveRaid(player);
+                    ((IRaidTeleporter) player).crd_returnHome();
+                });
         }
         RaidRegionHelper.clearRegion(this.getUuid(), level);
 

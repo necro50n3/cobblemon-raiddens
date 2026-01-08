@@ -159,8 +159,7 @@ public class RaidUtils {
         instance.closeRaid(player.getServer());
 
         PokemonEntity entity = instance.getBossEntity();
-        if (entity == null) CobblemonRaidDens.LOGGER.info("Could not find raid boss");
-        else if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
+        if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
     }
 
     private static void leaveRaidFallback(Player player) {

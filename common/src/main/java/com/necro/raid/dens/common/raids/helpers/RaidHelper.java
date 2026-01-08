@@ -94,18 +94,15 @@ public class RaidHelper extends SavedData {
     }
 
     public static void onPlayerDisconnect(ServerPlayer player) {
-        forceLeaveRaid(player);
+        if (RaidUtils.isRaidDimension(player.level())) ((IRaidTeleporter) player).crd_returnHome();
     }
 
     public static void onServerClose(MinecraftServer server) {
-        server.getPlayerList().getPlayers().forEach(RaidHelper::forceLeaveRaid);
+        server.execute(RaidHelper::closeAllRaids);
     }
 
-    private static void forceLeaveRaid(ServerPlayer player) {
-        if (RaidUtils.isRaidDimension(player.level())) {
-            RaidUtils.leaveRaid(player);
-            ((IRaidTeleporter) player).crd_returnHome();
-        }
+    private static void closeAllRaids() {
+        REQUEST_QUEUE.forEach((uuid, handler) -> handler.getBlockEntity().closeRaid());
     }
 
     public static void commonTick() {
@@ -118,7 +115,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static void initHelper(MinecraftServer server) {
-        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(),  CobblemonRaidDens.MOD_ID + ".raid_helper");
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(RaidHelper.type(),  CobblemonRaidDens.MOD_ID);
         INSTANCE.setDirty();
     }
 
