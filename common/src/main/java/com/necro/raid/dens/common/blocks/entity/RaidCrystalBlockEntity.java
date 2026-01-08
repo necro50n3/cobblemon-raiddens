@@ -176,7 +176,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void clearRaid() {
         this.clears++;
         this.isShiny = null;
-        if (this.isAtMaxClears()) RaidHelper.resetClearedRaids(this.getUuid());
+        if (this.isAtMaxClears()) {
+            RaidHelper.resetClearedRaids(this.getUuid());
+            if (this.getLevel() != null) this.getLevel().setBlock(
+                this.getBlockPos(),
+                this.getBlockState().setValue(RaidCrystalBlock.ACTIVE, false),
+                2
+            );
+        }
     }
 
     public void closeRaid() {
