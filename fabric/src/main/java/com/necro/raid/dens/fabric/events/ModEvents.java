@@ -1,6 +1,5 @@
 package com.necro.raid.dens.fabric.events;
 
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
@@ -42,18 +41,8 @@ public class ModEvents {
         RaidJoinHelper.serverTick();
     }
 
-    private static long lastTick = 0;
-
     public static void commonTick(MinecraftServer server) {
         RaidHelper.commonTick();
-
-        long thisTick = System.currentTimeMillis();
-        if (lastTick == 0) lastTick = thisTick;
-
-        long dur = thisTick - lastTick;
-        if (dur > 100) CobblemonRaidDens.LOGGER.info("Tick took {} ms", dur);
-
-        lastTick = thisTick;
     }
 
     public static void clientTick(Minecraft client) {
