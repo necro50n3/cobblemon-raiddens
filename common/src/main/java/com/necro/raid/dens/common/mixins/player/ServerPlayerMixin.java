@@ -11,6 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -21,6 +23,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player implements IRaidTeleporter {
@@ -71,6 +74,13 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
         Vec3 pos = this.crd_getHomePos();
         RaidUtils.teleportPlayerSafe((ServerPlayer) (Object) this, level, BlockPos.containing(pos), this.getYHeadRot(), this.getXRot());
         this.crd_clearHome();
+    }
+
+    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
+    private void hurtInject(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+        if (!RaidUtils.isRaidDimension(this.level())) return;
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
+        cir.setReturnValue(false);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("RETURN"))

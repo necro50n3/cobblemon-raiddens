@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.util;
 
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.raids.RaidState;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
@@ -12,4 +13,6 @@ public interface IRaidAccessor {
     void crd_setRaidBoss(ResourceLocation raidBoss);
     boolean crd_isRaidBoss();
     void crd_flagForRemoval();
+    void crd_setRaidState(RaidState state);
+    RaidState crd_getRaidState();
 }

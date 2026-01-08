@@ -55,8 +55,6 @@ public class RaidRegion {
     public void clearRegion(ServerLevel level) {
         int minX = this.centre.getX() - RADIUS;
         int maxX = this.centre.getX() + RADIUS;
-        int minY = -64;
-        int maxY = 64;
         int minZ = this.centre.getZ() - RADIUS;
         int maxZ = this.centre.getZ() + RADIUS;
 

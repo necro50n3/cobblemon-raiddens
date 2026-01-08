@@ -65,7 +65,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
         if (region != null && RaidJoinHelper.isInQueue(player) && !RaidJoinHelper.isParticipating(player, false)) {
             assert player.getServer() != null;
             RaidJoinHelper.removeFromQueue(player, false);
-            if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), false, false)) return;
+            if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), false, true)) return;
 
             RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid()).addPlayer((ServerPlayer) player);
             RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);

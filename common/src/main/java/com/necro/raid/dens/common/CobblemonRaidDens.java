@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
+import com.cobblemon.mod.common.api.events.entity.SpawnEvent;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -89,6 +90,10 @@ public class CobblemonRaidDens {
             setRaidShinyRate(event);
             return Unit.INSTANCE;
         });
+        CobblemonEvents.POKEMON_ENTITY_SPAWN.subscribe(Priority.HIGHEST, event -> {
+            cancelWildSpawn(event);
+            return Unit.INSTANCE;
+        });
 
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
             RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
@@ -119,5 +124,12 @@ public class CobblemonRaidDens {
             Float shinyRate = ((IShinyRate) pokemon).crd_getRaidShinyRate();
             return shinyRate == null || shinyRate < 0 ? chance : shinyRate;
         });
+    }
+
+    private static void cancelWildSpawn(SpawnEvent<PokemonEntity> event) {
+        if (!RaidUtils.isRaidDimension(event.getSpawnablePosition().getWorld())) return;
+        else if (event.getEntity().getOwner() != null) return;
+        else if (((IRaidAccessor) event.getEntity()).crd_isRaidBoss()) return;
+        event.cancel();
     }
 }

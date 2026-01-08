@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.registry.RaidRegistry;
@@ -41,6 +42,9 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Unique
     private boolean crd_flagRemove = false;
+
+    @Unique
+    private RaidState crd_raidState = RaidState.IN_PROGRESS;
 
     protected PokemonEntityMixin(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -80,6 +84,16 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
         this.crd_flagRemove = true;
     }
 
+    @Override
+    public void crd_setRaidState(RaidState state) {
+        this.crd_raidState = state;
+    }
+
+    @Override
+    public RaidState crd_getRaidState() {
+        return this.crd_raidState;
+    }
+
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true, remap = false)
     private void tickInject(CallbackInfo ci) {
         if (this.crd_flagRemove) {
@@ -111,6 +125,8 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
         if (this.crd_raidId != null) nbt.putString("raid_id", this.crd_raidId.toString());
         if (this.crd_raidBoss != null) nbt.putString("raid_boss", this.crd_raidBoss.toString());
         if (this.crd_flagRemove) nbt.putBoolean("raid_flag_remove", true);
+        if (this.crd_raidState == RaidState.SUCCESS) nbt.putInt("raid_state", 1);
+        else if (this.crd_raidState == RaidState.FAILED) nbt.putInt("raid_state", -1);
     }
 
     @Inject(method = "load", at = @At("RETURN"))
@@ -118,6 +134,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
         if (nbt.contains("raid_id")) this.crd_raidId = UUID.fromString(nbt.getString("raid_id"));
         if (nbt.contains("raid_boss")) this.crd_raidBoss = ResourceLocation.parse(nbt.getString("raid_boss"));
         this.crd_flagRemove = nbt.contains("raid_flag_remove");
+        if (nbt.contains("raid_state")) this.crd_raidState = nbt.getInt("raid_state") == 1 ? RaidState.SUCCESS : RaidState.FAILED;
 
         if (this.getPokemon() == null) return;
         CompoundTag tag = nbt.getCompound(DataKeys.POKEMON);

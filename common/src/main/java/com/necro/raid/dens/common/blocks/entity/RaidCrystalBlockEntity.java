@@ -187,10 +187,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public void closeRaid() {
-        this.closeRaid(false);
-    }
-
-    public void closeRaid(boolean serverClosing) {
         if (this.getLevel() == null) return;
         ServerLevel level = ModDimensions.getRaidDimension(this.getLevel().getServer());
         if (level == null) return;

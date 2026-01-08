@@ -17,9 +17,11 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidBuilder;
+import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -59,45 +61,47 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
     @Override
     public void handleServer(ServerPlayer player) {
-        if (!RaidJoinHelper.isParticipating(player, false) && RaidUtils.isRaidDimension(player.level())) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.not_participating").withStyle(ChatFormatting.RED));
-            return;
-        }
-
         Entity entity = player.level().getEntity(this.targetedEntityId);
         if (!(entity instanceof PokemonEntity pokemonEntity) || pokemonEntity.getOwner() != null) return;
         else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
+
+        if (((IRaidAccessor) pokemonEntity).crd_getRaidState() == RaidState.FAILED) {
+            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
+            return;
+        }
+
+        if (!RaidJoinHelper.isParticipating(player, false) && RaidUtils.isRaidDimension(player.level())) {
+            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.not_participating"));
+            return;
+        }
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier());
 
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
-        if (raid == null) {
-            player.sendSystemMessage(Component.literal("An unknown error has occurred."));
-            return;
-        }
+        if (raid == null) return;
         else if (raid.hasFailed(player)) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.has_fainted").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
             return;
         }
         else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.lobby_is_full").withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"));
             return;
         }
 
         Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
         if (pokemon == null) return;
         else if (RaidUtils.isPokemonBlacklisted(pokemon)) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName()).withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName())));
             return;
         }
         else if (RaidUtils.isAbilityBlacklisted(pokemon.getAbility())) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName())).withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))));
             return;
         }
         else if (pokemon.isFainted()) {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName()).withStyle(ChatFormatting.RED));
+            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())));
             return;
         }
 

@@ -27,6 +27,7 @@ import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -49,7 +50,7 @@ public class RaidInstance {
     private final List<PokemonBattle> battles;
     private final Map<UUID, Float> damageTracker;
     private final List<ServerPlayer> activePlayers;
-    private final List<UUID> failedPlayers;
+    private final Set<UUID> failedPlayers;
 
     private float currentHealth;
     private float maxHealth;
@@ -76,7 +77,7 @@ public class RaidInstance {
         this.damageTracker = new HashMap<>();
 
         this.activePlayers = new ArrayList<>();
-        this.failedPlayers = new ArrayList<>();
+        this.failedPlayers = new HashSet<>();
 
         this.maxHealth = this.raidBoss.getHealthMulti() * this.bossEntity.getPokemon().getMaxHealth();
         this.currentHealth = this.maxHealth;
@@ -86,8 +87,9 @@ public class RaidInstance {
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
-            for (ServerPlayer player : this.activePlayers) {
-                if (player.level() != this.bossEntity.level()) this.removePlayer(player);
+            for (PokemonBattle battle : this.battles) {
+                ServerPlayer player = battle.getPlayers().getFirst();
+                if (!RaidUtils.isRaidDimension(player.level())) battle.end();
             }
         }, 20, true));
 
@@ -237,6 +239,8 @@ public class RaidInstance {
 
     private void handleSuccess() {
         this.raidState = RaidState.SUCCESS;
+        ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.SUCCESS);
+
         int catches = this.raidBoss.getMaxCatches();
         List<ServerPlayer> success;
         List<ServerPlayer> failed;
@@ -288,7 +292,7 @@ public class RaidInstance {
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
 
-        if (this.bossEntity != null && !this.bossEntity.isRemoved()) this.bossEntity.discard();
+        if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
     }
 
     private void sortPlayers() {
@@ -305,6 +309,8 @@ public class RaidInstance {
 
     private void handleFailed() {
         this.raidState = RaidState.FAILED;
+        ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.FAILED);
+
         this.activePlayers.forEach(player -> {
             player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
