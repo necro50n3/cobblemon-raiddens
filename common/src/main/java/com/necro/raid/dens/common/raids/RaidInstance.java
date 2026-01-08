@@ -164,7 +164,7 @@ public class RaidInstance {
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
         this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) this.failedPlayers.add(player.getUUID());
-        if (this.failedPlayers.size() >= this.activePlayers.size()) this.closeRaid(player.getServer());
+        if (this.failedPlayers.size() >= this.activePlayers.size()) this.stopRaid(false);
 
         if (battle == null) return;
         this.battles.remove(battle);
@@ -229,12 +229,10 @@ public class RaidInstance {
         this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
 
-        MinecraftServer server = this.bossEntity.getServer();
-
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
 
-        this.closeRaid(server);
+        this.closeRaid(this.bossEntity.getServer());
     }
 
     private void handleSuccess() {
