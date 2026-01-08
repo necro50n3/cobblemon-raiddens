@@ -80,6 +80,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
     private void denyRequest(ServerPlayer host, Player player) {
         if (RaidJoinHelper.isInQueue(player)) {
             RaidJoinHelper.removeFromQueue(player, true);
+            RaidHelper.REQUEST_QUEUE.get(host.getUUID()).removePlayer(player);
             player.sendSystemMessage(ComponentUtils.getSystemMessage(
                 Component.translatable("message.cobblemonraiddens.raid.rejected_request", host.getName()))
             );
