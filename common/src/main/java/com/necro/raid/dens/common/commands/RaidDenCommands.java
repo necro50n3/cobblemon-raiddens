@@ -363,7 +363,7 @@ public class RaidDenCommands {
         BlockState blockState = level.getBlockState(blockPos);
         if (cycleMode == null) cycleMode = blockState.hasProperty(RaidCrystalBlock.CYCLE_MODE)
             ? level.getBlockState(blockPos).getValue(RaidCrystalBlock.CYCLE_MODE)
-            : RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
+            : RaidCycleMode.CONFIG;
 
         RandomSource random = context.getSource().getLevel().getRandom();
         RaidType type;

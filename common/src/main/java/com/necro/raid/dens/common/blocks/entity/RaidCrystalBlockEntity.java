@@ -70,13 +70,15 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         if (level.isClientSide()) return;
-        if (RaidHelper.hasRaidState(this.getUuid())) this.closeRaid();
+
+        boolean isIdle = this.isIdle();
+        if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
 
         if (this.canGenerateBoss(blockState) && (this.raidBoss == null || !RaidRegistry.exists(this.raidBoss))) {
             this.generateRaidBoss(level, blockPos, blockState);
         }
 
-        if (this.raidHost != null && this.isIdle()) {
+        if (this.raidHost != null && isIdle) {
             if (++this.inactiveTicks > 2400) this.closeRaid();
         }
         else this.inactiveTicks = 0;
@@ -178,7 +180,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public void closeRaid() {
-        CobblemonRaidDens.LOGGER.info("Closing raid...");
         if (this.getLevel() == null) return;
         ServerLevel level = ModDimensions.getRaidDimension(this.getLevel().getServer());
         if (level == null) return;
@@ -188,7 +189,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
         if (region != null) {
-            CobblemonRaidDens.LOGGER.info("Region is not null");
             level.getEntitiesOfClass(ServerPlayer.class, region.bound())
                 .forEach(player -> ((IRaidTeleporter) player).crd_returnHome());
         }

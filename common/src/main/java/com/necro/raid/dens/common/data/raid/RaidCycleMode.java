@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.data.raid;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +10,8 @@ public enum RaidCycleMode implements StringRepresentable {
     LOCK_BOTH("lock_both", true, true),
     LOCK_TIER("lock_tier", true, false),
     LOCK_TYPE("lock_type", false, true),
-    ALL("all", false, false);
+    ALL("all", false, false),
+    CONFIG("config", true, true);
 
     private final String id;
     private final boolean lockTier;
@@ -22,10 +24,20 @@ public enum RaidCycleMode implements StringRepresentable {
     }
 
     public boolean canCycleTier() {
+        if (this == CONFIG) {
+            String cycle = CobblemonRaidDens.CONFIG.cycle_mode;
+            if (cycle.equals("CONFIG")) return !this.lockTier;
+            else return !fromString(cycle).lockTier;
+        }
         return !this.lockTier;
     }
 
     public boolean canCycleType() {
+        if (this == CONFIG) {
+            String cycle = CobblemonRaidDens.CONFIG.cycle_mode;
+            if (cycle.equals("CONFIG")) return !this.lockType;
+            else return !fromString(cycle).lockType;
+        }
         return !this.lockType;
     }
 

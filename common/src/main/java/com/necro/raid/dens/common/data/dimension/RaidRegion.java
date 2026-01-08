@@ -17,13 +17,15 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class RaidRegion {
+    private static final int RADIUS = 128;
+
     private final BlockPos centre;
     private final AABB bound;
     private ResourceLocation structure;
 
     public RaidRegion(BlockPos centre, ResourceLocation structure) {
         this.centre = centre;
-        this.bound = new AABB(centre.getX() - 128, -64, centre.getZ() - 128, centre.getX() + 128, 128, centre.getZ() + 128);
+        this.bound = new AABB(centre.getX() - RADIUS, -64, centre.getZ() - RADIUS, centre.getX() + RADIUS, 128, centre.getZ() + RADIUS);
         this.structure = structure;
     }
 
@@ -48,13 +50,12 @@ public class RaidRegion {
     }
 
     public void clearRegion(ServerLevel level) {
-        int radius = 128;
-        int minX = this.centre.getX() - radius;
-        int maxX = this.centre.getX() + radius;
+        int minX = this.centre.getX() - RADIUS;
+        int maxX = this.centre.getX() + RADIUS;
         int minY = -64;
         int maxY = 64;
-        int minZ = this.centre.getZ() - radius;
-        int maxZ = this.centre.getZ() + radius;
+        int minZ = this.centre.getZ() - RADIUS;
+        int maxZ = this.centre.getZ() + RADIUS;
 
         int chunkMinX = minX >> 4;
         int chunkMaxX = maxX >> 4;
