@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,7 +13,6 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
@@ -80,38 +80,19 @@ public class RaidRegion {
                 LevelChunk chunk = level.getChunk(cx, cz);
 
                 LevelChunkSection[] sections = chunk.getSections();
-                int chunkMinSection = chunk.getMinSection();
-
                 for (int i = 0; i < sections.length; i++) {
                     LevelChunkSection section = sections[i];
                     if (section == null) continue;
 
-                    int sy = i + chunkMinSection;
-                    int sectionStartY = sy << 4;
-
-                    int localMinY = Math.max(0, minY - sectionStartY);
-                    int localMaxY = Math.min(15, maxY - sectionStartY);
-
-                    for (int x = 0; x < 16; x++) {
-                        int worldX = (cx << 4) + x;
-                        if (worldX < minX || worldX > maxX) continue;
-
-                        for (int y = localMinY; y <= localMaxY; y++) {
-                            for (int z = 0; z < 16; z++) {
-                                int worldZ = (cz << 4) + z;
-                                if (worldZ < minZ || worldZ > maxZ) continue;
-
-                                section.setBlockState(x, y, z, Blocks.AIR.defaultBlockState());
-                            }
-                        }
+                    if (!section.hasOnlyAir()) {
+                        chunk.getSections()[i] = new LevelChunkSection(level.registryAccess().registryOrThrow(Registries.BIOME));
+                        chunk.getBlockEntities().keySet().forEach(chunk::removeBlockEntity);
+                        section.recalcBlockCounts();
                     }
-                    section.recalcBlockCounts();
                 }
                 chunk.setUnsaved(true);
             }
         }
-
-        level.removeBlockEntity(this.centre());
     }
 
     public void placeStructure(ServerLevel level) {
@@ -126,7 +107,7 @@ public class RaidRegion {
         settings.addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
 
         BlockPos offset = this.getOffset();
-        template.placeInWorld(level, offset, offset, settings, level.getRandom(), 2);
+        template.placeInWorld(level, offset, offset, settings, level.getRandom(), 0);
 
         level.setBlockAndUpdate(this.centre(), ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
 
