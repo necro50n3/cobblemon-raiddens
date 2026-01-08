@@ -399,12 +399,16 @@ public class RaidInstance {
     }
 
     public void closeRaid(MinecraftServer server) {
+        this.closeRaid(server, false);
+    }
+
+    public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));
 
-        RaidHelper.closeRaid(this.raid, this.raidState);
+        RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.raidState, ModDimensions.getRaidDimension(server));
         RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
     }

@@ -7,7 +7,8 @@ public enum RaidState implements StringRepresentable {
     NOT_STARTED("not_started"),
     IN_PROGRESS("in_progress"),
     FAILED("failed"),
-    SUCCESS("success");
+    SUCCESS("success"),
+    CANCELLED("cancelled");
 
     private final String id;
 

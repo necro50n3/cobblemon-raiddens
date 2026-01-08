@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
@@ -180,6 +181,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid();
             RaidHelper.resetClearedRaids(blockEntity.getUuid());
+            RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+            if (raid != null) raid.closeRaid(level.getServer(), true);
         }
         super.onRemove(blockState, level, blockPos, blockState2, bl);
     }

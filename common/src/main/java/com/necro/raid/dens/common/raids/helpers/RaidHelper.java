@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -53,11 +54,12 @@ public class RaidHelper extends SavedData {
         return cleared.contains(player.getUUID());
     }
 
-    public static void closeRaid(UUID raid, RaidState raidState) {
+    public static void closeRaid(UUID raid, RaidState raidState, ServerLevel level) {
         RaidInstance instance = ACTIVE_RAIDS.remove(raid);
         if (instance == null) return;
 
-        INSTANCE.RAID_CLOSE_QUEUE.put(raid, raidState);
+        if (raidState == RaidState.CANCELLED) RaidRegionHelper.clearRegion(raid, level);
+        else INSTANCE.RAID_CLOSE_QUEUE.put(raid, raidState);
     }
 
     public static void clearRaid(UUID raid, Collection<? extends Player> players) {

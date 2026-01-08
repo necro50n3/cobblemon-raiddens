@@ -2,10 +2,12 @@ package com.necro.raid.dens.common.data.dimension;
 
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.util.IRaidTeleporter;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -63,7 +65,13 @@ public class RaidRegion {
         int chunkMinZ = minZ >> 4;
         int chunkMaxZ = maxZ >> 4;
 
-        for (Entity e : level.getEntitiesOfClass(Entity.class, this.bound)) {
+        level.getEntitiesOfClass(ServerPlayer.class, this.bound())
+            .forEach(player -> {
+                RaidUtils.leaveRaid(player);
+                ((IRaidTeleporter) player).crd_returnHome();
+            });
+
+        for (Entity e : level.getEntitiesOfClass(Entity.class, this.bound())) {
             if (e != null && !(e instanceof Player)) e.discard();
         }
 
@@ -129,30 +137,5 @@ public class RaidRegion {
     public void removeRegionTicket(ServerLevel level) {
         ChunkPos chunkPos = new ChunkPos(this.centre());
         level.getChunkSource().removeRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
-    }
-
-    public static RaidRegion load(CompoundTag tag) {
-        CompoundTag centreTag = tag.getCompound("centre");
-        BlockPos centre = new BlockPos(
-            centreTag.getInt("centre_x"),
-            centreTag.getInt("centre_y"),
-            centreTag.getInt("centre_z")
-        );
-
-        ResourceLocation structure = ResourceLocation.parse(tag.getString("structure"));
-
-        return new RaidRegion(centre, structure);
-    }
-
-    public CompoundTag save(CompoundTag tag) {
-        CompoundTag centre = new CompoundTag();
-        centre.putInt("centre_x", this.centre.getX());
-        centre.putInt("centre_y", this.centre.getY());
-        centre.putInt("centre_z", this.centre.getZ());
-        tag.put("centre", centre);
-
-        tag.putString("structure", this.structure.toString());
-
-        return tag;
     }
 }

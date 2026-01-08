@@ -194,14 +194,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         RaidState raidState = RaidHelper.getRaidState(this.getUuid());
         if (raidState == RaidState.SUCCESS || CobblemonRaidDens.CONFIG.max_clears_include_fails) this.clearRaid();
 
-        RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
-        if (region != null) {
-            level.getEntitiesOfClass(ServerPlayer.class, region.bound())
-                .forEach(player -> {
-                    RaidUtils.leaveRaid(player);
-                    ((IRaidTeleporter) player).crd_returnHome();
-                });
-        }
         RaidRegionHelper.clearRegion(this.getUuid(), level);
 
         this.clearRaidHost();
