@@ -1,6 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -73,6 +74,13 @@ public class ModEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (RaidUtils.cannotBreak(event.getPlayer(), (Level) event.getLevel())) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+        MinecraftServer server = event.getEntity().getServer();
+        if (server == null) return;
+        ModDimensions.onDimensionChange((ServerPlayer) event.getEntity(), server.getLevel(event.getFrom()), server.getLevel(event.getTo()));
     }
 
     @SubscribeEvent

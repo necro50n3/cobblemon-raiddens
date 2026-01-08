@@ -11,4 +11,5 @@ public interface IRaidAccessor {
     RaidBoss crd_getRaidBoss();
     void crd_setRaidBoss(ResourceLocation raidBoss);
     boolean crd_isRaidBoss();
+    void crd_flagForRemoval();
 }

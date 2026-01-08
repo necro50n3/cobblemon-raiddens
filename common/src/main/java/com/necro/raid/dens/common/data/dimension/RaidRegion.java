@@ -1,14 +1,15 @@
 package com.necro.raid.dens.common.data.dimension;
 
-import com.necro.raid.dens.common.blocks.BlockTags;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -62,7 +63,7 @@ public class RaidRegion {
         int chunkMinZ = minZ >> 4;
         int chunkMaxZ = maxZ >> 4;
 
-        for (Entity e : level.getEntitiesOfClass(Entity.class, new AABB(minX, minY, minZ, maxX, maxY, maxZ))) {
+        for (Entity e : level.getEntitiesOfClass(Entity.class, this.bound)) {
             if (e != null && !(e instanceof Player)) e.discard();
         }
 
@@ -101,6 +102,8 @@ public class RaidRegion {
                 chunk.setUnsaved(true);
             }
         }
+
+        level.removeBlockEntity(this.centre());
     }
 
     public void placeStructure(ServerLevel level) {
@@ -113,12 +116,19 @@ public class RaidRegion {
         StructurePlaceSettings settings = new StructurePlaceSettings();
         settings.clearProcessors();
         settings.addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
-        settings.addProcessor(new ProtectedBlockProcessor(BlockTags.RAID_CRYSTAL));
 
         BlockPos offset = this.getOffset();
         template.placeInWorld(level, offset, offset, settings, level.getRandom(), 2);
 
         level.setBlockAndUpdate(this.centre(), ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState());
+
+        ChunkPos chunkPos = new ChunkPos(this.centre());
+        level.getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
+    }
+
+    public void removeRegionTicket(ServerLevel level) {
+        ChunkPos chunkPos = new ChunkPos(this.centre());
+        level.getChunkSource().removeRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
     }
 
     public static RaidRegion load(CompoundTag tag) {

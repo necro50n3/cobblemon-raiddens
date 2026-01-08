@@ -1,11 +1,16 @@
 package com.necro.raid.dens.common.dimensions;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -27,5 +32,15 @@ public class ModDimensions {
     public static ServerLevel getRaidDimension(MinecraftServer server) {
         if (server == null) return null;
         return server.getLevel(RAID_DIMENSION);
+    }
+
+    public static void onDimensionChange(ServerPlayer player, ServerLevel from, ServerLevel to) {
+        RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(player);
+        if (participant == null) return;
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(participant.raid());
+        if (raid == null) return;
+
+        if (RaidUtils.isRaidDimension(from)) raid.removeFromBossEvent(player);
+        else if (RaidUtils.isRaidDimension(to)) raid.addToBossEvent(player);
     }
 }

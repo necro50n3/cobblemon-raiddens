@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.util;
 
 import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
@@ -155,7 +156,11 @@ public class RaidUtils {
         if (items > 0 && isRaidDimension(player.level())) return;
 
         instance.removePlayer((ServerPlayer) player);
-        instance.closeRaid();
+        instance.closeRaid(player.getServer());
+
+        PokemonEntity entity = instance.getBossEntity();
+        if (entity == null) CobblemonRaidDens.LOGGER.info("Could not find raid boss");
+        else if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
     }
 
     private static void leaveRaidFallback(Player player) {

@@ -32,8 +32,6 @@ public record LeaveRaidPacket() implements CustomPacketPayload, ServerPacket {
     public void handleServer(ServerPlayer player) {
         ServerLevel level = player.serverLevel();
         RaidUtils.leaveRaid(player);
-        if (RaidUtils.isRaidDimension(level)) {
-            ((IRaidTeleporter) player).crd_returnHome();
-        }
+        if (RaidUtils.isRaidDimension(level)) ((IRaidTeleporter) player).crd_returnHome();
     }
 }

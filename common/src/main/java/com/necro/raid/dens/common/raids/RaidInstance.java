@@ -13,12 +13,15 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassRespon
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidScriptHelper;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
@@ -27,6 +30,7 @@ import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
@@ -125,7 +129,7 @@ public class RaidInstance {
 
     public void addPlayer(ServerPlayer player) {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
-        this.bossEvent.addPlayer(player);
+        this.addToBossEvent(player);
 
         this.damageTracker.put(player.getUUID(), 0f);
         if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f)
@@ -156,9 +160,9 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
-        this.bossEvent.removePlayer(player);
+        this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) this.failedPlayers.add(player.getUUID());
-        if (this.failedPlayers.size() >= this.activePlayers.size()) this.closeRaid();
+        if (this.failedPlayers.size() >= this.activePlayers.size()) this.closeRaid(player.getServer());
 
         if (battle == null) return;
         this.battles.remove(battle);
@@ -223,10 +227,12 @@ public class RaidInstance {
         this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
 
+        MinecraftServer server = this.bossEntity.getServer();
+
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
 
-        this.closeRaid();
+        this.closeRaid(server);
     }
 
     private void handleSuccess() {
@@ -305,8 +311,20 @@ public class RaidInstance {
         });
     }
 
+    public PokemonEntity getBossEntity() {
+        return this.bossEntity;
+    }
+
     public RaidBoss getRaidBoss() {
         return this.raidBoss;
+    }
+
+    public void addToBossEvent(ServerPlayer player) {
+        this.bossEvent.addPlayer(player);
+    }
+
+    public void removeFromBossEvent(ServerPlayer player) {
+        this.bossEvent.removePlayer(player);
     }
 
     public RaidState getRaidState() {
@@ -380,8 +398,11 @@ public class RaidInstance {
         side1.sendUpdate(new BattleApplyPassResponsePacket());
     }
 
-    public void closeRaid() {
+    public void closeRaid(MinecraftServer server) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
+
+        RaidRegion region = RaidRegionHelper.getRegion(this.raid);
+        if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));
 
         RaidHelper.closeRaid(this.raid, this.raidState);
         RaidHelper.removeRequests(this.host);
