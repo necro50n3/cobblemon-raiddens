@@ -72,7 +72,9 @@ public class RaidBucket {
     public boolean isValidBiome(Holder<Biome> biome) {
         if (this.isAlwaysValid) return true;
         if (this.biomes == null) this.resolveBiomes();
-        return this.biomes.stream().anyMatch(biome::is);
+        return biome.unwrapKey()
+            .map(this.biomes::contains)
+            .orElse(false);
     }
 
     public double getWeight() {
