@@ -9,7 +9,6 @@ import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
 @Environment(EnvType.CLIENT)
 public class RaidHomeRenderer extends GeoBlockRenderer<RaidHomeBlockEntity> {
-
     public RaidHomeRenderer(BlockEntityRendererProvider.Context context) {
         super(new RaidHomeBlockModel());
     }
