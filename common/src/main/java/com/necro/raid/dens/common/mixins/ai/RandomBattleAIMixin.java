@@ -10,7 +10,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mixin(RandomBattleAI.class)
 public abstract class RandomBattleAIMixin {
@@ -22,11 +25,15 @@ public abstract class RandomBattleAIMixin {
             return;
         }
 
-        List<InBattleMove> filteredMoves = new ArrayList<>(moveset.getMoves().stream()
+        List<InBattleMove> filteredMoves = moveset.getMoves().stream()
             .filter(InBattleMove::canBeUsed)
-            .filter(move -> move.mustBeUsed() || (move.getTarget().getTargetList().invoke(pokemon) != null && !move.getTarget().getTargetList().invoke(pokemon).isEmpty()))
+            .filter(move -> {
+                if (move.mustBeUsed()) return true;
+                List<Targetable> target = move.getTarget().getTargetList().invoke(pokemon);
+                return target == null || !target.isEmpty();
+            })
             .filter(move -> !RaidAI.BLOCKED_MOVES.contains(move.id))
-            .toList());
+            .collect(Collectors.toCollection(ArrayList::new));
         if (filteredMoves.isEmpty()) {
             cir.setReturnValue(PassActionResponse.INSTANCE);
             return;
@@ -35,9 +42,8 @@ public abstract class RandomBattleAIMixin {
         Collections.shuffle(filteredMoves);
         InBattleMove bestMove = filteredMoves.getFirst();
 
-        List<Targetable> target = bestMove.mustBeUsed() ? null
-            : new ArrayList<>(bestMove.getTarget().getTargetList().invoke(pokemon).stream().filter(t -> !t.isAllied(pokemon)).toList());
-        if (target == null) {
+        List<Targetable> target = bestMove.mustBeUsed() ? null : bestMove.getTarget().getTargetList().invoke(pokemon);
+        if (target == null || target.isEmpty()) {
             cir.setReturnValue(new MoveActionResponse(bestMove.id, null, null));
         }
         else {
