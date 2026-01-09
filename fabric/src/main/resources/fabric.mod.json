@@ -41,8 +41,5 @@
     "cobbledollars": ">=2.0.0",
     "cobblemonsizevariation": ">=1.4.0",
     "rctapi": ">=0.14.0"
-  },
-  "conflicts": {
-      "wthit": "*"
   }
 }
