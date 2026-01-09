@@ -37,6 +37,8 @@ public class RaidBucket {
     private final HashSet<String> excludeBossesInner;
     private final HashSet<String> biomesInner;
 
+    private final boolean isAlwaysValid;
+
     private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<RaidFeature> includeFeatures, HashSet<String> includeBosses,
                        HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<RaidFeature> excludeFeatures, HashSet<String> excludeBosses,
                        HashSet<String> biomes, double weight) {
@@ -59,6 +61,8 @@ public class RaidBucket {
         this.includeBossesInner = includeBosses;
         this.excludeBossesInner = excludeBosses;
         this.biomesInner =  biomes;
+
+        this.isAlwaysValid = this.biomesInner.contains("*") || this.biomesInner.contains("#cobblemonraiddens:raid_spawnable");
     }
 
     private HashSet<String> getBiomes() {
@@ -66,6 +70,7 @@ public class RaidBucket {
     }
 
     public boolean isValidBiome(Holder<Biome> biome) {
+        if (this.isAlwaysValid) return true;
         if (this.biomes == null) this.resolveBiomes();
         return this.biomes.stream().anyMatch(biome::is);
     }
@@ -93,12 +98,13 @@ public class RaidBucket {
         Set<ResourceKey<Biome>> result = new HashSet<>();
 
         for (String entry : this.biomesInner) {
-            ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.equals("*")) {
                 result.addAll(RaidBucketRegistry.BIOME_REGISTRY.registryKeySet());
                 break;
             }
-            else if (entry.startsWith("#")) {
+
+            ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
+            if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
                 RaidBucketRegistry.BIOME_REGISTRY.getTag(tag).ifPresent(holderSet ->
                     holderSet.forEach(holder -> {
