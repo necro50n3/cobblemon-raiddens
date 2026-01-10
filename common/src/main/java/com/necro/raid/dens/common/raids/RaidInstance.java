@@ -19,6 +19,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
@@ -40,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RaidInstance {
     private final PokemonEntity bossEntity;
@@ -62,6 +64,7 @@ public class RaidInstance {
     private final List<DelayedRunnable> runQueue;
 
     private RaidState raidState;
+    private final RaidBattleState battleState;
 
     public RaidInstance(PokemonEntity entity, UUID host) {
         this.bossEntity = entity;
@@ -94,6 +97,7 @@ public class RaidInstance {
         }, 20, true));
 
         this.raidState = RaidState.NOT_STARTED;
+        this.battleState = new RaidBattleState();
 
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
@@ -400,6 +404,23 @@ public class RaidInstance {
         }
         side1.getBattle().checkForInputDispatch();
         side1.sendUpdate(new BattleApplyPassResponsePacket());
+    }
+
+    public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
+        Optional<ShowdownEvent> optional = function.apply(this.battleState);
+        optional.ifPresent(event -> {
+            for (PokemonBattle b : this.battles) {
+                if (b == battle) continue;
+                event.send(b);
+            }
+        });
+    }
+
+    public void updateBattleContext(PokemonBattle battle, Consumer<PokemonBattle> consumer) {
+        for (PokemonBattle b : this.battles) {
+            if (b == battle) continue;
+            consumer.accept(b);
+        }
     }
 
     public void closeRaid(MinecraftServer server) {

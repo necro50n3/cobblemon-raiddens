@@ -1,26 +1,29 @@
 package com.necro.raid.dens.common.raids.battle;
 
-import com.necro.raid.dens.common.raids.battle.component.ScreensComponent;
+import com.necro.raid.dens.common.showdown.events.ShowdownEvent;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
-public class RaidSide {
-    public final RaidPokemon[] pokemon;
-    private final Set<ScreensComponent> screens;
+public abstract class RaidSide {
+    public Set<String> sideConditions;
+    private final int side;
 
-    public RaidSide() {
-        this.pokemon = new RaidPokemon[2];
-        this.screens = new HashSet<>();
+    public RaidSide(int side) {
+        this.sideConditions = new HashSet<>();
+        this.side = side;
     }
 
-    public void addScreen(ScreensComponent screen) {
-        if (this.screens.contains(screen)) return;
-        this.screens.add(screen);
+    public Optional<ShowdownEvent> addSideCondition(String sideCondition) {
+        if (this.sideConditions.contains(sideCondition)) return Optional.empty();
+        this.sideConditions.add(sideCondition);
+        return Optional.empty();
     }
 
-    public void removeScreen(ScreensComponent screen) {
-        if (!this.screens.contains(screen)) return;
-        this.screens.remove(screen);
+    public Optional<ShowdownEvent> removeSideCondition(String sideCondition) {
+        if (!this.sideConditions.contains(sideCondition)) return Optional.empty();
+        this.sideConditions.remove(sideCondition);
+        return Optional.empty();
     }
 }

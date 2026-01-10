@@ -32,7 +32,7 @@ public class RaidScriptHelper {
             Stat stat = parseStat(args[1]);
             if (stat == null) return null;
             int stages = Math.clamp(parseInt(args[2]), -6, 6);
-            return battle -> new StatBoostShowdownEvent(stat, stages, 2).send(battle);
+            return battle -> new StatBoostShowdownEvent(stat, stages, 2, false).send(battle);
         }
         else if (function.startsWith("PLAYER")) {
             String[] args = function.split("_");
@@ -41,7 +41,7 @@ public class RaidScriptHelper {
             Stat stat = parseStat(args[1]);
             if (stat == null) return null;
             int stages = Math.clamp(parseInt(args[2]), -6, 6);
-            return battle -> new StatBoostShowdownEvent(stat, -stages, 1).send(battle);
+            return battle -> new StatBoostShowdownEvent(stat, -stages, 1, false).send(battle);
         }
         else if (function.startsWith("USE_MOVE")) {
             String[] args = function.split("_");
