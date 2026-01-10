@@ -61,10 +61,6 @@ mandatory = false
 type = "optional"
 versionRange = "[0.14.0,)"
 
-[[dependencies.cobblemonraiddens]]
-modId = "wthit"
-type = "discouraged"
-
 [[mixins]]
 config = "${archives_name}-common.mixins.json"
 
