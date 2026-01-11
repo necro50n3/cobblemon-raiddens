@@ -8,7 +8,6 @@ import com.cobblemon.mod.common.api.data.ShowdownIdentifiable;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;

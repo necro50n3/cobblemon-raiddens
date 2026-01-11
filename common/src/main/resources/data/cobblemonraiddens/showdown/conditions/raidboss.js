@@ -115,6 +115,7 @@
             }
         }
 
+        this.effectState.stage = 0;
         if (wasDamaged && pokemon.hp === pokemon.maxhp) pokemon.hp = Math.max(1, pokemon.hp - 1);
     }
 }
