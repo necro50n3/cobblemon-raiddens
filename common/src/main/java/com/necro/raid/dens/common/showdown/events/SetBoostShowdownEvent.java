@@ -7,11 +7,9 @@ public record SetBoostShowdownEvent(Stat stat, int stages, int targetSide) imple
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
-                "var boosts = {};" +
-                "boosts['%1$s'] = %2$d; " +
                 "for (let p of battle.sides[%4$d].pokemon) { " +
                     "if (!p) continue; " +
-                    "p.setBoost(boosts); " +
+                    "p.boosts['%1$s'] = %2$d; " +
                 "} ",
             this.stat.getShowdownId(), this.stages, battle.getSide2().getActors()[0].getUuid(), this.targetSide - 1
         );
