@@ -38,7 +38,7 @@ public abstract class FieldStartInstructionMixin {
 
         int idx = effect.getRawData().lastIndexOf(" ");
         String effectType = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
-        BattleContext.Type type = BattleContext.Type.valueOf(effectType);
+        BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase());
 
         BattlePokemon source = this.getMessage().battlePokemonFromOptional(battle, "of");
 
