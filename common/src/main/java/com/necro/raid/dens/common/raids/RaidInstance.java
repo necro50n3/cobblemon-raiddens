@@ -407,6 +407,7 @@ public class RaidInstance {
     }
 
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
+        if (CobblemonRaidDens.CONFIG.max_players_for_support < this.activePlayers.size()) return;
         Optional<ShowdownEvent> optional = function.apply(this.battleState);
         optional.ifPresent(event -> {
             for (PokemonBattle b : this.battles) {
@@ -417,6 +418,7 @@ public class RaidInstance {
     }
 
     public void updateBattleContext(PokemonBattle battle, Consumer<PokemonBattle> consumer) {
+        if (CobblemonRaidDens.CONFIG.max_players_for_support < this.activePlayers.size()) return;
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
             consumer.accept(b);
