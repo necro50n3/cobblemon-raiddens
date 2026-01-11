@@ -1,3 +1,4 @@
+
 package com.necro.raid.dens.common.mixins.battlesync;
 
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
@@ -5,9 +6,8 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.status.Status;
 import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
-import com.cobblemon.mod.common.battles.interpreter.instructions.CureStatusInstruction;
+import com.cobblemon.mod.common.battles.interpreter.instructions.StartInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(CureStatusInstruction.class)
-public abstract class CureStatusInstructionMixin {
+@Mixin(StartInstruction.class)
+public abstract class StartInstructionMixin {
     @Shadow(remap = false)
     public abstract BattleMessage getMessage();
 
@@ -34,7 +34,7 @@ public abstract class CureStatusInstructionMixin {
         Status status = statusLabel == null ? null : Statuses.getStatus(statusLabel);
 
         battle.dispatch(() -> {
-            if (status != null) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.removeStatus());
+            if (status != null) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addStatus(status));
             return DispatchResultKt.getGO();
         });
     }

@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.StatusInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -34,8 +33,7 @@ public abstract class StatusInstructionMixin {
         Status status = statusLabel == null ? null : Statuses.getStatus(statusLabel);
 
         battle.dispatch(() -> {
-            if (status instanceof VolatileStatus vol) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addVolatile(vol));
-            else if (status != null) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addStatus(status));
+            if (status != null) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addStatus(status));
             return DispatchResultKt.getGO();
         });
     }

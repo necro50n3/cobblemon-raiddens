@@ -5,8 +5,8 @@ import com.necro.raid.dens.common.showdown.events.ShowdownEvent;
 import java.util.Optional;
 
 public class TrainerSide extends RaidSide {
-    public TrainerSide(int side) {
-        super(side);
+    public TrainerSide() {
+        super(1);
     }
 
     @Override

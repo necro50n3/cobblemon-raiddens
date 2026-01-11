@@ -12,8 +12,8 @@ public class RaidBattleState {
     private String weather;
 
     public RaidBattleState() {
-        this.trainerSide = new TrainerSide(1);
-        this.bossSide = new BossSide(2);
+        this.trainerSide = new TrainerSide();
+        this.bossSide = new BossSide();
         this.terrain = null;
         this.weather = null;
     }
