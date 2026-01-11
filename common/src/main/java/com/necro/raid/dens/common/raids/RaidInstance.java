@@ -146,7 +146,7 @@ public class RaidInstance {
 
     public void addBattle(PokemonBattle battle) {
         ((IRaidBattle) battle).crd_setRaidBattle(this);
-        new StartRaidShowdownEvent().send(battle);
+        new StartRaidShowdownEvent(this.battleState).send(battle);
         this.battles.add(battle);
 
         this.runScriptByTurn(battle, 0);

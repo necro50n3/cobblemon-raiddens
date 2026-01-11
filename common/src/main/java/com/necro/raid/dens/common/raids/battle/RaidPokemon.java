@@ -9,9 +9,9 @@ import net.minecraft.util.Mth;
 import java.util.*;
 
 public class RaidPokemon {
-    private Status status;
-    private final Set<VolatileStatus> volatileStatus;
-    private final Map<Stat, Integer> boosts;
+    Status status;
+    public final Set<VolatileStatus> volatileStatus;
+    public final Map<Stat, Integer> boosts;
 
     public RaidPokemon() {
         this.status = null;

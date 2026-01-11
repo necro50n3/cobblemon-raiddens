@@ -8,8 +8,8 @@ import java.util.Set;
 public class RaidBattleState {
     public final TrainerSide trainerSide;
     public final BossSide bossSide;
-    private String terrain;
-    private String weather;
+    public String terrain;
+    public String weather;
 
     public RaidBattleState() {
         this.trainerSide = new TrainerSide();

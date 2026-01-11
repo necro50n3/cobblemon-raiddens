@@ -10,7 +10,7 @@ import java.util.Set;
 
 public abstract class RaidSide {
     public Set<String> sideConditions;
-    private final int side;
+    public final int side;
 
     public RaidSide(int side) {
         this.sideConditions = new HashSet<>();
