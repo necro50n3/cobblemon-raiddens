@@ -1,43 +1,25 @@
-package com.necro.raid.dens.common.mixins.showdown;
+package com.necro.raid.dens.common.showdown.instructions;
 
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.data.ShowdownIdentifiable;
-import com.cobblemon.mod.common.battles.dispatch.*;
-import com.cobblemon.mod.common.battles.interpreter.instructions.HealInstruction;
+import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.jetbrains.annotations.NotNull;
 
-@Mixin(HealInstruction.class)
-public abstract class HealInstructionMixin implements InterpreterInstruction {
-    @Final
-    @Shadow(remap = false)
-    private BattleMessage publicMessage;
-
-    @Final
-    @Shadow(remap = false)
-    private BattleMessage privateMessage;
-
-    @Final
-    @Shadow(remap = false)
-    private BattleActor actor;
-
-    @Inject(method = "invoke", at = @At("HEAD"), cancellable = true, remap = false)
-    private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
+public record RaidHealInstruction(BattleActor actor, BattleMessage publicMessage, BattleMessage privateMessage) implements InterpreterInstruction {
+    @Override
+    public void invoke(@NotNull PokemonBattle battle) {
         if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
         RaidInstance raidInstance = ((IRaidBattle) battle).crd_getRaidBattle();
         BattlePokemon battlePokemon = this.publicMessage.battlePokemon(0, this.actor.battle);
@@ -46,12 +28,12 @@ public abstract class HealInstructionMixin implements InterpreterInstruction {
 
         String args = this.privateMessage.argumentAt(1);
         assert args != null;
-        float remainingHealth = Float.parseFloat(args.split("/")[0]);
+        float healing = Float.parseFloat(args);
         Effect effect = this.privateMessage.effect("from");
 
         battle.dispatchWaiting(1f, () -> {
             ServerPlayer player = battle.getPlayers().getFirst();
-            raidInstance.syncHealth(player, battle, remainingHealth);
+            raidInstance.syncHealth(player, battle, -healing);
             battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
 
             if (!this.privateMessage.hasOptionalArgument("silent")) {
@@ -79,6 +61,5 @@ public abstract class HealInstructionMixin implements InterpreterInstruction {
 
             return Unit.INSTANCE;
         });
-        ci.cancel();
     }
 }

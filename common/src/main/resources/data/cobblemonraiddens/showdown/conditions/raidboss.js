@@ -60,12 +60,57 @@
 
         return 0;
     },
+    onTryHeal(damage, target, source, effect) {
+        if (target.hp === target.maxhp) return false;
+
+        try {
+            this.add('split', 'p2');
+            switch (effect?.id) {
+                case 'leechseed':
+                case 'rest':
+                    this.add('-raidheal', target, damage, '[silent]');
+                    this.add('-raidheal', target, Math.floor(damage / target.maxhp * 100), '[silent]');
+                    break;
+                case 'drain':
+                    this.add('-raidheal', target, damage, '[from] drain', '[of] ' + source);
+                    this.add('-raidheal', target, Math.floor(damage / target.maxhp * 100), '[from] drain', '[of] ' + source);
+                    break;
+                case 'wish':
+                    break;
+                case 'zpower':
+                    this.add('-raidheal', target, damage, '[zeffect]');
+                    this.add('-raidheal', target, Math.floor(damage / target.maxhp * 100), '[zeffect]');
+                    break;
+                default:
+                    if (!effect) break;
+                    if (effect.effectType === 'Move') {
+                        this.add('-raidheal', target, damage);
+                    } else if (source && source !== target) {
+                        this.add('-raidheal', target, damage, '[from] ' + effect.fullname, '[of] ' + source);
+                        this.add('-raidheal', target, Math.floor(damage / target.maxhp * 100), '[from] ' + effect.fullname, '[of] ' + source);
+                    } else {
+                        this.add('-raidheal', target, damage, '[from] ' + effect.fullname);
+                        this.add('-raidheal', target, Math.floor(damage / target.maxhp * 100), '[from] ' + effect.fullname);
+                    }
+                    break;
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+        return false;
+    },
     onResidual(pokemon) {
         let wasDamaged = false;
         for (let i = 0; i < this.log.length - 2; i++) {
             if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-damage|p2a:') && this.log[i + 2].startsWith('|-damage|p2a:')) {
                 this.log.splice(i, 3);
                 wasDamaged = true;
+                i--;
+            }
+            else if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-heal|p2a:') && this.log[i + 2].startsWith('|-heal|p2a:')) {
+                this.log.splice(i, 3);
                 i--;
             }
         }

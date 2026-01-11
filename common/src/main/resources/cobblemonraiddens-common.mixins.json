@@ -32,7 +32,7 @@
         "raid.PokemonEntityMixin",
         "raid.PokemonMixin",
         "showdown.ForcePassActionResponseMixin",
-        "showdown.HealInstructionMixin",
+        "showdown.GraalShowdownServiceMixin",
         "showdown.MoveActionResponseMixin",
         "showdown.MoveInstructionMixin",
         "showdown.ShowdownInterpreterMixin",

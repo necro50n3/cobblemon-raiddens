@@ -59,5 +59,9 @@ public class ShowdownInterpreterMixin {
         splitInstructionParser.put("-raiddamage", (battle, actor, instruction, publicMessage, privateMessage, messageIterator) ->
             new RaidDamageInstruction(instruction, actor, publicMessage, privateMessage)
         );
+
+        splitInstructionParser.put("-raidheal", (battle, actor, instruction, publicMessage, privateMessage, messageIterator) ->
+            new RaidHealInstruction(actor, publicMessage, privateMessage)
+        );
     }
 }
