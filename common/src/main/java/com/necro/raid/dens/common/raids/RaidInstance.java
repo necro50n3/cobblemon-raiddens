@@ -28,7 +28,6 @@ import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
-import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -90,10 +89,8 @@ public class RaidInstance {
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
-            for (PokemonBattle battle : this.battles) {
-                ServerPlayer player = battle.getPlayers().getFirst();
-                if (!RaidUtils.isRaidDimension(player.level())) battle.end();
-            }
+            List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
+            for (PokemonBattle battle : battleCache) battle.checkFlee();
         }, 20, true));
 
         this.raidState = RaidState.NOT_STARTED;
@@ -293,8 +290,6 @@ public class RaidInstance {
             new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
-
-        if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
     }
 
     private void sortPlayers() {
@@ -431,6 +426,7 @@ public class RaidInstance {
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
+        if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));

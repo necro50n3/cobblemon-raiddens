@@ -13,11 +13,11 @@ import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.IRaidBattle;
 import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class CobblemonRaidDens {
     public static final String MOD_ID = "cobblemonraiddens";
@@ -104,11 +103,8 @@ public class CobblemonRaidDens {
     @SuppressWarnings("ConstantConditions")
     private static void raidFailEvent(PokemonBattle battle) {
         try {
-            UUID battleId = ((IRaidAccessor) battle.getSide2().getActivePokemon().getFirst().getBattlePokemon().getEntity()).crd_getRaidId();
-            if (RaidHelper.ACTIVE_RAIDS.containsKey(battleId)) {
-                RaidInstance raidInstance = RaidHelper.ACTIVE_RAIDS.get(battleId);
-                raidInstance.removePlayer(battle);
-            }
+            RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+            if (raid != null) raid.removePlayer(battle);
         }
         catch (NullPointerException ignored) {}
     }
