@@ -1,4 +1,3 @@
-
 package com.necro.raid.dens.common.mixins.battlesync;
 
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
@@ -6,7 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.status.Status;
 import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
-import com.cobblemon.mod.common.battles.interpreter.instructions.StartInstruction;
+import com.cobblemon.mod.common.battles.interpreter.instructions.EndInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -18,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(StartInstruction.class)
-public abstract class StartInstructionMixin {
+@Mixin(EndInstruction.class)
+public abstract class EndInstructionMixin {
     @Shadow(remap = false)
     public abstract BattleMessage getMessage();
 
@@ -35,7 +34,7 @@ public abstract class StartInstructionMixin {
         Status status = statusLabel == null ? null : Statuses.getStatus(statusLabel);
 
         battle.dispatch(() -> {
-            if (status instanceof VolatileStatus vol) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addVolatile(vol));
+            if (status instanceof VolatileStatus vol) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.removeVolatile(vol));
             return DispatchResultKt.getGO();
         });
     }

@@ -11,7 +11,7 @@ public record CureStatusShowdownEvent(Status status, int targetSide) implements 
                 ">eval " +
                     "const p = battle.sides[%2$d].pokemon[0]; " +
                     "p.removeVolatile('%1$s');",
-                this.status.getShowdownName(), this.targetSide);
+                this.status.getShowdownName(), this.targetSide - 1);
         }
         else {
             return String.format(
