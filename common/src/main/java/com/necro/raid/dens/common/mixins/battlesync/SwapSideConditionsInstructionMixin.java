@@ -35,6 +35,7 @@ public abstract class SwapSideConditionsInstructionMixin {
             raid.updateBattleState(battle, RaidBattleState::swapSideConditions);
             raid.updateBattleContext(battle, b -> {
                 ContextManager manager = b.getSide2().getContextManager();
+                // Tailwind and hazards should already be synced.
                 b.getSide1().getContextManager().copy(manager, BattleContext.Type.TAILWIND, BattleContext.Type.HAZARD);
             });
             return DispatchResultKt.getGO();

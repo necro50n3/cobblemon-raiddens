@@ -32,6 +32,9 @@ public class RaidBattleState {
 
     public Optional<ShowdownEvent> addWeather(String weather) {
         if (this.weather != null && this.weather.equals(weather)) return Optional.empty();
+        else if (this.weather != null && RaidConditions.PRIMAL_WEATHER.contains(this.weather) && !RaidConditions.PRIMAL_WEATHER.contains(weather)) {
+            return Optional.empty();
+        }
         this.weather = weather;
         return Optional.of(new SetWeatherShowdownEvent(weather, true));
     }
