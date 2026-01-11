@@ -1,7 +1,5 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
-import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
-import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
