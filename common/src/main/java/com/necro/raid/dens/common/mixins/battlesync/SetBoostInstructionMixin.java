@@ -42,7 +42,7 @@ public abstract class SetBoostInstructionMixin {
                 raid.updateBattleContext(battle, b -> {
                     BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
                     if (pokemon == null) return;
-                    BattleContext context = new BasicContext(stat.getShowdownId(), battle.getTurn(), BattleContext.Type.BOOST, null);
+                    BattleContext context = new BasicContext(stat.getShowdownId(), b.getTurn(), BattleContext.Type.BOOST, null);
                     pokemon.getContextManager().add(context);
                 });
             }

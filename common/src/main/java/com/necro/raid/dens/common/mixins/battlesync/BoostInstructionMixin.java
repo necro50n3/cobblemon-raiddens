@@ -46,7 +46,7 @@ public abstract class BoostInstructionMixin {
             raid.updateBattleContext(battle, b -> {
                 BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
                 if (pokemon == null) return;
-                BattleContext context = new BasicContext(this.getStatKey(), battle.getTurn(), this.isBoost() ? BattleContext.Type.BOOST : BattleContext.Type.UNBOOST, null);
+                BattleContext context = new BasicContext(this.getStatKey(), b.getTurn(), this.isBoost() ? BattleContext.Type.BOOST : BattleContext.Type.UNBOOST, null);
                 for (int i = 0; i < stages; i++) pokemon.getContextManager().add(context);
             });
             return DispatchResultKt.getGO();

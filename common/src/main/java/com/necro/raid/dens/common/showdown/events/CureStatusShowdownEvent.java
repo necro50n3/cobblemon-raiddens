@@ -17,10 +17,12 @@ public record CureStatusShowdownEvent(Status status, int targetSide) implements 
             return String.format(
                 ">eval " +
                     "const p = battle.sides[%1$d].pokemon[0]; " +
-                    "if (p.status === 'shield') return; " +
-                    "p.cureStatus();",
-                this.targetSide
-            );
+                    "const status = this.battle.dex.conditions.get(''); " +
+                    "if (p.status !== 'shield') {" +
+                        "p.status = status.id; " +
+                        "p.statusState = { id: status.id, target: p };" +
+                    "}",
+                this.targetSide - 1);
         }
     }
 }

@@ -10,16 +10,18 @@ public record SetStatusShowdownEvent(Status status, int targetSide) implements S
             return String.format(
                 ">eval " +
                     "const p = battle.sides[%2$d].pokemon[0]; " +
-                    "if (p.status !== 'shield') p.addVolatile('%1$s');",
+                    "const status = this.battle.dex.conditions.get('%1$s'); " +
+                    "p.volatiles[status.id] = { id: status.id, name: status.name, target: p };",
                 this.status.getShowdownName(), this.targetSide - 1);
         }
         else {
             return String.format(
                 ">eval " +
                     "const p = battle.sides[%2$d].pokemon[0]; " +
+                    "const status = this.battle.dex.conditions.get('%1$s'); " +
                     "if (p.status !== 'shield') {" +
-                        "p.cureStatus(); " +
-                        "p.trySetStatus('%1$s', p);" +
+                        "p.status = status.id; " +
+                        "p.statusState = { id: status.id, target: p };" +
                     "}",
                 this.status.getShowdownName(), this.targetSide - 1);
         }

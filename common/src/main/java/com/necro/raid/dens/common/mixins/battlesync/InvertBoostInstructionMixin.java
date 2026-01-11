@@ -44,8 +44,8 @@ public abstract class InvertBoostInstructionMixin {
                 Collection<BattleContext> newUnboosts = pokemon.getContextManager().get(BattleContext.Type.BOOST);
                 if (newUnboosts == null) newUnboosts = new ArrayList<>();
 
-                newBoosts = newBoosts.stream().map(ctx -> new BasicContext(ctx.getId(), ctx.getTurn(), BattleContext.Type.BOOST, null)).collect(Collectors.toList());
-                newUnboosts = newUnboosts.stream().map(ctx -> new BasicContext(ctx.getId(), ctx.getTurn(), BattleContext.Type.UNBOOST, null)).collect(Collectors.toList());
+                newBoosts = newBoosts.stream().map(ctx -> new BasicContext(ctx.getId(), b.getTurn(), BattleContext.Type.BOOST, null)).collect(Collectors.toList());
+                newUnboosts = newUnboosts.stream().map(ctx -> new BasicContext(ctx.getId(), b.getTurn(), BattleContext.Type.UNBOOST, null)).collect(Collectors.toList());
                 newBoosts.forEach(context -> pokemon.getContextManager().add(context));
                 newUnboosts.forEach(context -> pokemon.getContextManager().add(context));
             });

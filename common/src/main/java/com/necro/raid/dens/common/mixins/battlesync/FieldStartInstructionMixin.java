@@ -1,15 +1,18 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.FieldStartInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import kotlin.Unit;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,9 +36,19 @@ public abstract class FieldStartInstructionMixin {
         if (effect == null) return;
         String field = effect.getId();
 
-        battle.dispatch(() -> {
-            if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, battleState -> battleState.addTerrain(field));
-            return DispatchResultKt.getGO();
+        int idx = effect.getRawData().lastIndexOf(" ");
+        String effectType = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
+        BattleContext.Type type = BattleContext.Type.valueOf(effectType);
+
+        BattlePokemon source = this.getMessage().battlePokemonFromOptional(battle, "of");
+
+        battle.dispatchWaiting(1.5f, () -> {
+            raid.updateBattleState(battle, battleState -> battleState.addTerrain(field));
+            raid.updateBattleContext(battle, b -> {
+                b.getContextManager().add(new BasicContext(field, b.getTurn(), type, null));
+                b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldstart.%s", field), source == null ? Component.literal("UNKNOWN") : source.getName()));
+            });
+            return Unit.INSTANCE;
         });
     }
 }

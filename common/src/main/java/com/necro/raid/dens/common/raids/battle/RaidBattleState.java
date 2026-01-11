@@ -21,7 +21,7 @@ public class RaidBattleState {
     public Optional<ShowdownEvent> addTerrain(String terrain) {
         if (this.terrain != null && this.terrain.equals(terrain)) return Optional.empty();
         this.terrain = terrain;
-        return Optional.of(new SetTerrainShowdownEvent(terrain));
+        return Optional.of(new SetTerrainShowdownEvent(terrain, true));
     }
 
     public Optional<ShowdownEvent> removeTerrain() {
@@ -33,7 +33,7 @@ public class RaidBattleState {
     public Optional<ShowdownEvent> addWeather(String weather) {
         if (this.weather != null && this.weather.equals(weather)) return Optional.empty();
         this.weather = weather;
-        return Optional.of(new SetWeatherShowdownEvent(weather));
+        return Optional.of(new SetWeatherShowdownEvent(weather, true));
     }
 
     public Optional<ShowdownEvent> removeWeather() {

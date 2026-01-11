@@ -76,15 +76,15 @@ public class RaidScriptHelper {
         STATIC_SCRIPTS.put("RESET_BOSS", battle -> new ResetBossShowdownEvent().send(battle));
         STATIC_SCRIPTS.put("RESET_PLAYER", battle -> new ResetPlayerShowdownEvent().send(battle));
 
-        STATIC_SCRIPTS.put("SET_RAIN", battle -> new SetWeatherShowdownEvent("raindance").send(battle));
-        STATIC_SCRIPTS.put("SET_SANDSTORM", battle -> new SetWeatherShowdownEvent("sandstorm").send(battle));
-        STATIC_SCRIPTS.put("SET_SNOW", battle -> new SetWeatherShowdownEvent("snow").send(battle));
-        STATIC_SCRIPTS.put("SET_SUN", battle -> new SetWeatherShowdownEvent("sunnyday").send(battle));
+        STATIC_SCRIPTS.put("SET_RAIN", battle -> new SetWeatherShowdownEvent("raindance", false).send(battle));
+        STATIC_SCRIPTS.put("SET_SANDSTORM", battle -> new SetWeatherShowdownEvent("sandstorm", false).send(battle));
+        STATIC_SCRIPTS.put("SET_SNOW", battle -> new SetWeatherShowdownEvent("snow", false).send(battle));
+        STATIC_SCRIPTS.put("SET_SUN", battle -> new SetWeatherShowdownEvent("sunnyday", false).send(battle));
 
-        STATIC_SCRIPTS.put("SET_ELECTRIC_TERRAIN", battle -> new SetTerrainShowdownEvent("electricterrain").send(battle));
-        STATIC_SCRIPTS.put("SET_GRASSY_TERRAIN", battle -> new SetTerrainShowdownEvent("grassyterrain").send(battle));
-        STATIC_SCRIPTS.put("SET_MISTY_TERRAIN", battle -> new SetTerrainShowdownEvent("mistyterrain").send(battle));
-        STATIC_SCRIPTS.put("SET_PSYCHIC_TERRAIN", battle -> new SetTerrainShowdownEvent("psychicterrain").send(battle));
+        STATIC_SCRIPTS.put("SET_ELECTRIC_TERRAIN", battle -> new SetTerrainShowdownEvent("electricterrain", false).send(battle));
+        STATIC_SCRIPTS.put("SET_GRASSY_TERRAIN", battle -> new SetTerrainShowdownEvent("grassyterrain", false).send(battle));
+        STATIC_SCRIPTS.put("SET_MISTY_TERRAIN", battle -> new SetTerrainShowdownEvent("mistyterrain", false).send(battle));
+        STATIC_SCRIPTS.put("SET_PSYCHIC_TERRAIN", battle -> new SetTerrainShowdownEvent("psychicterrain", false).send(battle));
 
         STATIC_SCRIPTS.put("SHIELD_UP", battle -> new ShieldAddShowdownEvent().send(battle));
         STATIC_SCRIPTS.put("SHIELD_DOWN", battle -> new ShieldRemoveShowdownEvent().send(battle));
