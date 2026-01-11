@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -23,25 +25,23 @@ public abstract class SwapBoostInstructionMixin {
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
         if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
         RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+
         BattlePokemon battlePokemon = this.getMessage().battlePokemon(0, battle);
         if (battlePokemon == null || battlePokemon.getEntity() == null) return;
-
-        if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
-
         BattlePokemon target = this.getMessage().battlePokemon(1, battle);
         if (target == null) return;
 
         battle.dispatch(() -> {
-            if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) {
-                target.getStatChanges().forEach((stat, stages) -> {
-                    raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.setBoost(stat, stages));
+            BattlePokemon copyFrom = ((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss() ? battlePokemon : target;
+            copyFrom.getStatChanges().forEach((stat, stages) -> {
+                raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.setBoost(stat, stages));
+                raid.updateBattleContext(battle, b -> {
+                    BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                    if (pokemon == null) return;
+                    BattleContext context = new BasicContext(stat.getShowdownId(), battle.getTurn(), BattleContext.Type.BOOST, null);
+                    pokemon.getContextManager().add(context);
                 });
-            }
-            else {
-                battlePokemon.getStatChanges().forEach((stat, stages) -> {
-                    raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.setBoost(stat, stages));
-                });
-            }
+            });
             return DispatchResultKt.getGO();
         });
     }

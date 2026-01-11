@@ -41,17 +41,9 @@ public abstract class SideStartInstructionMixin {
         int idx = effect.getRawData().lastIndexOf(" ");
         String sideCondition = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
 
-        BattleContext.Type contextType;
-        if (RaidConditions.TAILWIND.contains(sideCondition)) contextType = BattleContext.Type.TAILWIND;
-        else if (RaidConditions.SCREENS.contains(sideCondition)) contextType = BattleContext.Type.SCREEN;
-        else if (RaidConditions.HAZARDS.contains(sideCondition)) contextType = BattleContext.Type.HAZARD;
-        else contextType = BattleContext.Type.MISC;
-
         battle.dispatch(() -> {
-            BattleContext context = new BasicContext(effect.getId(), battle.getTurn(), contextType, null);
             if (side == '1') {
                 raid.updateBattleState(battle, battleState -> battleState.trainerSide.addSideCondition(sideCondition));
-                raid.updateBattleContext(battle, b -> b.getSide1().getContextManager().add(context));
             }
             else {
                 raid.updateBattleState(battle, battleState -> battleState.bossSide.addSideCondition(sideCondition));

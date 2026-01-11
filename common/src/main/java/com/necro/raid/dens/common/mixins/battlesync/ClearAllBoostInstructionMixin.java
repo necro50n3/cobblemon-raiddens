@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -29,6 +31,11 @@ public abstract class ClearAllBoostInstructionMixin {
 
         battle.dispatch(() -> {
             raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.clearBoosts());
+            raid.updateBattleContext(battle, b -> {
+                BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                if (pokemon == null) return;
+                pokemon.getContextManager().clear(BattleContext.Type.BOOST, BattleContext.Type.UNBOOST);
+            });
             return DispatchResultKt.getGO();
         });
     }

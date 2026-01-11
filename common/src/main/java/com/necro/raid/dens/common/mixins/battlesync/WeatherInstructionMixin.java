@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.WeatherInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,8 +39,9 @@ public abstract class WeatherInstructionMixin {
         battle.dispatch(() -> {
             if (!weather.equalsIgnoreCase("none")) {
                 raid.updateBattleState(battle, battleState -> battleState.addWeather(weather));
-                BattleContext context = new BasicContext(weather, battle.getTurn(), BattleContext.Type.WEATHER, null);
-                raid.updateBattleContext(battle, b -> b.getContextManager().add(context));
+            }
+            else {
+                raid.updateBattleState(battle, RaidBattleState::removeWeather);
             }
             return DispatchResultKt.getGO();
         });

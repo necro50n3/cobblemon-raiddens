@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -13,6 +15,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mixin(InvertBoostInstruction.class)
 public abstract class InvertBoostInstructionMixin {
@@ -29,6 +36,20 @@ public abstract class InvertBoostInstructionMixin {
 
         battle.dispatch(() -> {
             raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.invertBoosts());
+            raid.updateBattleContext(battle, b -> {
+                BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                if (pokemon == null) return;
+
+                Collection<BattleContext> newBoosts = pokemon.getContextManager().get(BattleContext.Type.UNBOOST);
+                if (newBoosts == null) newBoosts = new ArrayList<>();
+                Collection<BattleContext> newUnboosts = pokemon.getContextManager().get(BattleContext.Type.BOOST);
+                if (newUnboosts == null) newUnboosts = new ArrayList<>();
+
+                newBoosts = newBoosts.stream().map(ctx -> new BasicContext(ctx.getId(), ctx.getTurn(), BattleContext.Type.BOOST, null)).collect(Collectors.toList());
+                newUnboosts = newUnboosts.stream().map(ctx -> new BasicContext(ctx.getId(), ctx.getTurn(), BattleContext.Type.UNBOOST, null)).collect(Collectors.toList());
+                newBoosts.forEach(context -> pokemon.getContextManager().add(context));
+                newUnboosts.forEach(context -> pokemon.getContextManager().add(context));
+            });
             return DispatchResultKt.getGO();
         });
     }

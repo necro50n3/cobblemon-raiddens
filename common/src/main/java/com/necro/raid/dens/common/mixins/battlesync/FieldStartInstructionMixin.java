@@ -1,7 +1,5 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
-import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
-import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
@@ -34,15 +32,9 @@ public abstract class FieldStartInstructionMixin {
         Effect effect = this.getMessage().effectAt(0);
         if (effect == null) return;
         String field = effect.getId();
-        int idx = effect.getRawData().lastIndexOf(" ");
-        String typeId = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
-        BattleContext.Type contextType = BattleContext.Type.valueOf(typeId.toUpperCase());
 
         battle.dispatch(() -> {
             if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, battleState -> battleState.addTerrain(field));
-
-            BattleContext context = new BasicContext(field, battle.getTurn(), contextType, null);
-            raid.updateBattleContext(battle, b -> b.getContextManager().add(context));
             return DispatchResultKt.getGO();
         });
     }

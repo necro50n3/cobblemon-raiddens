@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
@@ -41,6 +43,12 @@ public abstract class BoostInstructionMixin {
         battle.dispatch(() -> {
             int stages = this.getStages();
             raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.boost(stat, this.isBoost() ? stages : -stages));
+            raid.updateBattleContext(battle, b -> {
+                BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                if (pokemon == null) return;
+                BattleContext context = new BasicContext(this.getStatKey(), battle.getTurn(), this.isBoost() ? BattleContext.Type.BOOST : BattleContext.Type.UNBOOST, null);
+                for (int i = 0; i < stages; i++) pokemon.getContextManager().add(context);
+            });
             return DispatchResultKt.getGO();
         });
     }

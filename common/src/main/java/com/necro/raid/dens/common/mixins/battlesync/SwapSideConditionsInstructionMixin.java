@@ -35,7 +35,7 @@ public abstract class SwapSideConditionsInstructionMixin {
             raid.updateBattleState(battle, RaidBattleState::swapSideConditions);
             raid.updateBattleContext(battle, b -> {
                 ContextManager manager = b.getSide2().getContextManager();
-                b.getSide1().getContextManager().swap(manager, BattleContext.Type.TAILWIND, BattleContext.Type.HAZARD);
+                b.getSide1().getContextManager().copy(manager, BattleContext.Type.TAILWIND, BattleContext.Type.HAZARD);
             });
             return DispatchResultKt.getGO();
         });

@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -31,9 +33,15 @@ public abstract class CopyBoostInstructionMixin {
         if (target == null) return;
 
         battle.dispatch(() -> {
-            target.getStatChanges().forEach((stat, stages) ->
-                raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.setBoost(stat, stages))
-            );
+            target.getStatChanges().forEach((stat, stages) -> {
+                raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.setBoost(stat, stages));
+                raid.updateBattleContext(battle, b -> {
+                    BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                    if (pokemon == null) return;
+                    BattleContext context = new BasicContext(stat.getShowdownId(), battle.getTurn(), BattleContext.Type.BOOST, null);
+                    pokemon.getContextManager().add(context);
+                });
+            });
             return DispatchResultKt.getGO();
         });
     }
