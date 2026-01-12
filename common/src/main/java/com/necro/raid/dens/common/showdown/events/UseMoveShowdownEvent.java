@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
-public record UseMoveShowdownEvent(String move, int target) implements ShowdownEvent {
+public record UseMoveShowdownEvent(String move, int target) implements BroadcastingShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +

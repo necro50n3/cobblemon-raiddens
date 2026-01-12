@@ -1,5 +1,7 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.status.Status;
@@ -10,6 +12,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +36,15 @@ public abstract class StatusInstructionMixin {
         Status status = statusLabel == null ? null : Statuses.getStatus(statusLabel);
 
         battle.dispatch(() -> {
-            if (status != null) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addStatus(status));
+            if (status != null) {
+                raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addStatus(status));
+                raid.updateBattleContext(battle, b -> {
+                    BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                    if (pokemon == null) return;
+                    pokemon.getContextManager().add(new BasicContext(statusLabel, b.getTurn(), BattleContext.Type.STATUS, null));
+                    b.broadcastChatMessage(Component.translatable(status.getApplyMessage(), pokemon.getName()));
+                });
+            }
             return DispatchResultKt.getGO();
         });
     }

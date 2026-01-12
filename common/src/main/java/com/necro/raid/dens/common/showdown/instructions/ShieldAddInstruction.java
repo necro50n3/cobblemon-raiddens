@@ -1,19 +1,19 @@
 package com.necro.raid.dens.common.showdown.instructions;
 
 import com.bedrockk.molang.runtime.MoLangRuntime;
-import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffectContext;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffectTimeline;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffects;
 import com.cobblemon.mod.common.api.moves.animations.UsersProvider;
-import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.ActionEffectInstruction;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -71,6 +71,9 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (raid == null) return;
+
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getEffectWithBattleContext(cobblemonResource("protect"), this.pokemon);
             if (actionEffect == null) actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("generic_move"));
@@ -93,13 +96,14 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.pokemon.getEntity() == null) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (raid == null) return;
+
         battle.dispatch(() -> {
-            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.shield.add", this.pokemon.getName()));
+            Component lang = Component.translatable("cobblemonraiddens.status.shield.apply", this.pokemon.getName());
+            battle.broadcastChatMessage(lang);
+            raid.updateBattleContext(battle, b -> b.broadcastChatMessage(lang));
 
-            BattleContext.Type miscBucket = BattleContext.Type.MISC;
-            BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, miscBucket, battle);
-
-            this.pokemon.getContextManager().add(context);
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });

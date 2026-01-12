@@ -56,8 +56,8 @@ public class RaidInstance {
     private float currentHealth;
     private float maxHealth;
     private final float initMaxHealth;
-    private final Map<Integer, List<Consumer<PokemonBattle>>> scriptByTurn;
-    private final NavigableMap<Double, List<Consumer<PokemonBattle>>> scriptByHp;
+    private final Map<Integer, List<ShowdownEvent>> scriptByTurn;
+    private final NavigableMap<Double, List<ShowdownEvent>> scriptByHp;
 
     private final Map<UUID, Integer> cheersLeft;
     private final List<DelayedRunnable> runQueue;
@@ -99,7 +99,7 @@ public class RaidInstance {
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
         raidBoss.getScript().forEach((key, scripts) -> {
-            List<Consumer<PokemonBattle>> functions = scripts.functions().stream()
+            List<ShowdownEvent> functions = scripts.functions().stream()
                 .map(this::getInstructions)
                 .filter(Objects::nonNull)
                 .toList();
@@ -116,9 +116,7 @@ public class RaidInstance {
                 }
                 else if (key.startsWith("after:") || key.startsWith("repeat:")) {
                     int time = Integer.parseInt(key.split(":")[1]) * 20;
-                    this.runQueue.add(new DelayedRunnable(() -> {
-                        for (Consumer<PokemonBattle> function : functions) this.battles.forEach(function);
-                    }, time, key.startsWith("repeat:")));
+                    this.runQueue.add(new DelayedRunnable(() -> functions.forEach(this::sendEvent), time, key.startsWith("repeat:")));
                 }
             }
             catch (Exception ignored) {}
@@ -149,7 +147,7 @@ public class RaidInstance {
         new StartRaidShowdownEvent(this.battleState).send(battle);
         this.battles.add(battle);
 
-        this.runScriptByTurn(battle, 0);
+        this.runScriptByTurn(0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }
 
@@ -334,22 +332,20 @@ public class RaidInstance {
         return this.raidState;
     }
 
-    private Consumer<PokemonBattle> getInstructions(@NotNull String function) {
+    private ShowdownEvent getInstructions(@NotNull String function) {
         return RaidScriptHelper.decode(function);
     }
 
-    public void runScriptByTurn(PokemonBattle battle, int turn) {
-        List<Consumer<PokemonBattle>> functions = this.scriptByTurn.remove(turn);
+    public void runScriptByTurn(int turn) {
+        List<ShowdownEvent> functions = this.scriptByTurn.remove(turn);
         if (functions == null) return;
-        functions.forEach(function -> function.accept(battle));
+        functions.forEach(this::sendEvent);
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(functions -> this.battles.forEach(battle ->
-                functions.forEach(function -> function.accept(battle))
-            ));
+            .forEach(events -> events.forEach(this::sendEvent));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
@@ -399,6 +395,11 @@ public class RaidInstance {
         }
         side1.getBattle().checkForInputDispatch();
         side1.sendUpdate(new BattleApplyPassResponsePacket());
+    }
+
+    public void sendEvent(ShowdownEvent event) {
+        if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
+        else event.send(this.battles.getFirst());
     }
 
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {

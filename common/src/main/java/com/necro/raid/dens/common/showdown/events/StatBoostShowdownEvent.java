@@ -10,7 +10,7 @@ public record StatBoostShowdownEvent(Stat stat, int stages, int targetSide, bool
                 ">eval " +
                     "var boosts = {};" +
                     "boosts['%1$s'] = %2$d; " +
-                    "for (let p of battle.sides[%4$d].pokemon) { " +
+                    "for (let p of battle.sides[%3$d].pokemon) { " +
                         "if (!p) continue; " +
                         "var boost = battle.runEvent('ChangeBoost', p, null, null, {...boosts}); " +
                         "boost = p.getCappedBoost(boost); " +
@@ -21,7 +21,7 @@ public record StatBoostShowdownEvent(Stat stat, int stages, int targetSide, bool
                             "if (boostBy) battle.runEvent('AfterEachBoost', p, null, null, currentBoost); " +
                         "} " +
                     "} ",
-                this.stat.getShowdownId(), this.stages, battle.getSide2().getActors()[0].getUuid(), this.targetSide - 1
+                this.stat.getShowdownId(), this.stages, this.targetSide - 1
             );
         }
         else {

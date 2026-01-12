@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
 import com.cobblemon.mod.common.api.events.entity.SpawnEvent;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
+import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
@@ -15,6 +16,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.raids.status.ShieldStatus;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -70,6 +72,8 @@ public class CobblemonRaidDens {
         RaidUtils.init();
         RaidStatistics.init();
         RaidDenCriteriaTriggers.init();
+
+        Statuses.registerStatus(new ShieldStatus());
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
             raidFailEvent(event.getBattle());

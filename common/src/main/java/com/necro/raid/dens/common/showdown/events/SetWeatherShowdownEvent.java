@@ -7,7 +7,7 @@ public record SetWeatherShowdownEvent(String weather, boolean isSilent) implemen
         if (this.isSilent) {
             return String.format(
                 ">eval " +
-                    "const weather = this.battle.dex.conditions.get('%1$s'); " +
+                    "const weather = battle.dex.conditions.get('%1$s'); " +
                     "battle.field.weather = weather.id; " +
                     "battle.field.weatherState = { id: weather.id };" +
                     "if (weather.duration) battle.field.weatherState.duration = weather.duration;",

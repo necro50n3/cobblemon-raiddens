@@ -55,11 +55,16 @@ public class ShowdownInterpreterMixin {
         updateInstructionParser.put("shieldremove", (battle, instruction, message, messageIterator) ->
             new ShieldRemoveInstruction(battle, message)
         );
+        updateInstructionParser.put("-raidboost", (battle, instruction, message, messageIterator) ->
+            new RaidBoostInstruction(battle, message, true)
+        );
+        updateInstructionParser.put("-raidunboost", (battle, instruction, message, messageIterator) ->
+            new RaidBoostInstruction(battle, message, false)
+        );
 
         splitInstructionParser.put("-raiddamage", (battle, actor, instruction, publicMessage, privateMessage, messageIterator) ->
             new RaidDamageInstruction(instruction, actor, publicMessage, privateMessage)
         );
-
         splitInstructionParser.put("-raidheal", (battle, actor, instruction, publicMessage, privateMessage, messageIterator) ->
             new RaidHealInstruction(actor, publicMessage, privateMessage)
         );

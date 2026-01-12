@@ -14,6 +14,8 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -71,6 +73,9 @@ public class PlayerJoinInstruction implements ActionEffectInstruction {
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (raid == null) return;
+
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("pause"));
             List<Object> providers = new ArrayList<>(List.of(battle));
@@ -93,9 +98,20 @@ public class PlayerJoinInstruction implements ActionEffectInstruction {
     public void postActionEffect(@NotNull PokemonBattle battle) {
         String player = message.argumentAt(1);
         if (this.pokemon == null || player == null || this.pokemon.getEntity() == null) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (raid == null) return;
+
         battle.dispatch(() -> {
-            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.player_join", player));
-            battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.raid_energy", this.pokemon.getName()));
+            Component joinLang = Component.translatable("battle.cobblemonraiddens.player_join", player);
+            Component raidEnergy = Component.translatable("battle.cobblemonraiddens.raid_energy", this.pokemon.getName());
+
+            battle.broadcastChatMessage(joinLang);
+            battle.broadcastChatMessage(raidEnergy);
+
+            raid.updateBattleContext(battle, b -> {
+                b.broadcastChatMessage(joinLang);
+                b.broadcastChatMessage(raidEnergy);
+            });
 
             BattleContext.Type boostBucket = BattleContext.Type.BOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);

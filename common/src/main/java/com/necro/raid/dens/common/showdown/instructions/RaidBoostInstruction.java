@@ -1,26 +1,24 @@
 package com.necro.raid.dens.common.showdown.instructions;
 
 import com.bedrockk.molang.runtime.MoLangRuntime;
-import com.cobblemon.mod.common.CobblemonNetwork;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffectContext;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffectTimeline;
-import com.cobblemon.mod.common.api.moves.animations.ActionEffects;
 import com.cobblemon.mod.common.api.moves.animations.UsersProvider;
+import com.cobblemon.mod.common.api.pokemon.stats.Stats;
+import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.ActionEffectInstruction;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
+import com.cobblemon.mod.common.battles.interpreter.instructions.BoostInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
-import com.cobblemon.mod.common.net.messages.client.animation.PlayPosableAnimationPacket;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -29,19 +27,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
-
-public class ShieldRemoveInstruction implements ActionEffectInstruction {
+public class RaidBoostInstruction implements ActionEffectInstruction {
     private final BattleMessage message;
     private CompletableFuture<?> future;
     private Set<String> holds;
+    private final boolean isBoost;
     private final BattlePokemon pokemon;
+    private final String statKey;
+    private final int stages;
+    private final Component stat;
 
-    public ShieldRemoveInstruction(PokemonBattle battle, BattleMessage message) {
+    @SuppressWarnings("ConstantConditions")
+    public RaidBoostInstruction(PokemonBattle battle, BattleMessage message, boolean isBoost) {
         this.message = message;
         this.future = CompletableFuture.completedFuture(Unit.INSTANCE);
         this.holds = new HashSet<>();
+        this.isBoost = isBoost;
         this.pokemon = this.message.battlePokemon(0, battle);
+        this.statKey = this.message.argumentAt(1);
+        this.stages = Integer.parseInt(this.message.argumentAt(2));
+        this.stat = Stats.Companion.getStat(this.statKey).getDisplayName();
     }
 
     @Override
@@ -66,7 +71,7 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
 
     @Override
     public @NotNull ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "shield_remove");
+        return ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_boost");
     }
 
     @Override
@@ -74,12 +79,9 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
 
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
-        if (this.pokemon == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
-
+        if (this.pokemon == null || this.stages == 0) return;
         battle.dispatch(() -> {
-            ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("pause"));
+            ActionEffectTimeline actionEffect = this.isBoost ? BoostInstruction.Companion.getBOOST_EFFECT() : BoostInstruction.Companion.getUNBOOST_EFFECT();
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
 
@@ -98,16 +100,23 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
 
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
-        if (this.pokemon == null || this.pokemon.getEntity() == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
+        String severity = Stats.Companion.getSeverity(this.stages);
+        String rootKey = this.isBoost ? "boost" : "unboost";
 
         battle.dispatch(() -> {
-            PlayPosableAnimationPacket packet = new PlayPosableAnimationPacket(this.pokemon.getEntity().getId(), Set.of("recoil"), List.of());
-            Level level = this.pokemon.getEntity().level();
-            level.getEntitiesOfClass(ServerPlayer.class, AABB.ofSize(this.pokemon.getEntity().position(), 64.0, 64.0, 64.0))
-                .forEach(player -> CobblemonNetwork.INSTANCE.sendPacketToPlayer(player, packet));
+            Component lang;
+            if (this.message.hasOptionalArgument("zeffect")) {
+                lang = LocalizationUtilsKt.battleLang(String.format("%s.%s.zeffect", rootKey, severity), this.pokemon.getName(), this.stat);
+            }
+            else {
+                lang = LocalizationUtilsKt.battleLang(String.format("%s.%s", rootKey, severity), this.pokemon.getName(), this.stat);
+            }
+            battle.broadcastChatMessage(lang);
 
+            BattleContext.Type boostBucket = BattleContext.Type.BOOST;
+            BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
+
+            this.pokemon.getContextManager().add(context);
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });

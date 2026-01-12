@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
-public class ResetPlayerShowdownEvent implements ShowdownEvent {
+public class ResetPlayerShowdownEvent implements BroadcastingShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
@@ -13,8 +13,8 @@ public class ResetPlayerShowdownEvent implements ShowdownEvent {
                         "if (p.boosts[i] <= 0) continue; " +
                         "p.boosts[i] = 0; " +
                     "} " +
-                    "p.removeVolatile('cheerattack'); " +
-                    "p.removeVolatile('cheerdefense'); " +
+                    "if (p.volatiles['cheerattack']) delete p.volatiles['cheerattack']; " +
+                    "if (p.volatiles['cheerdefense']) delete p.volatiles['cheerdefense']; " +
                     "battle.add('clearplayer', p, '%1$s'); " +
                 "}",
             battle.getSide2().getActors()[0].getUuid()

@@ -8,7 +8,7 @@ public record SetTerrainShowdownEvent(String terrain, boolean isSilent) implemen
             return String.format(
                 ">eval " +
                     "const pokemon = battle.sides[1].pokemon[0]; " +
-                    "const terrain = this.battle.dex.conditions.get('%1$s'); " +
+                    "const terrain = battle.dex.conditions.get('%1$s'); " +
                     "battle.field.terrain = terrain.id; " +
                     "battle.field.terrainState = { " +
                         "id: terrain.id, " +

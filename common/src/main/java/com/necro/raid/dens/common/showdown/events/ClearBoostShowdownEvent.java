@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 
 public record ClearBoostShowdownEvent(int targetSide) implements ShowdownEvent {
     public String build(PokemonBattle battle) {
@@ -9,7 +8,9 @@ public record ClearBoostShowdownEvent(int targetSide) implements ShowdownEvent {
             ">eval " +
                 "for (let p of battle.sides[%1$d].pokemon) { " +
                     "if (!p) continue; " +
-                    "p.clearBoosts(); " +
+                    "for (let boost in p.boosts) { " +
+                        "p.boosts[boost] = 0; " +
+                    "} " +
                 "} ",
             this.targetSide - 1
         );
