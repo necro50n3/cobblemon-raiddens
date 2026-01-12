@@ -11,7 +11,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class RaidDenNetworkMessages {
-    public static BiConsumer<ServerPlayer, Float> SYNC_HEALTH;
     public static BiConsumer<ServerPlayer, Boolean> JOIN_RAID;
     public static BiConsumer<ServerPlayer, String> REQUEST_PACKET;
     public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;

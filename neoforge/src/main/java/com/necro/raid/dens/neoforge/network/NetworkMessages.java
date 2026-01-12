@@ -22,7 +22,6 @@ public class NetworkMessages {
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar payloadRegistrar = event.registrar(CobblemonRaidDens.MOD_ID).versioned("1.0.0").optional();
 
-        payloadRegistrar.playToClient(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handle);
@@ -37,8 +36,6 @@ public class NetworkMessages {
     }
 
     public static void init() {
-        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
-            NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->

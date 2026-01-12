@@ -15,7 +15,6 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkMessages {
     public static void registerPayload() {
-        PayloadTypeRegistry.playS2C().register(SyncHealthPacket.PACKET_TYPE, SyncHealthPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
@@ -35,7 +34,6 @@ public class NetworkMessages {
     }
 
     public static void registerS2CPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(SyncHealthPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handle);
@@ -45,8 +43,6 @@ public class NetworkMessages {
     }
 
     public static void init() {
-        RaidDenNetworkMessages.SYNC_HEALTH = (player, healthRatio) ->
-            NetworkMessages.sendPacketToPlayer(player, new SyncHealthPacket(healthRatio));
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->

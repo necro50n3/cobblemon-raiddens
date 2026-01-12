@@ -15,6 +15,7 @@ import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.*;
 import com.cobblemon.mod.common.battles.interpreter.instructions.MoveInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
 import com.cobblemon.mod.common.pokemon.status.PersistentStatusContainer;
 import com.cobblemon.mod.common.pokemon.status.statuses.persistent.PoisonStatus;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
@@ -22,16 +23,14 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import kotlin.Pair;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
@@ -177,6 +176,19 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
             ServerPlayer player = battle.getPlayers().getFirst();
             raidInstance.syncHealth(player, battle, damage);
             battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
+
+            Pair<String, String> pnxUuid = this.privateMessage.pnxAndUuid(0);
+            if (pnxUuid != null) {
+                String pnx = pnxUuid.getFirst();
+                float remainingHealth = raidInstance.getRemainingHealth();
+                float healthRatio = remainingHealth / raidInstance.getMaxHealth();
+                battle.sendSidedUpdate(
+                    this.actor,
+                    new BattleHealthChangePacket(pnx, remainingHealth, null),
+                    new BattleHealthChangePacket(pnx, healthRatio, null),
+                    false
+                );
+            }
 
             if (lastCauser instanceof MoveInstruction && ((MoveInstruction) lastCauser).getActionEffect() != null && !causedFaint) {
                 return new UntilDispatch(() -> ((MoveInstruction) lastCauser).getFuture().isDone());

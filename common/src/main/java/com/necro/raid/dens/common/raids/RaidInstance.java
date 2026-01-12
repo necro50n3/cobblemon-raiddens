@@ -10,6 +10,7 @@ import com.cobblemon.mod.common.battles.ShowdownActionResponse;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
+import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.config.TierConfig;
@@ -18,7 +19,6 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -142,13 +142,12 @@ public class RaidInstance {
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
-        RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
-
     }
 
     public void addBattle(PokemonBattle battle) {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
         ((IRaidBattle) battle).crd_setRaidBattle(this);
+        this.sendHealthPacket(battle);
 
         if (!this.battles.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) {
             this.playerJoin(battle.getPlayers().getFirst().getName().getString());
@@ -194,7 +193,7 @@ public class RaidInstance {
         this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
-        this.activePlayers.forEach(p -> RaidDenNetworkMessages.SYNC_HEALTH.accept(p, this.currentHealth / this.maxHealth));
+        this.battles.forEach(this::sendHealthPacket);
 
         if (this.currentHealth == 0f) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
@@ -208,12 +207,27 @@ public class RaidInstance {
         }
     }
 
+    private void sendHealthPacket(PokemonBattle battle) {
+        String pnx = battle.getSide2().getActivePokemon().getFirst().getPNX();
+        BattleActor actor = battle.getActorAndActiveSlotFromPNX(pnx).getFirst();
+        battle.sendSidedUpdate(
+            actor,
+            new BattleHealthChangePacket(pnx, this.getRemainingHealth(), null),
+            new BattleHealthChangePacket(pnx, this.getRemainingHealth() / this.getMaxHealth(), null),
+            false
+        );
+    }
+
     public List<ServerPlayer> getPlayers() {
         return this.activePlayers;
     }
 
     public float getRemainingHealth() {
         return this.currentHealth;
+    }
+
+    public float getMaxHealth() {
+        return this.maxHealth;
     }
 
     public boolean hasFailed(ServerPlayer player) {
