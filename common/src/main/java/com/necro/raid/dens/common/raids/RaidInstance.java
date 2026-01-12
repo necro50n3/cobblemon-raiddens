@@ -116,7 +116,10 @@ public class RaidInstance {
                 }
                 else if (key.startsWith("after:") || key.startsWith("repeat:")) {
                     int time = Integer.parseInt(key.split(":")[1]) * 20;
-                    this.runQueue.add(new DelayedRunnable(() -> functions.forEach(this::sendEvent), time, key.startsWith("repeat:")));
+                    this.runQueue.add(
+                        new DelayedRunnable(() -> functions.forEach(event -> this.sendEvent(event, null)),
+                            time, key.startsWith("repeat:"))
+                    );
                 }
             }
             catch (Exception ignored) {}
@@ -153,7 +156,7 @@ public class RaidInstance {
 
         this.battles.add(battle);
         new StartRaidShowdownEvent(this.battleState).send(battle);
-        this.runScriptByTurn(0);
+        this.runScriptByTurn(0, battle);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }
 
@@ -165,7 +168,7 @@ public class RaidInstance {
     }
 
     private void playerJoin(String newPlayer) {
-        this.sendEvent(new PlayerJoinShowdownEvent(newPlayer));
+        this.sendEvent(new PlayerJoinShowdownEvent(newPlayer), null);
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
@@ -344,16 +347,16 @@ public class RaidInstance {
         return RaidScriptHelper.decode(function);
     }
 
-    public void runScriptByTurn(int turn) {
+    public void runScriptByTurn(int turn, PokemonBattle battle) {
         List<ShowdownEvent> functions = this.scriptByTurn.remove(turn);
         if (functions == null) return;
-        functions.forEach(this::sendEvent);
+        functions.forEach(event -> this.sendEvent(event, battle));
     }
 
     public void runScriptByHp(double hpRatio) {
         this.scriptByHp.tailMap(hpRatio, true)
             .values()
-            .forEach(events -> events.forEach(this::sendEvent));
+            .forEach(events -> events.forEach(event -> this.sendEvent(event, null)));
 
         this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
     }
@@ -401,9 +404,9 @@ public class RaidInstance {
         side1.sendUpdate(new BattleApplyPassResponsePacket());
     }
 
-    public void sendEvent(ShowdownEvent event) {
+    public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
         if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
-        else event.send(this.battles.getFirst());
+        else event.send(battle == null ? this.battles.getFirst() : battle);
     }
 
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
