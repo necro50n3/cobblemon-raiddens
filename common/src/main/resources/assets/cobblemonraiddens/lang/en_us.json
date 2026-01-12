@@ -39,6 +39,7 @@
     "block.cobblemonraiddens.raid_home_block": "Raid Den Crystal",
     "category.cobblemonraiddens.raid_dens": "Raid Dens",
     "cobblemon.battle.heal.bagitemcheerheal": "%1$s restored HP from the Heal Cheer!",
+    "cobblemon.ui.status.shield": "SHD",
     "cobblemonraiddens.status.shield.apply": "Energy has begun to gather around %1$s!",
     "cobblemonraiddens.status.shield.cure": "%1$s succumbed to the onslaught and broke its stance!",
     "config.jade.plugin_cobblemonraiddens.raid_crystal": "Raid Den",

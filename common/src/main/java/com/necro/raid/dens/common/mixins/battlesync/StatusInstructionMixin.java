@@ -10,7 +10,6 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.StatusInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.raids.status.ShieldStatus;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.network.chat.Component;
@@ -42,7 +41,7 @@ public abstract class StatusInstructionMixin {
                 raid.updateBattleContext(battle, b -> {
                     BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
                     if (pokemon == null) return;
-                    if (!(status instanceof ShieldStatus)) pokemon.getContextManager().add(new BasicContext(statusLabel, b.getTurn(), BattleContext.Type.STATUS, null));
+                    pokemon.getContextManager().add(new BasicContext(statusLabel, b.getTurn(), BattleContext.Type.STATUS, null));
                     b.broadcastChatMessage(Component.translatable(status.getApplyMessage(), pokemon.getName()));
                 });
             }
