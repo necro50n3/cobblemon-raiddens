@@ -40,13 +40,13 @@ public abstract class SideStartInstructionMixin {
         Effect effect = this.getMessage().effectAt(1);
         if (effect == null) return;
         int idx = effect.getRawData().lastIndexOf(" ");
-        String sideCondition = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
+        String sideCondition = (idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length())).toLowerCase();
 
         BattleContext.Type type;
-        if (RaidConditions.SCREENS.contains(sideCondition)) type = BattleContext.Type.SCREEN;
-        else if (RaidConditions.HAZARDS.contains(sideCondition)) type = BattleContext.Type.HAZARD;
-        else if (RaidConditions.TAILWIND.contains(sideCondition)) type = BattleContext.Type.TAILWIND;
-        else type = BattleContext.Type.MISC;
+        if (RaidConditions.SCREENS.contains(sideCondition.toLowerCase())) type = BattleContext.Type.SCREEN;
+        else if (RaidConditions.HAZARDS.contains(sideCondition.toLowerCase())) type = BattleContext.Type.HAZARD;
+        else if (RaidConditions.TAILWIND.contains(sideCondition.toLowerCase())) type = BattleContext.Type.TAILWIND;
+        else return;
 
         battle.dispatch(() -> {
             if (side == '1') {
