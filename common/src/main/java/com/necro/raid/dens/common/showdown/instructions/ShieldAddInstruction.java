@@ -12,10 +12,7 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,9 +68,6 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
-
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getEffectWithBattleContext(cobblemonResource("protect"), this.pokemon);
             if (actionEffect == null) actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("generic_move"));
@@ -96,14 +90,7 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.pokemon.getEntity() == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
-
         battle.dispatch(() -> {
-            Component lang = Component.translatable("cobblemonraiddens.status.shield.apply", this.pokemon.getName());
-            battle.broadcastChatMessage(lang);
-            raid.updateBattleContext(battle, b -> b.broadcastChatMessage(lang));
-
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });

@@ -133,8 +133,9 @@ public class RaidInstance {
         this.addToBossEvent(player);
 
         this.damageTracker.put(player.getUUID(), 0f);
-        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f)
-            this.applyHealthMulti(player.getName().getString());
+        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) {
+            this.applyHealthMulti();
+        }
 
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
@@ -143,21 +144,28 @@ public class RaidInstance {
     }
 
     public void addBattle(PokemonBattle battle) {
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
         ((IRaidBattle) battle).crd_setRaidBattle(this);
-        new StartRaidShowdownEvent(this.battleState).send(battle);
-        this.battles.add(battle);
 
+        if (!this.battles.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) {
+            this.playerJoin(battle.getPlayers().getFirst().getName().getString());
+        }
+
+        this.battles.add(battle);
+        new StartRaidShowdownEvent(this.battleState).send(battle);
         this.runScriptByTurn(0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }
 
-    private void applyHealthMulti(String newPlayer) {
+    private void applyHealthMulti() {
         float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier()).multiplayerHealthMultiplier() - 1f) * this.activePlayers.size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
         this.currentHealth = this.maxHealth * currentRatio;
+    }
 
-        this.battles.forEach(battle -> this.playerJoin(battle, newPlayer));
+    private void playerJoin(String newPlayer) {
+        this.sendEvent(new PlayerJoinShowdownEvent(newPlayer));
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
@@ -369,10 +377,6 @@ public class RaidInstance {
         }
 
         return true;
-    }
-
-    public void playerJoin(PokemonBattle battle, String newPlayer) {
-        new PlayerJoinShowdownEvent(newPlayer).send(battle);
     }
 
     public void cheer(PokemonBattle battle, BagItem bagItem, String origin, boolean skipEnemyAction) {

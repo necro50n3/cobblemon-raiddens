@@ -1,6 +1,9 @@
 {
     name: 'shield',
     effectType: 'Status',
+    onStart(target, source, sourceEffect) {
+        this.add('-status', target, 'shield');
+    },
     onModifyDef(def, pokemon) {
         this.debug('Shield Reduction');
         def = this.finalModify(def);

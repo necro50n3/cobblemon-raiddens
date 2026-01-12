@@ -14,8 +14,6 @@ import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.net.messages.client.animation.PlayPosableAnimationPacket;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.raids.RaidInstance;
-import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -75,9 +73,6 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
-
         battle.dispatch(() -> {
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("pause"));
             List<Object> providers = new ArrayList<>(List.of(battle));
@@ -99,9 +94,6 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
     @Override
     public void postActionEffect(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.pokemon.getEntity() == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        if (raid == null) return;
-
         battle.dispatch(() -> {
             PlayPosableAnimationPacket packet = new PlayPosableAnimationPacket(this.pokemon.getEntity().getId(), Set.of("recoil"), List.of());
             Level level = this.pokemon.getEntity().level();

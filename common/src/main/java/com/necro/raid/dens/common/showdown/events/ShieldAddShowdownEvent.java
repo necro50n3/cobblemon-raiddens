@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
-public class ShieldAddShowdownEvent implements BroadcastingShowdownEvent {
+public class ShieldAddShowdownEvent implements ShowdownEvent {
     public String build(PokemonBattle battle) {
         return ">eval " +
             "for (let p of battle.sides[1].pokemon) { " +
