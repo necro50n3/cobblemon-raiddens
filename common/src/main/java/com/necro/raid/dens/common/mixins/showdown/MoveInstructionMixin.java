@@ -61,6 +61,8 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
                 )
             );
 
+            if (!raid.canSync()) return Unit.INSTANCE;
+
             String moveId = this.move.getName();
             RaidSupport support = RaidSupportRegistry.getSupport(moveId);
             if (support != null) {

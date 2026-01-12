@@ -409,7 +409,12 @@ public class RaidInstance {
         else event.send(battle == null ? this.battles.getFirst() : battle);
     }
 
+    public boolean canSync() {
+        return CobblemonRaidDens.CONFIG.max_players_for_support >= this.activePlayers.size();
+    }
+
     public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {
+        if (!this.canSync()) return;
         for (PokemonBattle b : this.battles) {
             if (battle != null && b == battle) continue;
             event.send(b);
@@ -417,7 +422,7 @@ public class RaidInstance {
     }
 
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
-        if (CobblemonRaidDens.CONFIG.max_players_for_support < this.activePlayers.size()) return;
+        if (!this.canSync()) return;
         Optional<ShowdownEvent> optional = function.apply(this.battleState);
         optional.ifPresent(event -> {
             for (PokemonBattle b : this.battles) {
@@ -428,7 +433,7 @@ public class RaidInstance {
     }
 
     public void updateBattleContext(PokemonBattle battle, Consumer<PokemonBattle> consumer) {
-        if (CobblemonRaidDens.CONFIG.max_players_for_support < this.activePlayers.size()) return;
+        if (!this.canSync()) return;
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
             consumer.accept(b);
