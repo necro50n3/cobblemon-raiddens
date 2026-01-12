@@ -16,6 +16,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -39,6 +40,7 @@ public class CobblemonRaidDens {
 
     public static RaidConfig CONFIG;
     public static BlacklistConfig BLACKLIST_CONFIG;
+    public static ConditionsConfig CONDITIONS_CONFIG;
     public static final Map<RaidTier, TierConfig> TIER_CONFIG = new HashMap<>();
 
     public static void init() {
@@ -48,6 +50,8 @@ public class CobblemonRaidDens {
         CONFIG = AutoConfig.getConfigHolder(RaidConfig.class).getConfig();
         AutoConfig.register(BlacklistConfig.class, JanksonConfigSerializer::new);
         BLACKLIST_CONFIG = AutoConfig.getConfigHolder(BlacklistConfig.class).getConfig();
+        AutoConfig.register(ConditionsConfig.class, JanksonConfigSerializer::new);
+        CONDITIONS_CONFIG = AutoConfig.getConfigHolder(ConditionsConfig.class).getConfig();
 
         Jankson jankson = Jankson.builder()
             .registerSerializer(ScriptAdapter.class, (script, marshaller) -> script.serialize())
@@ -72,6 +76,7 @@ public class CobblemonRaidDens {
         RaidUtils.init();
         RaidStatistics.init();
         RaidDenCriteriaTriggers.init();
+        RaidConditions.init();
 
         Statuses.registerStatus(new ShieldStatus());
 
