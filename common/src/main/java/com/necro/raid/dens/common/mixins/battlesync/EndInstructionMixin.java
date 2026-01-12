@@ -8,9 +8,11 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.EndInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +36,13 @@ public abstract class EndInstructionMixin {
         Status status = statusLabel == null ? null : Statuses.getStatus(statusLabel);
 
         battle.dispatch(() -> {
-            if (status instanceof VolatileStatus vol) raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.removeVolatile(vol));
+            if (status instanceof VolatileStatus vol) {
+                raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.removeVolatile(vol));
+                Component lang;
+                if (statusLabel.equals("yawn")) lang = LocalizationUtilsKt.lang("status.sleep.apply", battlePokemon.getName());
+                else lang = LocalizationUtilsKt.battleLang(String.format("end.%s", statusLabel), battlePokemon.getName());
+                raid.updateBattleContext(battle, b -> b.broadcastChatMessage(lang));
+            }
             return DispatchResultKt.getGO();
         });
     }

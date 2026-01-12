@@ -1,14 +1,18 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.SideEndInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,12 +41,28 @@ public abstract class SideEndInstructionMixin {
         int idx = effect.getRawData().lastIndexOf(" ");
         String sideCondition = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
 
+        BattleContext.Type type;
+        if (RaidConditions.SCREENS.contains(sideCondition)) type = BattleContext.Type.SCREEN;
+        else if (RaidConditions.HAZARDS.contains(sideCondition)) type = BattleContext.Type.HAZARD;
+        else if (RaidConditions.TAILWIND.contains(sideCondition)) type = BattleContext.Type.TAILWIND;
+        else type = BattleContext.Type.MISC;
+
         battle.dispatch(() -> {
             if (side == '1') {
                 raid.updateBattleState(battle, battleState -> battleState.trainerSide.removeSideCondition(sideCondition));
+                Component lang = LocalizationUtilsKt.battleLang(String.format("sideend.ally.%s", effect.getId()));
+                raid.updateBattleContext(battle, b -> {
+                    b.getSide1().getContextManager().remove(effect.getId(), type);
+                    b.broadcastChatMessage(lang);
+                });
             }
             else {
                 raid.updateBattleState(battle, battleState -> battleState.bossSide.removeSideCondition(sideCondition));
+                Component lang = LocalizationUtilsKt.battleLang(String.format("sideend.opponent.%s", effect.getId()));
+                raid.updateBattleContext(battle, b -> {
+                    b.getSide2().getContextManager().remove(effect.getId(), type);
+                    b.broadcastChatMessage(lang);
+                });
             }
             return DispatchResultKt.getGO();
         });

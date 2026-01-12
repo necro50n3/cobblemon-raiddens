@@ -3,16 +3,34 @@ package com.necro.raid.dens.common.showdown.events;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
+import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
+import net.minecraft.network.chat.Component;
 
 public record StartRaidShowdownEvent(RaidBattleState battleState) implements ShowdownEvent {
     public String build(PokemonBattle battle) {
         Builder builder = new Builder();
-        if (this.battleState.weather != null) builder.addWeather(this.battleState.weather);
-        if (this.battleState.terrain != null) builder.addTerrain(this.battleState.terrain);
-        this.battleState.trainerSide.sideConditions.forEach(sideCondition -> builder.addSideConditions(this.battleState.trainerSide.side, sideCondition));
-        this.battleState.bossSide.sideConditions.forEach(sideCondition -> builder.addSideConditions(this.battleState.bossSide.side, sideCondition));
-        this.battleState.bossSide.pokemon.volatileStatus.forEach(builder::addVolatile);
+        if (this.battleState.weather != null) {
+            builder.addWeather(this.battleState.weather);
+            battle.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.start", this.battleState.weather)));
+        }
+        if (this.battleState.terrain != null) {
+            builder.addTerrain(this.battleState.terrain);
+            battle.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldstart.%s", this.battleState.terrain), Component.literal("UNKNOWN")));
+        }
+        if (!this.battleState.trainerSide.sideConditions.isEmpty()) {
+            this.battleState.trainerSide.sideConditions.forEach(sideCondition -> {
+                builder.addSideConditions(this.battleState.trainerSide.side, sideCondition);
+            });
+        }
+        if (!this.battleState.bossSide.sideConditions.isEmpty()) {
+            this.battleState.bossSide.sideConditions.forEach(sideCondition -> {
+                builder.addSideConditions(this.battleState.bossSide.side, sideCondition);
+            });
+        }
+        if (!this.battleState.bossSide.pokemon.volatileStatus.isEmpty()) {
+            this.battleState.bossSide.pokemon.volatileStatus.forEach(builder::addVolatile);
+        }
         this.battleState.bossSide.pokemon.boosts.forEach(builder::setBoost);
         return builder.build();
     }
