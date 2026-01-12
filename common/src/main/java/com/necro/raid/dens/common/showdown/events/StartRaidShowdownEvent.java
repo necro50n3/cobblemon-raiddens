@@ -1,37 +1,68 @@
 package com.necro.raid.dens.common.showdown.events;
 
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
+import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
+import com.cobblemon.mod.common.battles.interpreter.ContextManager;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
-import com.cobblemon.mod.common.util.LocalizationUtilsKt;
+import com.mojang.datafixers.util.Pair;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
-import net.minecraft.network.chat.Component;
+import com.necro.raid.dens.common.raids.battle.RaidConditions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public record StartRaidShowdownEvent(RaidBattleState battleState) implements ShowdownEvent {
+    @SuppressWarnings("deprecation")
     public String build(PokemonBattle battle) {
         Builder builder = new Builder();
+        List<Pair<ContextManager, BattleContext>> contexts = new ArrayList<>();
+
         if (this.battleState.weather != null) {
             builder.addWeather(this.battleState.weather);
-            battle.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.start", this.battleState.weather)));
+            contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(this.battleState.weather, battle.getTurn(), BattleContext.Type.WEATHER, null)));
         }
         if (this.battleState.terrain != null) {
             builder.addTerrain(this.battleState.terrain);
-            battle.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldstart.%s", this.battleState.terrain), Component.literal("UNKNOWN")));
+            contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(this.battleState.terrain, battle.getTurn(), BattleContext.Type.TERRAIN, null)));
         }
-        if (!this.battleState.trainerSide.sideConditions.isEmpty()) {
-            this.battleState.trainerSide.sideConditions.forEach(sideCondition -> {
-                builder.addSideConditions(this.battleState.trainerSide.side, sideCondition);
-            });
-        }
-        if (!this.battleState.bossSide.sideConditions.isEmpty()) {
-            this.battleState.bossSide.sideConditions.forEach(sideCondition -> {
-                builder.addSideConditions(this.battleState.bossSide.side, sideCondition);
-            });
-        }
-        if (!this.battleState.bossSide.pokemon.volatileStatus.isEmpty()) {
-            this.battleState.bossSide.pokemon.volatileStatus.forEach(builder::addVolatile);
-        }
-        this.battleState.bossSide.pokemon.boosts.forEach(builder::setBoost);
+        this.battleState.trainerSide.sideConditions.forEach(sideCondition -> {
+            builder.addSideConditions(this.battleState.trainerSide.side, sideCondition);
+            BattleContext.Type type;
+            if (RaidConditions.SCREENS.contains(sideCondition)) type = BattleContext.Type.SCREEN;
+            else if (RaidConditions.HAZARDS.contains(sideCondition)) type = BattleContext.Type.HAZARD;
+            else if (RaidConditions.TAILWIND.contains(sideCondition)) type = BattleContext.Type.TAILWIND;
+            else type = BattleContext.Type.MISC;
+            contexts.add(new Pair<>(battle.getSide1().getContextManager(), new BasicContext(sideCondition, battle.getTurn(), type, null)));
+        });
+        this.battleState.bossSide.sideConditions.forEach(sideCondition -> {
+            builder.addSideConditions(this.battleState.bossSide.side, sideCondition);
+            BattleContext.Type type;
+            if (RaidConditions.SCREENS.contains(sideCondition)) type = BattleContext.Type.SCREEN;
+            else if (RaidConditions.HAZARDS.contains(sideCondition)) type = BattleContext.Type.HAZARD;
+            else if (RaidConditions.TAILWIND.contains(sideCondition)) type = BattleContext.Type.TAILWIND;
+            else type = BattleContext.Type.MISC;
+            contexts.add(new Pair<>(battle.getSide2().getContextManager(), new BasicContext(sideCondition, battle.getTurn(), type, null)));
+        });
+        this.battleState.bossSide.pokemon.volatileStatus.forEach(status -> {
+            builder.addVolatile(status);
+            contexts.add(new Pair<>(battle.getSide2().getContextManager(), new BasicContext(status.getShowdownName(), battle.getTurn(), BattleContext.Type.VOLATILE, null)));
+        });
+        this.battleState.bossSide.pokemon.boosts.forEach((stat, stages) -> {
+            builder.setBoost(stat, stages);
+            BattlePokemon pokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+            if (pokemon == null) return;
+            contexts.add(new Pair<>(pokemon.getContextManager(), new BasicContext(stat.getShowdownId(), battle.getTurn(), BattleContext.Type.BOOST, null)));
+        });
+
+        battle.dispatch(() -> {
+            contexts.forEach(pair -> pair.getFirst().add(pair.getSecond()));
+            return DispatchResultKt.getGO();
+        });
+
         return builder.build();
     }
 
