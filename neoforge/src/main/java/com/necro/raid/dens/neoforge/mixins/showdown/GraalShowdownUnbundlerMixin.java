@@ -1,7 +1,7 @@
 package com.necro.raid.dens.neoforge.mixins.showdown;
 
 import com.cobblemon.mod.common.battles.runner.graal.GraalShowdownUnbundler;
-import com.necro.raid.dens.neoforge.loader.NeoForgeShowdownLoader;
+import com.necro.raid.dens.neoforge.showdown.loader.NeoForgeShowdownLoader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

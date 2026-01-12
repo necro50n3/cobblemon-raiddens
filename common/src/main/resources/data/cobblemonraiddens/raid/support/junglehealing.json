@@ -1,0 +1,5 @@
+{
+    "move": "junglehealing",
+    "heal": 0.25,
+    "cure": true
+}

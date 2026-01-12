@@ -2,11 +2,18 @@ package com.necro.raid.dens.common.mixins.showdown;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
+import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.cobblemon.mod.common.battles.interpreter.instructions.MoveInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.necro.raid.dens.common.data.support.RaidSupport;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.registry.RaidSupportRegistry;
+import com.necro.raid.dens.common.showdown.events.DragonCheerShowdownEvent;
+import com.necro.raid.dens.common.showdown.events.RaidCureShowdownEvent;
+import com.necro.raid.dens.common.showdown.events.RaidHealShowdownEvent;
+import com.necro.raid.dens.common.showdown.events.RaidSupportShowdownEvent;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
@@ -53,6 +60,28 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
                     this.crd_resolveContents(moveContents)
                 )
             );
+
+            String moveId = this.move.getName();
+            RaidSupport support = RaidSupportRegistry.getSupport(moveId);
+            if (support != null) {
+                support.boosts().forEach((stat, stages) ->
+                    raid.broadcastToOthers(new RaidSupportShowdownEvent(moveId, stat, stages), battle)
+                );
+                if (support.heal() > 0) raid.broadcastToOthers(new RaidHealShowdownEvent(support.heal()), battle);
+                if (support.cure()) raid.broadcastToOthers(new RaidCureShowdownEvent(), battle);
+                if (support.sendUpdate()) RaidSupportRegistry.addToQueue(this.userPokemon.getUuid());
+            }
+            else {
+                if (moveId.equals("dragoncheer")) {
+                    raid.broadcastToOthers(new DragonCheerShowdownEvent(), battle);
+                    RaidSupportRegistry.addToQueue(this.userPokemon.getUuid());
+                }
+            }
+            battle.dispatch(() -> {
+                RaidSupportRegistry.removeFromQueue(this.userPokemon.getUuid());
+                return DispatchResultKt.getGO();
+            });
+
             return Unit.INSTANCE;
         });
     }

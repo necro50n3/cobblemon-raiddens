@@ -409,6 +409,13 @@ public class RaidInstance {
         else event.send(battle == null ? this.battles.getFirst() : battle);
     }
 
+    public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {
+        for (PokemonBattle b : this.battles) {
+            if (battle != null && b == battle) continue;
+            event.send(b);
+        }
+    }
+
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
         if (CobblemonRaidDens.CONFIG.max_players_for_support < this.activePlayers.size()) return;
         Optional<ShowdownEvent> optional = function.apply(this.battleState);

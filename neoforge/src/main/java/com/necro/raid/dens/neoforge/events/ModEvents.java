@@ -89,5 +89,6 @@ public class ModEvents {
         event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
         event.addListener(new StatusEffectsReloadListener());
+        event.addListener(new RaidSupportReloadListener());
     }
 }

@@ -1,4 +1,4 @@
-package com.necro.raid.dens.neoforge.loader;
+package com.necro.raid.dens.neoforge.showdown.loader;
 
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.showdown.loader.ShowdownLoader;

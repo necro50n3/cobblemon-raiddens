@@ -16,6 +16,7 @@
         "battlesync.CopyBoostInstructionMixin",
         "battlesync.CureStatusInstructionMixin",
         "battlesync.EndInstructionMixin",
+        "battlesync.FailInstructionMixin",
         "battlesync.FieldEndInstructionMixin",
         "battlesync.FieldStartInstructionMixin",
         "battlesync.InvertBoostInstructionMixin",
