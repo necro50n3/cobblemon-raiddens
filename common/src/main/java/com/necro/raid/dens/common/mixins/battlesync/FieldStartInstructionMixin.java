@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.battles.interpreter.instructions.FieldStartInstr
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
@@ -43,7 +44,8 @@ public abstract class FieldStartInstructionMixin {
         BattlePokemon source = this.getMessage().battlePokemonFromOptional(battle, "of");
 
         battle.dispatchWaiting(1.5f, () -> {
-            raid.updateBattleState(battle, battleState -> battleState.addTerrain(field));
+            if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, battleState -> battleState.addTerrain(field));
+            else raid.updateBattleState(battle, battleState -> battleState.addField(field));
             raid.updateBattleContext(battle, b -> {
                 b.getContextManager().add(new BasicContext(field, b.getTurn(), type, null));
                 b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldstart.%s", field), source == null ? Component.literal("UNKNOWN") : source.getName()));

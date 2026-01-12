@@ -11,6 +11,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
+import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +42,8 @@ public abstract class FieldEndInstructionMixin {
         BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase());
 
         battle.dispatch(() -> {
-            raid.updateBattleState(battle, RaidBattleState::removeTerrain);
+            if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, RaidBattleState::removeTerrain);
+            else raid.updateBattleState(battle, battleState -> battleState.removeField(field));
             raid.updateBattleContext(battle, b -> {
                 b.getContextManager().add(new BasicContext(field, b.getTurn(), type, null));
                 b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldend.%s", field)));

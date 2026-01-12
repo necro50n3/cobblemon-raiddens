@@ -21,13 +21,17 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
         Builder builder = new Builder();
         List<Pair<ContextManager, BattleContext>> contexts = new ArrayList<>();
 
-        if (this.battleState.weather != null) {
-            builder.addWeather(this.battleState.weather);
-            contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(this.battleState.weather, battle.getTurn(), BattleContext.Type.WEATHER, null)));
-        }
         if (this.battleState.terrain != null) {
             builder.addTerrain(this.battleState.terrain);
             contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(this.battleState.terrain, battle.getTurn(), BattleContext.Type.TERRAIN, null)));
+        }
+        this.battleState.fields.forEach(field -> {
+            builder.addField(field);
+            contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(field, battle.getTurn(), BattleContext.Type.ROOM, null)));
+        });
+        if (this.battleState.weather != null) {
+            builder.addWeather(this.battleState.weather);
+            contexts.add(new Pair<>(battle.getContextManager(), new BasicContext(this.battleState.weather, battle.getTurn(), BattleContext.Type.WEATHER, null)));
         }
         this.battleState.trainerSide.sideConditions.forEach(sideCondition -> {
             builder.addSideConditions(this.battleState.trainerSide.side, sideCondition);
@@ -73,18 +77,6 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
             this.string = ">eval battle.sides[1].pokemon[0].addVolatile('raidboss'); ";
         }
 
-        private void addWeather(String weather) {
-            this.string += String.format(
-                "const weather = this.battle.dex.conditions.get('%1$s'); " +
-                "if (weather && battle.field.weather === '') { " +
-                    "battle.field.weather = weather.id; " +
-                    "battle.field.weatherState = { id: weather.id }; " +
-                    "if (weather.duration) battle.field.weatherState.duration = weather.duration; " +
-                "} ",
-                weather
-            );
-        }
-
         private void addTerrain(String terrain) {
             this.string += String.format(
                 "const pokemon = battle.sides[1].pokemon[0]; " +
@@ -99,6 +91,34 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
                     "}; " +
                 "} ",
                 terrain
+            );
+        }
+
+        private void addField(String field) {
+            this.string += String.format(
+                "const pokemon = battle.sides[1].pokemon[0]; " +
+                "const pseudoWeather = this.battle.dex.conditions.get('%1$s'); " +
+                "if (pseudoWeather && !battle.field.pseudoWeather[pseudoWeather.id]) { " +
+                    "battle.field.pseudoWeather[pseudoWeather.id] = { " +
+                        "id: pseudoWeather.id, " +
+                        "source: pokemon, " +
+                        "sourceSlot: pokemon.getSlot(), " +
+                        "duration: pseudoWeather.duration " +
+                    "}; " +
+                "} ",
+                field
+            );
+        }
+
+        private void addWeather(String weather) {
+            this.string += String.format(
+                "const weather = this.battle.dex.conditions.get('%1$s'); " +
+                "if (weather && battle.field.weather === '') { " +
+                    "battle.field.weather = weather.id; " +
+                    "battle.field.weatherState = { id: weather.id }; " +
+                    "if (weather.duration) battle.field.weatherState.duration = weather.duration; " +
+                "} ",
+                weather
             );
         }
 

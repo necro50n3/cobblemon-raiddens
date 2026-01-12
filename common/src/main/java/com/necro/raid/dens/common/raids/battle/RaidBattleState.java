@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.raids.battle;
 
 import com.necro.raid.dens.common.showdown.events.*;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -9,12 +10,14 @@ public class RaidBattleState {
     public final TrainerSide trainerSide;
     public final BossSide bossSide;
     public String terrain;
+    public Set<String> fields;
     public String weather;
 
     public RaidBattleState() {
         this.trainerSide = new TrainerSide();
         this.bossSide = new BossSide();
         this.terrain = null;
+        this.fields = new HashSet<>();
         this.weather = null;
     }
 
@@ -28,6 +31,18 @@ public class RaidBattleState {
         if (this.terrain == null) return Optional.empty();
         this.terrain = null;
         return Optional.of(new ClearTerrainShowdownEvent());
+    }
+
+    public Optional<ShowdownEvent> addField(String field) {
+        if (this.fields.contains(field)) return this.removeField(field);
+        this.fields.add(field);
+        return Optional.of(new SetFieldShowdownEvent(field));
+    }
+
+    public Optional<ShowdownEvent> removeField(String field) {
+        if (!this.fields.contains(field)) return Optional.empty();
+        this.fields.remove(field);
+        return Optional.of(new ClearFieldShowdownEvent(field));
     }
 
     public Optional<ShowdownEvent> addWeather(String weather) {
