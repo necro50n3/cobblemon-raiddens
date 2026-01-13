@@ -53,7 +53,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
 
     private void acceptRequest(ServerPlayer host, Player player, RaidCrystalBlockEntity blockEntity) {
         if (blockEntity.isFull()) {
-            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
+            host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
 
@@ -73,7 +73,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
         }
         else {
             RaidJoinHelper.removeFromQueue(player, false);
-            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
+            host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"), true);
         }
     }
 
@@ -81,13 +81,13 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
         if (RaidJoinHelper.isInQueue(player)) {
             RaidJoinHelper.removeFromQueue(player, true);
             RaidHelper.REQUEST_QUEUE.get(host.getUUID()).removePlayer(player);
-            player.sendSystemMessage(ComponentUtils.getSystemMessage(
-                Component.translatable("message.cobblemonraiddens.raid.rejected_request", host.getName()))
+            player.displayClientMessage(ComponentUtils.getSystemMessage(
+                Component.translatable("message.cobblemonraiddens.raid.rejected_request", host.getName())), true
             );
-            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.confirm_deny_request"));
+            host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.confirm_deny_request"), true);
         }
         else {
-            host.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
+            host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"), true);
         }
     }
 }

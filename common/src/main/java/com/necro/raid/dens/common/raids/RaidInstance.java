@@ -26,6 +26,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidScriptHelper;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
@@ -317,8 +318,9 @@ public class RaidInstance {
         this.raidState = RaidState.FAILED;
         ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.FAILED);
 
+        Component component = ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.raid_fail");
         this.activePlayers.forEach(player -> {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
+            player.displayClientMessage(component, true);
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
         });
     }

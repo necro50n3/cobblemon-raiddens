@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -55,11 +56,11 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         BagItem bagItem = this.getBagItem(stack);
         if (bagItem == null) return false;
         if (!battlePokemon.getActor().canFitForcedAction()) {
-            player.sendSystemMessage(LocalizationUtilsKt.battleLang("bagitem.cannot").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(LocalizationUtilsKt.battleLang("bagitem.cannot")), true);
             return false;
         }
         else if (!bagItem.canUse(stack, battle, battlePokemon)) {
-            player.sendSystemMessage(LocalizationUtilsKt.battleLang("bagitem.invalid").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(LocalizationUtilsKt.battleLang("bagitem.invalid")), true);
             return false;
         }
 
@@ -67,7 +68,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
         String data = player.getName().getString();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(raidId);
         if (!raid.runCheer(player, battle, (CheerBagItem) this.getBagItem(), data)) {
-            player.sendSystemMessage(Component.translatable("battle.cobblemonraiddens.cheer.cannot").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("battle.cobblemonraiddens.cheer.cannot"), true);
             return false;
         }
 

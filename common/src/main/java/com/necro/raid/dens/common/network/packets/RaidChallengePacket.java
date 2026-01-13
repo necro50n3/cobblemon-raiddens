@@ -66,12 +66,12 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
 
         if (((IRaidAccessor) pokemonEntity).crd_getRaidState() == RaidState.FAILED) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
 
         if (!RaidJoinHelper.isParticipating(player, false) && RaidUtils.isRaidDimension(player.level())) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.not_participating"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.not_participating"), true);
             return;
         }
 
@@ -82,26 +82,26 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         if (raid == null) return;
         else if (raid.hasFailed(player)) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
         else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
 
         Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
         if (pokemon == null) return;
         else if (RaidUtils.isPokemonBlacklisted(pokemon)) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName())));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName())), true);
             return;
         }
         else if (RaidUtils.isAbilityBlacklisted(pokemon.getAbility())) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))), true);
             return;
         }
         else if (pokemon.isFainted()) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())), true);
             return;
         }
 

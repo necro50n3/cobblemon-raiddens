@@ -55,17 +55,17 @@ public class RaidJoinHelper {
         if (participant == null) return false;
 
         if (participant.isHost()) {
-            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"));
+            if (sendMessage) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_hosting"), true);
         }
         else {
-            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_participating"));
+            if (sendMessage) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_participating"), true);
         }
         return true;
     }
 
     public static boolean isParticipatingOrInQueue(Player player, boolean sendMessage) {
         if (isInQueue(player)) {
-            if (sendMessage) player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"));
+            if (sendMessage) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.already_in_queue"), true);
             return true;
         }
         return isParticipating(player, sendMessage);
@@ -114,7 +114,7 @@ public class RaidJoinHelper {
 
         public boolean tick() {
             if (++this.tick > 1200) {
-                this.player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"));
+                this.player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.request_time_out"), true);
                 return false;
             }
             return true;

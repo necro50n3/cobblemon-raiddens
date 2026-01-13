@@ -10,13 +10,13 @@ public class ComponentUtils {
     }
 
     public static Component getSystemMessage(MutableComponent component) {
-        return component.withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC);
+        return component;
     }
     public static Component getErrorMessage(String translatable) {
         return getErrorMessage(Component.translatable(translatable));
     }
 
     public static Component getErrorMessage(MutableComponent component) {
-        return component.withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC);
+        return component.withStyle(ChatFormatting.RED);
     }
 }
