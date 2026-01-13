@@ -213,6 +213,10 @@ public class RaidInstance {
         return this.activePlayers;
     }
 
+    public List<PokemonBattle> getBattles() {
+        return this.battles;
+    }
+
     public float getRemainingHealth() {
         return this.currentHealth;
     }
