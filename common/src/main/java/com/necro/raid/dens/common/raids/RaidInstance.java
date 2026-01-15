@@ -338,11 +338,11 @@ public class RaidInstance {
     }
 
     public void addToBossEvent(ServerPlayer player) {
-        this.bossEvent.addPlayer(player);
+        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.addPlayer(player), 2));
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
-        this.bossEvent.removePlayer(player);
+        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.removePlayer(player), 2));
     }
 
     public RaidState getRaidState() {
