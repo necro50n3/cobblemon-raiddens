@@ -452,7 +452,7 @@ public class RaidInstance {
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
-        if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
+        else if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));

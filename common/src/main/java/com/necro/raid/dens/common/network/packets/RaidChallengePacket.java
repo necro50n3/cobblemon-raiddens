@@ -79,7 +79,17 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier());
 
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        RaidInstance raidTemp = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+
+        // Initiate raid instance for spawnboss
+        if (raidTemp == null && !RaidUtils.isRaidDimension(player.level())) {
+            raidTemp = new RaidInstance(pokemonEntity, player.getUUID());
+            raidTemp.addPlayer(player);
+            RaidHelper.ACTIVE_RAIDS.put(raidId, raidTemp);
+        }
+
+        RaidInstance raid = raidTemp;
+
         if (raid == null) return;
         else if (raid.hasFailed(player)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);

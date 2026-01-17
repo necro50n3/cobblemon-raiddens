@@ -10,6 +10,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -21,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.UUID;
 
 public class RaidSpawnCommands {
     private static final Permission SPAWN_BOSS = new RaidDenPermission("command.spawnboss", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
@@ -38,14 +41,14 @@ public class RaidSpawnCommands {
                                         Vec3Argument.getVec3(context, "pos"),
                                         DimensionArgument.getDimension(context, "dimension"),
                                         ResourceLocationArgument.getId(context, "boss"),
-                                        true, true, false
+                                        true, true
                                     ))
                                     .then(Commands.argument("noAI", BoolArgumentType.bool())
                                         .executes(context -> spawnBoss(
                                             Vec3Argument.getVec3(context, "pos"),
                                             DimensionArgument.getDimension(context, "dimension"),
                                             ResourceLocationArgument.getId(context, "boss"),
-                                            BoolArgumentType.getBool(context, "noAI"), true, false
+                                            BoolArgumentType.getBool(context, "noAI"), true
                                         ))
                                         .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
                                             .executes(context -> spawnBoss(
@@ -53,7 +56,7 @@ public class RaidSpawnCommands {
                                                 DimensionArgument.getDimension(context, "dimension"),
                                                 ResourceLocationArgument.getId(context, "boss"),
                                                 BoolArgumentType.getBool(context, "noAI"),
-                                                BoolArgumentType.getBool(context, "isInvulnerable"), false
+                                                BoolArgumentType.getBool(context, "isInvulnerable")
                                             ))
                                             .then(Commands.argument("isPersistent", BoolArgumentType.bool())
                                                 .executes(context -> spawnBoss(
@@ -61,8 +64,7 @@ public class RaidSpawnCommands {
                                                     DimensionArgument.getDimension(context, "dimension"),
                                                     ResourceLocationArgument.getId(context, "boss"),
                                                     BoolArgumentType.getBool(context, "noAI"),
-                                                    BoolArgumentType.getBool(context, "isInvulnerable"),
-                                                    BoolArgumentType.getBool(context, "isPersistent")
+                                                    BoolArgumentType.getBool(context, "isInvulnerable")
                                                 ))
                                             )
                                         )
@@ -78,14 +80,14 @@ public class RaidSpawnCommands {
                                     context,
                                     Vec3Argument.getVec3(context, "pos"),
                                     ResourceLocationArgument.getId(context, "boss"),
-                                    true, true, false
+                                    true, true
                                 ))
                                 .then(Commands.argument("noAI", BoolArgumentType.bool())
                                     .executes(context -> spawnBoss(
                                         context,
                                         Vec3Argument.getVec3(context, "pos"),
                                         ResourceLocationArgument.getId(context, "boss"),
-                                        BoolArgumentType.getBool(context, "noAI"), true, false
+                                        BoolArgumentType.getBool(context, "noAI"), true
                                     ))
                                     .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
                                         .executes(context -> spawnBoss(
@@ -93,7 +95,7 @@ public class RaidSpawnCommands {
                                             Vec3Argument.getVec3(context, "pos"),
                                             ResourceLocationArgument.getId(context, "boss"),
                                             BoolArgumentType.getBool(context, "noAI"),
-                                            BoolArgumentType.getBool(context, "isInvulnerable"), false
+                                            BoolArgumentType.getBool(context, "isInvulnerable")
                                         ))
                                         .then(Commands.argument("isPersistent", BoolArgumentType.bool())
                                             .executes(context -> spawnBoss(
@@ -101,8 +103,7 @@ public class RaidSpawnCommands {
                                                 Vec3Argument.getVec3(context, "pos"),
                                                 ResourceLocationArgument.getId(context, "boss"),
                                                 BoolArgumentType.getBool(context, "noAI"),
-                                                BoolArgumentType.getBool(context, "isInvulnerable"),
-                                                BoolArgumentType.getBool(context, "isPersistent")
+                                                BoolArgumentType.getBool(context, "isInvulnerable")
                                             ))
                                         )
                                     )
@@ -120,13 +121,13 @@ public class RaidSpawnCommands {
         register(dispatcher);
     }
 
-    private static int spawnBoss(CommandContext<CommandSourceStack> context, Vec3 vec3, ResourceLocation boss, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
+    private static int spawnBoss(CommandContext<CommandSourceStack> context, Vec3 vec3, ResourceLocation boss, boolean noAI, boolean isInvulnerable) {
         ServerPlayer player = context.getSource().getPlayer();
         if (player == null) return 0;
-        return spawnBoss(vec3, player.serverLevel(), boss, noAI, isInvulnerable, isPersistent);
+        return spawnBoss(vec3, player.serverLevel(), boss, noAI, isInvulnerable);
     }
 
-    private static int spawnBoss(Vec3 vec3, ServerLevel dimension, ResourceLocation boss, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
+    private static int spawnBoss(Vec3 vec3, ServerLevel dimension, ResourceLocation boss, boolean noAI, boolean isInvulnerable) {
         if (RaidUtils.isRaidDimension(dimension)) return 0;
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(boss);
         if (raidBoss == null) return 0;
@@ -134,7 +135,7 @@ public class RaidSpawnCommands {
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(dimension);
         if (noAI) pokemonEntity.setNoAi(true);
         if (isInvulnerable) pokemonEntity.setInvulnerable(true);
-        if (isPersistent) pokemonEntity.setPersistenceRequired();
+        ((IRaidAccessor) pokemonEntity).crd_setRaidId(UUID.randomUUID());
         pokemonEntity.moveTo(vec3);
         dimension.addFreshEntity(pokemonEntity);
         return 1;
