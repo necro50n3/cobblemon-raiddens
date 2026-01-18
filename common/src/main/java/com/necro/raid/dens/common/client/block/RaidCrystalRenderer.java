@@ -33,7 +33,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     public void actuallyRender(PoseStack poseStack, RaidCrystalBlockEntity blockEntity, BakedGeoModel model, @Nullable RenderType renderType,
                                MultiBufferSource multiBufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float f, int i,
                                int j, int colour) {
-        if (shouldRenderBeacon(blockEntity) && blockEntity.renderBeacon(blockEntity.getBlockState())
+        if (shouldRenderBeacon(blockEntity) && blockEntity.canGenerateBoss(blockEntity.getBlockState())
             && blockEntity.getLevel() != null && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos().above())) {
             poseStack.pushPose();
             poseStack.scale(0.75f, 1.0f, 0.75f);

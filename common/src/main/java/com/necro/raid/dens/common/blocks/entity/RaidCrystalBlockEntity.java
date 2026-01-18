@@ -279,17 +279,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public boolean isActive(BlockState blockState) {
-        return blockState.getValue(RaidCrystalBlock.ACTIVE)
-            && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE
-            && this.raidBoss != null;
+        return blockState.getValue(RaidCrystalBlock.ACTIVE) && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE && this.raidBoss != null;
     }
 
     public boolean canGenerateBoss(BlockState blockState) {
-        return blockState.getValue(RaidCrystalBlock.ACTIVE)
-            && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE;
-    }
-
-    public boolean renderBeacon(BlockState blockState) {
         return blockState.getValue(RaidCrystalBlock.ACTIVE) && blockState.getValue(RaidCrystalBlock.RAID_TYPE) != RaidType.NONE;
     }
 

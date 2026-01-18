@@ -48,11 +48,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public RaidCrystalBlock(Properties settings) {
         super(settings);
         this.registerDefaultState(this.defaultBlockState()
-            .setValue(ACTIVE, false)
-            .setValue(RAID_TYPE, RaidType.NONE)
+            .setValue(ACTIVE, true)
+            .setValue(RAID_TYPE, RaidType.STELLAR)
             .setValue(RAID_TIER, RaidTier.TIER_ONE)
-            .setValue(CAN_RESET, false)
-            .setValue(CYCLE_MODE, RaidCycleMode.NONE)
+            .setValue(CAN_RESET, true)
+            .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
         );
     }
 
