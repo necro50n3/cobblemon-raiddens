@@ -15,45 +15,17 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.UnaryOperator;
 
 public class FabricComponents {
-    @SuppressWarnings("unchecked")
     public static void registerDataComponents() {
-        ModComponents.TIER_COMPONENT = Holder.direct((DataComponentType<RaidTier>) registerTierComponent(builder -> builder.persistent(RaidTier.codec())));
-        ModComponents.FEATURE_COMPONENT = Holder.direct((DataComponentType<RaidFeature>) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec())));
-        ModComponents.TYPE_COMPONENT = Holder.direct((DataComponentType<RaidType>) registerTypeComponent(builder -> builder.persistent(RaidType.codec())));
-        ModComponents.RAID_DEN_KEY = Holder.direct((DataComponentType<Boolean>) registerBooleanComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL)));
-        ModComponents.REMOTE_KEY = Holder.direct((DataComponentType<Boolean>) registerBooleanComponent("remote_key", builder -> builder.persistent(Codec.BOOL)));
-        ModComponents.UNIQUE_KEY = Holder.direct((DataComponentType<String>) registerStringComponent("unique_key", builder -> builder.persistent(Codec.STRING)));
+        ModComponents.TIER_COMPONENT = Holder.direct(registerComponent("raid_tier", builder -> builder.persistent(RaidTier.codec())));
+        ModComponents.FEATURE_COMPONENT = Holder.direct(registerComponent("raid_feature", builder -> builder.persistent(RaidFeature.codec())));
+        ModComponents.TYPE_COMPONENT = Holder.direct(registerComponent("raid_type", builder -> builder.persistent(RaidType.codec())));
+        ModComponents.RAID_DEN_KEY = Holder.direct(registerComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL)));
+        ModComponents.REMOTE_KEY = Holder.direct(registerComponent("remote_key", builder -> builder.persistent(Codec.BOOL)));
+        ModComponents.UNIQUE_KEY = Holder.direct(registerComponent("unique_key", builder -> builder.persistent(Codec.STRING)));
+        ModComponents.RAID_ENERGY = Holder.direct(registerComponent("raid_energy", builder -> builder.persistent(Codec.INT)));
     }
 
-    private static DataComponentType<?> registerTierComponent(UnaryOperator<DataComponentType.Builder<RaidTier>> builderOperator) {
-        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_tier"),
-            builderOperator.apply(DataComponentType.builder()).build()
-        );
-    }
-
-    private static DataComponentType<?> registerFeatureComponent(UnaryOperator<DataComponentType.Builder<RaidFeature>> builderOperator) {
-        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_feature"),
-            builderOperator.apply(DataComponentType.builder()).build()
-        );
-    }
-
-    private static DataComponentType<?> registerTypeComponent(UnaryOperator<DataComponentType.Builder<RaidType>> builderOperator) {
-        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_type"),
-            builderOperator.apply(DataComponentType.builder()).build()
-        );
-    }
-
-    private static DataComponentType<?> registerBooleanComponent(String name, UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
-        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
-            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name),
-            builderOperator.apply(DataComponentType.builder()).build()
-        );
-    }
-
-    private static DataComponentType<?> registerStringComponent(String name, UnaryOperator<DataComponentType.Builder<String>> builderOperator) {
+    private static <T> DataComponentType<T> registerComponent(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name),
             builderOperator.apply(DataComponentType.builder()).build()

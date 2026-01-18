@@ -20,31 +20,17 @@ public class NeoForgeComponents {
 
     @SuppressWarnings("unchecked")
     public static void registerDataComponents() {
-        ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerTierComponent(builder -> builder.persistent(RaidTier.codec()));
-        ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerFeatureComponent(builder -> builder.persistent(RaidFeature.codec()));
-        ModComponents.TYPE_COMPONENT = (Holder<DataComponentType<RaidType>>) (Object) registerTypeComponent(builder -> builder.persistent(RaidType.codec()));
-        ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL));
-        ModComponents.REMOTE_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerBooleanComponent("remote_key", builder -> builder.persistent(Codec.BOOL));
-        ModComponents.UNIQUE_KEY = (Holder<DataComponentType<String>>) (Object) registerStringComponent("unique_key", builder -> builder.persistent(Codec.STRING));
+        ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerComponent("raid_tier", RaidTier.codec());
+        ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerComponent("raid_feature", RaidFeature.codec());
+        ModComponents.TYPE_COMPONENT = (Holder<DataComponentType<RaidType>>) (Object) registerComponent("raid_type", RaidType.codec());
+        ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerComponent("raid_den_key", Codec.BOOL);
+        ModComponents.REMOTE_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerComponent("remote_key", Codec.BOOL);
+        ModComponents.UNIQUE_KEY = (Holder<DataComponentType<String>>) (Object) registerComponent("unique_key", Codec.STRING);
+        ModComponents.RAID_ENERGY = (Holder<DataComponentType<Integer>>) (Object) registerComponent("raid_energy", Codec.INT);
     }
 
-    private static DeferredHolder<DataComponentType<?>, DataComponentType<RaidTier>> registerTierComponent(UnaryOperator<DataComponentType.Builder<RaidTier>> builderOperator) {
-        return DATA_COMPONENT_TYPES.register("raid_tier", () -> builderOperator.apply(DataComponentType.builder()).build());
-    }
-
-    private static DeferredHolder<DataComponentType<?>, DataComponentType<RaidFeature>> registerFeatureComponent(UnaryOperator<DataComponentType.Builder<RaidFeature>> builderOperator) {
-        return DATA_COMPONENT_TYPES.register("raid_feature", () -> builderOperator.apply(DataComponentType.builder()).build());
-    }
-
-    private static DeferredHolder<DataComponentType<?>, DataComponentType<RaidType>> registerTypeComponent(UnaryOperator<DataComponentType.Builder<RaidType>> builderOperator) {
-        return DATA_COMPONENT_TYPES.register("raid_type", () -> builderOperator.apply(DataComponentType.builder()).build());
-    }
-
-    private static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> registerBooleanComponent(String name, UnaryOperator<DataComponentType.Builder<Boolean>> builderOperator) {
-        return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
-    }
-
-    private static DeferredHolder<DataComponentType<?>, DataComponentType<String>> registerStringComponent(String name, UnaryOperator<DataComponentType.Builder<String>> builderOperator) {
+    private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> registerComponent(String name, Codec<T> codec) {
+        UnaryOperator<DataComponentType.Builder<T>> builderOperator = builder -> builder.persistent(codec);
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 }
