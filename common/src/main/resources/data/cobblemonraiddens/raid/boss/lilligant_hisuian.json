@@ -6,15 +6,15 @@
             "leafblade",
             "victorydance",
             "megakick"
+        ],
+        "custom_properties": [
+            {
+                "name": "hisuian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "GRASS",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "hisuian",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

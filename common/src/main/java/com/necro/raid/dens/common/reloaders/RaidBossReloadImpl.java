@@ -22,11 +22,10 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        Optional<RaidBoss> raidBossOpt = RaidBoss.codec().decode(JsonOps.INSTANCE, object).result().map(Pair::getFirst);
-        raidBossOpt.ifPresent(raidBoss -> {
-            raidBoss.setId(key);
-            RaidRegistry.register(raidBoss);
-        });
+        RaidBoss raidBoss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
+        raidBoss.setId(key);
+        raidBoss.applyDefaults();
+        RaidRegistry.register(raidBoss);
     }
 
     @Override

@@ -5,20 +5,14 @@ import com.necro.raid.dens.common.data.raid.RaidBucket;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.biome.Biome;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class RaidBucketRegistry {
-    public static final ResourceKey<Registry<RaidBucket>> BUCKET_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "bucket"));
-    public static Registry<RaidBucket> REGISTRY;
     public static Registry<Biome> BIOME_REGISTRY;
 
     private static final Map<ResourceLocation, RaidBucket> BUCKET_MAP = new HashMap<>();
@@ -45,12 +39,15 @@ public class RaidBucketRegistry {
         return BUCKET_MAP.getOrDefault(bucket, null);
     }
 
+    public static Set<ResourceLocation> getAll() {
+        return BUCKET_MAP.keySet();
+    }
+
     public static void clear() {
         BUCKET_MAP.clear();
     }
 
     public static void init(MinecraftServer server) {
-        REGISTRY = server.registryAccess().registryOrThrow(BUCKET_KEY);
         BIOME_REGISTRY = server.registryAccess().registryOrThrow(Registries.BIOME);
     }
 }

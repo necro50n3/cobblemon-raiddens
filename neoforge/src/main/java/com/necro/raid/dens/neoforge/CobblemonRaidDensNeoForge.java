@@ -1,13 +1,7 @@
 package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.structure.RaidDenPool;
-import com.necro.raid.dens.common.data.raid.RaidBucket;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
@@ -17,7 +11,6 @@ import com.necro.raid.dens.neoforge.events.CommandsRegistrationEvent;
 import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import com.necro.raid.dens.neoforge.items.*;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.neoforge.statistics.NeoForgeStatistics;
 import com.necro.raid.dens.neoforge.worldgen.NeoForgeFeatures;
 import net.neoforged.bus.api.IEventBus;
@@ -25,7 +18,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 @SuppressWarnings("unused")
 @Mod(CobblemonRaidDens.MOD_ID)
@@ -58,12 +50,6 @@ public class CobblemonRaidDensNeoForge {
         RaidDenTab.CREATIVE_TABS.register(modBus);
 
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
-
-        modBus.addListener((DataPackRegistryEvent.NewRegistry event) -> {
-            event.dataPackRegistry(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
-            event.dataPackRegistry(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec(), null);
-            event.dataPackRegistry(RaidDenRegistry.DEN_KEY, RaidDenPool.codec(), null);
-        });
 
         NetworkMessages.init();
     }

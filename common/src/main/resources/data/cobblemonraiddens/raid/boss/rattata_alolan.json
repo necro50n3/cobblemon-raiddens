@@ -5,15 +5,15 @@
             "bite",
             "quickattack",
             "tackle"
+        ],
+        "custom_properties": [
+            {
+                "name": "alolan",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_ONE",
     "raid_type": "DARK",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "alolan",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

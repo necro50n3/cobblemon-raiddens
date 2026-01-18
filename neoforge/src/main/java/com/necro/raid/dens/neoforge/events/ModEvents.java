@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
 import net.minecraft.server.MinecraftServer;
@@ -50,7 +49,6 @@ public class ModEvents {
         MinecraftServer server = event.getServer();
         RaidHelper.initHelper(server);
 
-        RaidRegistry.initRaidBosses(server);
         RaidBucketRegistry.init(server);
     }
 

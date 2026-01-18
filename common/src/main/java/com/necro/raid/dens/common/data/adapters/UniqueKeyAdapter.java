@@ -1,44 +1,19 @@
 package com.necro.raid.dens.common.data.adapters;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.components.ModComponents;
-import net.minecraft.world.item.ItemStack;
+import com.google.gson.*;
+import com.mojang.serialization.JsonOps;
+import com.necro.raid.dens.common.data.raid.UniqueKey;
 
-public record UniqueKeyAdapter(String item, String id) {
-    public UniqueKeyAdapter() {
-        this("", "");
+import java.lang.reflect.Type;
+
+public class UniqueKeyAdapter implements JsonSerializer<UniqueKey>, JsonDeserializer<UniqueKey> {
+    @Override
+    public JsonElement serialize(UniqueKey src, Type typeOfSrc, JsonSerializationContext context) {
+        return UniqueKey.CODEC.encodeStart(JsonOps.INSTANCE, src).getOrThrow();
     }
 
-    public UniqueKeyAdapter {
-        if (!item.isEmpty() && !item.contains(":")) item = "minecraft:" + item;
-    }
-
-    public static final Codec<UniqueKeyAdapter> DIRECT_CODEC = RecordCodecBuilder.create(instance ->
-        instance.group(
-            Codec.STRING.fieldOf("item").forGetter(UniqueKeyAdapter::item),
-            Codec.STRING.fieldOf("id").forGetter(UniqueKeyAdapter::id)
-        ).apply(instance, UniqueKeyAdapter::new)
-    );
-
-    public static final Codec<UniqueKeyAdapter> CODEC = Codec.either(Codec.STRING, DIRECT_CODEC)
-        .xmap(either -> either.map(
-                str -> new UniqueKeyAdapter(str, ""),
-                data -> data
-            ),
-            Either::right
-        );
-
-    public boolean matches(ItemStack itemStack) {
-        if (this.item().isEmpty()) return true;
-        if (!itemStack.getItem().toString().equals(this.item())) return false;
-        else if (this.id().isEmpty()) return true;
-        String id = itemStack.getComponents().get(ModComponents.UNIQUE_KEY.value());
-        return id != null && id.equals(this.id());
-    }
-
-    public boolean isEmpty() {
-        return this.item().isEmpty();
+    @Override
+    public UniqueKey deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+        return UniqueKey.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
     }
 }

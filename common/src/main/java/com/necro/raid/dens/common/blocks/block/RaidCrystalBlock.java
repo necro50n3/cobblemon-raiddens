@@ -2,12 +2,8 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidCycleMode;
-import com.necro.raid.dens.common.data.raid.RaidTier;
-import com.necro.raid.dens.common.data.raid.RaidType;
+import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
@@ -160,7 +156,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
         RaidBoss boss = blockEntity.getRaidBoss();
-        UniqueKeyAdapter key = boss.getKey();
+        UniqueKey key = boss.getKey();
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {

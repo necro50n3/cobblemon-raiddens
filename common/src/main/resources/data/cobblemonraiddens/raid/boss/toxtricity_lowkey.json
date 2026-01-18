@@ -6,15 +6,15 @@
             "poisonjab",
             "shockwave",
             "acidspray"
+        ],
+        "custom_properties": [
+            {
+                "name": "punk_form",
+                "value": "low_key"
+            }
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "ELECTRIC",
-    "weight": 10.0,
-    "base_form": [
-        {
-            "name": "punk_form",
-            "value": "low_key"
-        }
-    ]
+    "weight": 10.0
 }

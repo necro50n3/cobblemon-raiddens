@@ -6,19 +6,19 @@
             "zenheadbutt",
             "headbutt",
             "flamecharge"
+        ],
+        "custom_properties": [
+            {
+                "name": "bull_breed",
+                "value": "blaze"
+            },
+            {
+                "name": "paldean",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "FIGHTING",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "bull_breed",
-            "value": "blaze"
-        },
-        {
-            "name": "paldean",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

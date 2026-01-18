@@ -21,7 +21,7 @@ public class ClientManager {
             }
         }
         catch (Exception e) {
-            CobblemonRaidDens.LOGGER.info("Error during client serverTick: {}", e.toString());
+            CobblemonRaidDens.LOGGER.info("Error during client tick: {}", e.toString());
         }
     }
 }

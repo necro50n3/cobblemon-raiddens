@@ -6,15 +6,15 @@
             "payday",
             "scratch",
             "fakeout"
+        ],
+        "custom_properties": [
+            {
+                "name": "galarian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_TWO",
     "raid_type": "STEEL",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "galarian",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

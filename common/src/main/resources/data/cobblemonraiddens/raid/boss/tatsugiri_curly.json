@@ -6,15 +6,15 @@
             "waterpulse",
             "watergun",
             "dragonpulse"
+        ],
+        "custom_properties": [
+            {
+                "name": "tatsugiri_texture",
+                "value": "curly"
+            }
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "DRAGON",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "tatsugiri_texture",
-            "value": "curly"
-        }
-    ]
+    "weight": 20.0
 }

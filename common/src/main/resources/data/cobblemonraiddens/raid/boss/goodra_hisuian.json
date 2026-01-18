@@ -6,15 +6,15 @@
             "muddywater",
             "dragonpulse",
             "waterpulse"
+        ],
+        "custom_properties": [
+            {
+                "name": "hisuian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "STEEL",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "hisuian",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

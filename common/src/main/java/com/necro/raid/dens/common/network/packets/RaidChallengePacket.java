@@ -11,7 +11,6 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -76,7 +75,6 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         }
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
-        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier());
 
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
@@ -85,7 +83,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
             return;
         }
-        else if (raid.getPlayers().size() >= tierConfig.maxPlayers()) {
+        else if (raid.getPlayers().size() >= boss.getMaxPlayers()) {
             player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"));
             return;
         }
@@ -108,7 +106,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss, tierConfig)
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     raid.addBattle(battle);

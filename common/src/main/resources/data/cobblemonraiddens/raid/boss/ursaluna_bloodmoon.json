@@ -6,15 +6,15 @@
             "moonblast",
             "earthpower",
             "slash"
+        ],
+        "custom_properties": [
+            {
+                "name": "bloodmoon",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "GROUND",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "bloodmoon",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

@@ -4,10 +4,7 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -15,9 +12,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class RaidRegistry {
-    public static final ResourceKey<Registry<RaidBoss>> RAID_BOSS_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "boss"));
-    public static Registry<RaidBoss> REGISTRY;
-
     public static final Map<RaidTier, BitSet> RAIDS_BY_TIER = new EnumMap<>(RaidTier.class);
     public static final Map<RaidType, BitSet> RAIDS_BY_TYPE = new EnumMap<>(RaidType.class);
     public static final Map<RaidFeature, BitSet> RAIDS_BY_FEATURE = new EnumMap<>(RaidFeature.class);
@@ -30,8 +24,6 @@ public class RaidRegistry {
     public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
 
     public static void register(RaidBoss raidBoss) {
-        if (raidBoss.getProperties().getSpecies() == null) return;
-
         int index = RAID_LIST.size();
         RAID_LIST.add(raidBoss.getId());
         RAID_LOOKUP.put(raidBoss.getId(), raidBoss);
@@ -174,9 +166,5 @@ public class RaidRegistry {
 
         for (RaidTier tier : RaidTier.values()) { tier.setPresent(false); }
         for (RaidType type : RaidType.values()) { type.setPresent(false); }
-    }
-
-    public static void initRaidBosses(MinecraftServer server) {
-        REGISTRY = server.registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
     }
 }

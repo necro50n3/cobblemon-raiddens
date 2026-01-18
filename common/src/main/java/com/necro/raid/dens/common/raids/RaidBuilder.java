@@ -7,7 +7,6 @@ import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class RaidBuilder {
-    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss, TierConfig config) {
+    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss) {
         List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player)
             .toBattleTeam(false, false, leadingPokemon)
             .stream().filter(p ->
@@ -26,7 +25,7 @@ public class RaidBuilder {
                 && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
                 && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
             ).toList();
-        if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, config.raidPartySize()));
+        if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, boss.getRaidPartySize()));
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),

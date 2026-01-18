@@ -300,14 +300,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public boolean isAtMaxClears() {
         RaidBoss boss = this.getRaidBoss();
         if (boss == null) return true;
-        int maxClears = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).maxClears();
+        int maxClears = boss.getMaxClears();
         return maxClears != -1 && this.clears >= maxClears;
     }
 
     public boolean isFull() {
         RaidBoss boss = this.getRaidBoss();
         if (boss == null) return true;
-        int maxPlayers = CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).maxPlayers();
+        int maxPlayers = boss.getMaxPlayers();
         return maxPlayers != -1 && this.getPlayerCount() >= maxPlayers;
     }
 

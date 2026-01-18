@@ -6,6 +6,12 @@
             "discharge",
             "chloroblast",
             "rollout"
+        ],
+        "custom_properties": [
+            {
+                "name": "hisuian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_FOUR",

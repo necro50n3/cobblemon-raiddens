@@ -1,20 +1,13 @@
 package com.necro.raid.dens.fabric;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.client.ClientRaidBoss;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
 import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.structure.RaidDenPool;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -36,7 +29,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
@@ -76,15 +68,9 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreak);
         UseBlockCallback.EVENT.register(RaidUtils::canPlace);
 
-        DynamicRegistries.registerSynced(RaidRegistry.RAID_BOSS_KEY, RaidBoss.codec(), ClientRaidBoss.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());
-
-        DynamicRegistries.register(RaidBucketRegistry.BUCKET_KEY, RaidBucket.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketReloadListener());
-
-        DynamicRegistries.register(RaidDenRegistry.DEN_KEY, RaidDenPool.codec());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidDenPoolReloadListener());
-
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTagReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BossAdditionsReloadListener());

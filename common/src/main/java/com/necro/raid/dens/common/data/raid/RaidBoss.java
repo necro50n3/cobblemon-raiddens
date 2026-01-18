@@ -12,18 +12,21 @@ import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.*;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.Gender;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.*;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.cobblemon.mod.common.util.adapters.IdentifierAdapter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.SerializedName;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.adapters.MarkAdapter;
+import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
 import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
@@ -44,69 +47,186 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import java.util.*;
 
 public class RaidBoss {
-    private PokemonProperties baseProperties;
-    private Species displaySpecies;
-    private Set<String> displayAspects;
+    public static final Gson GSON;
+
+    @SerializedName("pokemon")
+    private PokemonProperties reward;
+    private PokemonProperties boss;
+    @SerializedName("raid_tier")
     private RaidTier raidTier;
-    private RaidFeature raidFeature;
-    private List<SpeciesFeature> raidForm;
-    private List<SpeciesFeature> baseForm;
+    @SerializedName("raid_type")
     private RaidType raidType;
-    private String lootTableId;
-    private LootTable lootTable;
+    @SerializedName("raid_feature")
+    private RaidFeature raidFeature;
+    @SerializedName("loot_table")
+    private ResourceLocation lootTable;
     private Double weight;
-    private Integer maxCatches;
+    private List<String> den;
+    private UniqueKey key;
+
+    @SerializedName("max_players")
+    private Integer maxPlayers;
+    @SerializedName("max_clears")
+    private Integer maxClears;
+    @SerializedName("ha_rate")
+    private Double haRate;
+    @SerializedName("max_cheers")
+    private Integer maxCheers;
+    @SerializedName("raid_party_size")
+    private Integer raidPartySize;
+    @SerializedName("health_multi")
     private Integer healthMulti;
+    @SerializedName("multiplayer_health_multi")
+    private Float multiplayerHealthMulti;
+    @SerializedName("shiny_rate")
     private Float shinyRate;
-    private Map<String, ScriptAdapter> script;
-    private List<ResourceLocation> dens;
-    private UniqueKeyAdapter key;
     private Integer currency;
+    @SerializedName("max_catches")
+    private Integer maxCatches;
+    private Map<String, Script> script;
+    @SerializedName("raid_ai")
     private RaidAI raidAI;
     private List<Mark> marks;
 
-    private List<String> densInner;
+    private transient PokemonProperties cachedBossProperties;
 
-    private ResourceLocation id;
+    private transient LootTable lootTableActual;
+    private transient List<ResourceLocation> densActual;
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
-                    List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm, String lootTableId, Double weight,
-                    Integer maxCatches, Integer healthMulti, Float shinyRate, Map<String, ScriptAdapter> script, List<String> dens,
-                    UniqueKeyAdapter key, Integer currency, RaidAI raidAI, List<Mark> marks) {
-        this.baseProperties = properties;
-        this.raidTier = tier;
+    private transient Species displaySpecies;
+    private transient Set<String> displayAspects;
+
+    private transient ResourceLocation id;
+
+    public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
+                    RaidFeature raidFeature, ResourceLocation lootTable, Double weight, List<String> den, UniqueKey key,
+                    Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
+                    Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency,
+                    Integer maxCatches, Map<String, Script> script, RaidAI raidAI, List<Mark> marks) {
+        this.reward = reward;
+        this.boss = boss;
+        this.raidTier = raidTier;
         this.raidType = raidType;
         this.raidFeature = raidFeature;
-        this.raidForm = raidForm;
-        this.baseForm = baseForm;
-        this.lootTableId = lootTableId;
+        this.lootTable = lootTable;
         this.weight = weight;
-        this.maxCatches = maxCatches;
-        this.healthMulti = healthMulti;
-        this.shinyRate = shinyRate;
-        this.script = script;
-        this.dens = new ArrayList<>();
+        this.den = den;
         this.key = key;
+
+        this.maxPlayers = maxPlayers;
+        this.maxClears = maxClears;
+        this.haRate = haRate;
+        this.maxCheers = maxCheers;
+        this.raidPartySize = raidPartySize;
+        this.healthMulti = healthMulti;
+        this.multiplayerHealthMulti = multiplayerHealthMulti;
+        this.shinyRate = shinyRate;
         this.currency = currency;
+        this.maxCatches = maxCatches;
+        this.script = script;
         this.raidAI = raidAI;
         this.marks = marks;
 
-        this.densInner = dens;
-
+        this.cachedBossProperties = null;
+        this.lootTableActual = null;
+        this.densActual = new ArrayList<>();
+        this.displaySpecies = null;
+        this.displayAspects = null;
         this.id = null;
     }
 
-    public RaidBoss(PokemonProperties properties, RaidTier tier, RaidType raidType, RaidFeature raidFeature,
-                    List<SpeciesFeature> raidForm, int maxCatches, float shinyRate) {
-        this(
-            properties, tier, raidType, raidFeature, raidForm, new ArrayList<>(), null, 0.0, maxCatches,
-            0, shinyRate, new HashMap<>(), new ArrayList<>(), new UniqueKeyAdapter(), 0, RaidAI.RANDOM,
-            new ArrayList<>()
-        );
+    public RaidBoss() {
+        this.reward = null;
+        this.boss = null;
+        this.raidTier = null;
+        this.raidType = null;
+        this.raidFeature = null;
+        this.lootTable = null;
+        this.weight = null;
+        this.den = null;
+        this.key = null;
+
+        this.maxPlayers = null;
+        this.maxClears = null;
+        this.haRate = null;
+        this.maxCheers = null;
+        this.raidPartySize = null;
+        this.healthMulti = null;
+        this.multiplayerHealthMulti = null;
+        this.shinyRate = null;
+        this.currency = null;
+        this.maxCatches = null;
+        this.script = null;
+        this.raidAI = null;
+        this.marks = null;
+
+        this.cachedBossProperties = null;
+        this.lootTableActual = null;
+        this.densActual = new ArrayList<>();
+        this.displaySpecies = null;
+        this.displayAspects = null;
+        this.id = null;
+    }
+
+    public void createDisplayAspects() {
+        Pokemon displayPokemon = this.getBossProperties().create();
+        displayPokemon.setShiny(this.getShinyRate() == 1.0f);
+
+        this.displaySpecies = displayPokemon.getSpecies();
+        this.displayAspects = displayPokemon.getAspects();
+    }
+
+    public void applyDefaults() {
+        if (this.reward == null) throw new JsonSyntaxException("Missing required field: \"pokemon\"");
+        if (this.reward.getSpecies() == null || this.reward.getSpecies().isBlank()) throw new JsonSyntaxException("Missing required field: \"pokemon.species\"");
+        if (this.raidTier == null) throw new JsonSyntaxException("Missing required field: \"raidTier\"");
+        if (this.raidType == null) throw new JsonSyntaxException("Missing required field: \"raidType\"");
+
+        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidTier);
+
+        if (this.raidFeature == null) this.raidFeature = RaidFeature.DEFAULT;
+        if (this.weight == null) this.weight = 20.0;
+        if (this.den == null) this.den = List.of("#cobblemonraiddens:default");
+        if (this.key == null) this.key = new UniqueKey();
+
+        if (this.maxPlayers == null) this.maxPlayers = tierConfig.maxPlayers();
+        if (this.maxClears == null) this.maxClears = tierConfig.maxClears();
+        if (this.haRate == null) this.haRate = tierConfig.haRate();
+        if (this.maxCheers == null) this.maxCheers = tierConfig.maxCheers();
+        if (this.raidPartySize == null) this.raidPartySize = tierConfig.raidPartySize();
+        if (this.healthMulti == null) this.healthMulti = tierConfig.healthMultiplier();
+        if (this.multiplayerHealthMulti == null) this.multiplayerHealthMulti = tierConfig.multiplayerHealthMultiplier();
+        if (this.shinyRate == null) this.shinyRate = tierConfig.shinyRate();
+        if (this.currency == null) this.currency = tierConfig.currency();
+        if (this.maxCatches == null) this.maxCatches = tierConfig.maxCatches();
+        if (this.script == null) this.script = tierConfig.defaultScripts();
+        if (this.raidAI == null) this.raidAI = tierConfig.raidAI();
+        if (this.marks == null) this.marks = tierConfig.marks();
+
+        if (this.boss == null) this.boss = new PokemonProperties();
+
+        Set<String> aspects = new HashSet<>(this.boss.getAspects());
+        aspects.add("raid");
+        this.boss.setAspects(aspects);
+
+        List<CustomPokemonProperty> customProperties = new ArrayList<>(this.boss.getCustomProperties());
+
+        if (this.raidFeature == RaidFeature.MEGA && customProperties.stream().noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("mega_evolution")))
+            customProperties.add(new StringSpeciesFeature("mega_evolution", "mega"));
+        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("dynamax_form")))
+            customProperties.add(new StringSpeciesFeature("dynamax_form", "none"));
+        customProperties.add(new StringSpeciesFeature("aspect", "raid"));
+        customProperties.add(new FlagSpeciesFeature("uncatchable", true));
+
+        this.boss.setCustomProperties(customProperties);
+
+        this.reward.setTeraType(this.raidType.getSerializedName());
+        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().filter(StringSpeciesFeature.class::isInstance).noneMatch(prop -> ((StringSpeciesFeature) prop).getValue().equals("gmax")))
+            this.reward.setGmaxFactor(true);
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
-        PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
+        PokemonProperties properties = this.getBossProperties().copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
         properties.setMinPerfectIVs(6);
@@ -116,7 +236,7 @@ public class RaidBoss {
             pokemon = new Pokemon();
             properties.apply(pokemon);
             pokemon.initialize();
-            ((IShinyRate) pokemon).crd_setRaidShinyRate(this.shinyRate);
+            ((IShinyRate) pokemon).crd_setRaidShinyRate(this.getShinyRate());
             properties.roll(pokemon, null);
         }
         else {
@@ -124,7 +244,7 @@ public class RaidBoss {
             pokemon = properties.create();
         }
 
-        if (properties.getAbility() == null && level.getRandom().nextDouble() < tierConfig.haRate()) {
+        if (properties.getAbility() == null && level.getRandom().nextDouble() < this.getHaRate()) {
             pokemon.getForm().getAbilities().getMapping().values().forEach(
                 abilities -> {
                     List<HiddenAbility> hidden = abilities.stream()
@@ -136,10 +256,6 @@ public class RaidBoss {
                     pokemon.setAbility$common(chosen.getTemplate().create(false, chosen.getPriority()));
                 }
             );
-        }
-
-        for (SpeciesFeature form : this.raidForm) {
-            ((CustomPokemonProperty) form).apply(pokemon);
         }
 
         this.setMoveSet(properties, pokemon, true);
@@ -154,30 +270,18 @@ public class RaidBoss {
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
-        float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
+        float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getForm(pokemonEntity.getAspects()).getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
         pokemonEntity.refreshDimensions();
 
         return pokemonEntity;
     }
 
-    public void createDisplayAspects() {
-        Pokemon displayPokemon = this.baseProperties.create();
-        displayPokemon.setShiny(this.shinyRate == 1.0f);
-
-        for (SpeciesFeature form : this.raidForm) {
-            ((CustomPokemonProperty) form).apply(displayPokemon);
-        }
-
-        this.displaySpecies = displayPokemon.getSpecies();
-        this.displayAspects = displayPokemon.getAspects();
-    }
-
     public Pokemon getRewardPokemon(ServerPlayer player) {
-        PokemonProperties properties = this.baseProperties.copy();
+        PokemonProperties properties = this.reward.copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
-        properties.setMinPerfectIVs(tierConfig.ivs());
-        properties.setLevel(tierConfig.rewardLevel());
+        if (properties.getMinPerfectIVs() == null) properties.setMinPerfectIVs(tierConfig.ivs());
+        if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
@@ -186,7 +290,7 @@ public class RaidBoss {
             ((IShinyRate) pokemon).crd_setRaidShinyRate(this.shinyRate);
             properties.roll(pokemon, player);
 
-            if (properties.getAbility() == null && player.getRandom().nextDouble() < tierConfig.haRate()) {
+            if (properties.getAbility() == null && player.getRandom().nextDouble() < this.getHaRate()) {
                 pokemon.getForm().getAbilities().getMapping().values().forEach(
                     abilities -> {
                         List<HiddenAbility> hidden = abilities.stream()
@@ -201,13 +305,8 @@ public class RaidBoss {
             }
         }
 
-        for (SpeciesFeature form : this.baseForm) {
-            ((CustomPokemonProperty) form).apply(pokemon);
-        }
-
         if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-        if (this.raidForm.stream().anyMatch(form -> form instanceof StringSpeciesFeature ssf && ssf.getValue().equals("gmax")))
-            pokemon.setGmaxFactor(true);
+        if (this.boss.getAspects().contains("gmax")) pokemon.setGmaxFactor(true);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         this.setMoveSet(properties, pokemon, false);
@@ -237,16 +336,16 @@ public class RaidBoss {
         }
     }
 
-    public PokemonProperties getProperties() {
-        return this.baseProperties;
+    public ResourceLocation getId() {
+        return this.id;
     }
 
-    public Species getDisplaySpecies() {
-        return this.displaySpecies;
+    public PokemonProperties getReward() {
+        return this.reward;
     }
 
-    public Set<String> getDisplayAspects() {
-        return this.displayAspects;
+    public PokemonProperties getBoss() {
+        return this.boss;
     }
 
     public RaidTier getTier() {
@@ -261,99 +360,125 @@ public class RaidBoss {
         return this.raidFeature;
     }
 
-    public List<SpeciesFeature> getRaidForm() {
-        return this.raidForm;
-    }
-
-    public List<SpeciesFeature> getBaseForm() {
-        return this.baseForm;
-    }
-
-    public String getLootTableId() {
-        return this.lootTableId;
-    }
-
-    public List<ItemStack> getRandomRewards(ServerLevel level) {
-        if (this.lootTable == null) {
-            this.lootTable = level.getServer().reloadableRegistries().getLootTable(
-                ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.parse(this.lootTableId))
-            );
-        }
-        return this.lootTable.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
+    public ResourceLocation getLootTable() {
+        return this.lootTable;
     }
 
     public Double getWeight() {
         return this.weight;
     }
 
-    public Integer getMaxCatches() {
-        return this.maxCatches;
+    public List<String> getDens() {
+        return this.den;
+    }
+
+    public UniqueKey getKey() {
+        return this.key;
+    }
+
+    public Integer getMaxPlayers() {
+        return this.maxPlayers;
+    }
+
+    public Integer getMaxClears() {
+        return this.maxClears;
+    }
+
+    public Double getHaRate() {
+        return this.haRate;
+    }
+
+    public Integer getMaxCheers() {
+        return this.maxCheers;
+    }
+
+    public Integer getRaidPartySize() {
+        return this.raidPartySize;
     }
 
     public Integer getHealthMulti() {
         return this.healthMulti;
     }
 
+    public Float getMultiplayerHealthMulti() {
+        return this.multiplayerHealthMulti;
+    }
+
     public Float getShinyRate() {
         return this.shinyRate;
-    }
-
-    public Map<String, ScriptAdapter> getScript() {
-        return this.script;
-    }
-
-    public List<String> getDens() {
-        return this.densInner;
-    }
-
-    public UniqueKeyAdapter getKey() {
-        return this.key;
     }
 
     public Integer getCurrency() {
         return this.currency;
     }
 
-    public RaidAI getRaidAI() {
-        return this.raidAI;
+    public Integer getMaxCatches() {
+        return this.maxCatches;
     }
 
-    public String getRaidAIString() {
-        return this.raidAI.getSerializedName();
+    public Map<String, Script> getScript() {
+        return this.script;
+    }
+
+    public RaidAI getRaidAI() {
+        return this.raidAI;
     }
 
     public List<Mark> getMarks() {
         return this.marks;
     }
 
-    public ResourceLocation getRandomDen(RandomSource random) {
-        if (this.dens.isEmpty()) this.resolveDens();
+    public Species getDisplaySpecies() {
+        return this.displaySpecies;
+    }
 
-        if (this.dens.size() == 1) return this.dens.getFirst();
-        else return this.dens.get(random.nextInt(this.dens.size()));
+    public Set<String> getDisplayAspects() {
+        return this.displayAspects;
+    }
+
+    public PokemonProperties getBossProperties() {
+        if (this.cachedBossProperties == null) this.cachedBossProperties = PropertiesAdapter.apply(this.reward, this.boss);
+        return this.cachedBossProperties;
+    }
+
+    public List<ItemStack> getRandomRewards(ServerLevel level) {
+        if (this.lootTable == null) return new ArrayList<>();
+        if (this.lootTableActual == null) {
+            this.lootTableActual = level.getServer().reloadableRegistries().getLootTable(
+                ResourceKey.create(Registries.LOOT_TABLE, this.lootTable)
+            );
+        }
+        return this.lootTableActual.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
+    }
+
+    public ResourceLocation getRandomDen(RandomSource random) {
+        if (this.densActual.isEmpty()) this.resolveDens();
+
+        if (this.densActual.size() == 1) return this.densActual.getFirst();
+        else return this.densActual.get(random.nextInt(this.densActual.size()));
     }
 
     private void resolveDens() {
         List<ResourceLocation> validDens = new ArrayList<>();
-        for (String value : this.densInner) {
+        for (String value : this.den) {
             if (value.startsWith("#")) validDens.addAll(RaidDenRegistry.getStructures(ResourceLocation.parse(value.substring(1))));
             else validDens.add(ResourceLocation.parse(value));
         }
         validDens.removeIf(RaidDenRegistry::isNotValidStructure);
         if (validDens.isEmpty()) validDens.add(RaidDenRegistry.DEFAULT);
-        this.dens = validDens;
-    }
-
-    public ResourceLocation getId() {
-        return this.id;
+        this.densActual = validDens;
     }
 
     public void setId(ResourceLocation id) {
         this.id = id;
     }
 
-    public void setProperties(PokemonProperties properties) {
-        this.baseProperties = properties;
+    public void setReward(PokemonProperties properties) {
+        this.reward = properties;
+    }
+
+    public void setBoss(PokemonProperties properties) {
+        this.boss = properties;
     }
 
     public void setTier(RaidTier tier) {
@@ -364,59 +489,68 @@ public class RaidBoss {
         this.raidFeature = feature;
     }
 
-    public void setForm(List<SpeciesFeature> raidForm, List<SpeciesFeature> baseForm) {
-        boolean appendForm = false;
-
-        if (raidForm != null) {
-            this.raidForm = new ArrayList<>(raidForm);
-            appendForm = true;
-        }
-        if (baseForm != null) {
-            this.baseForm = baseForm;
-            appendForm = true;
-        }
-
-        if (appendForm) this.raidForm.addAll(this.baseForm);
-    }
-
     public void setType(RaidType type) {
         this.raidType = type;
     }
 
-    public void setLootTable(String lootTable) {
-        this.lootTableId = lootTable;
+    public void setLootTable(ResourceLocation lootTable) {
+        this.lootTable = lootTable;
     }
 
     public void setWeight(Double weight) {
         this.weight = weight;
     }
 
-    public void setMaxCatches(Integer maxCatches) {
-        this.maxCatches = maxCatches;
+    public void setDens(List<String> den) {
+        this.den = den;
+    }
+
+    public void setKey(UniqueKey key) {
+        this.key = key;
+    }
+
+    public void setMaxPlayers(Integer maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public void setMaxClears(Integer maxClears) {
+        this.maxClears = maxClears;
+    }
+
+    public void setHaRate(Double haRate) {
+        this.haRate = haRate;
+    }
+
+    public void setMaxCheers(Integer maxCheers) {
+        this.maxCheers = maxCheers;
+    }
+
+    public void setRaidPartySize(Integer raidPartySize) {
+        this.raidPartySize = raidPartySize;
     }
 
     public void setHealthMulti(Integer healthMulti) {
         this.healthMulti = healthMulti;
     }
 
+    public void setMultiplayerHealthMulti(Float multiplayerHealthMulti) {
+        this.multiplayerHealthMulti = multiplayerHealthMulti;
+    }
+
     public void setShinyRate(Float shinyRate) {
         this.shinyRate = shinyRate;
     }
 
-    public void setScript(Map<String, ScriptAdapter> script) {
-        this.script = script;
-    }
-
-    public void setDens(List<String> dens) {
-        this.densInner = dens;
-    }
-
-    public void setKey(UniqueKeyAdapter key) {
-        this.key = key;
-    }
-
     public void setCurrency(Integer currency) {
         this.currency= currency;
+    }
+
+    public void setMaxCatches(Integer maxCatches) {
+        this.maxCatches = maxCatches;
+    }
+
+    public void setScript(Map<String, Script> script) {
+        this.script = script;
     }
 
     public void setRaidAI(RaidAI raidAI) {
@@ -425,6 +559,14 @@ public class RaidBoss {
 
     public void setMarks(List<Mark> marks) {
         this.marks = marks;
+    }
+
+    public void clearCaches() {
+        this.cachedBossProperties = null;
+        this.lootTableActual = null;
+        this.densActual = new ArrayList<>();
+        this.displaySpecies = null;
+        this.displayAspects = null;
     }
 
     @SuppressWarnings("unused")
@@ -442,142 +584,38 @@ public class RaidBoss {
 
     public RaidBoss copy() {
         return new RaidBoss(
-            this.baseProperties.copy(),
+            this.reward.copy(),
+            this.boss.copy(),
             this.raidTier,
             this.raidType,
             this.raidFeature,
-            new ArrayList<>(this.raidForm),
-            new ArrayList<>(this.baseForm),
-            this.lootTableId,
+            this.lootTable,
             this.weight,
-            this.maxCatches,
-            this.healthMulti,
-            this.shinyRate,
-            new HashMap<>(this.script),
-            new ArrayList<>(this.densInner),
+            new ArrayList<>(this.den),
             this.key,
+            this.maxPlayers,
+            this.maxClears,
+            this.haRate,
+            this.maxCheers,
+            this.raidPartySize,
+            this.healthMulti,
+            this.multiplayerHealthMulti,
+            this.shinyRate,
             this.currency,
+            this.maxCatches,
+            new HashMap<>(this.script),
             this.raidAI,
-            this.marks
+            new ArrayList<>(this.marks)
         );
     }
 
-    public static String getGender(PokemonProperties properties) {
-        if (properties.getGender() == null) return "";
-        else return properties.getGender().getSerializedName();
-    }
-
-    public static String getFormName(SpeciesFeature raidForm) {
-        if (raidForm == null) return "";
-        else return raidForm.getName();
-    }
-
-    public static String getFormValue(StringSpeciesFeature raidForm) {
-        if (raidForm == null) return "";
-        else return raidForm.getValue();
-    }
-
-    public static Boolean getFormValue(FlagSpeciesFeature raidForm) {
-        if (raidForm == null) return false;
-        else return raidForm.getEnabled();
-    }
-
-    public static Integer getFormValue(IntSpeciesFeature raidForm) {
-        if (raidForm == null) return 0;
-        else return raidForm.getValue();
-    }
-
-    public static Codec<PokemonProperties> propertiesCodec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-            Codec.STRING.fieldOf("species").forGetter(PokemonProperties::getSpecies),
-            Codec.STRING.optionalFieldOf("gender", "").forGetter(RaidBoss::getGender),
-            Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
-            Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
-            Codec.INT.optionalFieldOf("level", -1).forGetter(PokemonProperties::getLevel),
-            Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
-            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
-                PokemonProperties properties = PokemonProperties.Companion.parse("");
-                properties.setSpecies(species);
-                try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
-                catch (IllegalArgumentException ignored) {}
-                if (!ability.isBlank()) properties.setAbility(ability);
-                if (!nature.isBlank()) properties.setNature(nature);
-                if (level > 0) properties.setLevel(level);
-                if (!moves.isEmpty()) properties.setMoves(moves);
-                return properties;
-            })
-        );
-    }
-
-    public static Codec<SpeciesFeature> raidFormCodec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-            Codec.STRING.fieldOf("name").forGetter(RaidBoss::getFormName),
-            Codec.either(Codec.STRING, Codec.either(Codec.BOOL, Codec.INT)).fieldOf("value").forGetter(form -> {
-                if (form instanceof StringSpeciesFeature) return Either.left(RaidBoss.getFormValue((StringSpeciesFeature) form));
-                else if (form instanceof FlagSpeciesFeature) return Either.right(Either.left(RaidBoss.getFormValue((FlagSpeciesFeature) form)));
-                else return Either.right(Either.right(RaidBoss.getFormValue((IntSpeciesFeature) form)));
-            })
-        ).apply(inst, (name, either) -> {
-            if (either.left().isPresent()) return new StringSpeciesFeature(name, either.left().get());
-            else {
-                assert either.right().isPresent();
-                Either<Boolean, Integer> inner = either.right().get();
-                if (inner.left().isPresent()) return new FlagSpeciesFeature(name, inner.left().get());
-                else assert inner.right().isPresent();
-                return new IntSpeciesFeature(name, inner.right().get());
-            }
-        }));
-    }
-
-    public static Codec<RaidBoss> codec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-            propertiesCodec().fieldOf("pokemon").forGetter(RaidBoss::getProperties),
-            RaidTier.codec().fieldOf("raid_tier").forGetter(RaidBoss::getTier),
-            RaidType.codec().fieldOf("raid_type").forGetter(RaidBoss::getType),
-            RaidFeature.codec().optionalFieldOf("raid_feature", RaidFeature.DEFAULT).forGetter(RaidBoss::getFeature),
-            raidFormCodec().listOf().optionalFieldOf("raid_form", new ArrayList<>()).forGetter(RaidBoss::getRaidForm),
-            raidFormCodec().listOf().optionalFieldOf("base_form", new ArrayList<>()).forGetter(RaidBoss::getBaseForm),
-            Codec.STRING.optionalFieldOf("loot_table", "").forGetter(RaidBoss::getLootTableId),
-            Codec.DOUBLE.optionalFieldOf("weight", 20.0).forGetter(RaidBoss::getWeight),
-            Codec.INT.optionalFieldOf("health_multi", 0).forGetter(RaidBoss::getHealthMulti),
-            Codec.FLOAT.optionalFieldOf("shiny_rate", -1.0f).forGetter(RaidBoss::getShinyRate),
-            Codec.INT.optionalFieldOf("currency", -1).forGetter(RaidBoss::getCurrency),
-            Codec.INT.optionalFieldOf("max_catches", -1).forGetter(RaidBoss::getMaxCatches),
-            Codec.unboundedMap(Codec.STRING, ScriptAdapter.CODEC).optionalFieldOf("script", new HashMap<>()).forGetter(RaidBoss::getScript),
-            Codec.STRING.listOf().optionalFieldOf("den", List.of("#cobblemonraiddens:default")).forGetter(RaidBoss::getDens),
-            UniqueKeyAdapter.CODEC.optionalFieldOf("key", new UniqueKeyAdapter()).forGetter(RaidBoss::getKey),
-            Codec.STRING.optionalFieldOf("raid_ai", "").forGetter(RaidBoss::getRaidAIString)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAIString) -> {
-                properties.setTeraType(type.getSerializedName());
-
-                TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(tier);
-                if (healthMulti <= 0) healthMulti = tierConfig.healthMultiplier();
-                if (shinyRate == -1.0f) shinyRate = tierConfig.shinyRate();
-                if (currency == -1) currency = tierConfig.currency();
-                if (maxCatches == -1) maxCatches = tierConfig.maxCatches();
-                if (script.isEmpty()) script = tierConfig.defaultScripts();
-
-                if (shinyRate == 1.0f) properties.setShiny(true);
-                else if (shinyRate == 0.0f) properties.setShiny(false);
-
-                raidForm = new ArrayList<>(raidForm);
-                raidForm.addAll(baseForm);
-
-                if (feature == RaidFeature.DYNAMAX && raidForm.stream().noneMatch(form -> form.getName().equals("dynamax_form"))) {
-                    raidForm.add(new StringSpeciesFeature("dynamax_form", "none"));
-                }
-                else if (feature == RaidFeature.MEGA && raidForm.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
-                    raidForm.add(new StringSpeciesFeature("mega_evolution", "mega"));
-                }
-
-                RaidAI raidAI;
-                if (raidAIString.isEmpty()) raidAI = tierConfig.raidAI();
-                else raidAI = RaidAI.fromString(raidAIString);
-
-                List<Mark> marks = CobblemonRaidDens.TIER_CONFIG.get(tier).marks();
-
-                return new RaidBoss(properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, maxCatches, healthMulti, shinyRate, script, dens, key, currency, raidAI, marks);
-            })
-        );
+    static {
+        GSON = new GsonBuilder()
+            .registerTypeAdapter(PokemonProperties.class, new PropertiesAdapter())
+            .registerTypeAdapter(ResourceLocation.class, IdentifierAdapter.INSTANCE)
+            .registerTypeAdapter(Mark.class, new MarkAdapter())
+            .registerTypeAdapter(Script.class, new ScriptAdapter())
+            .registerTypeAdapter(UniqueKey.class, new UniqueKeyAdapter())
+            .create();
     }
 }

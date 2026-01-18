@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class RaidDenRegistry {
-    public static final ResourceKey<Registry<RaidDenPool>> DEN_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath("raid", "den_pool"));
-
     private static final Map<ResourceLocation, RaidDenPool> DEN_POOL = new HashMap<>();
 
     private static final Map<ResourceLocation, RaidStructureData> TEMPLATES = new HashMap<>();

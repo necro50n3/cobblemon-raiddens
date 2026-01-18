@@ -6,15 +6,15 @@
             "energyball",
             "electroball",
             "rollout"
+        ],
+        "custom_properties": [
+            {
+                "name": "hisuian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "ELECTRIC",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "hisuian",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }

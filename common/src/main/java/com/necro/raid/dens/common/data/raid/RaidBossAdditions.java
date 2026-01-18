@@ -2,21 +2,17 @@ package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
-import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
-import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
-import com.cobblemon.mod.common.pokemon.Gender;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
-import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
+import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
 public class RaidBossAdditions {
+    public static final Gson GSON;
     private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
 
@@ -72,32 +68,31 @@ public class RaidBossAdditions {
             if (!this.replace() && BLACKLIST.contains(id)) continue;
             final RaidBoss boss = this.replace() ? temp : temp.copy();
 
-            PokemonProperties properties = this.additions().getProperties();
-            if (properties != null) {
-                if (properties.getSpecies() != null) boss.getProperties().setSpecies(properties.getSpecies());
-                if (properties.getGender() != null) boss.getProperties().setGender(properties.getGender());
-                if (properties.getAbility() != null) boss.getProperties().setAbility(properties.getAbility());
-                if (properties.getNature() != null) boss.getProperties().setNature(properties.getNature());
-                if (properties.getLevel() != null) boss.getProperties().setLevel(properties.getLevel());
-                if (properties.getMoves() != null) boss.getProperties().setMoves(properties.getMoves());
-                if (properties.getTeraType() != null) boss.getProperties().setTeraType(properties.getTeraType());
-            }
-
+            getReward(this.additions()).ifPresent(properties -> boss.setReward(PropertiesAdapter.apply(boss.getReward(), properties)));
+            getBoss(this.additions()).ifPresent(properties -> boss.setBoss(PropertiesAdapter.apply(boss.getBoss(), properties)));
             getTier(this.additions()).ifPresent(boss::setTier);
-            getFeature(this.additions()).ifPresent(boss::setFeature);
-            boss.setForm(getRaidForm(this.additions()).orElse(null), getBaseForm(this.additions()).orElse(null));
             getType(this.additions()).ifPresent(boss::setType);
+            getFeature(this.additions()).ifPresent(boss::setFeature);
             getLootTable(this.additions()).ifPresent(boss::setLootTable);
             getWeight(this.additions()).ifPresent(weight -> boss.setWeight(boss.getWeight() * weight));
-            getMaxCatches(this.additions()).ifPresent(boss::setMaxCatches);
-            getHealthMulti(this.additions()).ifPresent(boss::setHealthMulti);
-            getShinyRate(this.additions()).ifPresent(boss::setShinyRate);
-            getScript(this.additions()).ifPresent(boss::setScript);
             getDens(this.additions()).ifPresent(boss::setDens);
             getKey(this.additions()).ifPresent(boss::setKey);
+
+            getMaxPlayers(this.additions()).ifPresent(boss::setMaxPlayers);
+            getMaxClears(this.additions()).ifPresent(boss::setMaxClears);
+            getHaRate(this.additions()).ifPresent(boss::setHaRate);
+            getMaxCheers(this.additions()).ifPresent(boss::setMaxCheers);
+            getRaidPartySize(this.additions()).ifPresent(boss::setRaidPartySize);
+            getHealthMulti(this.additions()).ifPresent(boss::setHealthMulti);
+            getMultiplayerHealthMulti(this.additions()).ifPresent(boss::setMultiplayerHealthMulti);
+            getShinyRate(this.additions()).ifPresent(boss::setShinyRate);
             getCurrency(this.additions()).ifPresent(boss::setCurrency);
+            getMaxCatches(this.additions()).ifPresent(boss::setMaxCatches);
+            getScript(this.additions()).ifPresent(boss::setScript);
             getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
             getMarks(this.additions()).ifPresent(boss::setMarks);
+
+            boss.clearCaches();
 
             if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
@@ -130,8 +125,12 @@ public class RaidBossAdditions {
         return this.suffix;
     }
 
-    private static Optional<PokemonProperties> getProperties(RaidBoss boss) {
-        return Optional.ofNullable(boss.getProperties());
+    private static Optional<PokemonProperties> getReward(RaidBoss boss) {
+        return Optional.ofNullable(boss.getReward());
+    }
+
+    private static Optional<PokemonProperties> getBoss(RaidBoss boss) {
+        return Optional.ofNullable(boss.getBoss());
     }
 
     private static Optional<RaidTier> getTier(RaidBoss boss) {
@@ -142,52 +141,68 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getFeature());
     }
 
-    private static Optional<List<SpeciesFeature>> getRaidForm(RaidBoss boss) {
-        return Optional.ofNullable(boss.getRaidForm());
-    }
-
-    private static Optional<List<SpeciesFeature>> getBaseForm(RaidBoss boss) {
-        return Optional.ofNullable(boss.getBaseForm());
-    }
-
     private static Optional<RaidType> getType(RaidBoss boss) {
         return Optional.ofNullable(boss.getType());
     }
 
-    private static Optional<String> getLootTable(RaidBoss boss) {
-        return Optional.ofNullable(boss.getLootTableId());
+    private static Optional<ResourceLocation> getLootTable(RaidBoss boss) {
+        return Optional.ofNullable(boss.getLootTable());
     }
 
     private static Optional<Double> getWeight(RaidBoss boss) {
         return Optional.ofNullable(boss.getWeight());
     }
 
-    private static Optional<Integer> getMaxCatches(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMaxCatches());
+    private static Optional<List<String>> getDens(RaidBoss boss) {
+        return Optional.ofNullable(boss.getDens());
+    }
+
+    private static Optional<UniqueKey> getKey(RaidBoss boss) {
+        return Optional.ofNullable(boss.getKey());
+    }
+
+    private static Optional<Integer> getMaxPlayers(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMaxPlayers());
+    }
+
+    private static Optional<Integer> getMaxClears(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMaxClears());
+    }
+
+    private static Optional<Double> getHaRate(RaidBoss boss) {
+        return Optional.ofNullable(boss.getHaRate());
+    }
+
+    private static Optional<Integer> getMaxCheers(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMaxCheers());
+    }
+
+    private static Optional<Integer> getRaidPartySize(RaidBoss boss) {
+        return Optional.ofNullable(boss.getRaidPartySize());
     }
 
     private static Optional<Integer> getHealthMulti(RaidBoss boss) {
         return Optional.ofNullable(boss.getHealthMulti());
     }
 
+    private static Optional<Float> getMultiplayerHealthMulti(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMultiplayerHealthMulti());
+    }
+
     private static Optional<Float> getShinyRate(RaidBoss boss) {
         return Optional.ofNullable(boss.getShinyRate());
     }
 
-    private static Optional<Map<String, ScriptAdapter>> getScript(RaidBoss boss) {
-        return Optional.ofNullable(boss.getScript());
-    }
-
-    private static Optional<List<String>> getDens(RaidBoss boss) {
-        return Optional.ofNullable(boss.getDens());
-    }
-
-    private static Optional<UniqueKeyAdapter> getKey(RaidBoss boss) {
-        return Optional.ofNullable(boss.getKey());
-    }
-
     private static Optional<Integer> getCurrency(RaidBoss boss) {
         return Optional.ofNullable(boss.getCurrency());
+    }
+
+    private static Optional<Integer> getMaxCatches(RaidBoss boss) {
+        return Optional.ofNullable(boss.getMaxCatches());
+    }
+
+    private static Optional<Map<String, Script>> getScript(RaidBoss boss) {
+        return Optional.ofNullable(boss.getScript());
     }
 
     private static Optional<RaidAI> getRaidAI(RaidBoss boss) {
@@ -198,123 +213,7 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getMarks());
     }
 
-    private static Optional<String> species(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getSpecies());
-    }
-
-    private static Optional<String> gender(PokemonProperties properties) {
-        Gender gender = properties.getGender();
-        if (gender == null) return Optional.empty();
-        else return Optional.of(gender.getSerializedName());
-    }
-
-    private static Optional<String> ability(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getAbility());
-    }
-
-    private static Optional<String> nature(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getNature());
-    }
-
-    private static Optional<Integer> level(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getLevel());
-    }
-
-    private static Optional<List<String>> moves(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getMoves());
-    }
-
-    private static Codec<PokemonProperties> propertiesCodec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-                Codec.STRING.optionalFieldOf("species").forGetter(RaidBossAdditions::species),
-                Codec.STRING.optionalFieldOf("gender").forGetter(RaidBossAdditions::gender),
-                Codec.STRING.optionalFieldOf("ability").forGetter(RaidBossAdditions::ability),
-                Codec.STRING.optionalFieldOf("nature").forGetter(RaidBossAdditions::nature),
-                Codec.INT.optionalFieldOf("level").forGetter(RaidBossAdditions::level),
-                Codec.STRING.listOf().optionalFieldOf("moves").forGetter(RaidBossAdditions::moves)
-            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
-                PokemonProperties properties = new PokemonProperties();
-                species.ifPresent(properties::setSpecies);
-                try {
-                    gender.ifPresent(s -> properties.setGender(Gender.valueOf(s)));
-                } catch (IllegalArgumentException ignored) {
-                }
-                ability.ifPresent(properties::setAbility);
-                nature.ifPresent(properties::setNature);
-                level.ifPresent(properties::setLevel);
-                moves.ifPresent(properties::setMoves);
-                return properties;
-            })
-        );
-    }
-
-    private static Codec<RaidBoss> bossCodec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-                propertiesCodec().optionalFieldOf("pokemon").forGetter(RaidBossAdditions::getProperties),
-                RaidTier.codec().optionalFieldOf("raid_tier").forGetter(RaidBossAdditions::getTier),
-                RaidType.codec().optionalFieldOf("raid_type").forGetter(RaidBossAdditions::getType),
-                RaidFeature.codec().optionalFieldOf("raid_feature").forGetter(RaidBossAdditions::getFeature),
-                RaidBoss.raidFormCodec().listOf().optionalFieldOf("raid_form").forGetter(RaidBossAdditions::getRaidForm),
-                RaidBoss.raidFormCodec().listOf().optionalFieldOf("base_form").forGetter(RaidBossAdditions::getBaseForm),
-                Codec.STRING.optionalFieldOf("loot_table").forGetter(RaidBossAdditions::getLootTable),
-                Codec.DOUBLE.optionalFieldOf("weight").forGetter(RaidBossAdditions::getWeight),
-                Codec.INT.optionalFieldOf("health_multi").forGetter(RaidBossAdditions::getHealthMulti),
-                Codec.FLOAT.optionalFieldOf("shiny_rate").forGetter(RaidBossAdditions::getShinyRate),
-                Codec.INT.optionalFieldOf("currency").forGetter(RaidBossAdditions::getCurrency),
-                Codec.INT.optionalFieldOf("max_catches").forGetter(RaidBossAdditions::getMaxCatches),
-                Codec.unboundedMap(Codec.STRING, ScriptAdapter.CODEC).optionalFieldOf("script").forGetter(RaidBossAdditions::getScript),
-                Codec.STRING.listOf().optionalFieldOf("den").forGetter(RaidBossAdditions::getDens),
-                UniqueKeyAdapter.CODEC.optionalFieldOf("key").forGetter(RaidBossAdditions::getKey),
-                RaidAI.codec().optionalFieldOf("raid_ai").forGetter(RaidBossAdditions::getRaidAI)
-            ).apply(inst, (properties, tier, type, feature, raidForm, baseForm, bonusItems, weight, healthMulti, shinyRate, currency, maxCatches, script, dens, key, raidAI) -> {
-                Integer hm = healthMulti.orElse(null);
-                Float sr = shinyRate.orElse(null);
-                Integer c = currency.orElse(null);
-                Integer mc = maxCatches.orElse(null);
-                Map<String, ScriptAdapter> s = script.orElse(null);
-
-                RaidTier t = tier.orElse(null);
-                if (t != null) {
-                    TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(t);
-                    if (hm == null) hm = tierConfig.healthMultiplier();
-                    if (sr == null) sr = tierConfig.shinyRate();
-                    if (c == null) c = tierConfig.currency();
-                    if (mc == null) mc = tierConfig.maxCatches();
-                    if (s == null) s = tierConfig.defaultScripts();
-                }
-
-                PokemonProperties p = properties.orElse(new PokemonProperties());
-                type.ifPresent(t1 -> p.setTeraType(t1.getSerializedName()));
-                if (sr == null) {
-                } else if (sr == 1.0f) p.setShiny(true);
-                else if (sr == 0.0f) p.setShiny(false);
-
-                RaidFeature f = feature.orElse(null);
-                List<SpeciesFeature> rf = raidForm.orElse(null);
-                if ((f == RaidFeature.DYNAMAX || f == RaidFeature.MEGA) && rf == null) rf = new ArrayList<>();
-                if (f == RaidFeature.DYNAMAX && rf.stream().noneMatch(form -> form.getName().equals("dynamax_form"))) {
-                    rf.add(new StringSpeciesFeature("dynamax_form", "none"));
-                } else if (f == RaidFeature.MEGA && rf.stream().noneMatch(form -> form.getName().equals("mega_evolution"))) {
-                    rf.add(new StringSpeciesFeature("mega_evolution", "mega"));
-                }
-
-                return new RaidBoss(
-                    p, t, type.orElse(null), feature.orElse(null), rf, baseForm.orElse(null),
-                    bonusItems.orElse(null), weight.orElse(null), mc, hm, sr, s, dens.orElse(null),
-                    key.orElse(null), c, raidAI.orElse(null), null
-                );
-            })
-        );
-    }
-
-    public static Codec<RaidBossAdditions> codec() {
-        return RecordCodecBuilder.create(inst -> inst.group(
-            Codec.INT.optionalFieldOf("priority", 0).forGetter(RaidBossAdditions::priority),
-            Codec.STRING.listOf().optionalFieldOf("include", new ArrayList<>()).forGetter(RaidBossAdditions::include),
-            Codec.STRING.listOf().optionalFieldOf("exclude", new ArrayList<>()).forGetter(RaidBossAdditions::exclude),
-            bossCodec().fieldOf("additions").forGetter(RaidBossAdditions::additions),
-            Codec.BOOL.optionalFieldOf("replace", true).forGetter(RaidBossAdditions::replace),
-            Codec.STRING.optionalFieldOf("suffix", "").forGetter(RaidBossAdditions::suffix)
-        ).apply(inst, RaidBossAdditions::new));
+    static {
+        GSON = new GsonBuilder().registerTypeAdapter(RaidBoss.class, RaidBoss.GSON).create();
     }
 }

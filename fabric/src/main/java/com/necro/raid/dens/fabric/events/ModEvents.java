@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
@@ -51,7 +50,6 @@ public class ModEvents {
     }
 
     public static void initRaidBosses(MinecraftServer server) {
-        RaidRegistry.initRaidBosses(server);
         RaidBucketRegistry.init(server);
     }
 }

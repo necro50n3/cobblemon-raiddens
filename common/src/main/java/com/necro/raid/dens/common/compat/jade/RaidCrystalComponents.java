@@ -2,9 +2,6 @@ package com.necro.raid.dens.common.compat.jade;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
-import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
-import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
-import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.util.ResourceLocationExtensionsKt;
@@ -45,12 +42,10 @@ import java.util.Set;
 public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     INSTANCE;
 
-    @SuppressWarnings("ConstantConditions")
     private IElement getIconClient(BlockAccessor accessor, IElement currentIcon) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return currentIcon;
-        if (RaidRegistry.REGISTRY == null) RaidRegistry.REGISTRY = blockEntity.getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
-        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(raidCrystal.getRaidBossLocation());
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return currentIcon;
 
         if (raidBoss.getDisplayAspects() == null) raidBoss.createDisplayAspects();
@@ -95,8 +90,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
         BlockState blockState = accessor.getBlockState();
 
-        if (RaidRegistry.REGISTRY == null) RaidRegistry.REGISTRY = raidCrystal.getLevel().registryAccess().registryOrThrow(RaidRegistry.RAID_BOSS_KEY);
-        RaidBoss raidBoss = RaidRegistry.REGISTRY.get(raidCrystal.getRaidBossLocation());
+        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return;
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
@@ -191,13 +185,6 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         ListTag bossAspects = new ListTag();
         for (String aspect : raidBoss.getDisplayAspects()) {
             if (aspect == null) continue;
-            bossAspects.add(StringTag.valueOf(aspect));
-        }
-        for (SpeciesFeature form : raidBoss.getRaidForm()) {
-            String aspect;
-            if (form instanceof StringSpeciesFeature) aspect = ((StringSpeciesFeature) form).getValue();
-            else if (form instanceof FlagSpeciesFeature) aspect = form.getName();
-            else continue;
             bossAspects.add(StringTag.valueOf(aspect));
         }
         compoundTag.put("boss_aspects", bossAspects);

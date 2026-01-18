@@ -11,7 +11,7 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.*;
-import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
+import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -54,8 +54,8 @@ public class CobblemonRaidDens {
         CONDITIONS_CONFIG = AutoConfig.getConfigHolder(ConditionsConfig.class).getConfig();
 
         Jankson jankson = Jankson.builder()
-            .registerSerializer(ScriptAdapter.class, (script, marshaller) -> script.serialize())
-            .registerDeserializer(JsonElement.class, ScriptAdapter.class, (json, marshaller) -> ScriptAdapter.deserialize(json))
+            .registerSerializer(Script.class, (script, marshaller) -> script.serialize())
+            .registerDeserializer(JsonElement.class, Script.class, (json, marshaller) -> Script.deserialize(json))
             .build();
 
         AutoConfig.register(TierOneConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));

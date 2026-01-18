@@ -6,15 +6,15 @@
             "takedown",
             "crunch",
             "headbutt"
+        ],
+        "custom_properties": [
+            {
+                "name": "striped",
+                "value": "red"
+            }
         ]
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "WATER",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "striped",
-            "value": "red"
-        }
-    ]
+    "weight": 20.0
 }

@@ -55,9 +55,8 @@ public class RaidDenCommands {
 
     public static final SuggestionProvider<CommandSourceStack> RAID_BUCKETS = (context, builder) -> {
         String remaining = builder.getRemaining().toLowerCase();
-        Registry<RaidBucket> registry = context.getSource().getServer().registryAccess().registryOrThrow(RaidBucketRegistry.BUCKET_KEY);
 
-        for (ResourceLocation id : registry.keySet()) {
+        for (ResourceLocation id : RaidBucketRegistry.getAll()) {
             if (id.toString().toLowerCase().startsWith(remaining)) {
                 builder.suggest(id.toString());
             }

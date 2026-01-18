@@ -13,7 +13,6 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassRespon
 import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -132,24 +131,22 @@ public class RaidInstance {
     }
 
     public void addPlayer(ServerPlayer player) {
-        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
         this.addToBossEvent(player);
 
         this.damageTracker.put(player.getUUID(), 0f);
-        if (!this.activePlayers.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) {
+        if (!this.activePlayers.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0f) {
             this.applyHealthMulti();
         }
 
-        this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
+        this.cheersLeft.put(player.getUUID(), this.raidBoss.getMaxCheers());
         this.activePlayers.add(player);
     }
 
     public void addBattle(PokemonBattle battle) {
-        TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier());
         ((IRaidBattle) battle).crd_setRaidBattle(this);
         this.sendHealthPacket(battle);
 
-        if (!this.battles.isEmpty() && tierConfig.multiplayerHealthMultiplier() > 1.0f) {
+        if (!this.battles.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0f) {
             this.playerJoin(battle.getPlayers().getFirst().getName().getString());
         }
 
@@ -160,7 +157,7 @@ public class RaidInstance {
     }
 
     private void applyHealthMulti() {
-        float bonusHealth = this.initMaxHealth * (CobblemonRaidDens.TIER_CONFIG.get(this.raidBoss.getTier()).multiplayerHealthMultiplier() - 1f) * this.activePlayers.size();
+        float bonusHealth = this.initMaxHealth * (this.raidBoss.getMultiplayerHealthMulti() - 1f) * this.activePlayers.size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
         this.currentHealth = this.maxHealth * currentRatio;

@@ -6,15 +6,15 @@
             "ancientpower",
             "astonish",
             "tackle"
+        ],
+        "custom_properties": [
+            {
+                "name": "galarian",
+                "value": true
+            }
         ]
     },
     "raid_tier": "TIER_THREE",
     "raid_type": "GHOST",
-    "weight": 20.0,
-    "base_form": [
-        {
-            "name": "galarian",
-            "value": true
-        }
-    ]
+    "weight": 20.0
 }
