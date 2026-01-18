@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
@@ -298,6 +299,8 @@ public class RaidInstance {
             cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
             cachedReward.setGender(this.bossEntity.getPokemon().getGender());
             cachedReward.setNature(this.bossEntity.getPokemon().getNature());
+            StringSpeciesFeature radiant = new StringSpeciesFeature("radiant", "radiant");
+            if (radiant.matches(this.bossEntity)) radiant.apply(cachedReward);
         } else {
             cachedReward = null;
         }

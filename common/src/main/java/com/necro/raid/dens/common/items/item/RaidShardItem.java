@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.items.item;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -20,7 +21,7 @@ public class RaidShardItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) < 100) {
+        if (itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) < CobblemonRaidDens.CONFIG.required_energy) {
             if (level.isClientSide()) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid_shard.not_fully_charged"), true);
             return InteractionResultHolder.fail(itemStack);
         }

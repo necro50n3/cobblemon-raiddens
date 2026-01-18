@@ -22,8 +22,8 @@ public class RaidConfig implements ConfigData {
     public String cycle_mode = "ALL";
     @Comment("Whether failed raids count towards the max clears. Default: false")
     public boolean max_clears_include_fails = false;
-    @Comment("Whether the reward Pokemon attributes (IVs/Shiny/etc.) are synced between all players or rolled individually. Default: false")
-    public boolean sync_rewards = false;
+    @Comment("Whether the reward Pokemon attributes (IVs/Shiny/etc.) are synced between all players or rolled individually. Default: true")
+    public boolean sync_rewards = true;
     @Comment("Whether raid crystals can be broken. Default: true")
     public boolean can_break = true;
     @Comment("The reward distribution algorithm (RANDOM/DAMAGE/SURVIVOR). Default: RANDOM")
