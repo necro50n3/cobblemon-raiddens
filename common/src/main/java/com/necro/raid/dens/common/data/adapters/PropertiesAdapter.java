@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.api.pokemon.stats.StatProvider;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.EVs;
@@ -17,9 +18,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.*;
+
+import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
 
 public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, JsonDeserializer<PokemonProperties> {
     private static String genderAdapter(PokemonProperties properties) {
@@ -39,7 +43,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             case "spa" -> Stats.SPECIAL_ATTACK;
             case "spd" -> Stats.SPECIAL_DEFENCE;
             case "spe" -> Stats.SPEED;
-            default -> null;
+            default -> Cobblemon.INSTANCE.getStatProvider().fromIdentifier(id.contains(":") ? ResourceLocation.parse(id) : cobblemonResource(id));
         };
     }
 
