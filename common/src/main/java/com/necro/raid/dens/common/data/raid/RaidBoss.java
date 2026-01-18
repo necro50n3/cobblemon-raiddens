@@ -219,10 +219,7 @@ public class RaidBoss {
         customProperties.add(new FlagSpeciesFeature("uncatchable", true));
 
         this.boss.setCustomProperties(customProperties);
-
         this.reward.setTeraType(this.raidType.getSerializedName());
-        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().filter(StringSpeciesFeature.class::isInstance).noneMatch(prop -> ((StringSpeciesFeature) prop).getValue().equals("gmax")))
-            this.reward.setGmaxFactor(true);
     }
 
     public PokemonEntity getBossEntity(ServerLevel level) {
@@ -306,7 +303,7 @@ public class RaidBoss {
         }
 
         if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-        if (this.boss.getAspects().contains("gmax")) pokemon.setGmaxFactor(true);
+        if (this.raidFeature == RaidFeature.DYNAMAX && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon)) pokemon.setGmaxFactor(true);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         this.setMoveSet(properties, pokemon, false);

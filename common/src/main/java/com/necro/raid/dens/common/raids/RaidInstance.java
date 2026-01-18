@@ -300,7 +300,7 @@ public class RaidInstance {
             cachedReward.setGender(this.bossEntity.getPokemon().getGender());
             cachedReward.setNature(this.bossEntity.getPokemon().getNature());
             StringSpeciesFeature radiant = new StringSpeciesFeature("radiant", "radiant");
-            if (radiant.matches(this.bossEntity)) radiant.apply(cachedReward);
+            if (radiant.matches(this.bossEntity.getPokemon())) radiant.apply(cachedReward);
         } else {
             cachedReward = null;
         }
