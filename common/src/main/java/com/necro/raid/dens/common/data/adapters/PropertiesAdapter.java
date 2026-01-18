@@ -1,16 +1,20 @@
 package com.necro.raid.dens.common.data.adapters;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.FlagSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
+import com.cobblemon.mod.common.api.pokemon.stats.Stat;
+import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.pokemon.EVs;
 import com.cobblemon.mod.common.pokemon.Gender;
 import com.google.gson.*;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -26,6 +30,46 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
     private static Optional<EVs> evsAdapter(PokemonProperties properties) {
         return Optional.ofNullable(properties.getEvs());
     }
+
+    private static Stat statMap(String id) {
+        return switch (id) {
+            case "hp" -> Stats.HP;
+            case "atk" -> Stats.ATTACK;
+            case "def" -> Stats.DEFENCE;
+            case "spa" -> Stats.SPECIAL_ATTACK;
+            case "spd" -> Stats.SPECIAL_DEFENCE;
+            case "spe" -> Stats.SPEED;
+            default -> null;
+        };
+    }
+
+    private static final Codec<Stat> STAT_CODEC =
+        Codec.STRING.comapFlatMap(
+            id -> {
+                Stat stat = statMap(id);
+                if (stat == null) return DataResult.error(() -> "Unknown stat: " + id);
+                if (stat.getType() != Stat.Type.PERMANENT) {
+                    return DataResult.error(() -> stat.getIdentifier() + " is not of type " + Stat.Type.PERMANENT);
+                }
+                return DataResult.success(stat);
+            },
+            stat -> stat.getIdentifier().getPath()
+        );
+
+    private static final Codec<EVs> EV_CODEC = Codec.unboundedMap(STAT_CODEC, Codec.intRange(0, EVs.MAX_STAT_VALUE))
+        .comapFlatMap(
+            map -> {
+                if (map.values().stream().mapToInt(Integer::intValue).sum() > EVs.MAX_TOTAL_VALUE) return DataResult.error(() -> "EVs cannot exceed a total of " + EVs.MAX_TOTAL_VALUE);
+                EVs evs = Cobblemon.INSTANCE.getStatProvider().createEmptyEVs();
+                map.forEach(evs::set);
+                return DataResult.success(evs);
+            },
+            evs -> {
+                Map<Stat, Integer> map = new HashMap<>();
+                evs.forEach(entry -> map.put(entry.getKey(), entry.getValue()));
+                return map;
+            }
+        );
 
     private static final  Codec<SpeciesFeature> FEATURE_CODEC = RecordCodecBuilder.create(inst -> inst.group(
             Codec.STRING.fieldOf("name").forGetter(SpeciesFeature::getName),
@@ -53,7 +97,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         Codec.INT.fieldOf("level").orElse(-1).forGetter(PokemonProperties::getLevel),
         Codec.STRING.listOf().fieldOf("moves").orElse(new ArrayList<>()).forGetter(PokemonProperties::getMoves),
         Codec.INT.fieldOf("min_perfect_ivs").orElse(-1).forGetter(PokemonProperties::getMinPerfectIVs),
-        EVs.getCODEC().optionalFieldOf("evs").forGetter(PropertiesAdapter::evsAdapter),
+        EV_CODEC.optionalFieldOf("evs").forGetter(PropertiesAdapter::evsAdapter),
         Codec.STRING.fieldOf("held_item").orElse("").forGetter(PokemonProperties::getHeldItem),
         Codec.STRING.listOf()
             .xmap(list -> (Set<String>) new HashSet<>(list), ArrayList::new)
