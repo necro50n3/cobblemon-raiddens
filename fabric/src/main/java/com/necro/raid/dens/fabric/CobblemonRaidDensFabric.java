@@ -45,9 +45,9 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
+        FabricComponents.registerDataComponents();
         FabricItems.registerItems();
         FabricDimensions.registerChunkGenerator();
-        FabricComponents.registerDataComponents();
         FabricPredicates.registerPredicates();
         FabricFeatures.registerFeatures();
         FabricLootFunctions.registerLootFunctions();

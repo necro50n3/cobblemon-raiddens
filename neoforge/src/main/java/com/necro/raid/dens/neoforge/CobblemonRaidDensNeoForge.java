@@ -32,12 +32,12 @@ public class CobblemonRaidDensNeoForge {
         NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
         NeoForgeBlockEntities.BLOCK_ENTITIES.register(modBus);
+        NeoForgeComponents.registerDataComponents();
+        NeoForgeComponents.DATA_COMPONENT_TYPES.register(modBus);
         NeoForgeItems.registerItems();
         NeoForgeItems.ITEMS.register(modBus);
         NeoForgePredicates.registerPredicates();
         NeoForgePredicates.PREDICATES.register(modBus);
-        NeoForgeComponents.registerDataComponents();
-        NeoForgeComponents.DATA_COMPONENT_TYPES.register(modBus);
         NeoForgeDimensions.CHUNK_GENERATORS.register(modBus);
         NeoForgeFeatures.registerFeatures();
         NeoForgeFeatures.FEATURES.register(modBus);

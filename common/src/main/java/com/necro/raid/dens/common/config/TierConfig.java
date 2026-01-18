@@ -26,4 +26,5 @@ public interface TierConfig {
     Map<String, Script> defaultScripts();
     RaidAI raidAI();
     List<Mark> marks();
+    int energy();
 }

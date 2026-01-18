@@ -27,7 +27,6 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     public double ha_rate = 0.20;
     @Comment("The max number Pokemon a player can use in a raid. Default: 1")
     public int raid_party_size = 1;
-
     @Comment("Raid boss HP multiplier. Default: 30")
     public int health_multiplier = 30;
     @Comment("Bonus raid boss HP multiplier for each extra player that joins the raid battle. Default: 1.0")
@@ -50,6 +49,8 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     public RaidAI raid_ai = RaidAI.RANDOM;
     @Comment("The list of marks the reward Pokemon will have. Default: [].")
     public String[] marks = {"cobblemon:mark_mightiest"};
+    @Comment("How much raid energy is given from a cleared raid. Default: 20")
+    public int energy = 20;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -105,5 +106,8 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     }
     public List<Mark> marks() {
         return Arrays.stream(this.marks).map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
+    }
+    public int energy() {
+        return this.energy;
     }
 }

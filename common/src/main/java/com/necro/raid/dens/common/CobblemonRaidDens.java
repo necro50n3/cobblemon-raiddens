@@ -10,9 +10,11 @@ import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
+import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
@@ -28,6 +30,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.JsonElement;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,6 +109,28 @@ public class CobblemonRaidDens {
 
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
             RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
+            return Unit.INSTANCE;
+        });
+        RaidEvents.RAID_END.subscribe(Priority.NORMAL, event -> {
+            if (!event.isWin()) return Unit.INSTANCE;
+
+            Inventory inventory = event.getPlayer().getInventory();
+            ItemStack raidShard = null;
+            for (int i = 0; i <= Inventory.SLOT_OFFHAND; i++) {
+                ItemStack itemStack = inventory.getItem(i);
+                if (itemStack.is(ModItems.RAID_SHARD)) {
+                    raidShard = itemStack;
+                    break;
+                }
+            }
+            if (raidShard == null) return Unit.INSTANCE;
+
+            TierConfig config = TIER_CONFIG.get(event.getRaidBoss().getTier());
+            raidShard.set(
+                ModComponents.RAID_ENERGY.value(),
+                raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy()
+            );
+
             return Unit.INSTANCE;
         });
     }
