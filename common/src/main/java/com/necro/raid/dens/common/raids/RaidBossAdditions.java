@@ -80,6 +80,7 @@ public class RaidBossAdditions {
                 if (properties.getNature() != null) boss.getProperties().setNature(properties.getNature());
                 if (properties.getLevel() != null) boss.getProperties().setLevel(properties.getLevel());
                 if (properties.getMoves() != null) boss.getProperties().setMoves(properties.getMoves());
+                if (properties.getHeldItem() != null) boss.getProperties().setHeldItem(properties.getHeldItem());
                 if (properties.getTeraType() != null) boss.getProperties().setTeraType(properties.getTeraType());
             }
 
@@ -224,6 +225,10 @@ public class RaidBossAdditions {
         return Optional.ofNullable(properties.getMoves());
     }
 
+    private static Optional<String> heldItem(PokemonProperties properties) {
+        return Optional.ofNullable(properties.getHeldItem());
+    }
+
     private static Codec<PokemonProperties> propertiesCodec() {
         return RecordCodecBuilder.create(inst -> inst.group(
                 Codec.STRING.optionalFieldOf("species").forGetter(RaidBossAdditions::species),
@@ -231,8 +236,9 @@ public class RaidBossAdditions {
                 Codec.STRING.optionalFieldOf("ability").forGetter(RaidBossAdditions::ability),
                 Codec.STRING.optionalFieldOf("nature").forGetter(RaidBossAdditions::nature),
                 Codec.INT.optionalFieldOf("level").forGetter(RaidBossAdditions::level),
-                Codec.STRING.listOf().optionalFieldOf("moves").forGetter(RaidBossAdditions::moves)
-            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
+                Codec.STRING.listOf().optionalFieldOf("moves").forGetter(RaidBossAdditions::moves),
+                Codec.STRING.optionalFieldOf("heldItem").forGetter(RaidBossAdditions::heldItem)
+                ).apply(inst, (species, gender, ability, nature, level, moves, heldItem) -> {
                 PokemonProperties properties = new PokemonProperties();
                 species.ifPresent(properties::setSpecies);
                 try {
@@ -243,6 +249,7 @@ public class RaidBossAdditions {
                 nature.ifPresent(properties::setNature);
                 level.ifPresent(properties::setLevel);
                 moves.ifPresent(properties::setMoves);
+                heldItem.ifPresent(properties::setHeldItem);
                 return properties;
             })
         );

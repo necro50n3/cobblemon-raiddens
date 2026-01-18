@@ -178,6 +178,8 @@ public class RaidBoss {
         properties.setMinPerfectIVs(tierConfig.ivs());
         properties.setLevel(tierConfig.rewardLevel());
 
+        if (properties.getHeldItem() != null) properties.setHeldItem(null);
+
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
         pokemon.initialize();
@@ -493,8 +495,9 @@ public class RaidBoss {
             Codec.STRING.optionalFieldOf("ability", "").forGetter(PokemonProperties::getAbility),
             Codec.STRING.optionalFieldOf("nature", "").forGetter(PokemonProperties::getNature),
             Codec.INT.optionalFieldOf("level", -1).forGetter(PokemonProperties::getLevel),
-            Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves)
-            ).apply(inst, (species, gender, ability, nature, level, moves) -> {
+            Codec.STRING.listOf().optionalFieldOf("moves", new ArrayList<>()).forGetter(PokemonProperties::getMoves),
+            Codec.STRING.optionalFieldOf("heldItem", "").forGetter(PokemonProperties::getHeldItem)
+            ).apply(inst, (species, gender, ability, nature, level, moves, heldItem) -> {
                 PokemonProperties properties = PokemonProperties.Companion.parse("");
                 properties.setSpecies(species);
                 try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
@@ -503,6 +506,7 @@ public class RaidBoss {
                 if (!nature.isBlank()) properties.setNature(nature);
                 if (level > 0) properties.setLevel(level);
                 if (!moves.isEmpty()) properties.setMoves(moves);
+                if (!heldItem.isEmpty()) properties.setHeldItem(heldItem);
                 return properties;
             })
         );
