@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.compat.ModCompat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,7 @@ public class StatusEffectsReloadImpl extends AbstractReloadImpl {
     protected final Map<String, String> statuses;
 
     public StatusEffectsReloadImpl() {
-        super("showdown/conditions", DataType.JAVASCRIPT);
+        super("cobblemonraiddens/showdown/conditions", DataType.JAVASCRIPT);
         this.statuses = new HashMap<>();
     }
 
@@ -26,8 +25,6 @@ public class StatusEffectsReloadImpl extends AbstractReloadImpl {
 
     @Override
     public void load(@NotNull ResourceManager manager) {
-        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) return;
-
         manager.listResources(this.path, path -> path.toString().endsWith(this.suffix())).forEach((id, resource) -> {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.open(), StandardCharsets.UTF_8))) {
                 String status = reader.lines().collect(Collectors.joining("\n"));
