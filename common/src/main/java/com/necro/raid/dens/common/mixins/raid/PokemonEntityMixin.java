@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -103,7 +102,6 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Override
     public void crd_setTransformTarget(Pokemon pokemon) {
-        CobblemonRaidDens.LOGGER.info("Setting transform target to Pokemon Entity");
         if (this.crd_transformTarget != null) return;
         this.crd_transformTarget = pokemon.clone(false, null);
         this.crd_transformTarget.setUuid(this.getPokemon().getUuid());
