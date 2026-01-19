@@ -226,7 +226,9 @@ public class RaidInstance {
     }
 
     public void tick() {
-        this.runQueue.removeIf(DelayedRunnable::tick);
+        if (this.raidState != RaidState.IN_PROGRESS) return;
+        try { this.runQueue.removeIf(DelayedRunnable::tick); }
+        catch (ConcurrentModificationException ignored) {}
     }
 
     public void queueStopRaid() {
