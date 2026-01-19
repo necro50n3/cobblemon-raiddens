@@ -29,6 +29,8 @@
         "battlesync.SwapSideConditionsInstructionMixin",
         "battlesync.WeatherInstructionMixin",
         "player.ServerPlayerMixin",
+        "raid.BattleActorMixin",
+        "raid.BattleRegistryMixin",
         "raid.CommandsMixin",
         "raid.PokemonBattleMixin",
         "raid.PokemonEntityMixin",
@@ -38,7 +40,6 @@
         "showdown.MoveInstructionMixin",
         "showdown.ShowdownInterpreterMixin",
         "showdown.TransformEffectMixin",
-        "showdown.TransformInstructionMixin",
         "tags.TagEntryMixin"
     ],
     "injectors": {

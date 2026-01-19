@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSeenEvent;
 import com.cobblemon.mod.common.battles.BattleFormat;
@@ -23,6 +24,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;
@@ -123,12 +125,23 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     this.flagAsSeen(battle, pokemonEntity);
                     raid.addBattle(battle);
                     RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
+
+                    if (pokemonEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
+                        this.setTransformTarget(pokemonEntity, pokemon, battle.getSide2().getActors()[0]);
+                    }
+
                     return Unit.INSTANCE;
                 })
                 .ifErrored(errors -> {
                     errors.sendTo(player, component -> component.withStyle(ChatFormatting.RED));
                     return Unit.INSTANCE;
                 });
+        }
+    }
+
+    private void setTransformTarget(PokemonEntity pokemonEntity, Pokemon pokemon, BattleActor actor) {
+        if (((ITransformer) pokemonEntity).crd_getTransformTarget() == null) {
+            ((ITransformer) pokemonEntity).crd_setTransformTarget(pokemon);
         }
     }
 

@@ -1,17 +1,10 @@
 package com.necro.raid.dens.common.mixins.showdown;
 
-import com.cobblemon.mod.common.api.abilities.Ability;
-import com.cobblemon.mod.common.api.moves.Move;
-import com.cobblemon.mod.common.api.moves.MoveTemplate;
-import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.entity.pokemon.effects.TransformEffect;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidAccessor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,20 +22,12 @@ public abstract class TransformEffectMixin {
     @Unique
     private float crd_raidScale;
 
-    @Unique
-    private List<Move> crd_moves;
-
-    @Unique
-    private Ability crd_ability;
-
     @Shadow(remap = false)
     private PokemonProperties mock;
 
     @Inject(method = "<init>(Lcom/cobblemon/mod/common/pokemon/Pokemon;Z)V", at = @At("RETURN"), remap = false)
     private void initInject(Pokemon mimic, boolean canCry, CallbackInfo ci) {
         this.crd_raidScale = Mth.clamp(80f / mimic.getSpecies().getHeight(), 1.0f, 5.0f);
-        this.crd_moves = mimic.getMoveSet().getMoves();
-        this.crd_ability = mimic.getAbility();
     }
 
     @Inject(method = "apply", at = @At("HEAD"), remap = false)
@@ -54,21 +38,7 @@ public abstract class TransformEffectMixin {
         aspects.add("raid");
         this.mock.setAspects(aspects);
 
-        for (int i = 0; i < this.crd_moves.size(); i++) {
-            Move move = this.crd_moves.get(i);
-            if (RaidAI.BLOCKED_MOVES.contains(move.getName())) {
-                MoveTemplate struggle = Moves.getByName("tackle");
-                if (struggle != null) move = struggle.create(99);
-            }
-            entity.getPokemon().getMoveSet().setMove(i, move);
-        }
-        entity.getPokemon().getMoveSet().update();
-        entity.getPokemon().setAbility$common(this.crd_ability);
-
-        if (this.crd_raidScale > 0) {
-            entity.getPokemon().setScaleModifier(this.crd_raidScale);
-            RaidDenNetworkMessages.RESIZE.accept((ServerLevel) entity.level(), entity, this.crd_raidScale);
-        }
+        if (this.crd_raidScale > 0) entity.getPokemon().setScaleModifier(this.crd_raidScale);
         entity.refreshDimensions();
     }
 }
