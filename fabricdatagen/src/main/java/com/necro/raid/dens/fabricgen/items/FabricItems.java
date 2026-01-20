@@ -4,6 +4,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.items.item.CheerItem;
 import com.necro.raid.dens.common.items.item.RaidPouchItem;
+import com.necro.raid.dens.common.items.item.RaidShardItem;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -17,6 +18,7 @@ public class FabricItems {
         ModItems.ATTACK_CHEER = registerRaidPouch("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK));
         ModItems.DEFENSE_CHEER = registerRaidPouch("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE));
         ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
+        ModItems.RAID_SHARD = registerRaidPouch("raid_shard", new RaidShardItem());
     }
 
     private static Holder<Item> registerRaidPouch(String name, Item item) {

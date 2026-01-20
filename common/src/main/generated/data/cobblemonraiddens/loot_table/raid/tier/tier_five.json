@@ -468,6 +468,17 @@
             }
           ],
           "name": "cobblemon:subtractive_iv_candies"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemonraiddens:raid_shard"
         }
       ],
       "rolls": {

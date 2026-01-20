@@ -16,10 +16,10 @@ public class CobblemonRaidDensFabric implements ModInitializer {
     public void onInitialize() {
         CobblemonRaidDens.init();
         FabricBlocks.registerModBlocks();
+        FabricComponents.registerDataComponents();
         FabricItems.registerItems();
         FabricDimensions.registerChunkGenerator();
         FabricPredicates.registerPredicates();
-        FabricComponents.registerDataComponents();
         FabricFeatures.registerFeatures();
         FabricLootFunctions.registerLootFunctions();
         FabricCriteriaTriggers.registerCriteriaTriggers();

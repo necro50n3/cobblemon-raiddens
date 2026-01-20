@@ -4,11 +4,11 @@
     "state": {
       "Name": "cobblemonraiddens:raid_crystal_block",
       "Properties": {
-        "can_reset": "false",
-        "cycle_mode": "none",
-        "is_active": "false",
+        "can_reset": "true",
+        "cycle_mode": "config",
+        "is_active": "true",
         "raid_tier": "tier_one",
-        "raid_type": "none"
+        "raid_type": "stellar"
       }
     }
   }

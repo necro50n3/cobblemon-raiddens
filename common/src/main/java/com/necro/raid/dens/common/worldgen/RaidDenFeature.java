@@ -69,9 +69,6 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         if (raidBoss == null) return false;
 
         level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.CAN_RESET, true)
-            .setValue(RaidCrystalBlock.CYCLE_MODE, RaidCycleMode.CONFIG)
             .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
             .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
 

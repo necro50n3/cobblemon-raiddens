@@ -21,6 +21,7 @@ public class RaidDenTab {
             .icon(() -> new ItemStack(NeoForgeBlocks.RAID_CRYSTAL_BLOCK))
             .displayItems((context, entries) -> {
                 entries.accept(NeoForgeBlocks.RAID_CRYSTAL_BLOCK);
+                entries.accept(ModItems.RAID_SHARD.value());
                 entries.accept(ModItems.RAID_POUCH.value());
                 entries.accept(ModItems.ATTACK_CHEER.value());
                 entries.accept(ModItems.DEFENSE_CHEER.value());
