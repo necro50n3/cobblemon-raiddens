@@ -6,16 +6,14 @@ public class ResetBossShowdownEvent implements ShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
-                "let boosts = {}; " +
-                "battle.add('raidenergy', '%1$s'); " +
+                "battle.add('raidenergy', '%1$s', true); " +
                 "for (let p of battle.sides[1].pokemon) { " +
                     "if (!p) continue; " +
                     "for (let i in p.boosts) { " +
                         "if (p.boosts[i] >= 0) continue; " +
-                        "boosts[i] = 0; " +
+                        "p.boosts[i] = 0; " +
                     "} " +
                     "if (p.status !== 'shield') p.cureStatus(); " +
-                    "battle.boost(boosts, p, null, '[from] Raid'); " +
                     "battle.add('clearboss', p, '%1$s'); " +
                 "}",
             battle.getSide2().getActors()[0].getUuid()

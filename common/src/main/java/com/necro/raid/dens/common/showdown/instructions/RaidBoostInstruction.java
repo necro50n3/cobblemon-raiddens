@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.showdown.instructions;
 
 import com.bedrockk.molang.runtime.MoLangRuntime;
+import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
@@ -16,6 +17,8 @@ import com.cobblemon.mod.common.battles.interpreter.instructions.BoostInstructio
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -103,6 +106,9 @@ public class RaidBoostInstruction implements ActionEffectInstruction {
         String severity = Stats.Companion.getSeverity(this.stages);
         String rootKey = this.isBoost ? "boost" : "unboost";
 
+        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+
         battle.dispatch(() -> {
             Component lang;
             if (this.message.hasOptionalArgument("zeffect")) {
@@ -113,10 +119,19 @@ public class RaidBoostInstruction implements ActionEffectInstruction {
             }
             battle.broadcastChatMessage(lang);
 
-            BattleContext.Type boostBucket = BattleContext.Type.BOOST;
+            BattleContext.Type boostBucket = this.isBoost ? BattleContext.Type.BOOST : BattleContext.Type.UNBOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
-
             this.pokemon.getContextManager().add(context);
+
+            raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.boost(Stats.Companion.getStat(this.statKey), this.isBoost ? stages : -stages));
+            raid.updateBattleContext(battle, b -> {
+                BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+                if (pokemon == null) return;
+                b.broadcastChatMessage(lang);
+                BattleContext ctx = new BasicContext(this.statKey, b.getTurn(), boostBucket, null);
+                for (int i = 0; i < this.stages; i++) pokemon.getContextManager().add(ctx);
+            });
+
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });

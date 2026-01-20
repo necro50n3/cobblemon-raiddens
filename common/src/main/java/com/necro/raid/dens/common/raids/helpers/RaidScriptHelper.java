@@ -30,7 +30,7 @@ public class RaidScriptHelper {
             Stat stat = parseStat(args[1]);
             if (stat == null) return null;
             int stages = Math.clamp(parseInt(args[2]), -6, 6);
-            return new StatBoostShowdownEvent(stat, stages, 2, false);
+            return new RaidBoostShowdownEvent(stat, stages);
         }
         else if (function.startsWith("PLAYER")) {
             String[] args = function.split("_");
