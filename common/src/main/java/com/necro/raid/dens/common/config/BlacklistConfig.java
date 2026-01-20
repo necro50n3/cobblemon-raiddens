@@ -6,13 +6,13 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 @Config(name="cobblemonraiddens/blacklist")
 public class BlacklistConfig implements ConfigData {
-    @Comment("List of blacklisted Pokemon in raid battles.")
+    @Comment("List of blacklisted Pokemon for the player in raid battles.")
     public String[] pokemon = {};
-    @Comment("List of blacklisted abilities in raid battles")
+    @Comment("List of blacklisted abilities for the player in raid battles")
     public String[] abilities = {
         "wonderguard"
     };
-    @Comment("List of blacklisted moves in raid battles.")
+    @Comment("List of blacklisted moves for the player in raid battles.")
     public String[] moves = {
         "bestow",
         "circlethrow",

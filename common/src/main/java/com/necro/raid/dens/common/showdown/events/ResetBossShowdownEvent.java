@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 
-public class ResetBossShowdownEvent implements ShowdownEvent {
+public class ResetBossShowdownEvent implements BroadcastingShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
@@ -13,7 +13,7 @@ public class ResetBossShowdownEvent implements ShowdownEvent {
                         "if (p.boosts[i] >= 0) continue; " +
                         "p.boosts[i] = 0; " +
                     "} " +
-                    "if (p.status !== 'shield') p.cureStatus(); " +
+                    "if (p.status !== 'shield') p.clearStatus(); " +
                     "battle.add('clearboss', p, '%1$s'); " +
                 "}",
             battle.getSide2().getActors()[0].getUuid()

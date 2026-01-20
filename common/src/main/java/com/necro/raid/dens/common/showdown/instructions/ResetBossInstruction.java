@@ -100,6 +100,7 @@ public class ResetBossInstruction implements ActionEffectInstruction {
             BattleContext.Type boostBucket = BattleContext.Type.BOOST;
             BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
 
+            this.pokemon.getContextManager().clear(BattleContext.Type.STATUS);
             this.pokemon.getContextManager().add(context);
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
