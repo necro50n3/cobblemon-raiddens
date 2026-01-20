@@ -144,7 +144,6 @@ public class RaidBoss {
 
         this.setMoveSet(properties, pokemon, true);
         pokemon.getPersistentData().putBoolean("raid", true);
-        pokemon.onChange(null);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setDrops(new DropTable());
@@ -157,6 +156,7 @@ public class RaidBoss {
         float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
         pokemonEntity.refreshDimensions();
+        pokemon.onChange(null);
 
         return pokemonEntity;
     }
