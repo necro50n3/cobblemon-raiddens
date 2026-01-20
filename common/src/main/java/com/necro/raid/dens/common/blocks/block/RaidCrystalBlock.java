@@ -13,7 +13,6 @@ import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -84,11 +83,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
         if (player.getServer() == null) return false;
         else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"));
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"), true);
             return false;
         }
         else if (RaidHelper.hasClearedRaid(blockEntity.getUuid(), player)) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.player_cleared"));
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.player_cleared"), true);
             return false;
         }
         RaidRegion region = RaidRegionHelper.getRegion(blockEntity.getUuid());
@@ -108,7 +107,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             return success;
         }
         else if (blockEntity.isFull()) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"));
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return false;
         }
         return this.requestJoinRaid(player, blockEntity, key);
@@ -119,7 +118,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (server == null) return false;
         ServerPlayer raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
         if (raidHost == null) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_host"));
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_host"), true);
             return false;
         }
 
@@ -141,7 +140,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure);
         if (region == null || !blockEntity.spawnRaidBoss()) {
             blockEntity.closeRaid();
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.boss_spawn_failed"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.boss_spawn_failed"), true);
             return false;
         }
 
@@ -160,13 +159,13 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {
-                player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1]).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+                player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1])), true);
                 return false;
             }
             else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
         }
         else if (CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
-            player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_key"));
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_key"), true);
             return false;
         }
         return true;

@@ -159,8 +159,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         pokemonEntity.moveTo(region.getBossPos());
         level.addFreshEntity(pokemonEntity);
 
-        if (pokemonEntity.getPokemon().getAbility().getName().equals("imposter") ||
-            pokemonEntity.getPokemon().getMoveSet().getMoves().stream().anyMatch(move -> move.getName().equals("transform"))) {
+        if (pokemonEntity.getPokemon().getAbility().getName().equals("imposter")) {
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
         }
 
@@ -238,9 +237,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public int getPlayerCount() {
-        RequestHandler handler = RaidHelper.REQUEST_QUEUE.get(this.raidHost);
-        if (handler == null) return 0;
-        return handler.getPlayerCount();
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
+        if (raid == null) return 0;
+        return raid.getPlayers().size();
     }
 
     public long getTicksUntilNextReset() {

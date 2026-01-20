@@ -48,7 +48,7 @@ public class RewardHandler {
 
     public boolean givePokemonToPlayer() {
         if (!(this.player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
-            this.player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
+            this.player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
             return false;
         }
 

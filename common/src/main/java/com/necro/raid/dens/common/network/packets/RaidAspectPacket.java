@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.client.Minecraft;
@@ -11,9 +12,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public record RaidAspectPacket(int entityId) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_aspect");
@@ -39,9 +37,7 @@ public record RaidAspectPacket(int entityId) implements CustomPacketPayload, Cli
         if (level == null) return;
         Entity entity = level.getEntity(this.entityId);
         if (!(entity instanceof PokemonEntity pokemonEntity)) return;
-        Set<String> aspects = new HashSet<>(pokemonEntity.getPokemon().getForcedAspects());
-        aspects.add("raid");
-        pokemonEntity.getPokemon().setForcedAspects(aspects);
+        AspectPropertyType.INSTANCE.fromString("raid").apply(pokemonEntity);
         pokemonEntity.refreshDimensions();
     }
 }

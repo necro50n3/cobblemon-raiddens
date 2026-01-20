@@ -75,7 +75,7 @@ public class ClientHud {
                 assert player != null;
                 ItemStack stack = player.getMainHandItem();
                 if (!(stack.getItem() instanceof PokeBallItem)) {
-                    player.sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"));
+                    player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
                 }
                 else {
                     RaidDenNetworkMessages.REWARD_RESPONSE.accept(true);

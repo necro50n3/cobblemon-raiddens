@@ -2,11 +2,10 @@ package com.necro.raid.dens.common.mixins.raid;
 
 import com.mojang.brigadier.ParseResults;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
-import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +25,7 @@ public class CommandsMixin {
             if (i > 0) prefix.append(" ");
             prefix.append(parts[i]);
             if (RaidUtils.isCommandBlacklisted(prefix.toString())) {
-                player.sendSystemMessage(Component.translatable("error.cobblemonraiddens.command_blacklist").withStyle(ChatFormatting.RED));
+                player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.command_blacklist"), true);
                 ci.cancel();
             }
         }

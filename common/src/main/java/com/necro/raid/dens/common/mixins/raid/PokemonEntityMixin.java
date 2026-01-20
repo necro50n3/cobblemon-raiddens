@@ -9,6 +9,7 @@ import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
 import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.util.ITransformer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -24,10 +25,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Mixin(PokemonEntity.class)
-public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidAccessor {
+public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidAccessor, ITransformer {
     @Shadow(remap = false)
     public abstract void setBattleId(@Nullable UUID value);
 
@@ -45,6 +48,9 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Unique
     private RaidState crd_raidState = RaidState.IN_PROGRESS;
+
+    @Unique
+    private Pokemon crd_transformTarget = null;
 
     protected PokemonEntityMixin(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -92,6 +98,24 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Override
     public RaidState crd_getRaidState() {
         return this.crd_raidState;
+    }
+
+    @Override
+    public void crd_setTransformTarget(Pokemon pokemon) {
+        if (this.crd_transformTarget != null) return;
+        this.crd_transformTarget = pokemon.clone(false, null);
+        this.crd_transformTarget.setUuid(this.getPokemon().getUuid());
+        this.crd_transformTarget.setTetheringId(null);
+
+        Set<String> aspects = new HashSet<>(this.getPokemon().getAspects());
+        aspects.add("raid");
+        this.getPokemon().setForcedAspects(aspects);
+        this.getPokemon().onChange(null);
+    }
+
+    @Override
+    public Pokemon crd_getTransformTarget() {
+        return this.crd_transformTarget;
     }
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true, remap = false)

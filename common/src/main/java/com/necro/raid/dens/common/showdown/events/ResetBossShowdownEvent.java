@@ -6,7 +6,7 @@ public class ResetBossShowdownEvent implements ShowdownEvent {
     public String build(PokemonBattle battle) {
         return String.format(
             ">eval " +
-                "battle.add('raidenergy', '%1$s'); " +
+                "battle.add('raidenergy', '%1$s', true); " +
                 "for (let p of battle.sides[1].pokemon) { " +
                     "if (!p) continue; " +
                     "for (let i in p.boosts) { " +

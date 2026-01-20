@@ -17,7 +17,7 @@ public enum RaidAI implements StringRepresentable {
     STRONG(() -> new StrongBattleAI(5)),
     RCT(() -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
 
-    public static final Set<String> BLOCKED_MOVES = Set.of("lastresort", "explosion", "selfdestruct", "mistyexplosion");
+    public static final Set<String> BLOCKED_MOVES;
     private final Supplier<BattleAI> supplier;
 
     RaidAI(Supplier<BattleAI> supplier) {
@@ -40,5 +40,16 @@ public enum RaidAI implements StringRepresentable {
 
     public static Codec<RaidAI> codec() {
         return Codec.STRING.xmap(RaidAI::fromString, Enum::name);
+    }
+
+    static {
+        BLOCKED_MOVES = Set.of(
+            "lastresort",
+            "explosion",
+            "selfdestruct",
+            "mistyexplosion",
+            "transform",
+            "perishsong"
+        );
     }
 }

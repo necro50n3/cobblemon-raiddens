@@ -14,6 +14,10 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
         "com.necro.raid.dens.fabric.mixins.ai.RCTBattleAIMixin"
     );
 
+    private static final Set<String> MSD_MIXINS = Set.of(
+        "com.necro.raid.dens.fabric.mixins.msd.CobbleEventsMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -25,6 +29,7 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (RCT_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.RCT_API.getModid());
+        if (MSD_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid());
         return true;
     }
 

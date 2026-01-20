@@ -26,6 +26,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidScriptHelper;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
@@ -220,6 +221,10 @@ public class RaidInstance {
         return this.activePlayers;
     }
 
+    public List<PokemonBattle> getBattles() {
+        return this.battles;
+    }
+
     public float getRemainingHealth() {
         return this.currentHealth;
     }
@@ -233,7 +238,9 @@ public class RaidInstance {
     }
 
     public void tick() {
-        this.runQueue.removeIf(DelayedRunnable::tick);
+        if (this.raidState != RaidState.IN_PROGRESS) return;
+        try { this.runQueue.removeIf(DelayedRunnable::tick); }
+        catch (ConcurrentModificationException ignored) {}
     }
 
     public void queueStopRaid() {
@@ -331,8 +338,9 @@ public class RaidInstance {
         this.raidState = RaidState.FAILED;
         ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.FAILED);
 
+        Component component = ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.raid_fail");
         this.activePlayers.forEach(player -> {
-            player.sendSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_fail"));
+            player.displayClientMessage(component, true);
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
         });
     }
@@ -346,11 +354,11 @@ public class RaidInstance {
     }
 
     public void addToBossEvent(ServerPlayer player) {
-        this.bossEvent.addPlayer(player);
+        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.addPlayer(player), 2));
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
-        this.bossEvent.removePlayer(player);
+        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.removePlayer(player), 2));
     }
 
     public RaidState getRaidState() {
@@ -460,7 +468,7 @@ public class RaidInstance {
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
-        if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
+        else if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));

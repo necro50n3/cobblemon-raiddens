@@ -1,13 +1,16 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +34,9 @@ public class RaidBuilder {
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
             Cobblemon.config.getDefaultFleeDistance(), boss.getRaidAI().create()
         );
+        Pokemon transformTarget = ((ITransformer) pokemonEntity).crd_getTransformTarget();
+        if (transformTarget != null) ((ITransformer) (BattleActor) wildActor).crd_setTransformTarget(transformTarget);
+
         BattleFormat battleFormat = BattleFormat.Companion.getGEN_9_SINGLES();
         ErroredBattleStart errors = new ErroredBattleStart();
 

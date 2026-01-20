@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSeenEvent;
 import com.cobblemon.mod.common.battles.BattleFormat;
@@ -22,6 +23,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
+import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.ChatFormatting;
@@ -65,41 +67,51 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         else if (!((IRaidAccessor) pokemonEntity).crd_isRaidBoss()) return;
 
         if (((IRaidAccessor) pokemonEntity).crd_getRaidState() == RaidState.FAILED) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
 
         if (!RaidJoinHelper.isParticipating(player, false) && RaidUtils.isRaidDimension(player.level())) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.not_participating"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.not_participating"), true);
             return;
         }
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
 
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        RaidInstance raidTemp = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+
+        // Initiate raid instance for spawnboss
+        if (raidTemp == null && !RaidUtils.isRaidDimension(player.level())) {
+            raidTemp = new RaidInstance(pokemonEntity, player.getUUID());
+            raidTemp.addPlayer(player);
+            RaidHelper.ACTIVE_RAIDS.put(raidId, raidTemp);
+        }
+
+        RaidInstance raid = raidTemp;
+
         if (raid == null) return;
         else if (raid.hasFailed(player)) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"));
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
-        else if (raid.getPlayers().size() >= boss.getMaxPlayers()) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"));
+        else if (boss.getMaxPlayers() != -1 && raid.getBattles().size() >= boss.getMaxPlayers()) {
+            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
 
         Pokemon pokemon = PlayerExtensionsKt.party(player).get(this.selectedPokemonId);
         if (pokemon == null) return;
         else if (RaidUtils.isPokemonBlacklisted(pokemon)) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName())));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_pokemon", pokemon.getSpecies().getTranslatedName())), true);
             return;
         }
         else if (RaidUtils.isAbilityBlacklisted(pokemon.getAbility())) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))), true);
             return;
         }
         else if (pokemon.isFainted()) {
-            player.sendSystemMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())));
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())), true);
             return;
         }
 
@@ -111,12 +123,23 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     this.flagAsSeen(battle, pokemonEntity);
                     raid.addBattle(battle);
                     RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
+
+                    if (pokemonEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
+                        this.setTransformTarget(pokemonEntity, pokemon, battle.getSide2().getActors()[0]);
+                    }
+
                     return Unit.INSTANCE;
                 })
                 .ifErrored(errors -> {
                     errors.sendTo(player, component -> component.withStyle(ChatFormatting.RED));
                     return Unit.INSTANCE;
                 });
+        }
+    }
+
+    private void setTransformTarget(PokemonEntity pokemonEntity, Pokemon pokemon, BattleActor actor) {
+        if (((ITransformer) pokemonEntity).crd_getTransformTarget() == null) {
+            ((ITransformer) pokemonEntity).crd_setTransformTarget(pokemon);
         }
     }
 
