@@ -15,6 +15,10 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         "com.necro.raid.dens.neoforge.mixins.ai.RCTBattleAIMixin"
     );
 
+    private static final Set<String> MSD_MIXINS = Set.of(
+        "com.necro.raid.dens.neoforge.mixins.msd.CobbleEventsMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -26,6 +30,7 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (RCT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.RCT_API.getModid()) != null;
+        if (MSD_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.MEGA_SHOWDOWN.getModid()) != null;
         return true;
     }
 

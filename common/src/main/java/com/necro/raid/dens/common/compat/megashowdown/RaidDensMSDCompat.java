@@ -12,9 +12,7 @@ import net.minecraft.world.item.ItemStack;
 public abstract class RaidDensMSDCompat {
     public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
-        AspectPropertyType.INSTANCE.fromString("play_tera").apply(pokemon);
         pokemon.getPersistentData().putBoolean("is_tera", true);
-        GlowHandler.applyTeraGlow(pokemonEntity);
     }
 
     public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
