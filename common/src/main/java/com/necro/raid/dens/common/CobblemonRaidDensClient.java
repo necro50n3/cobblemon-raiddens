@@ -19,7 +19,7 @@ public class CobblemonRaidDensClient {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_energy"),
             ((itemStack, level, entity, seed) -> {
                 float energy = itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0);
-                return energy / 100f;
+                return energy / ((float) CobblemonRaidDens.CONFIG.required_energy);
             })
         );
     }
