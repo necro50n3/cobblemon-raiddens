@@ -30,6 +30,4 @@ public class RaidConfig implements ConfigData {
     public RewardDistribution reward_distribution = RewardDistribution.RANDOM;
     @Comment("The maximum number of players in a raid before shared supporting moves are disabled. Default: 4")
     public int max_players_for_support = 4;
-    @Comment("The amount of raid energy required to convert a raid shard. Default: 100")
-    public int required_energy = 100;
 }

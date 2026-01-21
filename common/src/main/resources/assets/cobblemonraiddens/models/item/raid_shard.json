@@ -1,6 +1,20 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0" : "cobblemonraiddens:item/raid_shard"
-  }
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "cobblemonraiddens:item/raid_shard"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "cobblemonraiddens:raid_energy": 0.5
+            },
+            "model": "cobblemonraiddens:item/raid_shard_50"
+        },
+        {
+            "predicate": {
+                "cobblemonraiddens:raid_energy": 1.0
+            },
+            "model": "cobblemonraiddens:item/raid_shard_100"
+        }
+    ]
 }

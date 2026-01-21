@@ -1,0 +1,6 @@
+{
+    "parent": "cobblemonraiddens:item/raid_shard",
+    "textures": {
+        "layer0": "cobblemonraiddens:item/raid_shard_100"
+    }
+}
