@@ -107,32 +107,7 @@ public class CobblemonRaidDens {
             return Unit.INSTANCE;
         });
 
-        RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
-            RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
-            return Unit.INSTANCE;
-        });
-        RaidEvents.RAID_END.subscribe(Priority.NORMAL, event -> {
-            if (!event.isWin()) return Unit.INSTANCE;
-
-            Inventory inventory = event.getPlayer().getInventory();
-            ItemStack raidShard = null;
-            for (int i = 0; i <= Inventory.SLOT_OFFHAND; i++) {
-                ItemStack itemStack = inventory.getItem(i);
-                if (itemStack.is(ModItems.RAID_SHARD)) {
-                    raidShard = itemStack;
-                    break;
-                }
-            }
-            if (raidShard == null) return Unit.INSTANCE;
-
-            TierConfig config = TIER_CONFIG.get(event.getRaidBoss().getTier());
-            raidShard.set(
-                ModComponents.RAID_ENERGY.value(),
-                raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy()
-            );
-
-            return Unit.INSTANCE;
-        });
+        RaidEvents.registerEvents();
     }
 
     @SuppressWarnings("ConstantConditions")

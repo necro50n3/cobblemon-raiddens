@@ -39,7 +39,7 @@ public class RaidPouchItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
         RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
@@ -70,7 +70,7 @@ public class RaidPouchItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         RaidTier tier = stack.get(ModComponents.TIER_COMPONENT.value());
         RaidFeature feature = stack.get(ModComponents.FEATURE_COMPONENT.value());
         if (tier == null || feature == null) return;

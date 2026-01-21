@@ -18,51 +18,41 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RewardHandler {
-    private final RaidBoss raidBoss;
-    private final ServerPlayer player;
-    private final boolean isCatchable;
-
-    private final Pokemon cachedReward;
-
-    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable, Pokemon cachedReward) {
+public record RewardHandler(RaidBoss raidBoss, ServerPlayer player, Pokemon pokemonReward) {
+    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, @Nullable Pokemon pokemonReward) {
         this.raidBoss = raidBoss;
         this.player = player;
-        this.isCatchable = isCatchable;
-        this.cachedReward = cachedReward == null ? null : cachedReward.clone(true, null);
-    }
-
-    public RewardHandler(RaidBoss raidBoss, ServerPlayer player, boolean isCatchable) {
-        this(raidBoss, player, isCatchable, null);
+        this.pokemonReward = pokemonReward;
     }
 
     public void sendRewardMessage() {
         if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
         String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
-        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.isCatchable, speciesName);
+        RaidDenNetworkMessages.REWARD_PACKET.accept(this.player, this.pokemonReward != null, speciesName);
         RaidHelper.REWARD_QUEUE.put(this.player.getUUID(), this);
     }
 
     public boolean givePokemonToPlayer() {
-        if (!(this.player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
-            this.player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
-            return false;
+        if (this.pokemonReward != null) {
+            if (!(this.player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
+                this.player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
+                return false;
+            }
+
+            this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
+
+            if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(this.player, this.pokemonReward)))
+                return false;
+            RaidDenCriteriaTriggers.triggerRaidShiny(this.player, this.pokemonReward);
+            PlayerExtensionsKt.party(player).add(this.pokemonReward);
+            this.player.getMainHandItem().consume(1, this.player);
         }
 
-        Pokemon pokemon = this.cachedReward == null ? this.raidBoss.getRewardPokemon(this.player) : this.cachedReward;
-        pokemon.setCaughtBall(pokeBallItem.getPokeBall());
-
-        if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(this.player, pokemon))) return false;
-        else if (!this.giveItemToPlayer()) return false;
-
-        PlayerExtensionsKt.party(player).add(pokemon);
-        this.player.getMainHandItem().consume(1, this.player);
-
-        RaidDenCriteriaTriggers.triggerRaidShiny(this.player, pokemon);
-        return true;
+        return this.giveItemToPlayer();
     }
 
     public boolean giveItemToPlayer() {
@@ -88,9 +78,9 @@ public class RewardHandler {
 
     private ItemStack buildRaidPouch() {
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
-        item.set(ModComponents.TIER_COMPONENT.value(),  this.raidBoss.getTier());
+        item.set(ModComponents.TIER_COMPONENT.value(), this.raidBoss.getTier());
         item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
-        item.set(ModComponents.TYPE_COMPONENT.value(),  this.raidBoss.getType());
+        item.set(ModComponents.TYPE_COMPONENT.value(), this.raidBoss.getType());
         return item;
     }
 }

@@ -312,14 +312,12 @@ public class RaidInstance {
             cachedReward = null;
         }
 
-        success.forEach(player -> {
-            new RewardHandler(this.raidBoss, player, true, cachedReward).sendRewardMessage();
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
-        });
-        failed.forEach(player -> {
-            new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
-        });
+        success.forEach(player ->
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward, true))
+        );
+        failed.forEach(player ->
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
+        );
     }
 
     private void sortPlayers() {

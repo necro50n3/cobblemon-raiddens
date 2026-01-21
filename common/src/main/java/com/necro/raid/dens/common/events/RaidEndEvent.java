@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RaidEndEvent {
     private final ServerPlayer player;
@@ -11,7 +12,7 @@ public class RaidEndEvent {
     private final Pokemon pokemon;
     private final boolean isWin;
 
-    public RaidEndEvent(@NotNull ServerPlayer player, @NotNull RaidBoss raidBoss, Pokemon pokemon, boolean isWin) {
+    public RaidEndEvent(@NotNull ServerPlayer player, @NotNull RaidBoss raidBoss, @Nullable Pokemon pokemon, boolean isWin) {
         this.player = player;
         this.raidBoss = raidBoss;
         this.pokemon = pokemon;
