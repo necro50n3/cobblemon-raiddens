@@ -7,7 +7,6 @@
         "client.PartySendBindingMixin"
     ],
     "mixins": [
-        "SpawnPokemonMixin",
         "ai.RandomBattleAIMixin",
         "ai.StrongBattleAIMixin",
         "battlesync.BoostInstructionMixin",
