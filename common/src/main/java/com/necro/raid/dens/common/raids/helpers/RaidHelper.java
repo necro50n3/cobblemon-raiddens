@@ -95,7 +95,7 @@ public class RaidHelper extends SavedData {
         return state;
     }
 
-    public static void onPlayerDisconnect(ServerPlayer player) {
+    public static void teleportFromRaid(ServerPlayer player) {
         if (RaidUtils.isRaidDimension(player.level())) ((IRaidTeleporter) player).crd_returnHome();
     }
 
