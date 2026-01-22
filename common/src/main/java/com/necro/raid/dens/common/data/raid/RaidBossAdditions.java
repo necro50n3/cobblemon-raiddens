@@ -122,7 +122,7 @@ public class RaidBossAdditions {
         return this.additions;
     }
 
-    private boolean replace() {
+    public boolean replace() {
         return this.replace;
     }
 
