@@ -1,10 +1,12 @@
 package com.necro.raid.dens.common.data.dimension;
 
 import com.necro.raid.dens.common.blocks.ModBlocks;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -13,8 +15,12 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.chunk.PalettedContainer;
 import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -45,11 +51,11 @@ public class RaidRegion {
     }
 
     public Vec3 getPlayerPos() {
-        return RaidDenRegistry.getPlayerPos(this.structure).add(this.centre.getBottomCenter());
+        return RaidDenRegistry.getPlayerPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
     }
 
     public Vec3 getBossPos() {
-        return RaidDenRegistry.getBossPos(this.structure).add(this.centre.getBottomCenter());
+        return RaidDenRegistry.getBossPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
     }
 
     public void clearRegion(ServerLevel level) {
@@ -83,7 +89,11 @@ public class RaidRegion {
                     if (section == null) continue;
 
                     if (!section.hasOnlyAir()) {
-                        chunk.getSections()[i] = new LevelChunkSection(level.registryAccess().registryOrThrow(Registries.BIOME));
+                        Registry<Biome> registry = level.registryAccess().registryOrThrow(Registries.BIOME);
+                        chunk.getSections()[i] = new LevelChunkSection(
+                            new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES),
+                            new PalettedContainer<>(registry.asHolderIdMap(), registry.getHolderOrThrow(ModDimensions.RAID_DIM_BIOME), PalettedContainer.Strategy.SECTION_BIOMES)
+                        );
                         chunk.getBlockEntities().keySet().forEach(chunk::removeBlockEntity);
                         section.recalcBlockCounts();
                     }
