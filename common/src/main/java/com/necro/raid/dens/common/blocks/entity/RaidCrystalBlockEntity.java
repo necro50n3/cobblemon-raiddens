@@ -185,13 +185,18 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
     }
 
+    private boolean shouldClear(RaidState raidState) {
+        if (raidState == null) return false;
+        else if (raidState == RaidState.SUCCESS) return true;
+        return CobblemonRaidDens.CONFIG.max_clears_include_fails && raidState != RaidState.CANCELLED;
+    }
+
     public void closeRaid() {
         if (this.getLevel() == null) return;
         ServerLevel level = ModDimensions.getRaidDimension(this.getLevel().getServer());
         if (level == null) return;
 
-        RaidState raidState = RaidHelper.getRaidState(this.getUuid());
-        if (raidState == RaidState.SUCCESS || CobblemonRaidDens.CONFIG.max_clears_include_fails) this.clearRaid();
+        if (this.shouldClear(RaidHelper.getRaidState(this.getUuid()))) this.clearRaid();
 
         RaidRegionHelper.clearRegion(this.getUuid(), level);
 
