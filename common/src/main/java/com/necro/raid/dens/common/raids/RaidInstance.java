@@ -144,7 +144,6 @@ public class RaidInstance {
         this.cheersLeft.put(player.getUUID(), tierConfig.maxCheers());
         this.activePlayers.add(player);
         RaidDenNetworkMessages.SYNC_HEALTH.accept(player, this.currentHealth / this.maxHealth);
-
     }
 
     public void addBattle(PokemonBattle battle) {
@@ -228,7 +227,6 @@ public class RaidInstance {
     }
 
     public void tick() {
-        if (this.raidState != RaidState.IN_PROGRESS) return;
         try { this.runQueue.removeIf(DelayedRunnable::tick); }
         catch (ConcurrentModificationException ignored) {}
     }
@@ -346,7 +344,7 @@ public class RaidInstance {
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
-        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.removePlayer(player), 2));
+        this.bossEvent.removePlayer(player);
     }
 
     public RaidState getRaidState() {
