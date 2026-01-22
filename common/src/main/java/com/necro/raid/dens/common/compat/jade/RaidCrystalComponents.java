@@ -1,10 +1,6 @@
 package com.necro.raid.dens.common.compat.jade;
 
-import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.item.PokemonItem;
-import com.cobblemon.mod.common.pokemon.Species;
-import com.cobblemon.mod.common.util.ResourceLocationExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
@@ -16,9 +12,6 @@ import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -35,43 +28,23 @@ import snownee.jade.api.ui.IElement;
 import snownee.jade.api.ui.IElementHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
     INSTANCE;
 
-    private IElement getIconClient(BlockAccessor accessor, IElement currentIcon) {
+    @Override
+    public @Nullable IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return currentIcon;
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return currentIcon;
 
-        if (raidBoss.getDisplayAspects() == null) raidBoss.createDisplayAspects();
+        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
+        else if (raidBoss.getDisplaySpecies() == null) return currentIcon;
+
         ItemStack stack = PokemonItem.from(raidBoss.getDisplaySpecies(), raidBoss.getDisplayAspects(), 1, null);
         return IElementHelper.get().item(stack, 1.5f);
-    }
-
-    @Override
-    public @Nullable IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
-        if (!accessor.isServerConnected()) return this.getIconClient(accessor, currentIcon);
-
-        CompoundTag serverData = accessor.getServerData();
-        if (!serverData.contains("boss_aspects") || !serverData.contains("boss_species")) return currentIcon;
-
-        IElementHelper elements = IElementHelper.get();
-        Species species = PokemonSpecies.getByIdentifier(ResourceLocationExtensionsKt.asIdentifierDefaultingNamespace(serverData.getString("boss_species"), Cobblemon.MODID));
-        if (species == null) return currentIcon;
-
-        Set<String> aspects = new HashSet<>();
-        ListTag listTag = serverData.getList("boss_aspects", StringTag.TAG_STRING);
-        for (Tag t : listTag) {
-            StringTag tag = (StringTag) t;
-            aspects.add(tag.getAsString());
-        }
-        ItemStack stack = PokemonItem.from(species, aspects, 1, null);
-        return elements.item(stack, 1.5f);
     }
 
     private IElement getTeraTypeIcon(RaidType type) {
@@ -84,19 +57,21 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         return new ElementalTypeElement(ResourceLocation.parse(string), 324, 18, type);
     }
 
-    @SuppressWarnings("ConstantConditions")
-    private void appendTooltipClient(ITooltip tooltip, BlockAccessor accessor) {
+    @Override
+    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
         BlockState blockState = accessor.getBlockState();
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return;
+        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
+        if (raidBoss.getDisplaySpecies() == null) return;
+
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
         RaidFeature feature = raidBoss.getFeature();
 
-        if (raidBoss.getDisplayAspects() == null) raidBoss.createDisplayAspects();
 
         MutableComponent component = raidBoss.getDisplaySpecies().getTranslatedName();
         component.append(" | ").append(Component.translatable(feature.getTranslatable()));
@@ -115,83 +90,29 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             tooltip.append(0, elements);
         }
 
+        if (accessor.isServerConnected()) {
+            CompoundTag serverData = accessor.getServerData();
+            MutableComponent component1 = Component.empty();
+            if (serverData.contains("player_count")) {
+                component1.append(Component.translatable("jade.cobblemonraiddens.player_count", serverData.getInt("player_count")));
+                component1.append(" | ");
+            }
+            if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
+            if (!component1.equals(Component.empty())) tooltip.add(component1);
+        }
+
         int catches = raidBoss.getMaxCatches();
         if (catches == 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
         else if (catches > 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
     }
 
     @Override
-    public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        if (!accessor.isServerConnected()) {
-            this.appendTooltipClient(tooltip, accessor);
-            return;
-        }
-
-        CompoundTag serverData = accessor.getServerData();
-        if (!serverData.contains("raid_boss")) return;
-        MutableComponent component = Component.translatable(serverData.getString("raid_boss"));
-
-        if (serverData.contains("raid_feature")) {
-            component.append(" | ").append(Component.translatable(serverData.getString("raid_feature")));
-        }
-
-        BlockState blockState = accessor.getBlockState();
-        RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-        component.append(" | ").append(tier.getStars());
-        tooltip.add(component, this.getUid());
-
-        RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        IElementHelper helper = IElementHelper.get();
-        List<IElement> elements = new ArrayList<>();
-        elements.add(helper.text(Component.literal(" ")));
-        if (type != RaidType.STELLAR){
-            elements.add(this.getElementalTypeIcon(type));
-            tooltip.append(0, elements);
-        }
-        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) {
-            elements.add(this.getTeraTypeIcon(type));
-            tooltip.append(0, elements);
-        }
-
-        MutableComponent component1 = Component.empty();
-        if (serverData.contains("player_count")) {
-            component1.append(Component.translatable("jade.cobblemonraiddens.player_count", serverData.getInt("player_count")));
-            component1.append(" | ");
-        }
-        if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
-        if (!component1.equals(Component.empty())) tooltip.add(component1);
-
-        if (serverData.contains("max_catches")) {
-            int catches = serverData.getInt("max_catches");
-            if (catches == 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
-            else tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
-        }
-    }
-
-    @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor accessor) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
-        RaidBoss raidBoss = raidCrystal.getRaidBoss();
-        if (raidBoss == null) return;
-        if (raidBoss.getDisplaySpecies() == null) raidBoss.createDisplayAspects();
-
-        Species species = raidBoss.getDisplaySpecies();
-        String translatable = String.format("%s.species.%s.name", species.getResourceIdentifier().getNamespace(), species.showdownId());
-        compoundTag.putString("raid_boss", translatable);
-        compoundTag.putString("raid_feature", raidBoss.getFeature().getTranslatable());
-
-        compoundTag.putString("boss_species", species.getResourceIdentifier().toString());
-        ListTag bossAspects = new ListTag();
-        for (String aspect : raidBoss.getDisplayAspects()) {
-            if (aspect == null) continue;
-            bossAspects.add(StringTag.valueOf(aspect));
-        }
-        compoundTag.put("boss_aspects", bossAspects);
 
         if (raidCrystal.getPlayerCount() > 0) compoundTag.putInt("player_count", raidCrystal.getPlayerCount());
         if (raidCrystal.getTicksUntilNextReset() > 0) compoundTag.putString("next_reset", this.formatTicks(raidCrystal.getTicksUntilNextReset()));
-        if (raidBoss.getMaxCatches() >= 0) compoundTag.putInt("max_catches", raidBoss.getMaxCatches());
     }
 
     private String formatTicks(long ticks) {

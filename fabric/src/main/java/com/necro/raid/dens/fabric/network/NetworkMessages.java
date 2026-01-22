@@ -10,11 +10,11 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkMessages {
     public static void registerPayload() {
+        PayloadTypeRegistry.playS2C().register(RaidBossSyncPacket.PACKET_TYPE, RaidBossSyncPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
@@ -34,6 +34,7 @@ public class NetworkMessages {
     }
 
     public static void registerS2CPackets() {
+        ClientPlayNetworking.registerGlobalReceiver(RaidBossSyncPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handle);
@@ -49,8 +50,6 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
         RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
             NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
-        RaidDenNetworkMessages.RESIZE = (level, entity, scale) ->
-            NetworkMessages.sendPacketToLevel(level, new ResizePacket(entity.getId(), scale));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
@@ -71,10 +70,6 @@ public class NetworkMessages {
 
     public static void sendPacketToAll(MinecraftServer server, CustomPacketPayload packet) {
         server.getPlayerList().getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
-    }
-
-    public static void sendPacketToLevel(ServerLevel level, CustomPacketPayload packet) {
-        level.players().forEach(player -> ServerPlayNetworking.send(player, packet));
     }
 
     public static void sendPacketToPlayer(ServerPlayer player, CustomPacketPayload packet) {

@@ -7,7 +7,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,6 +21,7 @@ public class NetworkMessages {
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar payloadRegistrar = event.registrar(CobblemonRaidDens.MOD_ID).versioned("1.0.0").optional();
 
+        payloadRegistrar.playToClient(RaidBossSyncPacket.PACKET_TYPE, RaidBossSyncPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RequestPacket.PACKET_TYPE, RequestPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RewardPacket.PACKET_TYPE, RewardPacket.CODEC, NetworkMessages::handle);
@@ -42,8 +42,6 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
         RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
             NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
-        RaidDenNetworkMessages.RESIZE = (level, entity, scale) ->
-            NetworkMessages.sendPacketToLevel(level, new ResizePacket(entity.getId(), scale));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
@@ -64,10 +62,6 @@ public class NetworkMessages {
 
     public static void sendPacketToAll(CustomPacketPayload packet) {
         PacketDistributor.sendToAllPlayers(packet);
-    }
-
-    public static void sendPacketToLevel(ServerLevel level, CustomPacketPayload packet) {
-        PacketDistributor.sendToPlayersInDimension(level, packet);
     }
 
     public static void sendPacketToPlayer(ServerPlayer player, CustomPacketPayload packet) {

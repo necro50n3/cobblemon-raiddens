@@ -176,6 +176,14 @@ public class RaidBoss {
         this.displayAspects = displayPokemon.getAspects();
     }
 
+    public void setDisplaySpecies(Species species) {
+        this.displaySpecies = species;
+    }
+
+    public void setDisplayAspects(Set<String> aspects) {
+        this.displayAspects = aspects;
+    }
+
     public void applyDefaults() {
         if (this.reward == null) throw new JsonSyntaxException("Missing required field: \"pokemon\"");
         if (this.reward.getSpecies() == null || this.reward.getSpecies().isBlank()) throw new JsonSyntaxException("Missing required field: \"pokemon.species\"");

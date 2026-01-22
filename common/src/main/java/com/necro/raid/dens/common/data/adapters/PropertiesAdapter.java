@@ -109,8 +109,8 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         Codec.STRING.fieldOf("form").orElse("").forGetter(PokemonProperties::getForm),
         FEATURE_CODEC.listOf()
             .xmap(
-                list -> list.stream().filter(CustomPokemonProperty.class::isInstance).map(CustomPokemonProperty.class::cast).toList(),
-                list -> list.stream().filter(SpeciesFeature.class::isInstance).map(SpeciesFeature.class::cast).toList()
+                list -> list.stream().map(feature -> (CustomPokemonProperty) feature).toList(),
+                list -> list.stream().map(feature -> (SpeciesFeature) feature).toList()
             )
             .fieldOf("custom_properties")
             .orElse(new ArrayList<>())
@@ -134,23 +134,23 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
     }));
 
     public static PokemonProperties apply(PokemonProperties base, PokemonProperties extra) {
-        PokemonProperties properties = base.copy();
-        if (extra.getAbility() != null) properties.setAbility(extra.getAbility());
-        if (extra.getEvs() != null) properties.setEvs(extra.getEvs());
-        if (extra.getForm() != null) properties.setForm(extra.getForm());
-        if (extra.getGender() != null) properties.setFullness(extra.getFullness());
-        if (extra.getHeldItem() != null) properties.setHeldItem(extra.getHeldItem());
-        if (extra.getLevel() != null) properties.setLevel(extra.getLevel());
-        if (extra.getMoves() != null) properties.setMoves(extra.getMoves());
-        if (extra.getMinPerfectIVs() != null) properties.setMinPerfectIVs(extra.getMinPerfectIVs());
-        if (extra.getNature() != null) properties.setNature(extra.getNature());
-        if (extra.getSpecies() != null) properties.setSpecies(extra.getSpecies());
+        PokemonProperties properties = new PokemonProperties();
+        properties.setAbility(extra.getAbility() == null ? base.getAbility() : extra.getAbility());
+        properties.setEvs(extra.getEvs() == null ? base.getEvs() : extra.getEvs());
+        properties.setForm(extra.getForm() == null ? base.getForm() : extra.getForm());
+        properties.setGender(extra.getGender() == null ? base.getGender() : extra.getGender());
+        properties.setHeldItem(extra.getHeldItem() == null ? base.getHeldItem() : extra.getHeldItem());
+        properties.setLevel(extra.getLevel() == null ? base.getLevel() : extra.getLevel());
+        properties.setMoves(extra.getMoves() == null ? base.getMoves() : extra.getMoves());
+        properties.setMinPerfectIVs(extra.getMinPerfectIVs() == null ? base.getMinPerfectIVs() : extra.getMinPerfectIVs());
+        properties.setNature(extra.getNature() == null ? base.getNature() : extra.getNature());
+        properties.setSpecies(extra.getSpecies() == null ? base.getSpecies() : extra.getSpecies());
 
-        Set<String> aspects = new HashSet<>(properties.getAspects());
+        Set<String> aspects = new HashSet<>(base.getAspects());
         aspects.addAll(extra.getAspects());
         properties.setAspects(aspects);
 
-        List<CustomPokemonProperty> customProperties = new ArrayList<>(properties.getCustomProperties());
+        List<CustomPokemonProperty> customProperties = new ArrayList<>(base.getCustomProperties());
         customProperties.addAll(extra.getCustomProperties());
         properties.setCustomProperties(customProperties);
 

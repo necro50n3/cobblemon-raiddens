@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -23,7 +24,6 @@ import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.statistics.FabricStatistics;
 import com.necro.raid.dens.fabric.worldgen.FabricFeatures;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -77,6 +77,10 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BossAdditionsReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new StatusEffectsReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidSupportReloadListener());
+
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) -> {
+            if (joined) NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+        }));
 
         NetworkMessages.init();
     }

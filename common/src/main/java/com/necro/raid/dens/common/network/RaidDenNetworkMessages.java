@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.network;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -14,8 +13,6 @@ public class RaidDenNetworkMessages {
     public static BiConsumer<ServerPlayer, Boolean> JOIN_RAID;
     public static BiConsumer<ServerPlayer, String> REQUEST_PACKET;
     public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;
-    @Deprecated
-    public static TriConsumer<ServerLevel, Entity, Float> RESIZE;
     public static BiConsumer<ServerPlayer, Entity> RAID_ASPECT;
     public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
 

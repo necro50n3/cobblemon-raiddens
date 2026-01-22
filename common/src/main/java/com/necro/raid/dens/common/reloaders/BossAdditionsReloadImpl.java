@@ -1,8 +1,6 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBossAdditions;
 import com.necro.raid.dens.common.data.raid.RaidTier;
@@ -12,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 public class BossAdditionsReloadImpl extends AbstractReloadImpl {
     private List<ResourceLocation> registry;
