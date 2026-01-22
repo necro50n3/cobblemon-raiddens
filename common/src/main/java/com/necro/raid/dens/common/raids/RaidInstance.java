@@ -183,7 +183,9 @@ public class RaidInstance {
     }
 
     public void removePlayer(PokemonBattle battle) {
-        this.removePlayer(battle.getPlayers().getFirst(), battle);
+        List<ServerPlayer> players = battle.getPlayers();
+        if (players.isEmpty()) return;
+        this.removePlayer(players.getFirst() , battle);
     }
 
     public void removePlayer(ServerPlayer player) {
