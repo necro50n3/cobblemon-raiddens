@@ -20,6 +20,9 @@ import com.necro.raid.dens.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -56,7 +59,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private long lastReset;
     private boolean isOpen;
-    private Boolean isShiny;
+    private Set<String> aspects;
     private Consumer<ServerPlayer> aspectSync;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -151,10 +154,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         region.placeStructure(level);
 
-        PokemonEntity pokemonEntity = raidBoss.getBossEntity(level);
+        PokemonEntity pokemonEntity = raidBoss.getBossEntity(level, this.aspects);
         pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         ((IRaidAccessor) pokemonEntity).crd_setRaidId(this.getUuid());
+
+        if (CobblemonRaidDens.CONFIG.sync_rewards && this.aspects == null) {
+            this.aspects = pokemonEntity.getAspects();
+        }
 
         pokemonEntity.moveTo(region.getBossPos());
         level.addFreshEntity(pokemonEntity);
@@ -163,18 +170,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
         }
 
-        if (CobblemonRaidDens.CONFIG.sync_rewards) {
-            if (this.isShiny == null) this.isShiny = pokemonEntity.getPokemon().getShiny();
-            else pokemonEntity.getPokemon().setShiny(this.isShiny);
-        }
-
         RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), new RaidInstance(pokemonEntity, this.raidHost));
         return true;
     }
 
     public void clearRaid() {
         this.clears++;
-        this.isShiny = null;
+        this.aspects = null;
         if (this.isAtMaxClears()) {
             RaidHelper.resetClearedRaids(this.getUuid());
             if (this.getLevel() != null) this.getLevel().setBlock(
@@ -340,7 +342,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("is_open")) this.isOpen = true;
-        if (compoundTag.contains("is_shiny")) this.isShiny = compoundTag.getBoolean("is_shiny");
+        if (compoundTag.contains("aspects")) {
+            Set<String> aspects = new HashSet<>();
+            for (Tag tag : compoundTag.getList("aspects", Tag.TAG_STRING)) {
+                aspects.add(tag.getAsString());
+            }
+            this.aspects = aspects;
+        }
     }
 
     @Override
@@ -355,7 +363,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
-        if (this.isShiny != null) compoundTag.putBoolean("is_shiny", this.isShiny);
+        if (this.aspects != null) {
+            ListTag tag = new ListTag();
+            this.aspects.forEach(aspect -> tag.add(StringTag.valueOf(aspect)));
+            compoundTag.put("aspects", tag);
+        }
     }
 
     public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
@@ -364,7 +376,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.inactiveTicks = 0;
         this.lastReset = gameTime;
         this.raidBoss = raidBoss;
-        this.isShiny = null;
+        this.aspects = null;
         this.setChanged();
     }
 

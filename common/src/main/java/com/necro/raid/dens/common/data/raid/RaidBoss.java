@@ -105,14 +105,25 @@ public class RaidBoss {
         );
     }
 
-    public PokemonEntity getBossEntity(ServerLevel level) {
+    public PokemonEntity getBossEntity(ServerLevel level, Set<String> aspects) {
         PokemonProperties properties = PokemonProperties.Companion.parse(this.baseProperties.asString(" ") + " aspect=raid uncatchable");
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
         properties.setMinPerfectIVs(6);
 
         Pokemon pokemon;
-        if (CobblemonRaidDens.CONFIG.sync_rewards && properties.getShiny() == null) {
+        if (aspects != null) {
+            properties.setAspects(aspects);
+            pokemon = properties.create();
+            pokemon.setShiny(aspects.contains("shiny"));
+
+            if (aspects.contains("male")) pokemon.setGender(Gender.MALE);
+            else if (aspects.contains("female")) pokemon.setGender(Gender.FEMALE);
+
+            if (aspects.contains("radiant-radiant")) new StringSpeciesFeature("radiant", "radiant").apply(pokemon);
+            else if (aspects.contains("radiant-regular")) new StringSpeciesFeature("radiant", "regular").apply(pokemon);
+        }
+        else if (CobblemonRaidDens.CONFIG.sync_rewards && properties.getShiny() == null) {
             pokemon = new Pokemon();
             properties.apply(pokemon);
             pokemon.initialize();
@@ -123,6 +134,7 @@ public class RaidBoss {
             if (properties.getShiny() == null) properties.setShiny(false);
             pokemon = properties.create();
         }
+        if (aspects == null && !CobblemonRaidDens.CONFIG.sync_rewards) new StringSpeciesFeature("radiant", "regular").apply(pokemon);
 
         if (properties.getAbility() == null && level.getRandom().nextDouble() < tierConfig.haRate()) {
             pokemon.getForm().getAbilities().getMapping().values().forEach(

@@ -131,7 +131,7 @@ public class RaidSpawnCommands {
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(boss);
         if (raidBoss == null) return 0;
 
-        PokemonEntity pokemonEntity = raidBoss.getBossEntity(dimension);
+        PokemonEntity pokemonEntity = raidBoss.getBossEntity(dimension, null);
         if (noAI) pokemonEntity.setNoAi(true);
         if (isInvulnerable) pokemonEntity.setInvulnerable(true);
         if (isPersistent) pokemonEntity.setPersistenceRequired();
