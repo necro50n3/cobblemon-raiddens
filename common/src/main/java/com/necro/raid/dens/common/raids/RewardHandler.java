@@ -42,11 +42,9 @@ public record RewardHandler(RaidBoss raidBoss, ServerPlayer player, Pokemon poke
                 this.player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
                 return false;
             }
-
             this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
+            if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(this.player, this.pokemonReward))) return false;
 
-            if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(this.player, this.pokemonReward)))
-                return false;
             RaidDenCriteriaTriggers.triggerRaidShiny(this.player, this.pokemonReward);
             PlayerExtensionsKt.party(player).add(this.pokemonReward);
             this.player.getMainHandItem().consume(1, this.player);
