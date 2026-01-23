@@ -9,9 +9,10 @@ public record CureStatusShowdownEvent(Status status, int targetSide) implements 
         if (this.status instanceof VolatileStatus) {
             return String.format(
                 ">eval " +
+                    "const status = battle.dex.conditions.get('%1$s'); " +
                     "for (let p of battle.sides[%2$d].pokemon) { " +
-                        "if (!p) continue;" +
-                        "p.removeVolatile('%1$s'); " +
+                        "if (!p || !status || !p.volatiles[status.id]) continue; " +
+                        "delete p.volatiles[status.id]; " +
                     "} ",
                 this.status.getShowdownName(), this.targetSide - 1);
         }

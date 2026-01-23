@@ -109,7 +109,6 @@ public class CobblemonRaidDens {
         });
     }
 
-    @SuppressWarnings("ConstantConditions")
     private static void raidFailEvent(PokemonBattle battle) {
         try {
             RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
