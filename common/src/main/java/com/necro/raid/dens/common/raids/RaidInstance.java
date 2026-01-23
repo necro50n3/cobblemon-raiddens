@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
 import com.cobblemon.mod.common.battles.ShowdownActionResponse;
+import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
@@ -444,7 +445,10 @@ public class RaidInstance {
         if (!this.canSync()) return;
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
-            consumer.accept(b);
+            b.dispatch(() -> {
+                consumer.accept(b);
+                return DispatchResultKt.getGO();
+            });
         }
     }
 
