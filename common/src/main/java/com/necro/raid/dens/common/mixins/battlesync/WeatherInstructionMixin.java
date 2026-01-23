@@ -10,7 +10,6 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.WeatherInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -24,8 +23,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @Mixin(WeatherInstruction.class)
 public abstract class WeatherInstructionMixin {
