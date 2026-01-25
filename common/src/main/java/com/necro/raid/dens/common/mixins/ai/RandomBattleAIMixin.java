@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
 import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -17,6 +18,21 @@ import java.util.stream.Collectors;
 
 @Mixin(RandomBattleAI.class)
 public abstract class RandomBattleAIMixin {
+
+    @Unique
+    private List<InBattleMove> getFilteredMoves(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean checkTargets) {
+        return moveset.getMoves().stream()
+            .filter(InBattleMove::canBeUsed)
+            .filter(move -> !RaidAI.BLOCKED_MOVES.contains(move.id))
+            .filter(move -> {
+                if (!checkTargets) return true;
+                if (move.mustBeUsed()) return true;
+                List<Targetable> target = move.getTarget().getTargetList().invoke(pokemon);
+                return target == null || !target.isEmpty();
+            })
+            .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     @Inject(method = "choose", at = @At("HEAD"), remap = false, cancellable = true)
     private void chooseInject(ActiveBattlePokemon pokemon, PokemonBattle battle, BattleSide aiSide, ShowdownMoveset moveset, boolean forceSwitch, CallbackInfoReturnable<ShowdownActionResponse> cir) {
         if (!((IRaidBattle) pokemon.getBattle()).crd_isRaidBattle()) return;
@@ -25,15 +41,12 @@ public abstract class RandomBattleAIMixin {
             return;
         }
 
-        List<InBattleMove> filteredMoves = moveset.getMoves().stream()
-            .filter(InBattleMove::canBeUsed)
-            .filter(move -> {
-                if (move.mustBeUsed()) return true;
-                List<Targetable> target = move.getTarget().getTargetList().invoke(pokemon);
-                return target == null || !target.isEmpty();
-            })
-            .filter(move -> !RaidAI.BLOCKED_MOVES.contains(move.id))
-            .collect(Collectors.toCollection(ArrayList::new));
+        List<InBattleMove> filteredMoves = getFilteredMoves(pokemon, moveset, true);
+
+        if (filteredMoves.isEmpty()) {
+            filteredMoves = getFilteredMoves(pokemon, moveset, false);
+        }
+
         if (filteredMoves.isEmpty()) {
             cir.setReturnValue(PassActionResponse.INSTANCE);
             return;
@@ -45,8 +58,7 @@ public abstract class RandomBattleAIMixin {
         List<Targetable> target = bestMove.mustBeUsed() ? null : bestMove.getTarget().getTargetList().invoke(pokemon);
         if (target == null || target.isEmpty()) {
             cir.setReturnValue(new MoveActionResponse(bestMove.id, null, null));
-        }
-        else {
+        } else {
             Collections.shuffle(target);
             ActiveBattlePokemon chosenTarget = (ActiveBattlePokemon) target.getFirst();
             cir.setReturnValue(new MoveActionResponse(bestMove.id, chosenTarget.getPNX(), null));
