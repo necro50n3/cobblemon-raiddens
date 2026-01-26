@@ -13,11 +13,13 @@ import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -26,14 +28,24 @@ import java.util.List;
 import java.util.UUID;
 
 public class RewardHandler {
-    private final RaidBoss raidBoss;
+    private final ResourceLocation raidBossId;
+    private RaidBoss raidBoss;
     private final UUID playerUUID;
     private final boolean isCatchable;
 
     private final Pokemon cachedReward;
 
     public RewardHandler(RaidBoss raidBoss, UUID playerUUID, boolean isCatchable, Pokemon cachedReward) {
+        this.raidBossId = raidBoss.getId();
         this.raidBoss = raidBoss;
+        this.playerUUID = playerUUID;
+        this.isCatchable = isCatchable;
+        this.cachedReward = cachedReward == null ? null : cachedReward.clone(true, null);
+    }
+
+    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, boolean isCatchable, Pokemon cachedReward) {
+        this.raidBossId = raidBossId;
+        this.raidBoss = null;
         this.playerUUID = playerUUID;
         this.isCatchable = isCatchable;
         this.cachedReward = cachedReward == null ? null : cachedReward.clone(true, null);
@@ -48,6 +60,7 @@ public class RewardHandler {
     }
 
     public void sendRewardMessage(ServerPlayer player) {
+        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
         String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
         RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.isCatchable, speciesName);
@@ -55,6 +68,7 @@ public class RewardHandler {
     }
 
     public boolean givePokemonToPlayer(ServerPlayer player) {
+        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         if (!(player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
             return false;
@@ -74,6 +88,7 @@ public class RewardHandler {
     }
 
     public boolean giveItemToPlayer(ServerPlayer player) {
+        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         ItemStack raidPouch = this.buildRaidPouch();
         List<ItemStack> rewards = this.raidBoss.getRandomRewards(player.serverLevel());
         rewards.addFirst(raidPouch);
@@ -89,12 +104,14 @@ public class RewardHandler {
     }
 
     public void giveCurrency(ServerPlayer player) {
+        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
         else if (this.raidBoss.getCurrency() <= 0) return;
         RaidDensCobbleDollarsCompat.addCurrency(player, this.raidBoss.getCurrency());
     }
 
     private ItemStack buildRaidPouch() {
+        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
         item.set(ModComponents.TIER_COMPONENT.value(),  this.raidBoss.getTier());
         item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
@@ -104,21 +121,17 @@ public class RewardHandler {
 
     public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        RaidBoss.codec().encodeStart(NbtOps.INSTANCE, this.raidBoss)
-            .resultOrPartial(s -> {})
-            .ifPresent(t -> tag.put("raid_boss", t));
+        tag.putString("raid_boss", this.raidBossId.toString());
         tag.putUUID("player", this.playerUUID);
         tag.putBoolean("is_catchable", this.isCatchable);
         if (this.cachedReward != null) {
-            tag.put("cached_reward", this.cachedReward.saveToNBT((net.minecraft.core.RegistryAccess) provider, new CompoundTag()));
+            tag.put("cached_reward", this.cachedReward.saveToNBT((RegistryAccess) provider, new CompoundTag()));
         }
         return tag;
     }
 
     public static RewardHandler deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        RaidBoss raidBoss = RaidBoss.codec().parse(NbtOps.INSTANCE, tag.get("raid_boss"))
-            .resultOrPartial(s -> {})
-            .orElseThrow(() -> new IllegalStateException("Failed to deserialize RaidBoss"));
+        ResourceLocation raidBossId = ResourceLocation.parse(tag.getString("raid_boss"));
         UUID playerUUID = tag.getUUID("player");
         boolean isCatchable = tag.getBoolean("is_catchable");
         Pokemon cachedReward = null;
@@ -126,6 +139,6 @@ public class RewardHandler {
             cachedReward = new Pokemon();
             cachedReward.loadFromNBT((net.minecraft.core.RegistryAccess) provider, tag.getCompound("cached_reward"));
         }
-        return new RewardHandler(raidBoss, playerUUID, isCatchable, cachedReward);
+        return new RewardHandler(raidBossId, playerUUID, isCatchable, cachedReward);
     }
 }
