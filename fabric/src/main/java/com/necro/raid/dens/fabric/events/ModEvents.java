@@ -21,7 +21,7 @@ public class ModEvents {
         if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
-        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage();
+        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {

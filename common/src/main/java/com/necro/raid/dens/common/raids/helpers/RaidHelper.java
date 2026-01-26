@@ -148,6 +148,19 @@ public class RaidHelper extends SavedData {
             data.RAID_CLOSE_QUEUE.put(UUID.fromString(uuid), state);
         }
 
+        REWARD_QUEUE.clear();
+        ListTag rewardQueue = compoundTag.getList("reward_queue", Tag.TAG_COMPOUND);
+        for (Tag t : rewardQueue) {
+            CompoundTag entry = (CompoundTag) t;
+            try {
+                RewardHandler handler = RewardHandler.deserialize(entry, provider);
+                UUID playerUUID = entry.getUUID("player");
+                REWARD_QUEUE.put(playerUUID, handler);
+            } catch (Exception e) {
+                CobblemonRaidDens.LOGGER.error("Failed to load reward handler", e);
+            }
+        }
+
         return data;
     }
 
@@ -177,6 +190,12 @@ public class RaidHelper extends SavedData {
             raidCloseQueue.add(e);
         }
         compoundTag.put("raid_close_queue", raidCloseQueue);
+
+        ListTag rewardQueueTag = new ListTag();
+        for (RewardHandler handler : REWARD_QUEUE.values()) {
+            rewardQueueTag.add(handler.serialize(provider));
+        }
+        compoundTag.put("reward_queue", rewardQueueTag);
 
         return compoundTag;
     }

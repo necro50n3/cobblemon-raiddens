@@ -300,11 +300,11 @@ public class RaidInstance {
         }
 
         success.forEach(player -> {
-            new RewardHandler(this.raidBoss, player, true, cachedReward).sendRewardMessage();
+            new RewardHandler(this.raidBoss, player, true, cachedReward).sendRewardMessage(player);
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
         failed.forEach(player -> {
-            new RewardHandler(this.raidBoss, player, false).sendRewardMessage();
+            new RewardHandler(this.raidBoss, player, false).sendRewardMessage(player);
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), true));
         });
     }
