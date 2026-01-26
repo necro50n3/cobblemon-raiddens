@@ -37,7 +37,7 @@
     "geckolib": ">=${geckolib_version}"
   },
   "suggests": {
-    "mega_showdown": ">=1.0+1.7+1.21.1",
+    "mega_showdown": ">=1.6.2+1.7.2+1.21.1",
     "cobbledollars": ">=2.0.0",
     "cobblemonsizevariation": ">=1.4.0",
     "rctapi": ">=0.14.0"

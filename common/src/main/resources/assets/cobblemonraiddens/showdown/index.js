@@ -50,6 +50,15 @@ function sendBattleMessage(battleId, messages) {
 	}
 }
 
+function endBattle(battleId) {
+	const battleStream = battleMap.get(battleId);
+
+	if (battleStream != null) {
+		battleStream._writeEnd();
+		battleMap.delete(battleId);
+	}
+}
+
 function getTypeChart() {
 	return JSON.stringify(Dex.data.TypeChart);
 }
