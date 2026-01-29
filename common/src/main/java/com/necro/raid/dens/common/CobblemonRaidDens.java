@@ -114,7 +114,8 @@ public class CobblemonRaidDens {
     private static void raidFailEvent(PokemonBattle battle) {
         try {
             RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-            if (raid != null) raid.removePlayer(battle);
+            if (raid == null || raid.isFinished()) return;
+            raid.removePlayer(battle);
         }
         catch (NullPointerException ignored) {}
     }

@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.showdown.loader;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.compat.ModCompat;
 
 import java.io.IOException;
 import java.io.InputStream;

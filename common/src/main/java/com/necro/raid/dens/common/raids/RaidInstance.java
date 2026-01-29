@@ -230,6 +230,7 @@ public class RaidInstance {
     }
 
     public void tick() {
+        if (this.isFinished()) return;
         try { this.runQueue.removeIf(DelayedRunnable::tick); }
         catch (ConcurrentModificationException ignored) {}
     }
@@ -351,6 +352,10 @@ public class RaidInstance {
 
     public RaidState getRaidState() {
         return this.raidState;
+    }
+
+    public boolean isFinished() {
+        return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
     private ShowdownEvent getInstructions(@NotNull String function) {
