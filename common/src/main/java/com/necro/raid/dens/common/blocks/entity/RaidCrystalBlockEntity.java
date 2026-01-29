@@ -157,6 +157,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         PokemonEntity pokemonEntity = raidBoss.getBossEntity(level, this.aspects);
         pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
+        pokemonEntity.setPersistenceRequired();
         ((IRaidAccessor) pokemonEntity).crd_setRaidId(this.getUuid());
 
         if (CobblemonRaidDens.CONFIG.sync_rewards && this.aspects == null) {
