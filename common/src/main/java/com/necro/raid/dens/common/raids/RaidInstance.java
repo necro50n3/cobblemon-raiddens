@@ -246,7 +246,6 @@ public class RaidInstance {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
         if (raidSuccess) this.bossEntity.setHealth(0f);
-        this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
 
         if (raidSuccess) this.handleSuccess();
