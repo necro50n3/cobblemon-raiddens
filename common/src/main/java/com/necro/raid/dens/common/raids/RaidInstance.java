@@ -92,7 +92,9 @@ public class RaidInstance {
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
             List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
-            for (PokemonBattle battle : battleCache) battle.checkFlee();
+            for (PokemonBattle battle : battleCache) {
+                if (!battle.getEnded()) battle.checkFlee();
+            }
         }, 20, true));
 
         this.raidState = RaidState.NOT_STARTED;
