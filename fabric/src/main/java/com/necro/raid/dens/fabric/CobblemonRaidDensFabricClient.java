@@ -31,6 +31,6 @@ public class CobblemonRaidDensFabricClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(ModEvents::clientTick);
         HudRenderCallback.EVENT.register(new FabricHud());
-        TooltipComponentCallback.EVENT.register(component -> component instanceof ProgressTooltipData(double progress) ? new ProgressTooltip(progress) : null);
+        TooltipComponentCallback.EVENT.register(component -> component instanceof ProgressTooltipData(double progress, double total) ? new ProgressTooltip(progress, total) : null);
     }
 }

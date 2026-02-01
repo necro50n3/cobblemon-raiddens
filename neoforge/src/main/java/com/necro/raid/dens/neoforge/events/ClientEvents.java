@@ -39,6 +39,6 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onGatherTooltipComponents(RegisterClientTooltipComponentFactoriesEvent event) {
-        event.register(ProgressTooltipData.class, data -> new ProgressTooltip(data.progress()));
+        event.register(ProgressTooltipData.class, data -> new ProgressTooltip(data.progress(), data.total()));
     }
 }

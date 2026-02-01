@@ -46,7 +46,7 @@ public class RaidShardItem extends Item {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack itemStack) {
-        return Optional.of(new ProgressTooltipData(getRaidEnergy(itemStack) / ((float) CobblemonRaidDens.CONFIG.required_energy)));
+        return Optional.of(new ProgressTooltipData(getRaidEnergy(itemStack), CobblemonRaidDens.CONFIG.required_energy));
     }
 
     private static int getRaidEnergy(ItemStack itemStack) {
