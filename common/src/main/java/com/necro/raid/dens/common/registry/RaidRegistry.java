@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.registry;
 
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
@@ -76,15 +75,6 @@ public class RaidRegistry {
         float sum = 0f;
         for (int i = 0; i < matches.length; i++) {
             RaidBoss raidBoss = RAID_LOOKUP.get(RAID_LIST.get(matches[i]));
-            if (raidBoss.getWeight() == null) {
-                CobblemonRaidDens.LOGGER.info(
-                    "Failed to get weight for `{}` instance={} with reward={} weight={}",
-                    RAID_LIST.get(matches[i]),
-                    System.identityHashCode(raidBoss),
-                    raidBoss.getReward(),
-                    raidBoss.getWeight()
-                );
-            }
             sum += (float) (raidBoss.getWeight() * raidBoss.getTier().getWeight(level));
             weights[i] = sum;
         }

@@ -21,13 +21,6 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
         RaidBoss raidBoss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
         raidBoss.setId(key);
         raidBoss.applyDefaults();
-        CobblemonRaidDens.LOGGER.info(
-            "Registering raid boss `{}` instance={} with reward={} weight={}",
-            key,
-            System.identityHashCode(raidBoss),
-            raidBoss.getReward(),
-            raidBoss.getWeight()
-        );
         RaidRegistry.register(raidBoss);
     }
 
