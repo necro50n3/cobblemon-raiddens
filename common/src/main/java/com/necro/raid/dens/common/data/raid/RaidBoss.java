@@ -187,8 +187,8 @@ public class RaidBoss {
     public void applyDefaults() {
         if (this.reward == null) throw new JsonSyntaxException("Missing required field: \"pokemon\"");
         if (this.reward.getSpecies() == null || this.reward.getSpecies().isBlank()) throw new JsonSyntaxException("Missing required field: \"pokemon.species\"");
-        if (this.raidTier == null) throw new JsonSyntaxException("Missing required field: \"raidTier\"");
-        if (this.raidType == null) throw new JsonSyntaxException("Missing required field: \"raidType\"");
+        if (this.raidTier == null) throw new JsonSyntaxException("Missing required field: \"raid_tier\"");
+        if (this.raidType == null) throw new JsonSyntaxException("Missing required field: \"raid_type\"");
 
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidTier);
 

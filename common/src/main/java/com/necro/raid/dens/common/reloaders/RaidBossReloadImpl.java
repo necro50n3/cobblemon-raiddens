@@ -1,14 +1,10 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Optional;
 
 public class RaidBossReloadImpl extends AbstractReloadImpl {
     public RaidBossReloadImpl() {
@@ -25,6 +21,13 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
         RaidBoss raidBoss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
         raidBoss.setId(key);
         raidBoss.applyDefaults();
+        CobblemonRaidDens.LOGGER.info(
+            "Registering raid boss `{}` instance={} with reward={} weight={}",
+            key,
+            System.identityHashCode(raidBoss),
+            raidBoss.getReward(),
+            raidBoss.getWeight()
+        );
         RaidRegistry.register(raidBoss);
     }
 
