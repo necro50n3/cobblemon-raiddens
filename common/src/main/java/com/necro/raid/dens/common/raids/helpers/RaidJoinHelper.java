@@ -47,7 +47,7 @@ public class RaidJoinHelper {
     public static boolean isParticipating(Player player, UUID raid) {
         Participant participant = RAID_PARTICIPANTS.get(player.getUUID());
         if (participant == null) return false;
-        return participant.raid() == raid;
+        return participant.raid().equals(raid);
     }
 
     public static boolean isParticipating(Player player, boolean sendMessage) {

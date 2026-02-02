@@ -88,8 +88,7 @@ public class RaidUtils {
             if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
         });
 
-        int groundY = level.getChunk(BlockPos.containing(targetPos)).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) targetPos.x(), (int) targetPos.z()) + 1;
-        player.teleportTo(level, targetPos.x(), groundY, targetPos.z(), new HashSet<>(), yaw, pitch);
+        player.teleportTo(level, targetPos.x(), targetPos.y(), targetPos.z(), new HashSet<>(), yaw, pitch);
     }
 
     public static void leaveRaid(Player player) {
@@ -118,7 +117,7 @@ public class RaidUtils {
         int players = level.getEntitiesOfClass(Player.class, region.bound(), p -> RaidJoinHelper.isParticipating(p, false)).size();
         if (players > (isRaidDimension(player.level()) ? 1 : 0)) return;
 
-        int items = level.getEntitiesOfClass(ItemEntity.class, region.bound()).size();
+        int items = level.getEntitiesOfClass(ItemEntity.class, region.bound(), item -> item.getOwner() != null).size();
         if (items > 0 && isRaidDimension(player.level())) return;
 
         instance.removePlayer((ServerPlayer) player);
