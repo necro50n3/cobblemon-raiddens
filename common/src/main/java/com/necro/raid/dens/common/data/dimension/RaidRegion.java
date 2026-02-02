@@ -53,6 +53,8 @@ public class RaidRegion {
     }
 
     public void clearRegion(ServerLevel level) {
+        if (!RaidUtils.isRaidDimension(level)) return;
+
         int minX = this.centre.getX() - RADIUS;
         int maxX = this.centre.getX() + RADIUS;
         int minZ = this.centre.getZ() - RADIUS;

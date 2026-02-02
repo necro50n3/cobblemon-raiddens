@@ -4,8 +4,10 @@ import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
+import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,22 +18,22 @@ public class RaidBossAdditions {
     private static Set<ResourceLocation> BLACKLIST;
     private static boolean CACHED = false;
 
-    private final int priority;
-    private final List<String> include;
-    private final List<String> exclude;
-    private final RaidBoss additions;
+    private Integer priority;
+    private List<String> include;
+    private List<String> exclude;
+    private RaidBoss additions;
+    private Boolean replace;
+    private String suffix;
 
-    private final boolean replace;
-    private final String suffix;
+    public void applyDefaults() {
+        if (this.additions == null) throw new JsonSyntaxException("Missing required field: \"additions\"");
 
-    public RaidBossAdditions(int priority, List<String> include, List<String> exclude, RaidBoss additions, boolean replace, String suffix) {
-        this.priority = priority;
-        this.include = include;
-        this.exclude = exclude;
-        this.additions = additions;
-        this.replace = replace;
-        if (!replace && !suffix.startsWith("_")) suffix = "_" + suffix;
-        this.suffix = suffix;
+        if (this.priority == null) this.priority = 0;
+        if (this.include == null) this.include = new ArrayList<>();
+        if (this.exclude == null) this.exclude = new ArrayList<>();
+        if (this.replace == null) this.replace = true;
+        if (this.suffix == null) this.suffix = "";
+        if (!this.replace && !this.suffix.startsWith("_")) this.suffix = "_" + this.suffix;
     }
 
     public void apply(List<ResourceLocation> registry) {
@@ -214,6 +216,8 @@ public class RaidBossAdditions {
     }
 
     static {
-        GSON = new GsonBuilder().registerTypeAdapter(RaidBoss.class, RaidBoss.GSON).create();
+        GSON = new GsonBuilder()
+            .registerTypeAdapter(RaidBoss.class, new RaidBossAdapter())
+            .create();
     }
 }

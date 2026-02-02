@@ -28,6 +28,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
     protected void onLoad(ResourceLocation key, JsonObject object) {
         if (this.registry == null) this.registry = new ArrayList<>(RaidRegistry.getAll());
         RaidBossAdditions additions = RaidBossAdditions.GSON.fromJson(object, RaidBossAdditions.class);
+        additions.applyDefaults();
         this.additionsList.add(additions);
     }
 
