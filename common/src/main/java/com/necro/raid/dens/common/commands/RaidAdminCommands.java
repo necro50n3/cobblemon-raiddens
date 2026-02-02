@@ -78,7 +78,7 @@ public class RaidAdminCommands {
             return 0;
         }
 
-        RaidJoinHelper.removeParticipant(player);
+        RaidUtils.leaveRaid(player);
         RaidJoinHelper.removeFromQueue(player, true);
 
         context.getSource().sendSystemMessage(

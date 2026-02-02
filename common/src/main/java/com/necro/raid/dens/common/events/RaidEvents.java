@@ -30,7 +30,7 @@ public class RaidEvents {
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return;
-            new RewardHandler(event.getRaidBoss(), event.getPlayer(), event.getPokemon()).sendRewardMessage();
+            new RewardHandler(event.getRaidBoss(), event.getPlayer().getUUID(), event.getPokemon()).sendRewardMessage(event.getPlayer());
         });
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
