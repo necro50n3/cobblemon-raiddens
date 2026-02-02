@@ -16,15 +16,16 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
+        RaidHelper.teleportFromRaid(player);
         if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
-        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage();
+        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
         RaidJoinHelper.onPlayerDisconnect(listener.getPlayer());
-        RaidHelper.onPlayerDisconnect(listener.getPlayer());
+        RaidHelper.teleportFromRaid(listener.getPlayer());
     }
 
     public static void initRaidHelper(MinecraftServer server) {

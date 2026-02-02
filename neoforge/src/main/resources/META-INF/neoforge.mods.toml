@@ -41,7 +41,7 @@ side = "BOTH"
 modId = "mega_showdown"
 mandatory = false
 type = "optional"
-versionRange = "[1.0+1.7+1.21.1,)"
+versionRange = "[1.6.2+1.7.2+1.21.1,)"
 
 [[dependencies.cobblemonraiddens]]
 modId = "cobbledollars"

@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
 import com.cobblemon.mod.common.battles.PassActionResponse;
 import com.cobblemon.mod.common.battles.ShowdownActionResponse;
+import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
@@ -91,7 +92,9 @@ public class RaidInstance {
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
             List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
-            for (PokemonBattle battle : battleCache) battle.checkFlee();
+            for (PokemonBattle battle : battleCache) {
+                if (!battle.getEnded()) battle.checkFlee();
+            }
         }, 20, true));
 
         this.raidState = RaidState.NOT_STARTED;
@@ -180,7 +183,9 @@ public class RaidInstance {
     }
 
     public void removePlayer(PokemonBattle battle) {
-        this.removePlayer(battle.getPlayers().getFirst(), battle);
+        List<ServerPlayer> players = battle.getPlayers();
+        if (players.isEmpty()) return;
+        this.removePlayer(players.getFirst() , battle);
     }
 
     public void removePlayer(ServerPlayer player) {
@@ -238,7 +243,7 @@ public class RaidInstance {
     }
 
     public void tick() {
-        if (this.raidState != RaidState.IN_PROGRESS) return;
+        if (this.isFinished()) return;
         try { this.runQueue.removeIf(DelayedRunnable::tick); }
         catch (ConcurrentModificationException ignored) {}
     }
@@ -255,7 +260,6 @@ public class RaidInstance {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
         if (raidSuccess) this.bossEntity.setHealth(0f);
-        this.battles.forEach(PokemonBattle::stop);
         if (this.raidBoss == null) return;
 
         if (raidSuccess) this.handleSuccess();
@@ -356,11 +360,15 @@ public class RaidInstance {
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
-        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.removePlayer(player), 2));
+        this.bossEvent.removePlayer(player);
     }
 
     public RaidState getRaidState() {
         return this.raidState;
+    }
+
+    public boolean isFinished() {
+        return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
     private ShowdownEvent getInstructions(@NotNull String function) {
@@ -456,7 +464,10 @@ public class RaidInstance {
         if (!this.canSync()) return;
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
-            consumer.accept(b);
+            b.dispatch(() -> {
+                consumer.accept(b);
+                return DispatchResultKt.getGO();
+            });
         }
     }
 

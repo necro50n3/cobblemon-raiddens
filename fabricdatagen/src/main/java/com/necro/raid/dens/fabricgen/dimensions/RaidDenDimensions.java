@@ -5,7 +5,7 @@ import com.necro.raid.dens.common.dimensions.RaidDenChunkGenerator;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -30,7 +30,7 @@ public class RaidDenDimensions {
             BlockTags.AIR,
             BuiltinDimensionTypes.END_EFFECTS,
             0.0f,
-            new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 0), 0)
+            new DimensionType.MonsterSettings(false, false, ConstantInt.ZERO, 0)
         ));
     }
 

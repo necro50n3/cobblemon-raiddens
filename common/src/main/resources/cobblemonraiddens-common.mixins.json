@@ -38,7 +38,6 @@
         "showdown.ForcePassActionResponseMixin",
         "showdown.MoveActionResponseMixin",
         "showdown.MoveInstructionMixin",
-        "showdown.ShowdownInterpreterMixin",
         "showdown.TransformEffectMixin",
         "tags.TagEntryMixin"
     ],

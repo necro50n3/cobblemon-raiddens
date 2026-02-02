@@ -48,10 +48,7 @@ public class RaidBuilder {
             ));
         }
 
-        if (playerActor.getPokemonList().stream().anyMatch(battlePokemon ->
-            battlePokemon.getEntity() != null && battlePokemon.getEntity().isBusy()
-        )) {
-            player.getDisplayName();
+        if (playerActor.getPokemonList().stream().anyMatch(battlePokemon -> battlePokemon.getEntity() != null && battlePokemon.getEntity().isBusy())) {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.targetIsBusy(player.getDisplayName()));
         }
 

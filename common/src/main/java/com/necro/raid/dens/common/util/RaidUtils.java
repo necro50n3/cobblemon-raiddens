@@ -22,7 +22,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -85,45 +83,13 @@ public class RaidUtils {
         player.teleportTo(level, playerPos.x, playerPos.y, playerPos.z, new HashSet<>(), 180f, 0f);
     }
 
-    public static void teleportPlayerSafe(ServerPlayer player, ServerLevel level, BlockPos targetPos, float yaw, float pitch) {
+    public static void teleportPlayerSafe(ServerPlayer player, ServerLevel level, Vec3 targetPos, float yaw, float pitch) {
         PlayerExtensionsKt.party(player).forEach(pokemon -> {
             if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
         });
 
-        int groundY = level.getChunk(targetPos).getHeight(Heightmap.Types.MOTION_BLOCKING, targetPos.getX(), targetPos.getZ());
-        BlockPos groundPos = targetPos.atY((int) Mth.absMax(groundY, targetPos.getY()));
-
-        if (RaidUtils.isSafe(level, groundPos.north()) && level.getBlockState(groundPos.north().below()).isSolidRender(level, groundPos.north().below())) {
-            player.teleportTo(level, groundPos.getX() + 0.5, groundPos.getY(), groundPos.getZ() - 0.5,
-                new HashSet<>(), yaw, pitch);
-            return;
-        }
-
-        int radius = 1;
-        for (int dx = -radius; dx <= radius; dx++) {
-            for (int dz = -radius; dz <= radius; dz++) {
-                BlockPos offset = targetPos.offset(dx, 0, dz);
-                int topY = level.getChunk(offset).getHeight(Heightmap.Types.MOTION_BLOCKING, offset.getX(), offset.getZ());
-                offset = offset.atY((int) Mth.absMax(topY, targetPos.getY()));
-                if (RaidUtils.isSafe(level, offset) && level.getBlockState(offset.below()).isSolidRender(level, offset.below())) {
-                    player.teleportTo(level,offset.getX() + 0.5, offset.getY(), offset.getZ() + 0.5,
-                        new HashSet<>(), yaw, pitch);
-                    return;
-                }
-            }
-        }
-
-        player.teleportTo(level, targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() - 0.5,
-            new HashSet<>(), yaw, pitch);
-    }
-
-    private static boolean isSafe(ServerLevel world, BlockPos pos) {
-        BlockState block = world.getBlockState(pos);
-        BlockState above = world.getBlockState(pos.above());
-
-        return !block.is(Blocks.LAVA) &&
-            block.getCollisionShape(world, pos).isEmpty() &&
-            above.getCollisionShape(world, pos.above()).isEmpty();
+        int groundY = level.getChunk(BlockPos.containing(targetPos)).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) targetPos.x(), (int) targetPos.z()) + 1;
+        player.teleportTo(level, targetPos.x(), groundY, targetPos.z(), new HashSet<>(), yaw, pitch);
     }
 
     public static void leaveRaid(Player player) {

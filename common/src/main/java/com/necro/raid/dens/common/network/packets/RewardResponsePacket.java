@@ -40,20 +40,21 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
 
         if (this.catchPokemon) this.getPokemon(handler, player);
         else this.getItems(handler, player);
-        handler.giveCurrency();
     }
 
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
-        if (handler.givePokemonToPlayer()) {
+        if (handler.givePokemonToPlayer(player)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
+            handler.giveCurrency(player);
         }
     }
 
     private void getItems(RewardHandler handler, ServerPlayer player) {
-        if (handler.giveItemToPlayer()) {
+        if (handler.giveItemToPlayer(player)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
+            handler.giveCurrency(player);
         }
     }
 }

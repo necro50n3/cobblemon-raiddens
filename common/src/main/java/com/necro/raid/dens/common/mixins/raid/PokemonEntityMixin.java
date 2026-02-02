@@ -16,7 +16,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,9 +30,6 @@ import java.util.UUID;
 
 @Mixin(PokemonEntity.class)
 public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidAccessor, ITransformer {
-    @Shadow(remap = false)
-    public abstract void setBattleId(@Nullable UUID value);
-
     @Shadow(remap = false)
     public abstract Pokemon getPokemon();
 
@@ -63,8 +59,6 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Override
     public void crd_setRaidId(UUID raidId) {
-        this.crd_raidId = null;
-        this.setBattleId(raidId);
         this.crd_raidId = raidId;
     }
 
@@ -128,15 +122,10 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)
     private void canBattleInject(Player player, CallbackInfoReturnable<Boolean> cir) {
-        if (this.level().isClientSide()) cir.setReturnValue(true);
+        if (this.level().isClientSide() && this.getOwner() == null) cir.setReturnValue(true);
         if (this.crd_getRaidId() == null) return;
         else if (this.getHealth() <= 0F || this.isDeadOrDying() || PlayerExtensionsKt.isPartyBusy(player)) cir.setReturnValue(false);
         cir.setReturnValue(true);
-    }
-
-    @Inject(method = "setBattleId", at = @At("HEAD"), cancellable = true, remap = false)
-    private void setBattleInject(UUID battleId, CallbackInfo ci) {
-        if (this.crd_getRaidId() != null) ci.cancel();
     }
 
     @Inject(method = "isBattling", at = @At("HEAD"), cancellable = true, remap = false)

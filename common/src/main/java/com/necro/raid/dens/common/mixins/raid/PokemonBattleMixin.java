@@ -24,6 +24,12 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     @Shadow(remap = false)
     public abstract UUID getBattleId();
 
+    @Shadow
+    public abstract boolean getEnded();
+
+    @Shadow
+    public abstract void stop();
+
     @Unique
     private RaidInstance crd_raidInstance;
 
@@ -68,5 +74,13 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
         ShowdownService.Companion.getService().send(this.getBattleId(), messageList);
         this.crd_queueTera = false;
         ci.cancel();
+    }
+
+    @Inject(method = "checkFlee", at = @At("HEAD"), remap = false, cancellable = true)
+    private void checkFleeInject(CallbackInfo ci) {
+        if (this.crd_isRaidBattle() && this.crd_getRaidBattle().isFinished()) {
+            if (!this.getEnded()) this.stop();
+            ci.cancel();
+        }
     }
 }

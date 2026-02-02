@@ -40,7 +40,10 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
     @Override
     protected void postLoad() {
         this.additionsList.sort(Comparator.comparingInt(RaidBossAdditions::priority).reversed());
-        this.additionsList.forEach(additions -> additions.apply(this.registry));
+        this.additionsList.forEach(additions -> {
+            if (additions.replace()) additions.apply(RaidRegistry.getAll());
+            else additions.apply(this.registry);
+        });
 
         RaidRegistry.registerAll();
         RaidTier.updateRandom();
