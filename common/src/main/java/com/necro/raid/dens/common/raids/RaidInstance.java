@@ -61,7 +61,7 @@ public class RaidInstance {
     private final Map<Integer, List<ShowdownEvent>> scriptByTurn;
     private final NavigableMap<Double, List<ShowdownEvent>> scriptByHp;
 
-    private final Map<UUID, Integer> cheersLeft;
+    private final Map<UUID, RaidPlayer> playerMap;
     private final List<DelayedRunnable> runQueue;
 
     private RaidState raidState;
@@ -87,7 +87,7 @@ public class RaidInstance {
         this.currentHealth = this.maxHealth;
         this.initMaxHealth = this.maxHealth;
 
-        this.cheersLeft = new HashMap<>();
+        this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.bossEntity.isDeadOrDying()) return;
@@ -143,7 +143,7 @@ public class RaidInstance {
             this.applyHealthMulti();
         }
 
-        this.cheersLeft.put(player.getUUID(), this.raidBoss.getMaxCheers());
+        this.playerMap.put(player.getUUID(), new RaidPlayer(this.raidBoss));
         this.activePlayers.add(player);
     }
 
@@ -174,8 +174,11 @@ public class RaidInstance {
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
         this.removeFromBossEvent(player);
-        if (this.raidState != RaidState.NOT_STARTED) this.failedPlayers.add(player.getUUID());
-        if (this.failedPlayers.size() >= this.activePlayers.size()) this.stopRaid(false);
+        if (this.raidState != RaidState.NOT_STARTED) {
+            RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
+            if (raidPlayer.loseLife()) this.failedPlayers.add(player.getUUID());
+            if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
+        }
 
         if (battle == null) return;
         this.battles.remove(battle);
@@ -390,9 +393,8 @@ public class RaidInstance {
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
-        int cheersLeft = this.cheersLeft.getOrDefault(player.getUUID(), 0);
-        if (cheersLeft <= 0) return false;
-        this.cheersLeft.put(player.getUUID(), --cheersLeft);
+        RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
+        if (!raidPlayer.useCheer()) return false;
 
         this.cheer(oBattle, bagItem, origin, false);
 
@@ -509,6 +511,31 @@ public class RaidInstance {
             this.runnable.run();
             if (this.repeat) this.tick = 0;
             return !this.repeat;
+        }
+    }
+
+    private static class RaidPlayer {
+        private int cheers;
+        private int lives;
+
+        private RaidPlayer() {
+            this.cheers = 0;
+            this.lives = 0;
+        }
+
+        private RaidPlayer(RaidBoss boss) {
+            this.cheers = boss.getMaxCheers();
+            this.lives = boss.getLives();
+        }
+
+        private boolean useCheer() {
+            if (this.cheers <= 0) return false;
+            this.cheers--;
+            return true;
+        }
+
+        private boolean loseLife() {
+            return --this.lives <= 0;
         }
     }
 }

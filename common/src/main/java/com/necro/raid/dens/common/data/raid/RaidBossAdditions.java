@@ -93,6 +93,8 @@ public class RaidBossAdditions {
             getScript(this.additions()).ifPresent(boss::setScript);
             getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
             getMarks(this.additions()).ifPresent(boss::setMarks);
+            getLives(this.additions()).ifPresent(boss::setLives);
+            getEnergy(this.additions()).ifPresent(boss::setEnergy);
 
             boss.clearCaches();
 
@@ -213,6 +215,14 @@ public class RaidBossAdditions {
 
     private static Optional<List<Mark>> getMarks(RaidBoss boss) {
         return Optional.ofNullable(boss.getMarks());
+    }
+
+    private static Optional<Integer> getLives(RaidBoss boss) {
+        return Optional.ofNullable(boss.getLives());
+    }
+
+    private static Optional<Integer> getEnergy(RaidBoss boss) {
+        return Optional.ofNullable(boss.getEnergy());
     }
 
     static {

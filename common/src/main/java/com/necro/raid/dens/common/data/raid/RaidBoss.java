@@ -88,6 +88,8 @@ public class RaidBoss {
     @SerializedName("raid_ai")
     private RaidAI raidAI;
     private List<Mark> marks;
+    private Integer lives;
+    private Integer energy;
 
     private transient PokemonProperties cachedBossProperties;
 
@@ -102,8 +104,8 @@ public class RaidBoss {
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     RaidFeature raidFeature, ResourceLocation lootTable, Double weight, List<String> den, UniqueKey key,
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
-                    Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency,
-                    Integer maxCatches, Map<String, Script> script, RaidAI raidAI, List<Mark> marks) {
+                    Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
+                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Integer energy) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -127,6 +129,8 @@ public class RaidBoss {
         this.script = script;
         this.raidAI = raidAI;
         this.marks = marks;
+        this.lives = lives;
+        this.energy = energy;
 
         this.cachedBossProperties = null;
         this.lootTableActual = null;
@@ -160,6 +164,8 @@ public class RaidBoss {
         this.script = null;
         this.raidAI = null;
         this.marks = null;
+        this.lives = null;
+        this.energy = null;
 
         this.cachedBossProperties = null;
         this.lootTableActual = null;
@@ -211,6 +217,8 @@ public class RaidBoss {
         if (this.script == null) this.script = tierConfig.defaultScripts();
         if (this.raidAI == null) this.raidAI = tierConfig.raidAI();
         if (this.marks == null) this.marks = tierConfig.marks();
+        if (this.lives == null) this.lives = tierConfig.lives();
+        if (this.energy == null) this.energy = tierConfig.energy();
 
         if (this.boss == null) this.boss = new PokemonProperties();
 
@@ -446,6 +454,14 @@ public class RaidBoss {
         return this.marks;
     }
 
+    public Integer getLives() {
+        return this.lives;
+    }
+
+    public Integer getEnergy() {
+        return this.energy;
+    }
+
     public Species getDisplaySpecies() {
         return this.displaySpecies;
     }
@@ -579,6 +595,14 @@ public class RaidBoss {
         this.marks = marks;
     }
 
+    public void setLives(Integer lives) {
+        this.lives = lives;
+    }
+
+    public void setEnergy(Integer energy) {
+        this.energy = energy;
+    }
+
     public void clearCaches() {
         this.cachedBossProperties = null;
         this.lootTableActual = null;
@@ -623,7 +647,9 @@ public class RaidBoss {
             this.maxCatches,
             new HashMap<>(this.script),
             this.raidAI,
-            new ArrayList<>(this.marks)
+            new ArrayList<>(this.marks),
+            this.lives,
+            this.energy
         );
     }
 

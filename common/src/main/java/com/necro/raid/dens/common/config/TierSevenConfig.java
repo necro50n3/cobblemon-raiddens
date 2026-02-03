@@ -49,6 +49,8 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     public RaidAI raid_ai = RaidAI.RANDOM;
     @Comment("The list of marks the reward Pokemon will have. Default: [].")
     public String[] marks = {"cobblemon:mark_mightiest"};
+    @Comment("The number of lives a player has per raid battle. Default: 1")
+    public int lives = 1;
     @Comment("How much raid energy is given from a cleared raid. Default: 20")
     public int energy = 20;
 
@@ -106,6 +108,9 @@ public class TierSevenConfig implements ConfigData, TierConfig {
     }
     public List<Mark> marks() {
         return Arrays.stream(this.marks).map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
+    }
+    public int lives() {
+        return this.lives;
     }
     public int energy() {
         return this.energy;
