@@ -153,9 +153,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), true, true)) return false;
         RaidHelper.initRequest((ServerPlayer) player, blockEntity);
 
-        RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid()).addPlayer((ServerPlayer) player);
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        raid.addPlayer((ServerPlayer) player);
         RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);
         blockEntity.syncAspects((ServerPlayer) player);
+        player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", raid.getBossEntity().getDisplayName())), true);
         return true;
     }
 

@@ -112,6 +112,7 @@
     "message.cobblemonraiddens.raid.pending_removal": "Please wait before hosting another raid.",
     "message.cobblemonraiddens.raid.player_cleared": "You have already cleared this raid.",
     "message.cobblemonraiddens.raid.raid_fail": "The raid boss was too strong!",
+    "message.cobblemonraiddens.raid.raid_start": "A powerful %1$s has appeared!",
     "message.cobblemonraiddens.raid.rejected_request": "%s has rejected your join request.",
     "message.cobblemonraiddens.raid.request_time_out": "The join request has timed out.",
     "message.cobblemonraiddens.raid_shard.not_fully_charged": "You have not gathered enough raid energy.",
