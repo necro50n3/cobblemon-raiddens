@@ -121,8 +121,10 @@ public class RaidInstance {
                 else if (key.startsWith("after:") || key.startsWith("repeat:")) {
                     int time = Integer.parseInt(key.split(":")[1]) * 20;
                     this.runQueue.add(
-                        new DelayedRunnable(() -> functions.forEach(event -> this.sendEvent(event, null)),
-                            time, key.startsWith("repeat:"))
+                        new DelayedRunnable(() -> {
+                            if (this.isFinished()) return;
+                            functions.forEach(event -> this.sendEvent(event, null));
+                        }, time, key.startsWith("repeat:"))
                     );
                 }
             }
@@ -208,6 +210,7 @@ public class RaidInstance {
         }
         else {
             this.runQueue.add(new DelayedRunnable(() -> {
+                if (this.isFinished()) return;
                 this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
                 this.runScriptByHp((double) this.currentHealth / this.maxHealth);
             }, 20));
@@ -256,7 +259,10 @@ public class RaidInstance {
     }
 
     public void queueStopRaid(boolean raidSuccess) {
-        this.runQueue.add(new DelayedRunnable(() -> this.stopRaid(raidSuccess), 60));
+        this.runQueue.add(new DelayedRunnable(() -> {
+            if (this.isFinished()) return;
+            this.stopRaid(raidSuccess);
+        }, 60));
     }
 
     public void stopRaid(boolean raidSuccess) {
@@ -359,7 +365,10 @@ public class RaidInstance {
     }
 
     public void addToBossEvent(ServerPlayer player) {
-        this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.addPlayer(player), 2));
+        this.runQueue.add(new DelayedRunnable(() -> {
+            if (this.isFinished()) return;
+            this.bossEvent.addPlayer(player);
+        }, 2));
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
