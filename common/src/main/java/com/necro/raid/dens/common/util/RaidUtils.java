@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ import java.util.UUID;
 public class RaidUtils {
     private static final Set<String> POKEMON_BLACKLIST = new HashSet<>();
     private static final Set<String> ABILITY_BLACKLIST = new HashSet<>();
+    private static final Set<String> HELD_ITEM_BLACKLIST = new HashSet<>();
     private static final Set<String> MOVE_BLACKLIST = new HashSet<>();
     private static final Set<String> COMMAND_BLACKLIST = new HashSet<>();
     private static int MAX_COMMAND_SPLIT;
@@ -53,6 +55,11 @@ public class RaidUtils {
 
     public static boolean isAbilityBlacklisted(Ability ability) {
         return ABILITY_BLACKLIST.contains(ability.getName());
+    }
+
+    public static boolean isHeldItemBlacklisted(@Nullable ItemStack item) {
+        if (item == null) return false;
+        return HELD_ITEM_BLACKLIST.contains(item.getItem().toString());
     }
 
     public static boolean isMoveBlacklisted(String move) {
@@ -162,6 +169,7 @@ public class RaidUtils {
     public static void init() {
         POKEMON_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.pokemon));
         ABILITY_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.abilities));
+        HELD_ITEM_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.held_items));
         MOVE_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.moves));
         COMMAND_BLACKLIST.addAll(List.of(CobblemonRaidDens.BLACKLIST_CONFIG.commands));
 

@@ -98,6 +98,7 @@
     "message.cobblemonraiddens.raid.confirm_deny_request": "You have rejected the join request.",
     "message.cobblemonraiddens.raid.fainted_lead": "Your %s has already fainted!",
     "message.cobblemonraiddens.raid.forbidden_ability": "You cannot use a Pokemon with %s in a raid battle.",
+    "message.cobblemonraiddens.raid.forbidden_held_item": "You cannot use a %s in a raid battle.",
     "message.cobblemonraiddens.raid.forbidden_item": "You cannot use items in a raid battle.",
     "message.cobblemonraiddens.raid.forbidden_move": "%s cannot be selected in a raid battle.",
     "message.cobblemonraiddens.raid.forbidden_pokemon": "You cannot use %s in raid battles.",

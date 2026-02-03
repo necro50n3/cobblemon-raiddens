@@ -12,6 +12,8 @@ public class BlacklistConfig implements ConfigData {
     public String[] abilities = {
         "wonderguard"
     };
+    @Comment("List of blacklisted held items for the player in raid battles.")
+    public String[] held_items = {};
     @Comment("List of blacklisted moves for the player in raid battles.")
     public String[] moves = {
         "bestow",

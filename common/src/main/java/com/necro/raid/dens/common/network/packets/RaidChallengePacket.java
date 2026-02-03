@@ -110,6 +110,10 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))), true);
             return;
         }
+        else if (RaidUtils.isHeldItemBlacklisted(pokemon.getHeldItem$common())) {
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_held_item", pokemon.getHeldItem$common().getDisplayName())), true);
+            return;
+        }
         else if (pokemon.isFainted()) {
             player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.fainted_lead", pokemon.getSpecies().getTranslatedName())), true);
             return;
