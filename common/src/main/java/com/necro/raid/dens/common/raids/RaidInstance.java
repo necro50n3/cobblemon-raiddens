@@ -31,6 +31,7 @@ import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
@@ -488,7 +489,10 @@ public class RaidInstance {
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
-        else if (!this.bossEntity.isRemoved()) this.bossEntity.discard();
+        else if (!this.bossEntity.isRemoved()) {
+            ModDimensions.getRaidDimension(server).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
+            this.bossEntity.discard();
+        }
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));

@@ -5,7 +5,6 @@ import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.exception.IllegalActionChoiceException;
-import com.cobblemon.mod.common.item.battle.BagItemLike;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,11 +31,6 @@ public abstract class ForcePassActionResponseMixin {
         BattleActor battleActor = activeBattlePokemon.getActor();
         ServerPlayer player = battleActor.getBattle().getPlayers().getFirst();
         if (!battleActor.isForPlayer(player)) return;
-
-        if (!player.hasInfiniteMaterials()) {
-            if (player.getMainHandItem().getItem() instanceof BagItemLike) player.getMainHandItem().grow(1);
-            else if (player.getOffhandItem().getItem() instanceof BagItemLike) player.getOffhandItem().grow(1);
-        }
 
         if (!battleActor.getExpectingPassActions().isEmpty()) battleActor.getExpectingPassActions().removeFirst();
         throw new IllegalActionChoiceException(

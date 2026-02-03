@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.registry;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
@@ -43,6 +44,8 @@ public class RaidRegistry {
                 raidBoss.getType().setPresent();
             }
         }
+
+        CobblemonRaidDens.LOGGER.info("Registered {} raid bosses", RAID_LIST.size());
     }
 
     public static List<ResourceLocation> getAll() {
