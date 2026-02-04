@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "aromatisse",
+        "moves": [
+            "moonblast",
+            "psychic",
+            "drainingkiss",
+            "disarmingvoice"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "spritzee",
+        "moves": [
+            "psychic",
+            "drainingkiss",
+            "echoedvoice",
+            "fairywind"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

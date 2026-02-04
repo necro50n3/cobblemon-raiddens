@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "swirlix",
+        "moves": [
+            "playrough",
+            "energyball",
+            "round",
+            "drainingkiss"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

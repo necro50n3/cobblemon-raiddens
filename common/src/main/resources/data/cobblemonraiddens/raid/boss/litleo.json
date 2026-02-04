@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "litleo",
+        "moves": [
+            "echoedvoice",
+            "firefang",
+            "takedown",
+            "headbutt"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIRE",
+    "weight": 20.0
+}

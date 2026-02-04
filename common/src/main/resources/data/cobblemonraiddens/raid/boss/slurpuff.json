@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "slurpuff",
+        "moves": [
+            "playrough",
+            "energyball",
+            "round",
+            "drainingkiss"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FAIRY",
+    "weight": 20.0
+}

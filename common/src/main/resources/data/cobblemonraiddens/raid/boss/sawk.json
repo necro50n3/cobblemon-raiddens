@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "sawk",
+        "moves": [
+            "brickbreak",
+            "retaliate",
+            "lowsweep",
+            "karatechop"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

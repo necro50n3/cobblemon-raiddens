@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "pyroar",
+        "moves": [
+            "crunch",
+            "flamethrower",
+            "echoedvoice",
+            "firefang"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIRE",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "throh",
+        "moves": [
+            "vitalthrow",
+            "stormthrow",
+            "revenge",
+            "circlethrow"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}
