@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.den;
+package com.necro.raid.dens.neoforge.mixins.den;
 
 import com.necro.raid.dens.common.util.IRaidDenTemplate;
 import net.minecraft.core.BlockPos;
@@ -7,13 +7,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.RandomizableContainer;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,7 +45,7 @@ public abstract class StructureTemplateMixin implements IRaidDenTemplate {
     }
 
     @Shadow
-    protected abstract void placeEntities(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, Mirror mirror, Rotation rotation, BlockPos blockPos2, @Nullable BoundingBox boundingBox, boolean bl);
+    protected abstract void addEntitiesToWorld(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, StructurePlaceSettings structurePlaceSettings);
 
     @Override
     public void crd_setRaidPlacer(boolean enable) {
@@ -91,7 +90,7 @@ public abstract class StructureTemplateMixin implements IRaidDenTemplate {
             }
 
             if (!structurePlaceSettings.isIgnoreEntities()) {
-                this.placeEntities(serverLevelAccessor, blockPos, structurePlaceSettings.getMirror(), structurePlaceSettings.getRotation(), structurePlaceSettings.getRotationPivot(), boundingBox, structurePlaceSettings.shouldFinalizeEntities());
+                this.addEntitiesToWorld(serverLevelAccessor, blockPos, structurePlaceSettings);
             }
 
             cir.setReturnValue(true);
