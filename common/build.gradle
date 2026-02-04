@@ -28,6 +28,7 @@ dependencies {
     modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:7523096"
     modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modCompileOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
+    modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$rootProject.wthit_version"
     modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
     modCompileOnly(files "libs/CobblemonSizeVariationFabric-1.4.0+1.7.0.jar")
     modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:7257752"

@@ -1,0 +1,9 @@
+{
+    "cobblemonraiddens:raid_crystal": {
+        "entrypoints": {
+            "common": "com.necro.raid.dens.common.compat.wthit.RaidDensWTHITPlugin",
+            "client": "com.necro.raid.dens.common.compat.wthit.RaidDensWTHITPlugin"
+        },
+        "side": "*"
+    }
+}

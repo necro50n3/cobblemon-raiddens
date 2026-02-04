@@ -43,6 +43,13 @@ subprojects {
         }
         maven { url 'https://maven.wispforest.io/releases' }
         maven { url 'https://maven.su5ed.dev/releases' }
+        maven {
+            url "https://maven2.bai.lol"
+            content {
+                includeGroup "lol.bai"
+                includeGroup "mcp.mobius.waila"
+            }
+        }
     }
 
     dependencies {

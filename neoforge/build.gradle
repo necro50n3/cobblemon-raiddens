@@ -51,6 +51,8 @@ dependencies {
     include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
+    // modRuntimeOnly "lol.bai:badpackets:neo-$rootProject.badpackets_version"
+    // modRuntimeOnly "mcp.mobius.waila:wthit:neo-$rootProject.wthit_version"
     modRuntimeOnly "io.wispforest:accessories-neoforge:1.1.0-beta.52+1.21.1"
     forgeRuntimeLibrary("blue.endless:jankson:1.2.2")
     forgeRuntimeLibrary("io.wispforest:endec:0.1.5.1")

@@ -372,6 +372,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.raidBoss = raidBoss;
         this.aspects = null;
         this.setChanged();
+        if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
     @Override

@@ -95,7 +95,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             MutableComponent component1 = Component.empty();
             if (serverData.contains("player_count")) {
                 component1.append(Component.translatable("jade.cobblemonraiddens.player_count", serverData.getInt("player_count")));
-                component1.append(" | ");
+                if (serverData.contains("next_reset")) component1.append(" | ");
             }
             if (serverData.contains("next_reset")) component1.append(serverData.getString("next_reset"));
             if (!component1.equals(Component.empty())) tooltip.add(component1);
