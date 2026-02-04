@@ -44,7 +44,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
         else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
 
-        RaidCycleMode cycleMode = RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
+        RaidCycleMode cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
         ResourceLocation bucket = null;
         ResourceLocation location = null;
         RaidBoss raidBoss = null;

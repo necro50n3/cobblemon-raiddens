@@ -48,6 +48,9 @@ public class RaidDenCommands {
             if (id.toString().toLowerCase().startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
+            else if (id.getNamespace().equals("cobblemonraiddens") && id.getPath().toLowerCase().startsWith(remaining)) {
+                builder.suggest(id.toString());
+            }
         }
         return builder.buildFuture();
     };
@@ -390,7 +393,7 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDenNew(Level level, BlockPos blockPos, ResourceLocation location, RaidCycleMode cycleMode, boolean canReset) {
-        if (cycleMode == null) cycleMode = RaidCycleMode.fromString(CobblemonRaidDens.CONFIG.cycle_mode);
+        if (cycleMode == null) cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
 
         ResourceLocation bucket = null;
         if (cycleMode == RaidCycleMode.BUCKET && location == null) {

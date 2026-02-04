@@ -59,7 +59,7 @@ public class RaidBucket {
 
         this.includeBossesInner = includeBosses;
         this.excludeBossesInner = excludeBosses;
-        this.biomesInner =  biomes;
+        this.biomesInner = biomes;
 
         this.isAlwaysValid = this.biomesInner.contains("*") || this.biomesInner.contains("#cobblemonraiddens:raid_spawnable");
     }
@@ -70,6 +70,7 @@ public class RaidBucket {
 
     public boolean isValidBiome(Holder<Biome> biome) {
         if (this.isAlwaysValid) return true;
+        else if (this.biomesInner.isEmpty()) return false;
         if (this.biomes == null) this.resolveBiomes();
         return biome.unwrapKey()
             .map(this.biomes::contains)

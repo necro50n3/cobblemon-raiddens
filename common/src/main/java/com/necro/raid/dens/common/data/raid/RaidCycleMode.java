@@ -25,18 +25,16 @@ public enum RaidCycleMode implements StringRepresentable {
 
     public boolean canCycleTier() {
         if (this == CONFIG) {
-            String cycle = CobblemonRaidDens.CONFIG.cycle_mode;
-            if (cycle.equals("CONFIG")) return !this.lockTier;
-            else return !fromString(cycle).lockTier;
+            if (CobblemonRaidDens.CONFIG.cycle_mode == CONFIG) return !this.lockTier;
+            else return !CobblemonRaidDens.CONFIG.cycle_mode.lockTier;
         }
         return !this.lockTier;
     }
 
     public boolean canCycleType() {
         if (this == CONFIG) {
-            String cycle = CobblemonRaidDens.CONFIG.cycle_mode;
-            if (cycle.equals("CONFIG")) return !this.lockType;
-            else return !fromString(cycle).lockType;
+            if (CobblemonRaidDens.CONFIG.cycle_mode == CONFIG) return !this.lockType;
+            else return !CobblemonRaidDens.CONFIG.cycle_mode.lockType;
         }
         return !this.lockType;
     }
