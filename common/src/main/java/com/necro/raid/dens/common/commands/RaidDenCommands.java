@@ -30,7 +30,6 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -97,6 +96,35 @@ public class RaidDenCommands {
                             context.getSource().getLevel(),
                             (ResourceLocation) null, null, true
                         ))
+                        .then(Commands.literal("random")
+                            .executes(context -> createRaidDen(
+                                context,
+                                BlockPosArgument.getBlockPos(context, "position"),
+                                context.getSource().getLevel(),
+                                (ResourceLocation) null, null, true
+                            ))
+                            .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                .suggests(CYCLE_MODE)
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    context.getSource().getLevel(),
+                                    (ResourceLocation) null,
+                                    RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                    true
+                                ))
+                                .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                                    .executes(context -> createRaidDen(
+                                        context,
+                                        BlockPosArgument.getBlockPos(context, "position"),
+                                        context.getSource().getLevel(),
+                                        (ResourceLocation) null,
+                                        RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                        BoolArgumentType.getBool(context, "can_reset")
+                                    ))
+                                )
+                            )
+                        )
                         .then(Commands.literal("tier")
                             .then(Commands.argument("tier", StringArgumentType.word())
                                 .suggests(RAID_TIERS)
@@ -192,6 +220,35 @@ public class RaidDenCommands {
                                 DimensionArgument.getDimension(context, "dimension"),
                                 (ResourceLocation) null, null, true
                             ))
+                            .then(Commands.literal("random")
+                                .executes(context -> createRaidDen(
+                                    context,
+                                    BlockPosArgument.getBlockPos(context, "position"),
+                                    DimensionArgument.getDimension(context, "dimension"),
+                                    (ResourceLocation) null, null, true
+                                ))
+                                .then(Commands.argument("cycle_mode", StringArgumentType.word())
+                                    .suggests(CYCLE_MODE)
+                                    .executes(context -> createRaidDen(
+                                        context,
+                                        BlockPosArgument.getBlockPos(context, "position"),
+                                        DimensionArgument.getDimension(context, "dimension"),
+                                        (ResourceLocation) null,
+                                        RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                        true
+                                    ))
+                                    .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                                        .executes(context -> createRaidDen(
+                                            context,
+                                            BlockPosArgument.getBlockPos(context, "position"),
+                                            DimensionArgument.getDimension(context, "dimension"),
+                                            (ResourceLocation) null,
+                                            RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
+                                            BoolArgumentType.getBool(context, "can_reset")
+                                        ))
+                                    )
+                                )
+                            )
                             .then(Commands.literal("tier")
                                 .then(Commands.argument("tier", StringArgumentType.word())
                                     .suggests(RAID_TIERS)
