@@ -86,6 +86,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         }
         else this.inactiveTicks = 0;
 
+        if (this.isActive(blockState) && ++this.soundTicks % 120 == 0) {
+            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.5f, 1.0f);
+            this.soundTicks = 0;
+        }
+
         if (!blockState.getValue(RaidCrystalBlock.CAN_RESET)) return;
         else if (CobblemonRaidDens.CONFIG.reset_time <= 0) return;
         else if (this.isInProgress()) return;
@@ -94,12 +99,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.lastReset == 0) this.lastReset = gameTime;
         else if (gameTime - this.lastReset > CobblemonRaidDens.CONFIG.reset_time * 20L) {
             this.generateRaidBoss(level, blockPos, blockState);
-        }
-
-        if (!this.isActive(blockState)) return;
-        if (++this.soundTicks % 120 == 0) {
-            level.playSound(null, blockPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.5f, 1.0f);
-            this.soundTicks = 0;
         }
     }
 
