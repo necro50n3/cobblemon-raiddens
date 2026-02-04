@@ -22,6 +22,7 @@ repositories {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
     modImplementation "com.cobblemon:mod:$rootProject.cobblemon_version"
+    modCompileOnly "com.cobblemon:mod:1.7.2+1.21.1"
     implementation(files "libs/molang-1.1.19.jar")
     modCompileOnly "com.terraformersmc:modmenu:11.0.3"
     modRuntimeOnly "io.wispforest:accessories-common:1.1.0-beta.52+1.21.1"

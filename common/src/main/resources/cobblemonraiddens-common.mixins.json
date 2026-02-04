@@ -31,7 +31,6 @@
         "den.LavaFluidMixin",
         "den.LevelChunkMixin",
         "den.LevelMixin",
-        "den.StructureTemplateMixin",
         "player.ServerPlayerMixin",
         "raid.BattleActorMixin",
         "raid.BattleRegistryMixin",

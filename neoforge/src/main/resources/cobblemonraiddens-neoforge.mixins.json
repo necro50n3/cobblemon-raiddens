@@ -5,8 +5,10 @@
     "plugin": "com.necro.raid.dens.neoforge.CobblemonRaidDensNeoForgeMixinPlugin",
     "mixins": [
         "ai.RCTBattleAIMixin",
+        "den.StructureTemplateMixin",
         "msd.CobbleEventsMixin",
-        "showdown.GraalShowdownUnbundlerMixin"
+        "showdown.GraalShowdownUnbundlerMixin",
+        "showdown.ShowdownInterpreterMixin"
     ],
     "injectors": {
         "defaultRequire": 1

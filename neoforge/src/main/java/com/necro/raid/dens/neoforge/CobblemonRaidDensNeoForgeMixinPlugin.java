@@ -1,7 +1,6 @@
 package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.compat.ModCompat;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -19,6 +18,10 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         "com.necro.raid.dens.neoforge.mixins.msd.CobbleEventsMixin"
     );
 
+    private static final Set<String> COBBLEMON_MIXINS = Set.of(
+        "com.necro.raid.dens.neoforge.mixins.showdown.ShowdownInterpreterMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -31,6 +34,7 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (RCT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.RCT_API.getModid()) != null;
         if (MSD_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.MEGA_SHOWDOWN.getModid()) != null;
+        if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensNeoForge.isCobblemon171();
         return true;
     }
 

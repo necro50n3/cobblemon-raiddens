@@ -18,6 +18,10 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
         "com.necro.raid.dens.fabric.mixins.msd.CobbleEventsMixin"
     );
 
+    private static final Set<String> COBBLEMON_MIXINS = Set.of(
+        "com.necro.raid.dens.fabric.mixins.showdown.ShowdownInterpreterMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -30,6 +34,7 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (RCT_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.RCT_API.getModid());
         if (MSD_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid());
+        if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensFabric.isCobblemon171();
         return true;
     }
 

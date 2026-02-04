@@ -1,5 +1,6 @@
 package com.necro.raid.dens.fabric;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
@@ -8,6 +9,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
+import com.necro.raid.dens.common.showdown.RaidDensShowdownRegistry;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -32,6 +34,8 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
@@ -42,6 +46,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
+
+        if (!isCobblemon171()) RaidDensShowdownRegistry.registerInstructions();
 
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
@@ -78,5 +84,15 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidSupportReloadListener());
 
         NetworkMessages.init();
+    }
+
+    static boolean isCobblemon171() {
+        return FabricLoader.getInstance().getModContainer(Cobblemon.MODID)
+            .map(cobblemon -> {
+                    try { return cobblemon.getMetadata().getVersion().compareTo(Version.parse("1.7.1")) <= 0; }
+                    catch (VersionParsingException e) { throw new RuntimeException(e); }
+                }
+            )
+            .orElse(false);
     }
 }
