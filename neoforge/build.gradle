@@ -52,7 +52,7 @@ dependencies {
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     // modRuntimeOnly "lol.bai:badpackets:neo-$rootProject.badpackets_version"
-    // modRuntimeOnly "mcp.mobius.waila:wthit:neo-$rootProject.wthit_version"
+    modCompileOnly "mcp.mobius.waila:wthit:neo-$rootProject.wthit_version"
     modRuntimeOnly "io.wispforest:accessories-neoforge:1.1.0-beta.52+1.21.1"
     forgeRuntimeLibrary("blue.endless:jankson:1.2.2")
     forgeRuntimeLibrary("io.wispforest:endec:0.1.5.1")
@@ -61,7 +61,6 @@ dependencies {
     forgeRuntimeLibrary("io.wispforest.endec:netty:0.1.2")
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7523097"
     modCompileOnly "curse.maven:cobbledollars-859232:6604564"
-    modCompileOnly "curse.maven:distant-horizons-508933:6791190"
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
     modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 

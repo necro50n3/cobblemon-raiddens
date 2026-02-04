@@ -52,12 +52,11 @@ dependencies {
     modImplementation "com.terraformersmc:modmenu:11.0.3"
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+fabric"
     // modRuntimeOnly "lol.bai:badpackets:fabric-$rootProject.badpackets_version"
-    // modRuntimeOnly "mcp.mobius.waila:wthit:fabric-$rootProject.wthit_version"
+    modCompileOnly "mcp.mobius.waila:wthit:fabric-$rootProject.wthit_version"
     modRuntimeOnly "io.wispforest:accessories-fabric:1.1.0-beta.52+1.21.1"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7523096"
     modImplementation "curse.maven:cobbledollars-859232:6604561"
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
-    modCompileOnly "curse.maven:distant-horizons-508933:6791190"
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 

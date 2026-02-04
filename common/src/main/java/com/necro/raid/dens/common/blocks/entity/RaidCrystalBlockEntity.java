@@ -104,19 +104,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
         RaidCycleMode cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
-        ResourceLocation bossLocation = null;
-
-        if (cycleMode == RaidCycleMode.NONE) return;
-
-        if (this.raidBucket != null) {
-            bossLocation = RaidBucketRegistry.getBucket(this.raidBucket).getRandomRaidBoss(level.getRandom(), level);
-        }
-
-        if (bossLocation == null) {
-            RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
-            RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-            bossLocation = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
-        }
+        if (cycleMode == RaidCycleMode.CONFIG) cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
+        ResourceLocation bossLocation = switch (cycleMode) {
+            case RaidCycleMode.NONE -> this.generateFromExisting(level, blockState, cycleMode);
+            case RaidCycleMode.BUCKET -> this.generateFromBucket(level, blockState, cycleMode);
+            default -> this.generateRandom(level, blockState, cycleMode);
+        };
 
         RaidBoss raidBoss = RaidRegistry.getRaidBoss(bossLocation);
         if (raidBoss == null) return;
@@ -138,6 +131,22 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             .setValue(RaidCrystalBlock.ACTIVE, true), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, raidBoss));
+    }
+
+    private ResourceLocation generateFromBucket(Level level, BlockState blockState, RaidCycleMode cycleMode) {
+        if (this.raidBucket == null) return this.generateRandom(level, blockState, cycleMode);
+        ResourceLocation boss = RaidBucketRegistry.getBucket(this.raidBucket).getRandomRaidBoss(level.getRandom(), level);
+        return boss == null ? this.generateRandom(level, blockState, cycleMode) : boss;
+    }
+
+    private ResourceLocation generateRandom(Level level, BlockState blockState, RaidCycleMode cycleMode) {
+        RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
+        RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
+        return RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+    }
+
+    private ResourceLocation generateFromExisting(Level level, BlockState blockState, RaidCycleMode cycleMode) {
+        return this.raidBoss == null ? this.generateRandom(level, blockState, cycleMode) : this.raidBoss;
     }
 
     public boolean spawnRaidBoss() {
