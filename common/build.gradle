@@ -26,7 +26,7 @@ dependencies {
     implementation(files "libs/molang-1.1.19.jar")
     modCompileOnly "com.terraformersmc:modmenu:11.0.3"
     modRuntimeOnly "io.wispforest:accessories-common:1.1.0-beta.52+1.21.1"
-    modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:7523096"
+    modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:7575682"
     modCompileOnly "curse.maven:cobbledollars-859232:6604561"
     modCompileOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     modCompileOnly "mcp.mobius.waila:wthit-api:mojmap-$rootProject.wthit_version"

@@ -4,24 +4,50 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
 import com.github.yajatkaul.mega_showdown.block.MegaShowdownBlocks;
-import com.github.yajatkaul.mega_showdown.codec.Effect;
 import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.github.yajatkaul.mega_showdown.utils.GlowHandler;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.world.item.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 public abstract class RaidDensMSDCompat {
+    private static Class<?> EFFECT_CLASS = null;
+
     public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
-        Effect.getEffect("mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase()).applyEffects(pokemon, List.of(), null);
+
+        try {
+            Class<?> effect = getEffectClass();
+            Method getEffect = effect.getMethod("getEffect", String.class);
+            Object effectInstance = getEffect.invoke( null, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase());
+            Method applyEffects = effect.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
+            applyEffects.invoke(effectInstance, pokemon, List.of(), null);
+        }
+        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
+        }
+
         pokemon.getPersistentData().putBoolean("is_tera", true);
     }
 
     public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:dmax").apply(pokemon);
-        Effect.getEffect("mega_showdown:dynamax").applyEffects(pokemon, List.of(), null);
+
+        try {
+            Class<?> effect = getEffectClass();
+            Method getEffect = effect.getMethod("getEffect", String.class);
+            Object effectInstance = getEffect.invoke( null, "mega_showdown:dynamax");
+            Method applyEffects = effect.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
+            applyEffects.invoke(effectInstance, pokemon, List.of(), null);
+        }
+        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
+        }
+
         pokemon.getPersistentData().putBoolean("is_max", true);
         GlowHandler.applyDynamaxGlow(pokemonEntity);
     }
@@ -52,5 +78,19 @@ public abstract class RaidDensMSDCompat {
 
     public static ItemStack getMaxMushroom() {
         return MegaShowdownBlocks.MAX_MUSHROOM.get().asItem().getDefaultInstance();
+    }
+
+    // Reflection to maintain compatibility with older versions
+    // To be removed in Cobblemon 1.8 update
+    private static Class<?> getEffectClass() throws ClassNotFoundException {
+        if (EFFECT_CLASS == null) {
+            try {
+                EFFECT_CLASS = Class.forName("com.github.yajatkaul.mega_showdown.api.codec.Effect");
+            }
+            catch (ClassNotFoundException e) {
+                EFFECT_CLASS = Class.forName("com.github.yajatkaul.mega_showdown.codec.Effect");
+            }
+        }
+        return EFFECT_CLASS;
     }
 }
