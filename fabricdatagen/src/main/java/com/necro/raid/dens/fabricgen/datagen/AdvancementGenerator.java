@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ConsumeItemTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -220,5 +221,18 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .addCriterion("heal_cheer",
                 ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.HEAL_CHEER.value()))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":great_friend");
+
+        Advancement.Builder.advancement()
+            .display(
+                ModItems.RAID_SHARD.value(),
+                Component.translatable("advancement.cobblemonraiddens.raid_shard_charge.title"),
+                Component.translatable("advancement.cobblemonraiddens.raid_shard_charge.description"),
+                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
+                AdvancementType.TASK,
+                true, false, false
+            )
+            .parent(joinRaidDenAdvancement)
+            .addCriterion("charged_raid_shard", ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.RAID_SHARD.value()))
+            .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_shard_charge");
     }
 }

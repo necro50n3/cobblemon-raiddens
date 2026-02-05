@@ -14,14 +14,14 @@ import net.minecraft.world.item.Item;
 
 public class FabricItems {
     public static void registerItems() {
-        ModItems.RAID_POUCH = registerRaidPouch("raid_pouch", new RaidPouchItem());
-        ModItems.ATTACK_CHEER = registerRaidPouch("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK));
-        ModItems.DEFENSE_CHEER = registerRaidPouch("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE));
-        ModItems.HEAL_CHEER = registerRaidPouch("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
-        ModItems.RAID_SHARD = registerRaidPouch("raid_shard", new RaidShardItem());
+        ModItems.RAID_POUCH = registerItem("raid_pouch", new RaidPouchItem());
+        ModItems.ATTACK_CHEER = registerItem("cheer_attack", new CheerItem(CheerBagItem.CheerType.ATTACK));
+        ModItems.DEFENSE_CHEER = registerItem("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE));
+        ModItems.HEAL_CHEER = registerItem("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
+        ModItems.RAID_SHARD = registerItem("raid_shard", new RaidShardItem());
     }
 
-    private static Holder<Item> registerRaidPouch(String name, Item item) {
+    private static Holder<Item> registerItem(String name, Item item) {
         return Registry.registerForHolder(
             BuiltInRegistries.ITEM,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name),

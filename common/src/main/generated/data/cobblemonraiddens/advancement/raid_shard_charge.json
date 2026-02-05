@@ -1,0 +1,33 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "charged_raid_shard": {
+      "conditions": {
+        "item": {
+          "items": "cobblemonraiddens:raid_shard"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_shard_charge.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "cobblemonraiddens:raid_shard"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_shard_charge.title"
+    }
+  },
+  "requirements": [
+    [
+      "charged_raid_shard"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
