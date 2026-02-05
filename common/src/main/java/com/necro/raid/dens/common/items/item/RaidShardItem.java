@@ -4,6 +4,8 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltipData;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.UseRaidShardEvent;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,6 +36,8 @@ public class RaidShardItem extends Item {
         }
 
         if (!level.isClientSide()) {
+            if (!RaidEvents.USE_RAID_SHARD.postWithResult(new UseRaidShardEvent((ServerPlayer) player, itemStack))) return InteractionResultHolder.fail(itemStack);
+
             player.awardStat(Stats.ITEM_USED.get(this));
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, itemStack);
 
