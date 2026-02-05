@@ -30,13 +30,13 @@ public class RaidShardItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (getRaidEnergy(itemStack) < CobblemonRaidDens.CONFIG.required_energy) {
-            if (level.isClientSide()) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid_shard.not_fully_charged"), true);
-            return InteractionResultHolder.fail(itemStack);
-        }
 
         if (!level.isClientSide()) {
-            if (!RaidEvents.USE_RAID_SHARD.postWithResult(new UseRaidShardEvent((ServerPlayer) player, itemStack))) return InteractionResultHolder.fail(itemStack);
+            if (getRaidEnergy(itemStack) < CobblemonRaidDens.CONFIG.required_energy) {
+                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid_shard.not_fully_charged"), true);
+                return InteractionResultHolder.fail(itemStack);
+            }
+            else if (!RaidEvents.USE_RAID_SHARD.postWithResult(new UseRaidShardEvent((ServerPlayer) player, itemStack))) return InteractionResultHolder.fail(itemStack);
 
             player.awardStat(Stats.ITEM_USED.get(this));
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, itemStack);
@@ -53,7 +53,7 @@ public class RaidShardItem extends Item {
         return Optional.of(new ProgressTooltipData(getRaidEnergy(itemStack), CobblemonRaidDens.CONFIG.required_energy));
     }
 
-    private static int getRaidEnergy(ItemStack itemStack) {
+    public static int getRaidEnergy(ItemStack itemStack) {
         return itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0);
     }
 }
