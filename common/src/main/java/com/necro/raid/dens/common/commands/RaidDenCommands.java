@@ -23,6 +23,7 @@ import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -30,6 +31,7 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -417,7 +419,9 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, boolean canReset) {
-        if (raidTier == null || !raidTier.isPresent()) CobblemonRaidDens.LOGGER.info("No raid bosses for that tier could be found. Rolling random tier.");
+        if (raidTier != null && !raidTier.isPresent()) {
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage(Component.literal("No raid bosses for that tier could be found. Rolling random tier.")));
+        }
 
         BlockState blockState = level.getBlockState(blockPos);
         if (cycleMode == null) cycleMode = blockState.hasProperty(RaidCrystalBlock.CYCLE_MODE)
