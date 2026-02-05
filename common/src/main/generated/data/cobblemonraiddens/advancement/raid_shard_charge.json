@@ -17,6 +17,9 @@
       "translate": "advancement.cobblemonraiddens.raid_shard_charge.description"
     },
     "icon": {
+      "components": {
+          "cobblemonraiddens:raid_energy": 2147483647
+      },
       "count": 1,
       "id": "cobblemonraiddens:raid_shard"
     },

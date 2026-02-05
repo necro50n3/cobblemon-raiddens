@@ -222,9 +222,11 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
                 ConsumeItemTrigger.TriggerInstance.usedItem(ModItems.HEAL_CHEER.value()))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":great_friend");
 
+        ItemStack raidShard = ModItems.RAID_SHARD.value().getDefaultInstance();
+        raidShard.set(ModComponents.RAID_ENERGY.value(), Integer.MAX_VALUE);
         Advancement.Builder.advancement()
             .display(
-                ModItems.RAID_SHARD.value(),
+                raidShard,
                 Component.translatable("advancement.cobblemonraiddens.raid_shard_charge.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_shard_charge.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
