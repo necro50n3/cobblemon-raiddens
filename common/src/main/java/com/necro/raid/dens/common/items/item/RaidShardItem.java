@@ -8,7 +8,11 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.UseRaidShardEvent;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -41,11 +45,22 @@ public class RaidShardItem extends Item {
             player.awardStat(Stats.ITEM_USED.get(this));
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, itemStack);
 
+            ((ServerPlayer) player).connection.send(new ClientboundSoundPacket(
+                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.EXPERIENCE_ORB_PICKUP),
+                SoundSource.PLAYERS,
+                player.getX(),
+                player.getEyeY(),
+                player.getZ(),
+                0.8F,
+                0.8F,
+                player.getRandom().nextLong()
+            ));
+
             ItemStack raidCrystal = ModBlocks.INSTANCE.getRaidCrystalBlock().asItem().getDefaultInstance();
             player.setItemInHand(hand, raidCrystal);
         }
 
-        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+        return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
     }
 
     @Override
