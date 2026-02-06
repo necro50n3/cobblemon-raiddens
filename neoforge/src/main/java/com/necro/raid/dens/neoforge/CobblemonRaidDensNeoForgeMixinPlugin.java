@@ -26,6 +26,10 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         "com.necro.raid.dens.neoforge.mixins.den.LevelChunkMixin"
     );
 
+    private static final Set<String> ANTI_CARPET_MIXINS = Set.of(
+        "com.necro.raid.dens.neoforge.mixins.den.LevelMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -40,6 +44,7 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         if (MSD_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.MEGA_SHOWDOWN.getModid()) != null;
         if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensNeoForge.isCobblemon171();
         if (ANTI_WORLDEDIT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById("worldedit") == null;
+        if (ANTI_CARPET_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById("carpet") == null;
         return true;
     }
 
