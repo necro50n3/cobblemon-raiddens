@@ -35,6 +35,7 @@ public class RaidSpawnCommands {
                 Commands.literal("spawnboss")
                     .then(Commands.argument("pos", Vec3Argument.vec3())
                         .then(Commands.argument("dimension", DimensionArgument.dimension())
+                            .requires(context -> !context.isPlayer())
                             .then(Commands.literal("boss")
                                 .then(Commands.argument("boss", ResourceLocationArgument.id())
                                     .suggests(RaidDenCommands.RAID_BOSSES)
@@ -221,6 +222,7 @@ public class RaidSpawnCommands {
                             )
                         )
                         .then(Commands.literal("tier")
+                            .requires(CommandSourceStack::isPlayer)
                             .then(Commands.argument("tier", StringArgumentType.word())
                                 .suggests(RaidDenCommands.RAID_TIERS)
                                 .executes(context -> spawnBossFromTier(
@@ -259,6 +261,7 @@ public class RaidSpawnCommands {
                             )
                         )
                         .then(Commands.literal("bucket")
+                            .requires(CommandSourceStack::isPlayer)
                             .then(Commands.argument("bucket", ResourceLocationArgument.id())
                                 .suggests(RaidDenCommands.RAID_BUCKETS)
                                 .executes(context -> spawnBossFromBucket(
@@ -297,6 +300,7 @@ public class RaidSpawnCommands {
                             )
                         )
                         .then(Commands.literal("random")
+                            .requires(CommandSourceStack::isPlayer)
                             .executes(context -> spawnBoss(
                                 context,
                                 Vec3Argument.getVec3(context, "pos"),
