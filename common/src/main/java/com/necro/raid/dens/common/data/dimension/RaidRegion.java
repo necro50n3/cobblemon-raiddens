@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.data.dimension;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
-import com.necro.raid.dens.common.util.IRaidDenTemplate;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -117,11 +116,10 @@ public class RaidRegion {
         settings.clearProcessors();
         settings.addProcessor(BlockIgnoreProcessor.STRUCTURE_BLOCK);
         settings.setKnownShape(true);
+        settings.setLiquidSettings(LiquidSettings.IGNORE_WATERLOGGING);
 
         BlockPos offset = this.getOffset();
-        ((IRaidDenTemplate) template).crd_setRaidPlacer(true);
         template.placeInWorld(level, offset, offset, settings, level.getRandom(), 2);
-        ((IRaidDenTemplate) template).crd_setRaidPlacer(false);
 
         level.setBlock(this.centre(), ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState(), 2);
 
