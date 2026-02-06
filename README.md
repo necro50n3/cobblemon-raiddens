@@ -9,7 +9,6 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - Host a raid, or join one that has already started.
 - The raid boss' health pool is SHARED between all battlers.
 - Obtain the Pokemon as well as receive extra rewards for completing the raid.
-- For map makers/server owners: An optional item tag/data component and config for raid key requirements.
 - Fully configurable!
 
 ![Raid Boss](https://i.imgur.com/u5zD078.png)
@@ -23,16 +22,22 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - Once your Pokemon has fainted, you cannot rejoin the battle, but you will still receive the rewards if the raid is cleared.
 - Once the boss is defeated, you can receive the Pokemon in your chosen Pokeball, as well as a Raid Pouch with random item rewards.
 
+## Developer / Addon Features
+- Create custom raid bosses with a datapack.
+- Assign item tags or data components for raid key requirements.
+- Edit existing and create variations of raid bosses using boss additions.
+- Specify raid spawn buckets using raid buckets.
+- Create and assign custom raid dens or a pool of raid dens for each raid boss.
+- Create custom scripted events to make raid battles even more challenging.
+
 ## Dependencies
 - GeckoLib
 
 ## Optional Compatibilities
 - Mega Showdown: Tera, Dynamax and Mega raids supported! (Addons required)
-- Jade: See raid details, including the raid boss!
+- CobbleDollars: Raids give a configurable amount of currency!
+- RCT API: Enables the RCT AI config for Raid Bosses!
+- Jade / WTHIT: See raid details, including the raid boss!
 ![Jade Compat](https://i.imgur.com/Zw6mWA2.png)
-
-### Data-Driven
-- Raid bosses are completely data-driven! New raid bosses can be added with custom data packs.
-- Raid spawning locations are dependent on the "cobblemonraiddens:raid_spawnable" biome tag.
 
 ### For more information, visit the [Wiki!](https://github.com/necro50n3/cobblemon-raiddens/wiki)
