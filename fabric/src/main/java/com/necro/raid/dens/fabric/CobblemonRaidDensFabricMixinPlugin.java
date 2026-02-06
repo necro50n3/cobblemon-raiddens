@@ -22,6 +22,10 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
         "com.necro.raid.dens.fabric.mixins.showdown.ShowdownInterpreterMixin"
     );
 
+    private static final Set<String> ANTI_WORLDEDIT_MIXINS = Set.of(
+        "com.necro.raid.dens.fabric.mixins.den.LevelChunkMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -35,6 +39,7 @@ public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
         if (RCT_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.RCT_API.getModid());
         if (MSD_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid());
         if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensFabric.isCobblemon171();
+        if (ANTI_WORLDEDIT_MIXINS.contains(mixinClassName)) return !FabricLoader.getInstance().isModLoaded("worldedit");
         return true;
     }
 

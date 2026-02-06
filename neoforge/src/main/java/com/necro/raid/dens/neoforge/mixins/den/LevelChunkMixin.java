@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.den;
+package com.necro.raid.dens.neoforge.mixins.den;
 
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;

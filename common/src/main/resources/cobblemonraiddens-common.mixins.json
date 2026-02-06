@@ -29,8 +29,6 @@
         "battlesync.SwapSideConditionsInstructionMixin",
         "battlesync.WeatherInstructionMixin",
         "den.LavaFluidMixin",
-        "den.LevelChunkMixin",
-        "den.LevelMixin",
         "player.ServerPlayerMixin",
         "raid.BattleActorMixin",
         "raid.BattleRegistryMixin",

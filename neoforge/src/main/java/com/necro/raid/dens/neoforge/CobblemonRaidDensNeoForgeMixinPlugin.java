@@ -22,6 +22,10 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         "com.necro.raid.dens.neoforge.mixins.showdown.ShowdownInterpreterMixin"
     );
 
+    private static final Set<String> ANTI_WORLDEDIT_MIXINS = Set.of(
+        "com.necro.raid.dens.neoforge.mixins.den.LevelChunkMixin"
+    );
+
     @Override
     public void onLoad(String mixinPackage) {}
 
@@ -35,6 +39,7 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
         if (RCT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.RCT_API.getModid()) != null;
         if (MSD_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById(ModCompat.MEGA_SHOWDOWN.getModid()) != null;
         if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensNeoForge.isCobblemon171();
+        if (ANTI_WORLDEDIT_MIXINS.contains(mixinClassName)) return LoadingModList.get().getModFileById("worldedit") == null;
         return true;
     }
 

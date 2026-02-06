@@ -5,6 +5,8 @@
     "plugin": "com.necro.raid.dens.fabric.CobblemonRaidDensFabricMixinPlugin",
     "mixins": [
         "ai.RCTBattleAIMixin",
+        "den.LevelChunkMixin",
+        "den.LevelMixin",
         "msd.CobbleEventsMixin",
         "showdown.GraalShowdownUnbundlerMixin",
         "showdown.ShowdownInterpreterMixin"

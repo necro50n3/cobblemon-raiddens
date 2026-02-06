@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.mixins.den;
+package com.necro.raid.dens.neoforge.mixins.den;
 
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -12,13 +12,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Level.class)
 public class LevelMixin {
-    @ModifyConstant(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
+    @ModifyConstant(method = "markAndNotifyBlock",
         constant = @Constant(intValue = 16))
     private int updateConstant(int original) {
         return RaidUtils.isRaidDimension((Level) (Object) this) ? -1 : original;
     }
 
-    @Redirect(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z", at = @At(
+    @Redirect(method = "markAndNotifyBlock", at = @At(
         value = "INVOKE",
         target  = "Lnet/minecraft/world/level/Level;blockUpdated(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/Block;)V"
     ))
