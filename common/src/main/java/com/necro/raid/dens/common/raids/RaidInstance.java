@@ -445,6 +445,7 @@ public class RaidInstance {
     }
 
     public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
+        if (this.isFinished()) return;
         if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
         else event.send(battle == null ? this.battles.getFirst() : battle);
     }
