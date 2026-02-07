@@ -97,6 +97,7 @@ public class RaidBossAdditions {
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
 
             boss.clearCaches();
+            boss.applyDefaults();
 
             if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));

@@ -228,9 +228,9 @@ public class RaidBoss {
 
         List<CustomPokemonProperty> customProperties = new ArrayList<>(this.boss.getCustomProperties());
 
-        if (this.raidFeature == RaidFeature.MEGA && customProperties.stream().noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("mega_evolution")))
+        if (this.raidFeature == RaidFeature.MEGA && customProperties.stream().filter(SpeciesFeature.class::isInstance).noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("mega_evolution")))
             customProperties.add(new StringSpeciesFeature("mega_evolution", "mega"));
-        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("dynamax_form")))
+        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().filter(SpeciesFeature.class::isInstance).noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("dynamax_form")))
             customProperties.add(new StringSpeciesFeature("dynamax_form", "none"));
         customProperties.add(new StringSpeciesFeature("aspect", "raid"));
         customProperties.add(new FlagSpeciesFeature("uncatchable", true));
