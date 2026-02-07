@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Level.class)
 public class LevelMixin {
-    @ModifyConstant(method = "markAndNotifyBlock",
-        constant = @Constant(intValue = 16))
+    @ModifyConstant(method = "markAndNotifyBlock", constant = @Constant(intValue = 16))
     private int updateConstant(int original) {
         return RaidUtils.isRaidDimension((Level) (Object) this) ? -1 : original;
     }

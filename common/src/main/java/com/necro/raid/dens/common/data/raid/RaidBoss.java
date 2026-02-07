@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
 import com.cobblemon.mod.common.api.moves.Moves;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.feature.*;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -96,7 +97,7 @@ public class RaidBoss {
     private transient LootTable lootTableActual;
     private transient List<ResourceLocation> densActual;
 
-    private transient Species displaySpecies;
+    private transient ResourceLocation displaySpecies;
     private transient Set<String> displayAspects;
 
     private transient ResourceLocation id;
@@ -179,11 +180,11 @@ public class RaidBoss {
         Pokemon displayPokemon = this.getBossProperties().create();
         displayPokemon.setShiny(this.getShinyRate() == 1.0f);
 
-        this.displaySpecies = displayPokemon.getSpecies();
+        this.displaySpecies = displayPokemon.getSpecies().getResourceIdentifier();
         this.displayAspects = displayPokemon.getAspects();
     }
 
-    public void setDisplaySpecies(Species species) {
+    public void setDisplaySpecies(ResourceLocation species) {
         this.displaySpecies = species;
     }
 
@@ -221,7 +222,10 @@ public class RaidBoss {
         if (this.energy == null) this.energy = tierConfig.energy();
 
         if (this.boss == null) this.boss = new PokemonProperties();
+        this.applyAspects();
+    }
 
+    public void applyAspects() {
         Set<String> aspects = new HashSet<>(this.boss.getAspects());
         aspects.add("raid");
         this.boss.setAspects(aspects);
@@ -463,6 +467,11 @@ public class RaidBoss {
     }
 
     public Species getDisplaySpecies() {
+        if (this.displaySpecies == null) return null;
+        return PokemonSpecies.getByIdentifier(this.displaySpecies);
+    }
+
+    public ResourceLocation getDisplaySpeciesIdentifier() {
         return this.displaySpecies;
     }
 

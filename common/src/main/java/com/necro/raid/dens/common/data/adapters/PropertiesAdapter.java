@@ -145,6 +145,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         properties.setMinPerfectIVs(extra.getMinPerfectIVs() == null ? base.getMinPerfectIVs() : extra.getMinPerfectIVs());
         properties.setNature(extra.getNature() == null ? base.getNature() : extra.getNature());
         properties.setSpecies(extra.getSpecies() == null ? base.getSpecies() : extra.getSpecies());
+        properties.setTeraType(extra.getTeraType() == null ? base.getTeraType() : extra.getTeraType());
 
         Set<String> aspects = new HashSet<>(base.getAspects());
         aspects.addAll(extra.getAspects());

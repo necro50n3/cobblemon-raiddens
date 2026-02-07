@@ -13,8 +13,8 @@ public class CobblemonRaidDensFabricServer implements DedicatedServerModInitiali
     public void onInitializeServer() {
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::serverTick);
 
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) -> {
-            if (joined) NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
-        }));
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()))
+        ));
     }
 }

@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.network.packets;
 
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
@@ -36,7 +35,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
     }
 
     private static void writeEntry(FriendlyByteBuf buf, RaidBoss boss) {
-        if (boss.getDisplaySpecies() == null) boss.createDisplayAspects();
+        if (boss.getDisplaySpeciesIdentifier() == null) boss.createDisplayAspects();
 
         buf.writeResourceLocation(boss.getId());
         buf.writeEnum(boss.getTier());
@@ -45,8 +44,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         buf.writeFloat(boss.getShinyRate());
         buf.writeInt(boss.getMaxCatches());
 
-
-        buf.writeResourceLocation(boss.getDisplaySpecies().getResourceIdentifier());
+        buf.writeResourceLocation(boss.getDisplaySpeciesIdentifier());
         buf.writeInt(boss.getDisplayAspects().size());
         boss.getDisplayAspects().forEach(buf::writeUtf);
     }
@@ -60,7 +58,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         boss.setShinyRate(buf.readFloat());
         boss.setMaxCatches(buf.readInt());
 
-        boss.setDisplaySpecies(PokemonSpecies.getByIdentifier(buf.readResourceLocation()));
+        boss.setDisplaySpecies(buf.readResourceLocation());
         int count = buf.readInt();
         Set<String> aspects = new HashSet<>();
         for (int i = 0; i < count; i++)  aspects.add(buf.readUtf());
@@ -71,6 +69,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
 
     @Override
     public void handleClient() {
+        RaidRegistry.clear();
         this.registry.forEach(RaidRegistry::register);
     }
 }
