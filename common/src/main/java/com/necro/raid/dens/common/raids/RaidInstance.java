@@ -457,7 +457,7 @@ public class RaidInstance {
         if (!this.canSync()) return;
         for (PokemonBattle b : this.battles) {
             if (battle != null && b == battle) continue;
-            event.send(b);
+            if (!this.isFinished()) event.send(b);
         }
     }
 
@@ -467,7 +467,7 @@ public class RaidInstance {
         optional.ifPresent(event -> {
             for (PokemonBattle b : this.battles) {
                 if (b == battle) continue;
-                event.send(b);
+                if (!this.isFinished()) event.send(b);
             }
         });
     }
@@ -477,7 +477,7 @@ public class RaidInstance {
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
             b.dispatch(() -> {
-                consumer.accept(b);
+                if (!this.isFinished()) consumer.accept(b);
                 return DispatchResultKt.getGO();
             });
         }
