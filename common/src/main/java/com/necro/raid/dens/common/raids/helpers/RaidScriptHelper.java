@@ -49,6 +49,13 @@ public class RaidScriptHelper {
             int target = parseInt(args[3]);
             return new UseMoveShowdownEvent(move, target);
         }
+        else if (function.startsWith("TIMER")) {
+            String[] args = function.split("_");
+            if (args.length != 2) return null;
+
+            int time = parseInt(args[1]);
+            return new TimerRaidEvent(time);
+        }
 
         return null;
     }

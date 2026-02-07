@@ -51,6 +51,7 @@ public class RaidInstance {
     private final UUID raid;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
+    private final ServerBossEvent timerEvent;
     private final List<PokemonBattle> battles;
     private final Map<UUID, Float> damageTracker;
     private final List<ServerPlayer> activePlayers;
@@ -77,6 +78,11 @@ public class RaidInstance {
             ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
+        this.timerEvent = new ServerBossEvent(
+            Component.empty(),
+            BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS
+        );
+        this.timerEvent.setVisible(false);
 
         this.battles = new ArrayList<>();
         this.damageTracker = new HashMap<>();
@@ -269,6 +275,9 @@ public class RaidInstance {
     public void stopRaid(boolean raidSuccess) {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
+        this.timerEvent.setVisible(false);
+        this.timerEvent.removeAllPlayers();
+
         if (raidSuccess) this.bossEntity.setHealth(0f);
         if (this.raidBoss == null) return;
 
@@ -369,11 +378,13 @@ public class RaidInstance {
         this.runQueue.add(new DelayedRunnable(() -> {
             if (this.isFinished()) return;
             this.bossEvent.addPlayer(player);
+            this.timerEvent.addPlayer(player);
         }, 2));
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
         this.bossEvent.removePlayer(player);
+        this.timerEvent.removePlayer(player);
     }
 
     public RaidState getRaidState() {
@@ -444,9 +455,15 @@ public class RaidInstance {
         side1.sendUpdate(new BattleApplyPassResponsePacket());
     }
 
+    private void initTimer(int time) {
+        this.timerEvent.setVisible(true);
+        this.runQueue.add(new TimerRunnable(this, time));
+    }
+
     public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
         if (this.isFinished()) return;
         if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
+        else if (event instanceof TimerRaidEvent(int time)) this.initTimer(time * 20);
         else event.send(battle == null ? this.battles.getFirst() : battle);
     }
 
@@ -505,8 +522,8 @@ public class RaidInstance {
 
     private static class DelayedRunnable {
         private final Runnable runnable;
-        private final int delay;
-        private int tick;
+        final int delay;
+        int tick;
         private final boolean repeat;
 
         public DelayedRunnable(Runnable runnable, int delay, boolean repeat) {
@@ -525,6 +542,31 @@ public class RaidInstance {
             this.runnable.run();
             if (this.repeat) this.tick = 0;
             return !this.repeat;
+        }
+    }
+
+    private static class TimerRunnable extends DelayedRunnable {
+        private final RaidInstance raid;
+        private int time;
+        private final int maxTime;
+
+        public TimerRunnable(RaidInstance raid, int time) {
+            super(() -> {}, 20, true);
+            this.raid = raid;
+            this.time = time;
+            this.maxTime = time;
+        }
+
+        @Override
+        public boolean tick() {
+            if (++this.tick < this.delay) return false;
+            else if (this.raid.isFinished()) return false;
+            else if (--this.time <= 0) {
+                raid.stopRaid(false);
+                return false;
+            }
+            this.raid.timerEvent.setProgress((float) this.time / this.maxTime);
+            return false;
         }
     }
 
