@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +69,9 @@ public class RaidInstance {
 
     private RaidState raidState;
     private final RaidBattleState battleState;
+    private final boolean isInDen;
 
-    public RaidInstance(PokemonEntity entity, UUID host) {
+    public RaidInstance(PokemonEntity entity, UUID host, boolean isInDen) {
         this.bossEntity = entity;
         this.host = host;
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
@@ -106,6 +108,7 @@ public class RaidInstance {
 
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();
+        this.isInDen = isInDen;
 
         this.scriptByTurn = new HashMap<>();
         this.scriptByHp = new TreeMap<>();
@@ -137,6 +140,10 @@ public class RaidInstance {
             }
             catch (Exception ignored) {}
         });
+    }
+
+    public RaidInstance(PokemonEntity entity, UUID host) {
+        this(entity, host, true);
     }
 
     public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
@@ -506,16 +513,17 @@ public class RaidInstance {
     }
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
-        if (this.raidState == RaidState.SUCCESS) RaidHelper.clearRaid(this.raid, this.activePlayers);
-        else if (!this.bossEntity.isRemoved()) {
-            ModDimensions.getRaidDimension(server).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
+        if (this.raidState == RaidState.SUCCESS && this.isInDen) RaidHelper.clearRaid(this.raid, this.activePlayers);
+        if (!this.bossEntity.isRemoved()) {
+            ((ServerLevel) this.bossEntity.level()).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
             this.bossEntity.discard();
         }
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));
 
-        RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.raidState, ModDimensions.getRaidDimension(server));
+        if (this.isInDen) RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.raidState, ModDimensions.getRaidDimension(server));
+        else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
         RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
     }

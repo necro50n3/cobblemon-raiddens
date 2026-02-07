@@ -77,20 +77,19 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         }
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
-
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-        RaidInstance raidTemp = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
 
         // Initiate raid instance for spawnboss
-        if (raidTemp == null && !RaidUtils.isRaidDimension(player.level())) {
-            raidTemp = new RaidInstance(pokemonEntity, player.getUUID());
-            raidTemp.addPlayer(player);
-            RaidHelper.ACTIVE_RAIDS.put(raidId, raidTemp);
+        if (raidId == null && !RaidUtils.isRaidDimension(player.level())) {
+            raidId = UUID.randomUUID();
+            ((IRaidAccessor) pokemonEntity).crd_setRaidId(raidId);
+            RaidInstance newInstance = new RaidInstance(pokemonEntity, player.getUUID());
+            newInstance.addPlayer(player);
+            RaidHelper.ACTIVE_RAIDS.put(raidId, newInstance);
         }
 
-        RaidInstance raid = raidTemp;
-
-        if (raid == null) return;
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        if (raidId == null || raid == null) return;
         else if (raid.hasFailed(player)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
