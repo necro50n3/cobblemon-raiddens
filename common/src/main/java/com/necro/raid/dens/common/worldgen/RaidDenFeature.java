@@ -49,7 +49,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         ResourceLocation location = null;
         RaidBoss raidBoss = null;
 
-        if (cycleMode == RaidCycleMode.BUCKET && level.getServer() != null) {
+        if (cycleMode == RaidCycleMode.BUCKET) {
             bucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(blockPos));
             if (bucket != null) {
                 location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level.getLevel());

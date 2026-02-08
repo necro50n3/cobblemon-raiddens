@@ -209,10 +209,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         ItemStack itemStack = context.getItemInHand();
         RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
-        if (boss != null) {
-            blockState = blockState.setValue(RAID_TYPE, boss.getType());
-            blockState = blockState.setValue(RAID_TIER, boss.getTier());
-        }
+        if (boss != null) blockState = blockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
 
         return blockState;
     }
@@ -231,7 +228,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         if (uuid != null) raidCrystal.setUuid(UUID.fromString(uuid));
         if (bucket != null) raidCrystal.setRaidBucket(bucket);
-        if (boss != null && lastReset != null) raidCrystal.setRaidBoss(boss, lastReset);
+        if (boss != null) raidCrystal.setRaidBoss(boss, lastReset == null ? 0 : lastReset);
         if (aspects != null) raidCrystal.setAspects(new HashSet<>(aspects));
     }
 

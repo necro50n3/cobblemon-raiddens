@@ -30,7 +30,6 @@ import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -419,7 +418,7 @@ public class RaidDenCommands {
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, boolean canReset) {
         if (raidTier != null && !raidTier.isPresent()) {
-            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage(Component.literal("No raid bosses for that tier could be found. Rolling random tier.")));
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("error.cobblemonraiddens.missing_boss_for_tier"));
         }
 
         BlockState blockState = level.getBlockState(blockPos);

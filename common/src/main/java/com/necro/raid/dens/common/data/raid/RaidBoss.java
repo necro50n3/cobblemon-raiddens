@@ -27,24 +27,16 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.data.adapters.MarkAdapter;
-import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
-import com.necro.raid.dens.common.data.adapters.ScriptAdapter;
-import com.necro.raid.dens.common.data.adapters.UniqueKeyAdapter;
+import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 
 import java.util.*;
 
@@ -61,7 +53,7 @@ public class RaidBoss {
     @SerializedName("raid_feature")
     private RaidFeature raidFeature;
     @SerializedName("loot_table")
-    private ResourceLocation lootTable;
+    private BossLootTable lootTable;
     private Double weight;
     private List<String> den;
     private UniqueKey key;
@@ -93,8 +85,6 @@ public class RaidBoss {
     private Integer energy;
 
     private transient PokemonProperties cachedBossProperties;
-
-    private transient LootTable lootTableActual;
     private transient List<ResourceLocation> densActual;
 
     private transient ResourceLocation displaySpecies;
@@ -103,7 +93,7 @@ public class RaidBoss {
     private transient ResourceLocation id;
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
-                    RaidFeature raidFeature, ResourceLocation lootTable, Double weight, List<String> den, UniqueKey key,
+                    RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
                     Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Integer energy) {
@@ -134,7 +124,6 @@ public class RaidBoss {
         this.energy = energy;
 
         this.cachedBossProperties = null;
-        this.lootTableActual = null;
         this.densActual = new ArrayList<>();
         this.displaySpecies = null;
         this.displayAspects = null;
@@ -169,7 +158,6 @@ public class RaidBoss {
         this.energy = null;
 
         this.cachedBossProperties = null;
-        this.lootTableActual = null;
         this.densActual = new ArrayList<>();
         this.displaySpecies = null;
         this.displayAspects = null;
@@ -390,7 +378,7 @@ public class RaidBoss {
         return this.raidFeature;
     }
 
-    public ResourceLocation getLootTable() {
+    public BossLootTable getLootTable() {
         return this.lootTable;
     }
 
@@ -486,12 +474,7 @@ public class RaidBoss {
 
     public List<ItemStack> getRandomRewards(ServerLevel level) {
         if (this.lootTable == null) return new ArrayList<>();
-        if (this.lootTableActual == null) {
-            this.lootTableActual = level.getServer().reloadableRegistries().getLootTable(
-                ResourceKey.create(Registries.LOOT_TABLE, this.lootTable)
-            );
-        }
-        return this.lootTableActual.getRandomItems(new LootParams.Builder(level).create(LootContextParamSet.builder().build()));
+        return this.lootTable.getRandomRewards(level);
     }
 
     public ResourceLocation getRandomDen(RandomSource random) {
@@ -536,7 +519,7 @@ public class RaidBoss {
         this.raidType = type;
     }
 
-    public void setLootTable(ResourceLocation lootTable) {
+    public void setLootTable(BossLootTable lootTable) {
         this.lootTable = lootTable;
     }
 
@@ -614,7 +597,7 @@ public class RaidBoss {
 
     public void clearCaches() {
         this.cachedBossProperties = null;
-        this.lootTableActual = null;
+        if (this.lootTable != null) this.lootTable.clearCache();
         this.densActual = new ArrayList<>();
         this.displaySpecies = null;
         this.displayAspects = null;
@@ -669,6 +652,7 @@ public class RaidBoss {
             .registerTypeAdapter(Mark.class, new MarkAdapter())
             .registerTypeAdapter(Script.class, new ScriptAdapter())
             .registerTypeAdapter(UniqueKey.class, new UniqueKeyAdapter())
+            .registerTypeAdapter(BossLootTable.class, new BossLootTableAdapter())
             .create();
     }
 }

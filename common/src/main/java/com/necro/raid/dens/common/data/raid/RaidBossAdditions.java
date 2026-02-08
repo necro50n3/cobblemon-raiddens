@@ -150,7 +150,7 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getType());
     }
 
-    private static Optional<ResourceLocation> getLootTable(RaidBoss boss) {
+    private static Optional<BossLootTable> getLootTable(RaidBoss boss) {
         return Optional.ofNullable(boss.getLootTable());
     }
 

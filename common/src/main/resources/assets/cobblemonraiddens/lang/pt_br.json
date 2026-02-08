@@ -49,8 +49,10 @@
     "error.cobblemonraiddens.command_blacklist": "Você não pode usar esse comando em uma raid.",
     "error.cobblemonraiddens.dimension_exist": "Você já está hospedando outra raid. Se isso for um erro, use /crd refresh ou contate um admin.",
     "error.cobblemonraiddens.invalid_dimension": "Dimensão inválida.",
+
     "error.cobblemonraiddens.players_in_dimension": "Ainda há jogadores nessa dimensão.",
     "error.cobblemonraiddens.player_in_raid": "Você não pode atualizar um jogador que está no meio de uma raid.",
+
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",

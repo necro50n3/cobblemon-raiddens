@@ -2,11 +2,10 @@ package com.necro.raid.dens.common.items.item;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
+import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.OpenPouchEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
-import com.necro.raid.dens.common.data.raid.RaidTier;
-import com.necro.raid.dens.common.data.raid.RaidType;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -29,6 +28,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +44,16 @@ public class RaidPouchItem extends Item {
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
         RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
-        if (tier == null || feature == null  ||raidType == null ) return InteractionResultHolder.fail(itemStack);
+        RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
+        if (tier == null || feature == null || raidType == null) return InteractionResultHolder.fail(itemStack);
 
         if (!level.isClientSide) {
-            List<ItemStack> rewards = this.getRewardItems(tier, feature, (ServerLevel) level, player);
+            List<ItemStack> rewards = this.getRewardItems(boss, tier, feature, (ServerLevel) level, player);
             if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
                 return InteractionResultHolder.fail(itemStack);
             }
 
-            for (ItemStack item : this.getRewardItems(tier, feature, (ServerLevel) level, player)) {
+            for (ItemStack item : rewards) {
                 if (!player.getInventory().add(item)) {
                     ItemEntity itemEntity = player.drop(item, false);
                     if (itemEntity == null) continue;
@@ -77,7 +78,17 @@ public class RaidPouchItem extends Item {
         tooltip.add(Component.translatable(feature.getTranslatable()).append(" | ").append(tier.getStars()));
     }
 
-    private List<ItemStack> getRewardItems(RaidTier tier, RaidFeature feature, ServerLevel level, Player player) {
+    private List<ItemStack> getRewardItems(@Nullable RaidBoss boss, RaidTier tier, RaidFeature feature, ServerLevel level, Player player) {
+        List<ItemStack> rewards;
+        BossLootTable lootTable = boss == null ? null : boss.getLootTable();
+        if (lootTable != null && lootTable.replace()) rewards = new ArrayList<>();
+        else rewards = this.getDefault(tier, feature, level, player);
+
+        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level));
+        return rewards;
+    }
+
+    private List<ItemStack> getDefault(RaidTier tier, RaidFeature feature, ServerLevel level, Player player) {
         List<ItemStack> rewards = new ArrayList<>(this.getTierRewards(tier, level, player));
         rewards.addAll(this.getFeatureRewards(feature, level, player));
         return rewards;

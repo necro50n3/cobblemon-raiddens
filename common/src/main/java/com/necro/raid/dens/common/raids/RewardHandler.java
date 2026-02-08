@@ -25,7 +25,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 
 public class RewardHandler {
@@ -78,15 +77,16 @@ public class RewardHandler {
     public boolean giveItemToPlayer(ServerPlayer player) {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         ItemStack raidPouch = this.buildRaidPouch();
-        List<ItemStack> rewards = this.raidBoss.getRandomRewards(player.serverLevel());
-        rewards.addFirst(raidPouch);
-        for (ItemStack item : rewards) {
-            if (!player.getInventory().add(item)) {
-                ItemEntity itemEntity = player.drop(item, false);
-                if (itemEntity == null) continue;
-                itemEntity.setNoPickUpDelay();
-                itemEntity.setTarget(player.getUUID());
-            }
+        if (raidPouch == null) {
+            player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.raid_boss_not_found"), true);
+            return true;
+        }
+
+        if (!player.getInventory().add(raidPouch)) {
+            ItemEntity itemEntity = player.drop(raidPouch, false);
+            if (itemEntity == null) return true;
+            itemEntity.setNoPickUpDelay();
+            itemEntity.setTarget(player.getUUID());
         }
         return true;
     }
@@ -100,10 +100,13 @@ public class RewardHandler {
 
     private ItemStack buildRaidPouch() {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
+        if (this.raidBoss == null) return null;
+
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
         item.set(ModComponents.TIER_COMPONENT.value(), this.raidBoss.getTier());
         item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
         item.set(ModComponents.TYPE_COMPONENT.value(), this.raidBoss.getType());
+        if (this.raidBoss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), this.raidBoss.getId());
         return item;
     }
 
