@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -47,6 +48,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("is_active");
     public static final BooleanProperty CAN_RESET = BooleanProperty.create("can_reset");
     public static final EnumProperty<RaidCycleMode> CYCLE_MODE = EnumProperty.create("cycle_mode", RaidCycleMode.class);
+    public static final BooleanProperty IS_NATURAL = BooleanProperty.create("is_natural");
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.9375, 1);
 
@@ -58,6 +60,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(RAID_TIER, RaidTier.TIER_ONE)
             .setValue(CAN_RESET, true)
             .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
+            .setValue(IS_NATURAL, true)
         );
     }
 
@@ -191,12 +194,20 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     @Override
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+        BlockState blockState = this.defaultBlockState();
+        if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = blockState.setValue(IS_NATURAL, false);
+        return blockState;
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(RAID_TYPE);
         builder.add(RAID_TIER);
         builder.add(ACTIVE);
         builder.add(CAN_RESET);
         builder.add(CYCLE_MODE);
+        builder.add(IS_NATURAL);
     }
 
     @Override
