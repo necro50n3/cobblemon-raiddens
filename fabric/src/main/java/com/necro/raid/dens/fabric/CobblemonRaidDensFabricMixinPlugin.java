@@ -1,65 +1,24 @@
 package com.necro.raid.dens.fabric;
 
-import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.CobblemonRaidDensMixinPluginImpl;
 import net.fabricmc.loader.api.FabricLoader;
-import org.objectweb.asm.tree.ClassNode;
-import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
-import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import java.util.List;
-import java.util.Set;
-
-public class CobblemonRaidDensFabricMixinPlugin implements IMixinConfigPlugin {
-    private static final Set<String> RCT_MIXINS = Set.of(
-        "com.necro.raid.dens.fabric.mixins.ai.RCTBattleAIMixin"
-    );
-
-    private static final Set<String> MSD_MIXINS = Set.of(
-        "com.necro.raid.dens.fabric.mixins.msd.CobbleEventsMixin"
-    );
-
-    private static final Set<String> COBBLEMON_MIXINS = Set.of(
-        "com.necro.raid.dens.fabric.mixins.showdown.ShowdownInterpreterMixin"
-    );
-
-    private static final Set<String> ANTI_WORLDEDIT_MIXINS = Set.of(
-        "com.necro.raid.dens.fabric.mixins.den.LevelChunkMixin"
-    );
-
-    private static final Set<String> ANTI_CARPET_MIXINS = Set.of(
-        "com.necro.raid.dens.fabric.mixins.den.LevelMixin",
-        "com.necro.raid.dens.fabric.mixins.den.LevelChunkMixin"
-    );
-
+public class CobblemonRaidDensFabricMixinPlugin extends CobblemonRaidDensMixinPluginImpl {
     @Override
-    public void onLoad(String mixinPackage) {}
-
-    @Override
-    public String getRefMapperConfig() {
-        return null;
+    protected String mixin(String pkg) {
+        return "com.necro.raid.dens.fabric.mixins." + pkg;
     }
 
     @Override
-    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (RCT_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.RCT_API.getModid());
-        if (MSD_MIXINS.contains(mixinClassName)) return FabricLoader.getInstance().isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid());
-        if (COBBLEMON_MIXINS.contains(mixinClassName)) return CobblemonRaidDensFabric.isCobblemon171();
-        if (ANTI_WORLDEDIT_MIXINS.contains(mixinClassName)) return !FabricLoader.getInstance().isModLoaded("worldedit");
-        if (ANTI_CARPET_MIXINS.contains(mixinClassName)) return !FabricLoader.getInstance().isModLoaded("carpet");
-        return true;
+    protected boolean isCobblemon171() {
+        return CobblemonRaidDensFabric.isCobblemon171();
     }
 
     @Override
-    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {}
-
-    @Override
-    public List<String> getMixins() {
-        return null;
+    protected boolean isModLoaded(String... mods) {
+        for (String mod : mods) {
+            if (FabricLoader.getInstance().isModLoaded(mod)) return true;
+        }
+        return false;
     }
-
-    @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
-
-    @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
 }
