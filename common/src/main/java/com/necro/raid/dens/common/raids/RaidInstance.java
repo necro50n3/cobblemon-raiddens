@@ -343,7 +343,7 @@ public class RaidInstance {
         }
 
         success.forEach(player ->
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward, true))
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null), true))
         );
         failed.forEach(player ->
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
