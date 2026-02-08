@@ -27,7 +27,8 @@ public class CobblemonRaidDensNeoForgeMixinPlugin implements IMixinConfigPlugin 
     );
 
     private static final Set<String> ANTI_CARPET_MIXINS = Set.of(
-        "com.necro.raid.dens.neoforge.mixins.den.LevelMixin"
+        "com.necro.raid.dens.neoforge.mixins.den.LevelMixin",
+        "com.necro.raid.dens.neoforge.mixins.den.LevelChunkMixin"
     );
 
     @Override
