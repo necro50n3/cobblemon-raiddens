@@ -227,11 +227,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.getRaidHost() == null;
     }
 
-    public void setRaidHost(Player player) {
-        this.raidHost = player.getUUID();
-        this.setChanged();
-    }
-
     public void clearRaidHost() {
         this.raidHost = null;
     }
@@ -244,12 +239,24 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return RaidBucketRegistry.getBucket(this.raidBucket);
     }
 
+    public ResourceLocation getRaidBucketLocation() {
+        return this.raidBucket;
+    }
+
     public RaidBoss getRaidBoss() {
         return RaidRegistry.getRaidBoss(this.raidBoss);
     }
 
     public ResourceLocation getRaidBossLocation() {
         return this.raidBoss;
+    }
+
+    public long getLastReset() {
+        return this.lastReset;
+    }
+
+    public Set<String> getAspects() {
+        return this.aspects;
     }
 
     public int getPlayerCount() {
@@ -267,6 +274,38 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public boolean isOpen() {
         return this.isOpen;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setRaidHost(Player player) {
+        this.raidHost = player.getUUID();
+        this.setChanged();
+    }
+
+    public void setRaidBucket(ResourceLocation bucket) {
+        this.raidBucket = bucket;
+    }
+
+    public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
+        RaidHelper.resetClearedRaids(this.getUuid());
+        this.resetClears();
+        this.inactiveTicks = 0;
+        this.lastReset = gameTime;
+        this.raidBoss = raidBoss;
+        this.aspects = null;
+        this.setChanged();
+        if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public void setLastReset(int lastReset) {
+        this.lastReset = lastReset;
+    }
+
+    public void setAspects(Set<String> aspects) {
+        this.aspects = aspects;
     }
 
     public void setOpen() {
@@ -319,10 +358,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return maxPlayers != -1 && this.getPlayerCount() >= maxPlayers;
     }
 
-    public void setRaidBucket(ResourceLocation bucket) {
-        this.raidBucket = bucket;
-    }
-
     public void syncAspects(ServerPlayer player) {
         if (this.aspectSync == null) return;
         CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS).execute(() -> this.aspectSync.accept(player));
@@ -370,17 +405,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.aspects.forEach(aspect -> tag.add(StringTag.valueOf(aspect)));
             compoundTag.put("aspects", tag);
         }
-    }
-
-    public void setRaidBoss(ResourceLocation raidBoss, long gameTime) {
-        RaidHelper.resetClearedRaids(this.getUuid());
-        this.resetClears();
-        this.inactiveTicks = 0;
-        this.lastReset = gameTime;
-        this.raidBoss = raidBoss;
-        this.aspects = null;
-        this.setChanged();
-        if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
     @Override

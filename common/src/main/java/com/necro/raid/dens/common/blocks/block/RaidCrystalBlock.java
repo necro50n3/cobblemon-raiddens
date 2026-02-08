@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -11,6 +12,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -21,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,12 +38,18 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidType> RAID_TYPE = EnumProperty.create("raid_type", RaidType.class);
@@ -197,7 +206,48 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         BlockState blockState = this.defaultBlockState();
         if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = blockState.setValue(IS_NATURAL, false);
+
+        ItemStack itemStack = context.getItemInHand();
+        RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
+        if (boss != null) {
+            blockState = blockState.setValue(RAID_TYPE, boss.getType());
+            blockState = blockState.setValue(RAID_TIER, boss.getTier());
+        }
+
         return blockState;
+    }
+
+    @Override
+    public void setPlacedBy(Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
+        if (level.isClientSide) return;
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
+
+        String uuid = itemStack.get(ModComponents.UUID_COMPONENT.value());
+        ResourceLocation bucket = itemStack.get(ModComponents.BUCKET_COMPONENT.value());
+        ResourceLocation boss = itemStack.get(ModComponents.BOSS_COMPONENT.value());
+        Long lastReset = itemStack.get(ModComponents.LAST_RESET_COMPONENT.value());
+        List<String> aspects = itemStack.get(ModComponents.ASPECTS_COMPONENT.value());
+
+        if (uuid != null) raidCrystal.setUuid(UUID.fromString(uuid));
+        if (bucket != null) raidCrystal.setRaidBucket(bucket);
+        if (boss != null && lastReset != null) raidCrystal.setRaidBoss(boss, lastReset);
+        if (aspects != null) raidCrystal.setAspects(new HashSet<>(aspects));
+    }
+
+    @Override
+    protected @NotNull List<ItemStack> getDrops(@NotNull BlockState blockState, LootParams.@NotNull Builder builder) {
+        BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return List.of();
+        else if (blockState.getValue(IS_NATURAL)) return List.of();
+
+        ItemStack itemStack = new ItemStack(this);
+        itemStack.set(ModComponents.UUID_COMPONENT.value(), raidCrystal.getUuid().toString());
+        if (raidCrystal.getRaidBucketLocation() != null) itemStack.set(ModComponents.BUCKET_COMPONENT.value(), raidCrystal.getRaidBucketLocation());
+        if (raidCrystal.getRaidBossLocation() != null) itemStack.set(ModComponents.BOSS_COMPONENT.value(), raidCrystal.getRaidBossLocation());
+        itemStack.set(ModComponents.LAST_RESET_COMPONENT.value(), raidCrystal.getLastReset());
+        if (raidCrystal.getAspects() != null) itemStack.set(ModComponents.ASPECTS_COMPONENT.value(), raidCrystal.getAspects().stream().toList());
+        return List.of(itemStack);
     }
 
     @Override
