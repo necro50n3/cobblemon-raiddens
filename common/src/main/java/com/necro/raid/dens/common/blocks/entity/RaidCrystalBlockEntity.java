@@ -301,10 +301,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
-    public void setLastReset(int lastReset) {
-        this.lastReset = lastReset;
-    }
-
     public void setAspects(Set<String> aspects) {
         this.aspects = aspects;
     }
