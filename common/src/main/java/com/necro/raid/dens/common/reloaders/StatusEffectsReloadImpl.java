@@ -21,7 +21,9 @@ public class StatusEffectsReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void preLoad() {}
+    protected void preLoad() {
+        this.statuses.clear();
+    }
 
     @Override
     public void load(@NotNull ResourceManager manager) {

@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.reloaders.RaidBossReloadImpl;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.NotNull;
 
 public class RaidBossReloadListener extends RaidBossReloadImpl implements SimpleSynchronousResourceReloadListener {
     @Override
@@ -13,7 +14,7 @@ public class RaidBossReloadListener extends RaidBossReloadImpl implements Simple
     }
 
     @Override
-    public void onResourceManagerReload(ResourceManager manager) {
+    public void onResourceManagerReload(@NotNull ResourceManager manager) {
         this.load(manager);
     }
 }

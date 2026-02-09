@@ -22,7 +22,10 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void preLoad() {}
+    protected void preLoad() {
+        this.registry = null;
+        this.additionsList.clear();
+    }
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {

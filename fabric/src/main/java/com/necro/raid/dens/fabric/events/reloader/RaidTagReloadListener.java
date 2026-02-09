@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.reloaders.RaidTagReloadImpl;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jetbrains.annotations.NotNull;
 
 public class RaidTagReloadListener extends RaidTagReloadImpl implements SimpleSynchronousResourceReloadListener {
     @Override
@@ -13,7 +14,7 @@ public class RaidTagReloadListener extends RaidTagReloadImpl implements SimpleSy
     }
 
     @Override
-    public void onResourceManagerReload(ResourceManager manager) {
+    public void onResourceManagerReload(@NotNull ResourceManager manager) {
         this.load(manager);
     }
 }
