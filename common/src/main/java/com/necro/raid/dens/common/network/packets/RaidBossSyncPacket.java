@@ -69,7 +69,20 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
 
     @Override
     public void handleClient() {
-        RaidRegistry.clear();
-        this.registry.forEach(RaidRegistry::register);
+        for (RaidBoss boss : this.registry) {
+            RaidBoss existing = RaidRegistry.getRaidBoss(boss.getId());
+            if (existing == null) {
+                RaidRegistry.register(boss);
+            }
+            else {
+                existing.setTier(boss.getTier());
+                existing.setType(boss.getType());
+                existing.setFeature(boss.getFeature());
+                existing.setShinyRate(boss.getShinyRate());
+                existing.setMaxCatches(boss.getMaxCatches());
+                existing.setDisplaySpecies(boss.getDisplaySpeciesIdentifier());
+                existing.setDisplayAspects(boss.getDisplayAspects());
+            }
+        }
     }
 }

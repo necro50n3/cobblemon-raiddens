@@ -3,11 +3,14 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.network.packets.RaidBossSyncPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
+import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -15,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -27,6 +31,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void commonTick(ServerTickEvent.Post event) {
         RaidHelper.commonTick();
+        RaidJoinHelper.serverTick();
     }
 
     @SubscribeEvent
@@ -89,5 +94,11 @@ public class ModEvents {
         event.addListener(new BossAdditionsReloadListener());
         event.addListener(new StatusEffectsReloadListener());
         event.addListener(new RaidSupportReloadListener());
+    }
+
+    @SubscribeEvent
+    public static void onDataPackSync(OnDatapackSyncEvent event) {
+        if (event.getPlayer() == null) return;
+        NetworkMessages.sendPacketToPlayer(event.getPlayer(), new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
     }
 }

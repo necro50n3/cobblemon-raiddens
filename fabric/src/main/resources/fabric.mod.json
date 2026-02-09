@@ -17,9 +17,6 @@
     "client": [
       "com.necro.raid.dens.fabric.CobblemonRaidDensFabricClient"
     ],
-    "server": [
-      "com.necro.raid.dens.fabric.CobblemonRaidDensFabricServer"
-    ],
     "jade": [
       "com.necro.raid.dens.common.compat.jade.RaidDensJadePlugin"
     ],
