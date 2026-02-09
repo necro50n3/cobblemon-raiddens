@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
@@ -16,18 +17,19 @@ public record ProgressTooltip(double progress, double total) implements ClientTo
 
     @Override
     public int getWidth(@NotNull Font font) {
-        return 101;
+        return (int) Mth.absMax(101, font.width(Component.translatable("item.cobblemonraiddens.raid_shard.tooltip")));
     }
 
     @Override
     public int getHeight() {
-        return Screen.hasShiftDown() ? 18 : 10;
+        return Screen.hasShiftDown() ? 28 : 20;
     }
 
     @Override
     public void renderText(@NotNull Font font, int i, int j, @NotNull Matrix4f matrix, MultiBufferSource.@NotNull BufferSource buffer) {
+        font.drawInBatch(Component.translatable("item.cobblemonraiddens.raid_shard.tooltip"), i, j, 11184810, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
         if (!Screen.hasShiftDown()) return;
-        font.drawInBatch(String.format("%d / %d", (int) this.progress, (int) this.total), i, j + 8, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(String.format("%d / %d", (int) this.progress, (int) this.total), i, j + 18, -1, true, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
     }
 
     @Override
@@ -35,7 +37,7 @@ public record ProgressTooltip(double progress, double total) implements ClientTo
         double progress = Mth.clamp(this.progress / this.total, 0.0, 1.0);
         int filledWidth = (int) (101 * progress);
 
-        guiGraphics.blit(TEXTURE, i, j, 0, 5, 101, 5, 101, 10);
-        guiGraphics.blit(TEXTURE, i, j, 0, 0, filledWidth, 5, 101, 10);
+        guiGraphics.blit(TEXTURE, i, j + 10, 0, 5, 101, 5, 101, 10);
+        guiGraphics.blit(TEXTURE, i, j + 10, 0, 0, filledWidth, 5, 101, 10);
     }
 }

@@ -72,6 +72,7 @@
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restores 50% HP for your party",
     "item.cobblemonraiddens.raid_pouch": "Raid Pouch",
     "item.cobblemonraiddens.raid_shard": "Raid Shard",
+    "item.cobblemonraiddens.raid_shard.tooltip": "Clear raids to gain raid energy",
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
     "jade.cobblemonraiddens.player_count": "%s Inside",
     "jade.cobblemonraiddens.max_catches": "Max Catchable: %s",
