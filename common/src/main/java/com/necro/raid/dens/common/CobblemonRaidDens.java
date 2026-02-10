@@ -80,14 +80,14 @@ public class CobblemonRaidDens {
         Statuses.registerStatus(new ShieldStatus());
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
-            raidFailEvent(event.getBattle());
+            raidFailEvent(event.getBattle(), true);
             return Unit.INSTANCE;
         });
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
             BattlePokemon battlePokemon = event.getWinners().getFirst().getActivePokemon().getFirst().getBattlePokemon();
             if (battlePokemon == null || battlePokemon.getEntity() == null) return Unit.INSTANCE;
             else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return Unit.INSTANCE;
-            raidFailEvent(event.getBattle());
+            raidFailEvent(event.getBattle(), false);
             return Unit.INSTANCE;
         });
         CobblemonEvents.LOOT_DROPPED.subscribe(Priority.HIGHEST, event -> {
@@ -106,11 +106,11 @@ public class CobblemonRaidDens {
         RaidEvents.registerEvents();
     }
 
-    private static void raidFailEvent(PokemonBattle battle) {
+    private static void raidFailEvent(PokemonBattle battle, boolean ignoreLives) {
         try {
             RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
             if (raid == null || raid.isFinished()) return;
-            raid.removePlayer(battle);
+            raid.removePlayer(battle, ignoreLives);
         }
         catch (NullPointerException ignored) {}
     }

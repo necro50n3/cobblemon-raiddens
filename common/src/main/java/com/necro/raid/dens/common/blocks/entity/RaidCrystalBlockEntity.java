@@ -366,7 +366,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     @Override
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
-        if (compoundTag.contains("raid_host_uuid")) this.raidHost = UUID.fromString(compoundTag.getString("raid_host_uuid"));
         this.clears = compoundTag.getInt("raid_cleared");
         this.lastReset = compoundTag.getLong("last_reset");
         this.inactiveTicks = compoundTag.getInt("raid_inactive_for");
@@ -387,8 +386,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
-        if (this.raidHost != null) compoundTag.putString("raid_host_uuid", this.raidHost.toString());
-
         compoundTag.putInt("raid_cleared", this.clears);
         compoundTag.putLong("last_reset", this.lastReset);
         compoundTag.putInt("raid_inactive_for", this.inactiveTicks);

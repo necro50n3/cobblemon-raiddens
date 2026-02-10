@@ -188,11 +188,11 @@ public class RaidInstance {
         this.sendEvent(new PlayerJoinShowdownEvent(newPlayer), null);
     }
 
-    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle) {
+    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) {
             RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
-            if (raidPlayer.loseLife()) this.failedPlayers.add(player.getUUID());
+            if (ignoreLives || raidPlayer.loseLife()) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
         }
 
@@ -201,14 +201,14 @@ public class RaidInstance {
         ((IRaidBattle) battle).crd_setRaidBattle(null);
     }
 
-    public void removePlayer(PokemonBattle battle) {
+    public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
         List<ServerPlayer> players = battle.getPlayers();
         if (players.isEmpty()) return;
-        this.removePlayer(players.getFirst() , battle);
+        this.removePlayer(players.getFirst() , battle, ignoreLives);
     }
 
     public void removePlayer(ServerPlayer player) {
-        this.removePlayer(player, null);
+        this.removePlayer(player, null, true);
     }
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
