@@ -36,6 +36,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
@@ -472,9 +473,9 @@ public class RaidBoss {
         return this.cachedBossProperties;
     }
 
-    public List<ItemStack> getRandomRewards(ServerLevel level) {
+    public List<ItemStack> getRandomRewards(ServerLevel level, ItemStack itemStack, Player player) {
         if (this.lootTable == null) return new ArrayList<>();
-        return this.lootTable.getRandomRewards(level);
+        return this.lootTable.getRandomRewards(level, itemStack, player);
     }
 
     public ResourceLocation getRandomDen(RandomSource random) {

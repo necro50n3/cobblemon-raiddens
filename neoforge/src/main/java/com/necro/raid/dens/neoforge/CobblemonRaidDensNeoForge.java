@@ -10,6 +10,7 @@ import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
 import com.necro.raid.dens.neoforge.dimensions.NeoForgeDimensions;
 import com.necro.raid.dens.neoforge.events.CommandsRegistrationEvent;
+import com.necro.raid.dens.neoforge.loot.NeoForgeLootConditions;
 import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import com.necro.raid.dens.neoforge.items.*;
@@ -48,6 +49,8 @@ public class CobblemonRaidDensNeoForge {
         NeoForgeDimensions.CHUNK_GENERATORS.register(modBus);
         NeoForgeFeatures.registerFeatures();
         NeoForgeFeatures.FEATURES.register(modBus);
+        NeoForgeLootConditions.registerLootConditions();
+        NeoForgeLootConditions.LOOT_CONDITION_TYPES.register(modBus);
         NeoForgeLootFunctions.registerLootFunctions();
         NeoForgeLootFunctions.LOOT_FUNCTION_TYPES.register(modBus);
         NeoForgeStatistics.registerStatistics();

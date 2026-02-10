@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.OpenPouchEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.loot.context.RaidLootContexts;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ public class RaidPouchItem extends Item {
         if (tier == null || feature == null || raidType == null) return InteractionResultHolder.fail(itemStack);
 
         if (!level.isClientSide) {
-            List<ItemStack> rewards = this.getRewardItems(boss, tier, feature, (ServerLevel) level, player);
+            List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, (ServerLevel) level, player);
             if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
                 return InteractionResultHolder.fail(itemStack);
             }
@@ -71,40 +71,31 @@ public class RaidPouchItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        RaidTier tier = stack.get(ModComponents.TIER_COMPONENT.value());
-        RaidFeature feature = stack.get(ModComponents.FEATURE_COMPONENT.value());
+    public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
+        RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         if (tier == null || feature == null) return;
         tooltip.add(Component.translatable(feature.getTranslatable()).append(" | ").append(tier.getStars()));
     }
 
-    private List<ItemStack> getRewardItems(@Nullable RaidBoss boss, RaidTier tier, RaidFeature feature, ServerLevel level, Player player) {
+    private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player) {
         List<ItemStack> rewards;
         BossLootTable lootTable = boss == null ? null : boss.getLootTable();
         if (lootTable != null && lootTable.replace()) rewards = new ArrayList<>();
-        else rewards = this.getDefault(tier, feature, level, player);
+        else rewards = this.getDefault(itemStack, tier, level, player);
 
-        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level));
+        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level, itemStack, player));
         return rewards;
     }
 
-    private List<ItemStack> getDefault(RaidTier tier, RaidFeature feature, ServerLevel level, Player player) {
-        List<ItemStack> rewards = new ArrayList<>(this.getTierRewards(tier, level, player));
-        rewards.addAll(this.getFeatureRewards(feature, level, player));
-        return rewards;
-    }
-
-    private List<ItemStack> getTierRewards(RaidTier tier, ServerLevel level, Player player) {
+    private List<ItemStack> getDefault( ItemStack itemStack, RaidTier tier, ServerLevel level, Player player) {
         return level.getServer().reloadableRegistries()
             .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, tier.getLootTableId())))
-            .getRandomItems(new LootParams.Builder(level).withOptionalParameter(LootContextParams.THIS_ENTITY, player)
-                .create(LootContextParamSet.builder().optional(LootContextParams.THIS_ENTITY).build()));
-    }
-
-    private List<ItemStack> getFeatureRewards(RaidFeature feature, ServerLevel level, Player player) {
-        return level.getServer().reloadableRegistries()
-            .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, feature.getLootTableId())))
-            .getRandomItems(new LootParams.Builder(level).withOptionalParameter(LootContextParams.THIS_ENTITY, player)
-                .create(LootContextParamSet.builder().optional(LootContextParams.THIS_ENTITY).build()));
+            .getRandomItems(
+                new LootParams.Builder(level)
+                    .withParameter(RaidLootContexts.RAID_POUCH, itemStack)
+                    .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
+                    .create(RaidLootContexts.RAID_POUCH_USE)
+            );
     }
 }

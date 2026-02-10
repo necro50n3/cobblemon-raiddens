@@ -21,6 +21,7 @@ import com.necro.raid.dens.fabric.items.FabricItems;
 import com.necro.raid.dens.fabric.items.FabricPredicates;
 import com.necro.raid.dens.fabric.items.RaidDenTab;
 import com.necro.raid.dens.fabric.dimensions.FabricDimensions;
+import com.necro.raid.dens.fabric.loot.FabricLootConditions;
 import com.necro.raid.dens.fabric.loot.FabricLootFunctions;
 import com.necro.raid.dens.fabric.network.NetworkMessages;
 import com.necro.raid.dens.fabric.statistics.FabricStatistics;
@@ -57,6 +58,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricDimensions.registerChunkGenerator();
         FabricPredicates.registerPredicates();
         FabricFeatures.registerFeatures();
+        FabricLootConditions.registerLootConditions();
         FabricLootFunctions.registerLootFunctions();
         FabricStatistics.registerStatistics();
         FabricCriteriaTriggers.registerCriteriaTriggers();

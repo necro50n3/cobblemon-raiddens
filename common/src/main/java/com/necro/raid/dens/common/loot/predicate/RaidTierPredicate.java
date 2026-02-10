@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.items;
+package com.necro.raid.dens.common.loot.predicate;
 
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.components.ModComponents;
@@ -10,17 +10,13 @@ public record RaidTierPredicate(RaidTier tier) implements ItemSubPredicate {
     public static final Codec<RaidTierPredicate> CODEC;
 
     public boolean matches(ItemStack itemStack) {
-        RaidTier itemTier = itemStack.get(ModComponents.TIER_COMPONENT.value());
-        if (itemTier == null) return false;
-        return this.tier == itemTier;
+        RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
+        if (tier == null) return false;
+        return this.tier == tier;
     }
 
     public static RaidTierPredicate ofTier(RaidTier tier) {
         return new RaidTierPredicate(tier);
-    }
-
-    public RaidTier tier() {
-        return this.tier;
     }
 
     static {

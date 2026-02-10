@@ -4,7 +4,6 @@ import com.cobblemon.mod.common.CobblemonItems;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.loot.LootFunctions;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.util.RandomSource;
@@ -33,7 +32,7 @@ public class GemTypeFunction extends LootItemConditionalFunction {
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
-        return (LootItemFunctionType<? extends LootItemConditionalFunction>) LootFunctions.GEM_TYPE_FUNCTION.value();
+        return (LootItemFunctionType<? extends LootItemConditionalFunction>) RaidLootFunctions.GEM_TYPE_FUNCTION.value();
     }
 
     @Override

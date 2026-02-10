@@ -421,15 +421,18 @@
           "weight": 5
         },
         {
-          "type": "minecraft:loot_table",
+          "type": "minecraft:item",
           "functions": [
+            {
+              "function": "cobblemonraiddens:gem_type_function"
+            },
             {
               "add": false,
               "count": 2.0,
               "function": "minecraft:set_count"
             }
           ],
-          "value": "cobblemonraiddens:raid/type/gems",
+          "name": "minecraft:air",
           "weight": 10
         },
         {
@@ -532,6 +535,58 @@
         "max": 10.0,
         "min": 8.0
       }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "cobblemonraiddens:raid_pouch_condition",
+          "feature": "TERA"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tera_shards_function"
+            },
+            {
+              "add": false,
+              "count": 30.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "cobblemonraiddens:raid_pouch_condition",
+          "feature": "DYNAMAX"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:max_mushrooms_function"
+            },
+            {
+              "add": false,
+              "count": 3.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
     }
   ]
 }

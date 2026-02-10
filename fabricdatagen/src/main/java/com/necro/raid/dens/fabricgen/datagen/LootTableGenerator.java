@@ -2,7 +2,9 @@ package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.loot.condition.RaidPouchCondition;
 import com.necro.raid.dens.common.loot.function.GemTypeFunction;
 import com.necro.raid.dens.common.loot.function.MaxMushroomsFunction;
 import com.necro.raid.dens.common.loot.function.TeraShardsFunction;
@@ -17,7 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -33,38 +34,6 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
 
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
-        consumer.accept(
-            createKey("raid/type/gems"),
-            new LootTable.Builder()
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .add(LootItem.lootTableItem(Items.AIR).apply(GemTypeFunction.apply()))
-                    .build()
-                )
-        );
-
-        consumer.accept(
-            createKey("raid/feature/mega"),
-            new LootTable.Builder()
-        );
-
-        consumer.accept(
-            createKey("raid/feature/tera"),
-            new LootTable.Builder()
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .add(LootItem.lootTableItem(Items.AIR).apply(TeraShardsFunction.apply()))
-                    .build()
-                )
-        );
-
-        consumer.accept(
-            createKey("raid/feature/dynamax"),
-            new LootTable.Builder()
-                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
-                    .add(LootItem.lootTableItem(Items.AIR).apply(MaxMushroomsFunction.apply()))
-                    .build()
-                )
-        );
-
         consumer.accept(
             createKey("raid/tier/tier_one"),
             new LootTable.Builder()
@@ -113,8 +82,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 4f)))
                         .setWeight(5)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 3f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0f, 1f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -201,8 +186,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 3f)))
                         .setWeight(5)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 3f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0f, 1f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -277,7 +278,8 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
                         .setWeight(2)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(GemTypeFunction.apply())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
@@ -293,8 +295,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(2)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2f, 5f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0f, 2f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -401,7 +419,8 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(1)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(GemTypeFunction.apply())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -425,8 +444,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(1)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2f, 5f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0f, 2f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -533,7 +568,8 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(GemTypeFunction.apply())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -560,8 +596,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                     .with(LootItem.lootTableItem(ModItems.RAID_SHARD.value())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(5f, 10f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1f, 2f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -676,7 +728,8 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(2)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(GemTypeFunction.apply())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(10)
                         .build())
@@ -704,8 +757,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(2)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(10f, 20f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2f, 3f)))
+                        .build())
+                    .build()
+                )
         );
 
         consumer.accept(
@@ -824,7 +893,8 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
-                    .with(NestedLootTable.lootTableReference(createKey("raid/type/gems"))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(GemTypeFunction.apply())
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2f)))
                         .setWeight(10)
                         .build())
@@ -852,8 +922,24 @@ public class LootTableGenerator extends SimpleFabricLootTableProvider {
                         .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1f)))
                         .setWeight(5)
                         .build())
-                .build()
-            )
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.TERA))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(TeraShardsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(30f)))
+                        .build())
+                    .build()
+                )
+                .pool(LootPool.lootPool().setRolls(ConstantValue.exactly(1f))
+                    .when(RaidPouchCondition.matches(RaidFeature.DYNAMAX))
+                    .with(LootItem.lootTableItem(Items.AIR)
+                        .apply(MaxMushroomsFunction.apply())
+                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(3f)))
+                        .build())
+                    .build()
+                )
         );
     }
 

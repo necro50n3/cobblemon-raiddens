@@ -2,7 +2,7 @@ package com.necro.raid.dens.fabricgen.loot;
 
 import com.mojang.serialization.MapCodec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.loot.LootFunctions;
+import com.necro.raid.dens.common.loot.function.RaidLootFunctions;
 import com.necro.raid.dens.common.loot.function.GemTypeFunction;
 import com.necro.raid.dens.common.loot.function.MaxMushroomsFunction;
 import com.necro.raid.dens.common.loot.function.TeraShardsFunction;
@@ -19,8 +19,8 @@ public class FabricLootFunctions {
     }
 
     public static void registerLootFunctions() {
-        LootFunctions.MAX_MUSHROOMS_FUNCTION = register("max_mushrooms_function", MaxMushroomsFunction.CODEC);
-        LootFunctions.TERA_SHARDS_FUNCTION = register("tera_shards_function", TeraShardsFunction.CODEC);
-        LootFunctions.GEM_TYPE_FUNCTION = register("gem_type_function", GemTypeFunction.CODEC);
+        RaidLootFunctions.MAX_MUSHROOMS_FUNCTION = register("max_mushrooms_function", MaxMushroomsFunction.CODEC);
+        RaidLootFunctions.TERA_SHARDS_FUNCTION = register("tera_shards_function", TeraShardsFunction.CODEC);
+        RaidLootFunctions.GEM_TYPE_FUNCTION = register("gem_type_function", GemTypeFunction.CODEC);
     }
 }
