@@ -63,6 +63,6 @@ public class CobblemonRaidDensNeoForge {
 
     static boolean isCobblemon171() {
         ModFileInfo info = LoadingModList.get().getModFileById(Cobblemon.MODID);
-        return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion("1.7.1")) <= 0;
+        return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion("1.7.1+1.21.1")) <= 0;
     }
 }
