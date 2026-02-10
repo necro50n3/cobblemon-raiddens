@@ -84,8 +84,9 @@ public class CobblemonRaidDens {
             return Unit.INSTANCE;
         });
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
-            BattlePokemon battlePokemon = event.getLosers().getFirst().getActivePokemon().getFirst().getBattlePokemon();
-            if (battlePokemon != null && battlePokemon.getEffectedPokemon().getOwnerPlayer() != null) return Unit.INSTANCE;
+            BattlePokemon battlePokemon = event.getWinners().getFirst().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon == null || battlePokemon.getEntity() == null) return Unit.INSTANCE;
+            else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return Unit.INSTANCE;
             raidFailEvent(event.getBattle());
             return Unit.INSTANCE;
         });
