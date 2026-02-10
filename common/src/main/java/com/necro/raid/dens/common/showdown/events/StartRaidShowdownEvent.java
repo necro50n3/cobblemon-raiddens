@@ -79,14 +79,13 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
 
         private void addTerrain(String terrain) {
             this.string += String.format(
-                "const pokemon = battle.sides[1].pokemon[0]; " +
                 "const terrain = battle.dex.conditions.get('%1$s'); " +
                 "if (terrain && battle.field.terrain === '') { " +
                     "battle.field.terrain = terrain.id; " +
                     "battle.field.terrainState = { " +
                         "id: terrain.id, " +
-                        "source: pokemon, " +
-                        "sourceSlot: pokemon.getSlot(), " +
+                        "source: battle.sides[1].pokemon[0], " +
+                        "sourceSlot: battle.sides[1].pokemon[0].getSlot(), " +
                         "duration: terrain.duration " +
                     "}; " +
                 "} ",
@@ -96,13 +95,12 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
 
         private void addField(String field) {
             this.string += String.format(
-                "const pokemon = battle.sides[1].pokemon[0]; " +
                 "const pseudoWeather = this.battle.dex.conditions.get('%1$s'); " +
                 "if (pseudoWeather && !battle.field.pseudoWeather[pseudoWeather.id]) { " +
                     "battle.field.pseudoWeather[pseudoWeather.id] = { " +
                         "id: pseudoWeather.id, " +
-                        "source: pokemon, " +
-                        "sourceSlot: pokemon.getSlot(), " +
+                        "source: battle.sides[1].pokemon[0], " +
+                        "sourceSlot: battle.sides[1].pokemon[0].getSlot(), " +
                         "duration: pseudoWeather.duration " +
                     "}; " +
                 "} ",
@@ -123,7 +121,20 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
         }
 
         private void addSideConditions(int side, String sideCondition) {
-
+            this.string += String.format(
+                "const condition = battle.dex.conditions.get('%1$s'); " +
+                "const side = battle.sides[%2$d]; " +
+                "if (condition && !side.sideConditions[condition.id]) { " +
+                    "side.sideConditions[condition.id] = { " +
+                        "id: condition.id, " +
+                        "target: side, " +
+                        "source: side.pokemon[0], " +
+                        "sourceSlot: side.pokemon[0].getSlot(), " +
+                        "duration: condition.duration, " +
+                    "}; " +
+                    "battle.effectState.layers = 1; " +
+                "} ",
+                sideCondition, side - 1);
         }
 
         private void addVolatile(VolatileStatus status) {
