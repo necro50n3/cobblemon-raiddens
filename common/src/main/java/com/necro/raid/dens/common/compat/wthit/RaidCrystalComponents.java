@@ -3,12 +3,12 @@ package com.necro.raid.dens.common.compat.wthit;
 import com.cobblemon.mod.common.item.PokemonItem;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.client.ClientRaidRegistry;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import mcp.mobius.waila.api.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -24,11 +24,8 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
     public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return null;
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
-        if (raidBoss == null) return null;
-
-        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
-        else if (raidBoss.getDisplaySpecies() == null) return null;
+        RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
+        if (raidBoss == null || raidBoss.getDisplaySpecies() == null) return null;
 
         ItemStack stack = PokemonItem.from(raidBoss.getDisplaySpecies(), raidBoss.getDisplayAspects(), 1, null);
         return new ScalableComponent(stack, 1.5f);
@@ -69,10 +66,8 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
         BlockState blockState = accessor.getBlockState();
 
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
-        if (raidBoss == null) return;
-        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
-        if (raidBoss.getDisplaySpecies() == null) return;
+        RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
+        if (raidBoss == null || raidBoss.getDisplaySpecies() == null) return;
 
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidFeature feature = raidBoss.getFeature();

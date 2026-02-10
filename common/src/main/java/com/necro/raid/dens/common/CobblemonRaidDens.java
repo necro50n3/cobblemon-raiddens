@@ -30,7 +30,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.JsonElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class CobblemonRaidDens {
@@ -40,7 +40,7 @@ public class CobblemonRaidDens {
     public static RaidConfig CONFIG;
     public static BlacklistConfig BLACKLIST_CONFIG;
     public static ConditionsConfig CONDITIONS_CONFIG;
-    public static final Map<RaidTier, TierConfig> TIER_CONFIG = new HashMap<>();
+    public static final Map<RaidTier, TierConfig> TIER_CONFIG = new EnumMap<>(RaidTier.class);
 
     public static void init() {
         LOGGER.info("Initialising {}", MOD_ID);

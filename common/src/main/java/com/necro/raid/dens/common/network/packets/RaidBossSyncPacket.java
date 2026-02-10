@@ -1,12 +1,12 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.ClientRaidRegistry;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.network.ClientPacket;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -69,20 +69,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
 
     @Override
     public void handleClient() {
-        for (RaidBoss boss : this.registry) {
-            RaidBoss existing = RaidRegistry.getRaidBoss(boss.getId());
-            if (existing == null) {
-                RaidRegistry.register(boss);
-            }
-            else {
-                existing.setTier(boss.getTier());
-                existing.setType(boss.getType());
-                existing.setFeature(boss.getFeature());
-                existing.setShinyRate(boss.getShinyRate());
-                existing.setMaxCatches(boss.getMaxCatches());
-                existing.setDisplaySpecies(boss.getDisplaySpeciesIdentifier());
-                existing.setDisplayAspects(boss.getDisplayAspects());
-            }
-        }
+        ClientRaidRegistry.clear();
+        for (RaidBoss boss : this.registry) ClientRaidRegistry.register(boss);
     }
 }

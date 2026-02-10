@@ -18,12 +18,10 @@ import java.util.*;
 
 public class RaidTagReloadImpl extends AbstractReloadImpl {
     private final Map<ResourceLocation, TagFile> files;
-    private Map<ResourceLocation, Set<ResourceLocation>> preparedTags;
 
     public RaidTagReloadImpl() {
         super("tags/raid/boss", DataType.JSON);
         this.files = new HashMap<>();
-        this.preparedTags = null;
     }
 
     @Override
@@ -48,7 +46,6 @@ public class RaidTagReloadImpl extends AbstractReloadImpl {
     @Override
     protected void preLoad() {
         this.files.clear();
-        this.preparedTags = null;
     }
 
     @Override

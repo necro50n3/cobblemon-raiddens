@@ -4,12 +4,12 @@ import com.cobblemon.mod.common.item.PokemonItem;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.client.ClientRaidRegistry;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
     public @Nullable IElement getIcon(BlockAccessor accessor, IPluginConfig config, IElement currentIcon) {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return currentIcon;
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
+        RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return currentIcon;
 
         if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
@@ -63,7 +63,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
         BlockState blockState = accessor.getBlockState();
 
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
+        RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return;
         if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
         if (raidBoss.getDisplaySpecies() == null) return;

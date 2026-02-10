@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.SerializedName;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
@@ -15,8 +16,7 @@ import java.util.*;
 
 public class RaidBossAdditions {
     public static final Gson GSON;
-    private static Set<ResourceLocation> BLACKLIST;
-    private static boolean CACHED = false;
+    private static final ResourceLocation BLACKLIST = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist");
 
     private Integer priority;
     private List<String> include;
@@ -24,6 +24,8 @@ public class RaidBossAdditions {
     private RaidBoss additions;
     private Boolean replace;
     private String suffix;
+    @SerializedName("force_apply")
+    private Boolean forceApply;
 
     public void applyDefaults() {
         if (this.additions == null) throw new JsonSyntaxException("Missing required field: \"additions\"");
@@ -34,6 +36,7 @@ public class RaidBossAdditions {
         if (this.replace == null) this.replace = true;
         if (this.suffix == null) this.suffix = "";
         if (!this.replace && !this.suffix.startsWith("_")) this.suffix = "_" + this.suffix;
+        if (this.forceApply == null) this.forceApply = false;
     }
 
     public void apply(List<ResourceLocation> registry) {
@@ -57,17 +60,12 @@ public class RaidBossAdditions {
             else if (RaidRegistry.getRaidBoss(id) != null) excluded.add(id);
         }
 
-        if (!CACHED) {
-            BLACKLIST = RaidRegistry.getTagEntries(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "additions_blacklist"));
-            CACHED = true;
-        }
-
         for (ResourceLocation loc : targets) {
             if (excluded.contains(loc)) continue;
             RaidBoss temp = RaidRegistry.getRaidBoss(loc);
             if (temp == null) continue;
             ResourceLocation id = temp.getId();
-            if (!this.replace() && BLACKLIST.contains(id)) continue;
+            if (!this.replace() && !this.forceApply() && RaidRegistry.isTag(BLACKLIST, id)) continue;
             final RaidBoss boss = this.replace() ? temp : temp.copy();
 
             getReward(this.additions()).ifPresent(properties -> boss.setReward(PropertiesAdapter.apply(boss.getReward(), properties)));
@@ -128,6 +126,10 @@ public class RaidBossAdditions {
 
     private String suffix() {
         return this.suffix;
+    }
+
+    private boolean forceApply() {
+        return this.forceApply;
     }
 
     private static Optional<PokemonProperties> getReward(RaidBoss boss) {
