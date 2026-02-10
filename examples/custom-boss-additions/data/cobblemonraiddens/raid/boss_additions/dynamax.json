@@ -1,0 +1,15 @@
+{
+    "exclude": [
+        "cobblemonraiddens:eternatus",
+        "cobblemonraiddens:zacian",
+        "cobblemonraiddens:zamazenta"
+    ],
+    "additions": {
+        "raid_feature": "DYNAMAX",
+        "den": [
+            "cobblemonraiddens:raid_den/dynamax"
+        ]
+    },
+    "replace": false,
+    "suffix": "dmax"
+}

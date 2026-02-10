@@ -1,0 +1,24 @@
+{
+    "include": {
+        "boss": [
+            "#cobblemonraiddens:pikachu",
+            "#cobblemonraiddens:raichu",
+            "#cobblemonraiddens:pichu",
+            "#cobblemonraiddens:plusle",
+            "#cobblemonraiddens:minun",
+            "#cobblemonraiddens:pachirisu",
+            "#cobblemonraiddens:emolga",
+            "#cobblemonraiddens:dedenne",
+            "#cobblemonraiddens:raichu_alolan",
+            "#cobblemonraiddens:togedemaru",
+            "#cobblemonraiddens:morpeko",
+            "#cobblemonraiddens:pawmi",
+            "#cobblemonraiddens:pawmo",
+            "#cobblemonraiddens:pawmot"
+        ]
+    },
+    "biome": [
+        "*"
+    ],
+    "weight": 10.0
+}

@@ -1,0 +1,24 @@
+{
+    "pokemon": {
+        "species": "charizard",
+        "moves": [
+            "flareblitz",
+            "slash",
+            "dragonclaw",
+            "airslash"
+        ]
+    },
+    "boss": {
+        "custom_properties": [
+            {
+                "name": "mega_evolution",
+                "value": "mega_x"
+            }
+        ]
+    },
+    "raid_tier": "TIER_SEVEN",
+    "raid_type": "FIRE",
+    "raid_feature": "MEGA",
+    "loot_table": "cobblemonraiddens:raid/boss/charizard_mega_x",
+    "weight": 10.0
+}
