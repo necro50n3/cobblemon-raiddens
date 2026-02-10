@@ -17,6 +17,11 @@
             "#cobblemonraiddens:pawmot"
         ]
     },
+    "exclude": {
+        "tier": [
+            "TIER_SEVEN"
+        ]
+    },
     "biome": [
         "*"
     ],

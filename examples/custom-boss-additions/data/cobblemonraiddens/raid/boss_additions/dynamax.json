@@ -5,10 +5,7 @@
         "cobblemonraiddens:zamazenta"
     ],
     "additions": {
-        "raid_feature": "DYNAMAX",
-        "den": [
-            "cobblemonraiddens:raid_den/dynamax"
-        ]
+        "raid_feature": "DYNAMAX"
     },
     "replace": false,
     "suffix": "dmax"
