@@ -13,41 +13,18 @@ import net.minecraft.world.item.ItemStack;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class RaidDensMSDCompat {
-    private static Class<?> EFFECT_CLASS = null;
-
     public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
-
-        try {
-            Class<?> effect = getEffectClass();
-            Method getEffect = effect.getMethod("getEffect", String.class);
-            Object effectInstance = getEffect.invoke( null, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase());
-            Method applyEffects = effect.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
-            applyEffects.invoke(effectInstance, pokemon, List.of(), null);
-        }
-        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
-        }
-
+        applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase());
         pokemon.getPersistentData().putBoolean("is_tera", true);
     }
 
     public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:dmax").apply(pokemon);
-
-        try {
-            Class<?> effect = getEffectClass();
-            Method getEffect = effect.getMethod("getEffect", String.class);
-            Object effectInstance = getEffect.invoke( null, "mega_showdown:dynamax");
-            Method applyEffects = effect.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
-            applyEffects.invoke(effectInstance, pokemon, List.of(), null);
-        }
-        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
-        }
-
+        applyEffects(pokemon, "mega_showdown:dynamax");
         pokemon.getPersistentData().putBoolean("is_max", true);
         GlowHandler.applyDynamaxGlow(pokemonEntity);
     }
@@ -82,15 +59,35 @@ public abstract class RaidDensMSDCompat {
 
     // Reflection to maintain compatibility with older versions
     // To be removed in Cobblemon 1.8 update
-    private static Class<?> getEffectClass() throws ClassNotFoundException {
-        if (EFFECT_CLASS == null) {
-            try {
-                EFFECT_CLASS = Class.forName("com.github.yajatkaul.mega_showdown.api.codec.Effect");
-            }
-            catch (ClassNotFoundException e) {
-                EFFECT_CLASS = Class.forName("com.github.yajatkaul.mega_showdown.codec.Effect");
-            }
+    private static void applyEffects(Pokemon pokemon, String effectId) {
+        try {
+            Class<?> effect = getEffectClass();
+            Method getEffect = effect.getMethod("getEffect", String.class);
+            Object effectInstance = getEffect.invoke( null, effectId);
+            runApplyEffects(effect, effectInstance, pokemon);
         }
-        return EFFECT_CLASS;
+        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
+        }
+    }
+
+    private static Class<?> getEffectClass() throws ClassNotFoundException {
+        try {
+            return Class.forName("com.github.yajatkaul.mega_showdown.api.codec.Effect");
+        }
+        catch (ClassNotFoundException e) {
+            return Class.forName("com.github.yajatkaul.mega_showdown.codec.Effect");
+        }
+    }
+
+    private static void runApplyEffects(Class<?> clazz, Object instance, Pokemon pokemon) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        try {
+            Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, Optional.class, PokemonEntity.class);
+            method.invoke(instance, pokemon, List.of(), Optional.empty(), null);
+        }
+        catch (NoSuchMethodException e) {
+            Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
+            method.invoke(instance, pokemon, List.of(), null);
+        }
     }
 }

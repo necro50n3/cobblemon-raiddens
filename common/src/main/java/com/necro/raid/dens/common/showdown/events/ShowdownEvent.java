@@ -8,6 +8,7 @@ public interface ShowdownEvent {
 
     default void send(PokemonBattle battle) {
         String[] message = {this.build(battle)};
-        ShowdownService.Companion.getService().send(battle.getBattleId(), message);
+        try { ShowdownService.Companion.getService().send(battle.getBattleId(), message); }
+        catch (Exception ignored) {}
     }
 }
