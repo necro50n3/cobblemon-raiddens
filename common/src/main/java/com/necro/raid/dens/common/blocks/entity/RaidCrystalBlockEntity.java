@@ -252,6 +252,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.raidBoss;
     }
 
+    public int getClears() {
+        return this.clears;
+    }
+
+
     public long getLastReset() {
         return this.lastReset;
     }
@@ -299,6 +304,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.aspects = null;
         this.setChanged();
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public void setClears(int clears) {
+        this.clears = clears;
     }
 
     public void setAspects(Set<String> aspects) {

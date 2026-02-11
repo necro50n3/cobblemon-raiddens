@@ -23,6 +23,7 @@ public class FabricComponents {
         ModComponents.UUID_COMPONENT = Holder.direct(registerComponent("raid_uuid", builder -> builder.persistent(Codec.STRING)));
         ModComponents.BUCKET_COMPONENT = Holder.direct(registerComponent("raid_bucket", builder -> builder.persistent(ResourceLocation.CODEC)));
         ModComponents.BOSS_COMPONENT = Holder.direct(registerComponent("raid_boss", builder -> builder.persistent(ResourceLocation.CODEC)));
+        ModComponents.RAID_CLEAR_COMPONENT = Holder.direct(registerComponent("raid_cleared", builder -> builder.persistent(Codec.INT)));
         ModComponents.LAST_RESET_COMPONENT = Holder.direct(registerComponent("last_reset", builder -> builder.persistent(Codec.LONG)));
         ModComponents.ASPECTS_COMPONENT = Holder.direct(registerComponent("raid_aspects", builder -> builder.persistent(Codec.STRING.listOf())));
 

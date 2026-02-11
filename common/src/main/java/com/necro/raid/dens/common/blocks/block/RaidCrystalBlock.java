@@ -209,7 +209,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         ItemStack itemStack = context.getItemInHand();
         RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
-        if (boss != null) blockState = blockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
+        if (boss != null) {
+            blockState = blockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
+
+            int clears = itemStack.getOrDefault(ModComponents.RAID_CLEAR_COMPONENT.value(), 0);
+            if (clears >= boss.getMaxClears()) blockState = blockState.setValue(ACTIVE, false);
+        }
 
         return blockState;
     }
@@ -223,12 +228,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         String uuid = itemStack.get(ModComponents.UUID_COMPONENT.value());
         ResourceLocation bucket = itemStack.get(ModComponents.BUCKET_COMPONENT.value());
         ResourceLocation boss = itemStack.get(ModComponents.BOSS_COMPONENT.value());
+        Integer clears = itemStack.get(ModComponents.RAID_CLEAR_COMPONENT.value());
         Long lastReset = itemStack.get(ModComponents.LAST_RESET_COMPONENT.value());
         List<String> aspects = itemStack.get(ModComponents.ASPECTS_COMPONENT.value());
 
         if (uuid != null) raidCrystal.setUuid(UUID.fromString(uuid));
         if (bucket != null) raidCrystal.setRaidBucket(bucket);
         if (boss != null) raidCrystal.setRaidBoss(boss, lastReset == null ? 0 : lastReset);
+        if (clears != null) raidCrystal.setClears(clears);
         if (aspects != null) raidCrystal.setAspects(new HashSet<>(aspects));
     }
 
@@ -242,6 +249,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         itemStack.set(ModComponents.UUID_COMPONENT.value(), raidCrystal.getUuid().toString());
         if (raidCrystal.getRaidBucketLocation() != null) itemStack.set(ModComponents.BUCKET_COMPONENT.value(), raidCrystal.getRaidBucketLocation());
         if (raidCrystal.getRaidBossLocation() != null) itemStack.set(ModComponents.BOSS_COMPONENT.value(), raidCrystal.getRaidBossLocation());
+        itemStack.set(ModComponents.RAID_CLEAR_COMPONENT.value(), raidCrystal.getClears());
         itemStack.set(ModComponents.LAST_RESET_COMPONENT.value(), raidCrystal.getLastReset());
         if (raidCrystal.getAspects() != null) itemStack.set(ModComponents.ASPECTS_COMPONENT.value(), raidCrystal.getAspects().stream().toList());
         return List.of(itemStack);

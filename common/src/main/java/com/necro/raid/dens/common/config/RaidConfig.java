@@ -27,7 +27,7 @@ public class RaidConfig implements ConfigData {
     public boolean sync_rewards = true;
     @Comment("Whether raid crystals can be broken. Default: true")
     public boolean can_break = true;
-    @Comment("The reward distribution algorithm (RANDOM/DAMAGE/SURVIVOR). Default: RANDOM")
+    @Comment("The reward distribution algorithm (Options: RANDOM, DAMAGE, SURVIVOR). Default: RANDOM")
     public RewardDistribution reward_distribution = RewardDistribution.RANDOM;
     @Comment("The maximum number of players in a raid before shared supporting moves are disabled. Default: 4")
     public int max_players_for_support = 4;

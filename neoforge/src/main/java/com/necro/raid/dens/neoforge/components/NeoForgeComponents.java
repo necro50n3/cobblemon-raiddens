@@ -29,6 +29,7 @@ public class NeoForgeComponents {
         ModComponents.UUID_COMPONENT = (Holder<DataComponentType<String>>) (Object) registerComponent("raid_uuid", Codec.STRING);
         ModComponents.BUCKET_COMPONENT = (Holder<DataComponentType<ResourceLocation>>) (Object) registerComponent("raid_bucket", ResourceLocation.CODEC);
         ModComponents.BOSS_COMPONENT = (Holder<DataComponentType<ResourceLocation>>) (Object) registerComponent("raid_boss", ResourceLocation.CODEC);
+        ModComponents.RAID_CLEAR_COMPONENT = (Holder<DataComponentType<Integer>>) (Object) registerComponent("raid_cleared", Codec.INT);
         ModComponents.LAST_RESET_COMPONENT = (Holder<DataComponentType<Long>>) (Object) registerComponent("last_reset", Codec.LONG);
         ModComponents.ASPECTS_COMPONENT = (Holder<DataComponentType<List<String>>>) (Object) registerComponent("raid_aspects", Codec.STRING.listOf());
 

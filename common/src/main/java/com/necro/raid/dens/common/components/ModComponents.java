@@ -17,6 +17,7 @@ public class ModComponents {
     public static Holder<DataComponentType<String>> UUID_COMPONENT;
     public static Holder<DataComponentType<ResourceLocation>> BUCKET_COMPONENT;
     public static Holder<DataComponentType<ResourceLocation>> BOSS_COMPONENT;
+    public static Holder<DataComponentType<Integer>> RAID_CLEAR_COMPONENT;
     public static Holder<DataComponentType<Long>> LAST_RESET_COMPONENT;
     public static Holder<DataComponentType<List<String>>> ASPECTS_COMPONENT;
 
