@@ -479,26 +479,26 @@ public class RaidInstance {
     }
 
     public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {
-        if (!this.canSync()) return;
+        if (!this.canSync() || this.isFinished()) return;
         for (PokemonBattle b : this.battles) {
             if (battle != null && b == battle) continue;
-            if (!this.isFinished()) event.send(b);
+            event.send(b);
         }
     }
 
     public void updateBattleState(PokemonBattle battle, Function<RaidBattleState, Optional<ShowdownEvent>> function) {
-        if (!this.canSync()) return;
+        if (!this.canSync() || this.isFinished()) return;
         Optional<ShowdownEvent> optional = function.apply(this.battleState);
         optional.ifPresent(event -> {
             for (PokemonBattle b : this.battles) {
                 if (b == battle) continue;
-                if (!this.isFinished()) event.send(b);
+                event.send(b);
             }
         });
     }
 
     public void updateBattleContext(PokemonBattle battle, Consumer<PokemonBattle> consumer) {
-        if (!this.canSync()) return;
+        if (!this.canSync() || this.isFinished()) return;
         for (PokemonBattle b : this.battles) {
             if (b == battle) continue;
             b.dispatch(() -> {
