@@ -6,30 +6,19 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public abstract class CobblemonRaidDensMixinPluginImpl implements IMixinConfigPlugin {
     protected abstract String mixin(String pkg);
 
-    protected final Set<String> RCT_MIXINS = Set.of(
-        mixin("ai.RCTBattleAIMixin")
-    );
-
-    protected final Set<String> MSD_MIXINS = Set.of(
-        mixin("msd.CobbleEventsMixin")
-    );
-
-    protected final Set<String> COBBLEMON_MIXINS = Set.of(
-        mixin("showdown.ShowdownInterpreterMixin")
-    );
-
-    protected final Set<String> ANTI_WORLDEDIT_MIXINS = Set.of(
-        mixin("den.LevelChunkMixin")
-    );
-
-    protected final Set<String> ANTI_CARPET_MIXINS = Set.of(
-        mixin("den.LevelMixin"),
-        mixin("den.LevelChunkMixin")
+    protected final Map<String, Supplier<Boolean>> MIXINS = Map.of(
+        mixin("ai.RCTBattleAIMixin"), () -> this.isModLoaded(ModCompat.RCT_API.getModid()),
+        mixin("msd.CobbleEventsMixin"), () -> this.isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid()),
+        mixin("showdown.ShowdownInterpreterMixin"), this::isCobblemon171,
+        mixin("den.LevelChunkMixin"), () -> !this.isModLoaded("worldedit", "carpet"),
+        mixin("den.LevelMixin"), () -> !this.isModLoaded("carpet")
     );
 
     @Override
@@ -42,11 +31,7 @@ public abstract class CobblemonRaidDensMixinPluginImpl implements IMixinConfigPl
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (RCT_MIXINS.contains(mixinClassName)) return this.isModLoaded(ModCompat.RCT_API.getModid());
-        if (MSD_MIXINS.contains(mixinClassName)) return this.isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid());
-        if (COBBLEMON_MIXINS.contains(mixinClassName)) return this.isCobblemon171();
-        if (ANTI_WORLDEDIT_MIXINS.contains(mixinClassName)) return !this.isModLoaded("worldedit");
-        if (ANTI_CARPET_MIXINS.contains(mixinClassName)) return !this.isModLoaded("carpet");
+        if (MIXINS.containsKey(mixinClassName)) return MIXINS.get(mixinClassName).get();
         return true;
     }
 
