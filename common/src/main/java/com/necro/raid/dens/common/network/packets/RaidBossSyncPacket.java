@@ -45,8 +45,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         buf.writeInt(boss.getMaxCatches());
 
         buf.writeResourceLocation(boss.getDisplaySpeciesIdentifier());
-        buf.writeInt(boss.getDisplayAspects().size());
-        boss.getDisplayAspects().forEach(buf::writeUtf);
+        buf.writeCollection(boss.getDisplayAspects(), FriendlyByteBuf::writeUtf);
     }
 
     private static RaidBoss readEntry(FriendlyByteBuf buf) {
@@ -59,10 +58,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         boss.setMaxCatches(buf.readInt());
 
         boss.setDisplaySpecies(buf.readResourceLocation());
-        int count = buf.readInt();
-        Set<String> aspects = new HashSet<>();
-        for (int i = 0; i < count; i++)  aspects.add(buf.readUtf());
-        boss.setDisplayAspects(aspects);
+        boss.setDisplayAspects(buf.readCollection(HashSet::new, FriendlyByteBuf::readUtf));
 
         return boss;
     }
