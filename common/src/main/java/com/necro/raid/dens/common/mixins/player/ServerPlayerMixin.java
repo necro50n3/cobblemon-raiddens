@@ -53,10 +53,7 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
 
     @Override
     public ServerLevel crd_getHomeLevel() {
-        if (this.crd_homeLevel == null) {
-            this.crd_setHomePos(this.server.overworld().getSharedSpawnPos().getCenter());
-            return this.server.overworld();
-        }
+        if (this.crd_homeLevel == null) return this.server.overworld();
         return this.server.getLevel(ResourceKey.create(Registries.DIMENSION, this.crd_homeLevel));
     }
 
