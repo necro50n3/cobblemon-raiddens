@@ -10,7 +10,8 @@ public class BlacklistConfig implements ConfigData {
     public String[] pokemon = {};
     @Comment("List of blacklisted abilities for the player in raid battles")
     public String[] abilities = {
-        "wonderguard"
+        "wonderguard",
+        "perishbody"
     };
     @Comment("List of blacklisted held items for the player in raid battles.")
     public String[] held_items = {};

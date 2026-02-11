@@ -9,6 +9,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
+import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class RaidAdminCommands {
     private static final Permission RESET_CLEARS = new RaidDenPermission("command.resetclears", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
     private static final Permission REFRESH = new RaidDenPermission("command.refreshother", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
+    private static final Permission FORCE_CLEAR = new RaidDenPermission("command.forceclear", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd")
@@ -64,6 +66,15 @@ public class RaidAdminCommands {
                 .requires(CommandSourceStack::isPlayer)
                 .executes(RaidAdminCommands::refreshPlayer)
             )
+            .then(PermissionUtilsKt.permission(
+                Commands.literal("forceclear")
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes(context -> forceClear(EntityArgument.getPlayer(context, "player")))
+                    )
+                    .requires(CommandSourceStack::isPlayer)
+                    .executes(context -> forceClear(context.getSource().getPlayer())),
+                FORCE_CLEAR, true
+            ))
         );
     }
 
@@ -132,5 +143,13 @@ public class RaidAdminCommands {
             return 1;
         }
         else return 0;
+    }
+
+    private static int forceClear(ServerPlayer player) {
+        if (RaidJoinHelper.getParticipant(player) == null) return 0;
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(RaidJoinHelper.getParticipant(player).raid());
+        if (raid == null) return 0;
+        raid.stopRaid(true);
+        return 1;
     }
 }
