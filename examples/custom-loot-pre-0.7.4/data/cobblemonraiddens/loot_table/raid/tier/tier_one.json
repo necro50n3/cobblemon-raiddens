@@ -186,66 +186,6 @@
         "max": 4.0,
         "min": 2.0
       }
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "TERA"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "cobblemonraiddens:tera_shards_function"
-            },
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:air"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "DYNAMAX"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "cobblemonraiddens:max_mushrooms_function"
-            },
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:air"
-        }
-      ],
-      "rolls": 1.0
     }
   ]
 }

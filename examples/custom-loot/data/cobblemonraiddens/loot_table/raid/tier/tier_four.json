@@ -371,15 +371,18 @@
           "name": "cobblemon:ability_capsule"
         },
         {
-          "type": "minecraft:loot_table",
+          "type": "minecraft:item",
           "functions": [
+            {
+              "function": "cobblemonraiddens:gem_type_function"
+            },
             {
               "add": false,
               "count": 1.0,
               "function": "minecraft:set_count"
             }
           ],
-          "value": "cobblemonraiddens:raid/type/gems",
+          "name": "minecraft:air",
           "weight": 10
         },
         {
@@ -449,6 +452,66 @@
         "max": 6.0,
         "min": 4.0
       }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "cobblemonraiddens:raid_pouch_condition",
+              "feature": "TERA"
+            }
+          ],
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tera_shards_function"
+            },
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 5.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "condition": "cobblemonraiddens:raid_pouch_condition",
+              "feature": "DYNAMAX"
+            }
+          ],
+          "functions": [
+            {
+              "function": "cobblemonraiddens:max_mushrooms_function"
+            },
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 0.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
     }
   ]
 }
