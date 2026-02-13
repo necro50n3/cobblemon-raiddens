@@ -529,7 +529,7 @@ public class RaidBoss {
     }
 
     public void setDens(List<String> den) {
-        this.den = den;
+        this.den = new ArrayList<>(den);
     }
 
     public void setKey(UniqueKey key) {
@@ -577,7 +577,7 @@ public class RaidBoss {
     }
 
     public void setScript(Map<String, Script> script) {
-        this.script = script;
+        this.script = new HashMap<>(script);
     }
 
     public void setRaidAI(RaidAI raidAI) {
@@ -585,7 +585,7 @@ public class RaidBoss {
     }
 
     public void setMarks(List<Mark> marks) {
-        this.marks = marks;
+        this.marks = new ArrayList<>(marks);
     }
 
     public void setLives(Integer lives) {

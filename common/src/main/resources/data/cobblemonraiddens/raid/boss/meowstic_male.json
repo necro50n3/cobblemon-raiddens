@@ -1,0 +1,15 @@
+{
+    "pokemon": {
+        "species": "meowstic",
+        "gender": "MALE",
+        "moves": [
+            "psyshock",
+            "disarmingvoice",
+            "suckerpunch",
+            "covet"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "PSYCHIC",
+    "weight": 10.0
+}

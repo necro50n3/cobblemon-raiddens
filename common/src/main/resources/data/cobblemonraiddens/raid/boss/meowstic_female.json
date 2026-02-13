@@ -1,6 +1,7 @@
 {
     "pokemon": {
         "species": "meowstic",
+        "gender": "FEMALE",
         "moves": [
             "psyshock",
             "disarmingvoice",
@@ -10,5 +11,5 @@
     },
     "raid_tier": "TIER_FOUR",
     "raid_type": "PSYCHIC",
-    "weight": 20.0
+    "weight": 10.0
 }
