@@ -21,6 +21,7 @@ public class RaidBossAdditions {
     private Integer priority;
     private List<String> include;
     private List<String> exclude;
+    @SuppressWarnings("all")
     private RaidBoss additions;
     private Boolean replace;
     private String suffix;
@@ -93,6 +94,7 @@ public class RaidBossAdditions {
             getMarks(this.additions()).ifPresent(boss::setMarks);
             getLives(this.additions()).ifPresent(boss::setLives);
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
+            getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
 
             boss.clearCaches();
             boss.applyAspects();
@@ -226,6 +228,10 @@ public class RaidBossAdditions {
 
     private static Optional<Integer> getEnergy(RaidBoss boss) {
         return Optional.ofNullable(boss.getEnergy());
+    }
+
+    private static Optional<Float> getRequiredDamage(RaidBoss boss) {
+        return Optional.ofNullable(boss.getRequiredDamage());
     }
 
     static {

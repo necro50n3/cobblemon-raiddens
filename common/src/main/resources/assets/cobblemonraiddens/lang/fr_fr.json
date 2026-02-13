@@ -111,6 +111,7 @@
     "message.cobblemonraiddens.raid.no_host": "L’hôte n’a pas pu être contacté…",
     "message.cobblemonraiddens.raid.no_key": "Vous n’avez pas de clé d’Antre de Raid !",
     "message.cobblemonraiddens.raid.no_unique_key": "Vous avez besoin d’un objet spécial pour rejoindre ce raid !",
+
     "message.cobblemonraiddens.raid.not_participating": "Vous n’êtes pas inscrit au raid. Quittez et rejoignez à nouveau le salon.",
     "message.cobblemonraiddens.raid.pending_removal": "Veuillez attendre avant d’héberger un autre raid.",
     "message.cobblemonraiddens.raid.player_cleared": "Vous avez déjà terminé ce raid.",

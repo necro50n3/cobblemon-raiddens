@@ -301,14 +301,28 @@ public class RaidInstance {
         int catches = this.raidBoss.getMaxCatches();
         List<ServerPlayer> success;
         List<ServerPlayer> failed;
+        List<ServerPlayer> noItems = new ArrayList<>();
+
+        List<ServerPlayer> players = new ArrayList<>(this.activePlayers);
+        Iterator<ServerPlayer> iter = players.iterator();
+        if (this.raidBoss.getRequiredDamage() > 0f) {
+            while (iter.hasNext()) {
+                ServerPlayer p = iter.next();
+                if (this.damageTracker.getOrDefault(p.getUUID(), 0f) / this.maxHealth < this.raidBoss.getRequiredDamage()) {
+                    noItems.add(p);
+                    iter.remove();
+                }
+            }
+        }
+
         if (catches == 0) {
             success = List.of();
-            failed = this.activePlayers;
+            failed = players;
         }
         else if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.SURVIVOR) {
             List<ServerPlayer> survivors = new ArrayList<>();
             failed = new ArrayList<>();
-            for (ServerPlayer player : this.activePlayers) {
+            for (ServerPlayer player : players) {
                 if (this.failedPlayers.contains(player.getUUID())) failed.add(player);
                 else survivors.add(player);
             }
@@ -320,14 +334,14 @@ public class RaidInstance {
             }
             else success = survivors;
         }
-        else if (catches < 0 || this.activePlayers.size() < catches) {
-            success = this.activePlayers;
+        else if (catches < 0 || players.size() < catches) {
+            success = players;
             failed = List.of();
         }
         else {
             this.sortPlayers();
-            success = this.activePlayers.subList(0, catches);
-            failed = this.activePlayers.subList(catches, this.activePlayers.size());
+            success = players.subList(0, catches);
+            failed = players.subList(catches, players.size());
         }
 
         Pokemon cachedReward;
@@ -348,6 +362,7 @@ public class RaidInstance {
         failed.forEach(player ->
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
         );
+        noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
     }
 
     private void sortPlayers() {

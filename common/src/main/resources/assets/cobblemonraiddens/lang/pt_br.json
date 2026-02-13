@@ -111,6 +111,7 @@
     "message.cobblemonraiddens.raid.no_host": "O anfitrião não pôde ser alcançado...",
     "message.cobblemonraiddens.raid.no_key": "Você não tem uma Chave da Toca de Raid!",
     "message.cobblemonraiddens.raid.no_unique_key": "Você precisa de um item especial para entrar nesta raid!",
+
     "message.cobblemonraiddens.raid.not_participating": "Você não se registrou para a raid. Saia e entre novamente no lobby.",
     "message.cobblemonraiddens.raid.pending_removal": "Por favor, aguarde antes de hospedar outra raid.",
     "message.cobblemonraiddens.raid.player_cleared": "Você já concluiu esta raid.",

@@ -28,4 +28,5 @@ public interface TierConfig {
     List<Mark> marks();
     int lives();
     int energy();
+    float requiredDamage();
 }

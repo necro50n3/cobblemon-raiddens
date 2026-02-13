@@ -111,6 +111,7 @@
     "message.cobblemonraiddens.raid.no_host": "The host could not be reached...",
     "message.cobblemonraiddens.raid.no_key": "You do not have a Raid Den Key!",
     "message.cobblemonraiddens.raid.no_unique_key": "You need a special item to join this raid!",
+    "message.cobblemonraiddens.raid.not_enough_damage": "You did not deal enough damage!",
     "message.cobblemonraiddens.raid.not_participating": "You have not registered for the raid. Leave and rejoin the lobby.",
     "message.cobblemonraiddens.raid.pending_removal": "Please wait before hosting another raid.",
     "message.cobblemonraiddens.raid.player_cleared": "You have already cleared this raid.",

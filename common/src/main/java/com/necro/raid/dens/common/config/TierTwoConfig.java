@@ -53,6 +53,8 @@ public class TierTwoConfig implements ConfigData, TierConfig {
     public int lives = 1;
     @Comment("How much raid energy is given from a cleared raid. Default: 1")
     public int energy = 1;
+    @Comment("The required damage contribution a player needs to do to get rewards. Default: 0.0")
+    public float required_damage = 0f;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -114,5 +116,8 @@ public class TierTwoConfig implements ConfigData, TierConfig {
     }
     public int energy() {
         return this.energy;
+    }
+    public float requiredDamage() {
+        return this.required_damage;
     }
 }

@@ -84,6 +84,8 @@ public class RaidBoss {
     private List<Mark> marks;
     private Integer lives;
     private Integer energy;
+    @SerializedName("required_damage")
+    private Float requiredDamage;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -97,7 +99,8 @@ public class RaidBoss {
                     RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
-                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Integer energy) {
+                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Integer energy,
+                    Float requiredDamage) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -123,6 +126,7 @@ public class RaidBoss {
         this.marks = marks;
         this.lives = lives;
         this.energy = energy;
+        this.requiredDamage = requiredDamage;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -157,6 +161,7 @@ public class RaidBoss {
         this.marks = null;
         this.lives = null;
         this.energy = null;
+        this.requiredDamage = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -209,6 +214,7 @@ public class RaidBoss {
         if (this.marks == null) this.marks = tierConfig.marks();
         if (this.lives == null) this.lives = tierConfig.lives();
         if (this.energy == null) this.energy = tierConfig.energy();
+        if (this.requiredDamage == null) this.requiredDamage = tierConfig.requiredDamage();
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
@@ -455,6 +461,10 @@ public class RaidBoss {
         return this.energy;
     }
 
+    public Float getRequiredDamage() {
+        return this.requiredDamage;
+    }
+
     public Species getDisplaySpecies() {
         if (this.displaySpecies == null) return null;
         return PokemonSpecies.getByIdentifier(this.displaySpecies);
@@ -596,6 +606,10 @@ public class RaidBoss {
         this.energy = energy;
     }
 
+    public void setRequiredDamage(Float requiredDamage) {
+        this.requiredDamage = requiredDamage;
+    }
+
     public void clearCaches() {
         this.cachedBossProperties = null;
         if (this.lootTable != null) this.lootTable.clearCache();
@@ -642,7 +656,8 @@ public class RaidBoss {
             this.raidAI,
             new ArrayList<>(this.marks),
             this.lives,
-            this.energy
+            this.energy,
+            this.requiredDamage
         );
     }
 
