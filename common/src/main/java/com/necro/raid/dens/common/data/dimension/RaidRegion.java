@@ -84,6 +84,7 @@ public class RaidRegion {
         for (int cx = chunkMinX; cx <= chunkMaxX; cx++) {
             for (int cz = chunkMinZ; cz <= chunkMaxZ; cz++) {
                 LevelChunk chunk = level.getChunk(cx, cz);
+                chunk.getBlockEntities().keySet().forEach(chunk::removeBlockEntity);
 
                 LevelChunkSection[] sections = chunk.getSections();
                 for (int i = 0; i < sections.length; i++) {
@@ -96,10 +97,11 @@ public class RaidRegion {
                             new PalettedContainer<>(Block.BLOCK_STATE_REGISTRY, Blocks.AIR.defaultBlockState(), PalettedContainer.Strategy.SECTION_STATES),
                             new PalettedContainer<>(registry.asHolderIdMap(), registry.getHolderOrThrow(ModDimensions.RAID_DIM_BIOME), PalettedContainer.Strategy.SECTION_BIOMES)
                         );
-                        chunk.getBlockEntities().keySet().forEach(chunk::removeBlockEntity);
                         section.recalcBlockCounts();
                     }
                 }
+                chunk.initializeLightSources();
+                level.getChunkSource().getLightEngine().lightChunk(chunk, false);
                 chunk.setUnsaved(true);
             }
         }
