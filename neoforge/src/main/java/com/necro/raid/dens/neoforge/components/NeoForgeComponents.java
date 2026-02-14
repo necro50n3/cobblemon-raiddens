@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.List;
 import java.util.function.UnaryOperator;
 
 public class NeoForgeComponents {
@@ -25,13 +24,7 @@ public class NeoForgeComponents {
         ModComponents.TIER_COMPONENT = (Holder<DataComponentType<RaidTier>>) (Object) registerComponent("raid_tier", RaidTier.codec());
         ModComponents.FEATURE_COMPONENT = (Holder<DataComponentType<RaidFeature>>) (Object) registerComponent("raid_feature", RaidFeature.codec());
         ModComponents.TYPE_COMPONENT = (Holder<DataComponentType<RaidType>>) (Object) registerComponent("raid_type", RaidType.codec());
-
-        ModComponents.UUID_COMPONENT = (Holder<DataComponentType<String>>) (Object) registerComponent("raid_uuid", Codec.STRING);
-        ModComponents.BUCKET_COMPONENT = (Holder<DataComponentType<ResourceLocation>>) (Object) registerComponent("raid_bucket", ResourceLocation.CODEC);
         ModComponents.BOSS_COMPONENT = (Holder<DataComponentType<ResourceLocation>>) (Object) registerComponent("raid_boss", ResourceLocation.CODEC);
-        ModComponents.RAID_CLEAR_COMPONENT = (Holder<DataComponentType<Integer>>) (Object) registerComponent("raid_cleared", Codec.INT);
-        ModComponents.LAST_RESET_COMPONENT = (Holder<DataComponentType<Long>>) (Object) registerComponent("last_reset", Codec.LONG);
-        ModComponents.ASPECTS_COMPONENT = (Holder<DataComponentType<List<String>>>) (Object) registerComponent("raid_aspects", Codec.STRING.listOf());
 
         ModComponents.RAID_DEN_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerComponent("raid_den_key", Codec.BOOL);
         ModComponents.REMOTE_KEY = (Holder<DataComponentType<Boolean>>) (Object) registerComponent("remote_key", Codec.BOOL);

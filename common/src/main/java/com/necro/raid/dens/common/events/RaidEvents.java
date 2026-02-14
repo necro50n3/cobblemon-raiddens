@@ -41,7 +41,7 @@ public class RaidEvents {
             ItemStack raidShard = null;
             for (int i = 0; i <= Inventory.SLOT_OFFHAND; i++) {
                 ItemStack itemStack = inventory.getItem(i);
-                if (itemStack.is(ModItems.RAID_SHARD)) {
+                if (itemStack.is(ModItems.RAID_SHARD) && itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) < CobblemonRaidDens.CONFIG.required_energy) {
                     raidShard = itemStack;
                     break;
                 }
@@ -51,7 +51,7 @@ public class RaidEvents {
             TierConfig config = CobblemonRaidDens.TIER_CONFIG.get(event.getRaidBoss().getTier());
             raidShard.set(
                 ModComponents.RAID_ENERGY.value(),
-                raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy()
+                Math.min(raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy(), CobblemonRaidDens.CONFIG.required_energy)
             );
 
             return Unit.INSTANCE;

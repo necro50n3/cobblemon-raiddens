@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -16,6 +15,8 @@ import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -26,6 +27,7 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -47,9 +49,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidType> RAID_TYPE = EnumProperty.create("raid_type", RaidType.class);
@@ -208,11 +208,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = blockState.setValue(IS_NATURAL, false);
 
         ItemStack itemStack = context.getItemInHand();
-        RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
+        CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (data == null) return blockState;
+        CompoundTag tag = data.copyTag();
+
+        RaidBoss boss = RaidRegistry.getRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")));
         if (boss != null) {
             blockState = blockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
-
-            int clears = itemStack.getOrDefault(ModComponents.RAID_CLEAR_COMPONENT.value(), 0);
+            int clears = tag.getInt("raid_cleared");
             if (clears >= boss.getMaxClears()) blockState = blockState.setValue(ACTIVE, false);
         }
 
@@ -223,35 +226,20 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public void setPlacedBy(Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
         if (level.isClientSide) return;
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return;
+        if (blockEntity == null) return;
 
-        String uuid = itemStack.get(ModComponents.UUID_COMPONENT.value());
-        ResourceLocation bucket = itemStack.get(ModComponents.BUCKET_COMPONENT.value());
-        ResourceLocation boss = itemStack.get(ModComponents.BOSS_COMPONENT.value());
-        Integer clears = itemStack.get(ModComponents.RAID_CLEAR_COMPONENT.value());
-        Long lastReset = itemStack.get(ModComponents.LAST_RESET_COMPONENT.value());
-        List<String> aspects = itemStack.get(ModComponents.ASPECTS_COMPONENT.value());
-
-        if (uuid != null) raidCrystal.setUuid(UUID.fromString(uuid));
-        if (bucket != null) raidCrystal.setRaidBucket(bucket);
-        if (boss != null) raidCrystal.setRaidBoss(boss, lastReset == null ? 0 : lastReset);
-        if (clears != null) raidCrystal.setClears(clears);
-        if (aspects != null) raidCrystal.setAspects(new HashSet<>(aspects));
+        CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (data != null) blockEntity.loadCustomOnly(data.copyTag(), level.registryAccess());
     }
 
     @Override
     protected @NotNull List<ItemStack> getDrops(@NotNull BlockState blockState, LootParams.@NotNull Builder builder) {
+        if (blockState.getValue(IS_NATURAL)) return List.of();
         BlockEntity blockEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
-        if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return List.of();
-        else if (blockState.getValue(IS_NATURAL)) return List.of();
+        if (blockEntity == null || blockEntity.getLevel() == null) return List.of();
 
         ItemStack itemStack = new ItemStack(this);
-        itemStack.set(ModComponents.UUID_COMPONENT.value(), raidCrystal.getUuid().toString());
-        if (raidCrystal.getRaidBucketLocation() != null) itemStack.set(ModComponents.BUCKET_COMPONENT.value(), raidCrystal.getRaidBucketLocation());
-        if (raidCrystal.getRaidBossLocation() != null) itemStack.set(ModComponents.BOSS_COMPONENT.value(), raidCrystal.getRaidBossLocation());
-        itemStack.set(ModComponents.RAID_CLEAR_COMPONENT.value(), raidCrystal.getClears());
-        itemStack.set(ModComponents.LAST_RESET_COMPONENT.value(), raidCrystal.getLastReset());
-        if (raidCrystal.getAspects() != null) itemStack.set(ModComponents.ASPECTS_COMPONENT.value(), raidCrystal.getAspects().stream().toList());
+        blockEntity.saveToItem(itemStack, blockEntity.getLevel().registryAccess());
         return List.of(itemStack);
     }
 
