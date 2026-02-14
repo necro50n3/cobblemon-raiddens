@@ -136,7 +136,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private ResourceLocation generateFromBucket(Level level, BlockState blockState, RaidCycleMode cycleMode) {
         if (this.raidBucket == null) this.raidBucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(this.getBlockPos()));
         if (this.raidBucket == null) return this.generateRandom(level, blockState, cycleMode);
-        ResourceLocation boss = RaidBucketRegistry.getBucket(this.raidBucket).getRandomRaidBoss(level.getRandom(), level);
+        RaidBucket bucket = RaidBucketRegistry.getBucket(this.raidBucket);
+        if (bucket == null) {
+            this.raidBucket = null;
+            return this.generateFromBucket(level, blockState, cycleMode);
+        }
+        ResourceLocation boss = bucket.getRandomRaidBoss(level.getRandom(), level);
         return boss == null ? this.generateRandom(level, blockState, cycleMode) : boss;
     }
 
