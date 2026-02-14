@@ -130,7 +130,7 @@ public class RaidBossAdditions {
         return this.suffix;
     }
 
-    private boolean forceApply() {
+    public boolean forceApply() {
         return this.forceApply;
     }
 

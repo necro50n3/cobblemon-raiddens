@@ -25,10 +25,11 @@ public class RaidRegistry {
     public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
 
     public static void register(RaidBoss raidBoss) {
-        int index = RAID_LIST.size();
-        RAID_LIST.add(raidBoss.getId());
-        RAID_LOOKUP.put(raidBoss.getId(), raidBoss);
-        RAID_INDEX.put(raidBoss.getId(), index);
+        if (RAID_LOOKUP.put(raidBoss.getId(), raidBoss) == null) {
+            int index = RAID_LIST.size();
+            RAID_LIST.add(raidBoss.getId());
+            RAID_INDEX.put(raidBoss.getId(), index);
+        }
     }
 
     public static void registerAll() {
