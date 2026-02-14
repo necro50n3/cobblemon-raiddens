@@ -1,9 +1,6 @@
 {
     "replace": false,
     "values": [
-        {
-            "id": "cobblemonraiddens:meowstic_male",
-            "required": false
-        }
+        "cobblemonraiddens:meowstic_male"
     ]
 }
