@@ -3,14 +3,11 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.network.packets.RaidBossSyncPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
-import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -54,7 +51,6 @@ public class ModEvents {
     public static void onServerStart(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
         RaidHelper.initHelper(server);
-
         RaidBucketRegistry.init(server);
     }
 
@@ -99,6 +95,6 @@ public class ModEvents {
     @SubscribeEvent
     public static void onDataPackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) return;
-        NetworkMessages.sendPacketToPlayer(event.getPlayer(), new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+        RaidDenNetworkMessages.SYNC_REGISTRY.accept(event.getPlayer());
     }
 }

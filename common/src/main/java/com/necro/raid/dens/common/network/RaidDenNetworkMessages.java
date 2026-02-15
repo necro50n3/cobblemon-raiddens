@@ -20,4 +20,5 @@ public class RaidDenNetworkMessages {
     public static Runnable LEAVE_RAID;
     public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
     public static Consumer<Boolean> REWARD_RESPONSE;
+    public static Consumer<ServerPlayer> SYNC_REGISTRY;
 }

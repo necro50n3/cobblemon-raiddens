@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -54,6 +55,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
+        RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
