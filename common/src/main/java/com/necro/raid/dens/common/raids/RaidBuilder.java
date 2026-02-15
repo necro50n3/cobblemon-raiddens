@@ -33,7 +33,7 @@ public class RaidBuilder {
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
-            Cobblemon.config.getDefaultFleeDistance(), boss.getRaidAI().create()
+            Cobblemon.config.getDefaultFleeDistance() * 5, boss.getRaidAI().create()
         );
         Pokemon transformTarget = ((ITransformer) pokemonEntity).crd_getTransformTarget();
         if (transformTarget != null) ((ITransformer) (BattleActor) wildActor).crd_setTransformTarget(transformTarget);

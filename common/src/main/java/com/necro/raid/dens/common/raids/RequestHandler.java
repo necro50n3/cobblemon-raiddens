@@ -30,8 +30,4 @@ public class RequestHandler {
     public void removePlayer(Player player) {
         this.players.remove(player.getName().getString());
     }
-
-    public int getPlayerCount() {
-        return players.size() + 1;
-    }
 }
