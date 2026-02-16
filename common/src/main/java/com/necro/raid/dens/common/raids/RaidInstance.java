@@ -61,6 +61,7 @@ public class RaidInstance {
     private float currentHealth;
     private float maxHealth;
     private final float initMaxHealth;
+    private int sharedLives;
     private final Map<Integer, List<ShowdownEvent>> scriptByTurn;
     private final NavigableMap<Double, List<ShowdownEvent>> scriptByHp;
 
@@ -95,6 +96,7 @@ public class RaidInstance {
         this.maxHealth = this.raidBoss.getHealthMulti() * this.bossEntity.getPokemon().getMaxHealth();
         this.currentHealth = this.maxHealth;
         this.initMaxHealth = this.maxHealth;
+        this.sharedLives = this.raidBoss.getLives();
 
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
@@ -191,8 +193,7 @@ public class RaidInstance {
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) {
-            RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
-            if (ignoreLives || raidPlayer.loseLife()) this.failedPlayers.add(player.getUUID());
+            if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
         }
 
@@ -209,6 +210,19 @@ public class RaidInstance {
 
     public void removePlayer(ServerPlayer player) {
         this.removePlayer(player, null, true);
+    }
+
+    private boolean loseLife(UUID player) {
+        if (this.raidBoss.getPlayersShareLives()) return --this.sharedLives <= 0;
+        else if (!this.playerMap.containsKey(player)) return true;
+        else return this.playerMap.get(player).loseLife();
+    }
+
+    @SuppressWarnings("unused")
+    public int getLife(UUID player) {
+        if (this.raidBoss.getPlayersShareLives()) return this.sharedLives;
+        RaidPlayer raidPlayer = this.playerMap.get(player);
+        return raidPlayer == null ? 0 : raidPlayer.lives;
     }
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {

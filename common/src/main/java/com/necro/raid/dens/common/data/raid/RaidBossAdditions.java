@@ -93,6 +93,7 @@ public class RaidBossAdditions {
             getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
             getMarks(this.additions()).ifPresent(boss::setMarks);
             getLives(this.additions()).ifPresent(boss::setLives);
+            getPlayersShareLives(this.additions()).ifPresent(boss::setPlayersShareLives);
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
             getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
 
@@ -224,6 +225,10 @@ public class RaidBossAdditions {
 
     private static Optional<Integer> getLives(RaidBoss boss) {
         return Optional.ofNullable(boss.getLives());
+    }
+
+    private static Optional<Boolean> getPlayersShareLives(RaidBoss boss) {
+        return Optional.ofNullable(boss.getPlayerShareLives());
     }
 
     private static Optional<Integer> getEnergy(RaidBoss boss) {

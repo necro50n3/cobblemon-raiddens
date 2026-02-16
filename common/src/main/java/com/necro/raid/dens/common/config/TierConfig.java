@@ -27,6 +27,7 @@ public interface TierConfig {
     RaidAI raidAI();
     List<Mark> marks();
     int lives();
+    boolean playersShareLives();
     int energy();
     float requiredDamage();
 }

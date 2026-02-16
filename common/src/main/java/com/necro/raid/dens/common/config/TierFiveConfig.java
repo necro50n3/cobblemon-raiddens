@@ -51,9 +51,11 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public String[] marks = {};
     @Comment("The number of lives a player has per raid battle. Default: 1")
     public int lives = 1;
+    @Comment("Whether all players share lives in raids. Default: false")
+    public boolean players_share_lives = false;
     @Comment("How much raid energy is given from a cleared raid. Default: 10")
     public int energy = 10;
-    @Comment("The required damage contribution a player needs to do to get rewards. Default: 0.0")
+    @Comment("The required damage percentage contribution a player needs to do to get rewards. Default: 0.0")
     public float required_damage = 0f;
 
     public boolean requiresKey() {
@@ -113,6 +115,9 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     }
     public int lives() {
         return this.lives;
+    }
+    public boolean playersShareLives() {
+        return this.players_share_lives;
     }
     public int energy() {
         return this.energy;

@@ -83,6 +83,8 @@ public class RaidBoss {
     private RaidAI raidAI;
     private List<Mark> marks;
     private Integer lives;
+    @SerializedName("players_share_lives")
+    private Boolean playersShareLives;
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
@@ -99,8 +101,8 @@ public class RaidBoss {
                     RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
-                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Integer energy,
-                    Float requiredDamage) {
+                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
+                    Integer energy, Float requiredDamage) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -125,6 +127,7 @@ public class RaidBoss {
         this.raidAI = raidAI;
         this.marks = marks;
         this.lives = lives;
+        this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
 
@@ -160,6 +163,7 @@ public class RaidBoss {
         this.raidAI = null;
         this.marks = null;
         this.lives = null;
+        this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
 
@@ -213,6 +217,7 @@ public class RaidBoss {
         if (this.raidAI == null) this.raidAI = tierConfig.raidAI();
         if (this.marks == null) this.marks = tierConfig.marks();
         if (this.lives == null) this.lives = tierConfig.lives();
+        if (this.playersShareLives == null) this.playersShareLives = tierConfig.playersShareLives();
         if (this.energy == null) this.energy = tierConfig.energy();
         if (this.requiredDamage == null) this.requiredDamage = tierConfig.requiredDamage();
 
@@ -457,6 +462,10 @@ public class RaidBoss {
         return this.lives;
     }
 
+    public Boolean getPlayersShareLives() {
+        return this.playersShareLives;
+    }
+
     public Integer getEnergy() {
         return this.energy;
     }
@@ -602,6 +611,10 @@ public class RaidBoss {
         this.lives = lives;
     }
 
+    public void setPlayersShareLives(Boolean playersShareLives) {
+        this.playersShareLives = playersShareLives;
+    }
+
     public void setEnergy(Integer energy) {
         this.energy = energy;
     }
@@ -656,6 +669,7 @@ public class RaidBoss {
             this.raidAI,
             new ArrayList<>(this.marks),
             this.lives,
+            this.playersShareLives,
             this.energy,
             this.requiredDamage
         );
