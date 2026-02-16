@@ -228,7 +228,7 @@ public class RaidBossAdditions {
     }
 
     private static Optional<Boolean> getPlayersShareLives(RaidBoss boss) {
-        return Optional.ofNullable(boss.getPlayerShareLives());
+        return Optional.ofNullable(boss.getPlayersShareLives());
     }
 
     private static Optional<Integer> getEnergy(RaidBoss boss) {
