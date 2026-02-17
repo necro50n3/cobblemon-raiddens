@@ -78,7 +78,7 @@ public class RaidInstance {
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
         this.raidBoss = ((IRaidAccessor) entity).crd_getRaidBoss();
         this.bossEvent = new ServerBossEvent(
-            ((MutableComponent) entity.getName()).withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE),
+            this.bossBarName(entity, raidBoss),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
         this.timerEvent = new ServerBossEvent(
@@ -555,6 +555,14 @@ public class RaidInstance {
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
         RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
+    }
+
+    private Component bossBarName(PokemonEntity entity, RaidBoss raidBoss) {
+        MutableComponent entityName = (MutableComponent) entity.getName();
+        if (raidBoss.getBossBarName() != null) {
+            entityName = (MutableComponent) Component.translatable(raidBoss.getBossBarName(), entity.getName());
+        }
+        return entityName.withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE);
     }
 
     private static class DelayedRunnable {

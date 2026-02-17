@@ -88,6 +88,8 @@ public class RaidBoss {
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
+    @SerializedName("boss_bar_name")
+    private String bossBarName;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -102,7 +104,7 @@ public class RaidBoss {
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
                     Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
-                    Integer energy, Float requiredDamage) {
+                    Integer energy, Float requiredDamage, String bossBarName) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -130,6 +132,7 @@ public class RaidBoss {
         this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
+        this.bossBarName = bossBarName;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -166,6 +169,7 @@ public class RaidBoss {
         this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
+        this.bossBarName = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -504,6 +508,10 @@ public class RaidBoss {
         else return this.densActual.get(random.nextInt(this.densActual.size()));
     }
 
+    public String getBossBarName() {
+        return this.bossBarName;
+    }
+
     private void resolveDens() {
         List<ResourceLocation> validDens = new ArrayList<>();
         for (String value : this.den) {
@@ -671,7 +679,8 @@ public class RaidBoss {
             this.lives,
             this.playersShareLives,
             this.energy,
-            this.requiredDamage
+            this.requiredDamage,
+            this.bossBarName
         );
     }
 
