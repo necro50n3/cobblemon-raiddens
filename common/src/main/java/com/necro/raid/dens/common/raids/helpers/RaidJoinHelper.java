@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.raids.helpers;
 
 import com.necro.raid.dens.common.util.ComponentUtils;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.nbt.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +84,7 @@ public class RaidJoinHelper {
 
     public static void onPlayerDisconnect(Player player) {
         refundItem(player);
-        removeParticipant(player);
+        RaidUtils.leaveRaid(player);
     }
 
     private static void refundItem(Player player) {

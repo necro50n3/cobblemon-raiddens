@@ -3,7 +3,6 @@ package com.necro.raid.dens.fabric.events;
 import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
@@ -17,7 +16,6 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
-        RaidHelper.teleportFromRaid(player);
         if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
@@ -27,11 +25,6 @@ public class ModEvents {
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
         RaidJoinHelper.onPlayerDisconnect(player);
-        RequestHandler request = RaidHelper.getRequest(player);
-        RaidHelper.removeRequests(player.getUUID());
-        if (request != null) {
-            server.execute(() -> request.getBlockEntity().closeRaid());
-        }
     }
 
     public static void initRaidHelper(MinecraftServer server) {

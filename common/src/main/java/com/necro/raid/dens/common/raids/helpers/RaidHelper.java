@@ -6,8 +6,6 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.RewardHandler;
-import com.necro.raid.dens.common.util.IRaidTeleporter;
-import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
@@ -93,12 +91,6 @@ public class RaidHelper extends SavedData {
         RaidState state = INSTANCE.RAID_CLOSE_QUEUE.remove(raid);
         INSTANCE.setDirty();
         return state;
-    }
-
-    public static void teleportFromRaid(ServerPlayer player) {
-        RaidUtils.leaveRaid(player);
-        if (RaidUtils.isRaidDimension(player.level())) ((IRaidTeleporter) player).crd_returnHome();
-        else ((IRaidTeleporter) player).crd_clearHome();
     }
 
     public static void onServerClose(MinecraftServer server) {
