@@ -30,7 +30,6 @@ import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -558,11 +557,10 @@ public class RaidInstance {
     }
 
     private Component bossBarText(PokemonEntity entity, RaidBoss raidBoss) {
+        if (raidBoss.getBossBarText() != null) return raidBoss.getBossBarText();
+    
         MutableComponent entityName = (MutableComponent) entity.getName();
-        if (raidBoss.getBossBarText() != null) {
-            return ComponentUtils.fromJsonText(raidBoss.getBossBarText());
-        }
-        return entityName.withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE);
+        return ComponentUtils.getRaidBossDefault(entityName);
     }
 
     private static class DelayedRunnable {
