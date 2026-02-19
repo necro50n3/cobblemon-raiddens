@@ -78,7 +78,7 @@ public class RaidInstance {
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
         this.raidBoss = ((IRaidAccessor) entity).crd_getRaidBoss();
         this.bossEvent = new ServerBossEvent(
-            this.bossBarName(entity, raidBoss),
+            this.bossBarText(entity, raidBoss),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
         this.timerEvent = new ServerBossEvent(
@@ -557,10 +557,10 @@ public class RaidInstance {
         RaidJoinHelper.removeParticipants(this.activePlayers);
     }
 
-    private Component bossBarName(PokemonEntity entity, RaidBoss raidBoss) {
+    private Component bossBarText(PokemonEntity entity, RaidBoss raidBoss) {
         MutableComponent entityName = (MutableComponent) entity.getName();
-        if (raidBoss.getBossBarName() != null) {
-            entityName = (MutableComponent) Component.translatable(raidBoss.getBossBarName(), entity.getName());
+        if (raidBoss.getBossBarText() != null) {
+            return ComponentUtils.fromJsonText(raidBoss.getBossBarText());
         }
         return entityName.withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.WHITE);
     }
