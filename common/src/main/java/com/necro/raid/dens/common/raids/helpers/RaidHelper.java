@@ -98,6 +98,7 @@ public class RaidHelper extends SavedData {
     public static void teleportFromRaid(ServerPlayer player) {
         RaidUtils.leaveRaid(player);
         if (RaidUtils.isRaidDimension(player.level())) ((IRaidTeleporter) player).crd_returnHome();
+        else ((IRaidTeleporter) player).crd_clearHome();
     }
 
     public static void onServerClose(MinecraftServer server) {

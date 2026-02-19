@@ -42,7 +42,8 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
 
     @Override
     public Vec3 crd_getHomePos() {
-        if (this.crd_homePos == null) return this.server.overworld().getSharedSpawnPos().getBottomCenter();
+        if (this.crd_homePos == null)
+            return this.server.overworld().getSharedSpawnPos().getBottomCenter();
         return this.crd_homePos;
     }
 
@@ -53,7 +54,8 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
 
     @Override
     public ServerLevel crd_getHomeLevel() {
-        if (this.crd_homeLevel == null) return this.server.overworld();
+        if (this.crd_homeLevel == null)
+            return this.server.overworld();
         return this.server.getLevel(ResourceKey.create(Registries.DIMENSION, this.crd_homeLevel));
     }
 
@@ -71,14 +73,17 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
     @Override
     public void crd_returnHome() {
         ServerLevel level = this.crd_getHomeLevel();
-        RaidUtils.teleportPlayerSafe((ServerPlayer) (Object) this, level, this.crd_getHomePos(), this.getYHeadRot(), this.getXRot());
+        RaidUtils.teleportPlayerSafe((ServerPlayer) (Object) this, level, this.crd_getHomePos(), this.getYHeadRot(),
+                this.getXRot());
         this.crd_clearHome();
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void hurtInject(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
-        if (!RaidUtils.isRaidDimension(this.level())) return;
-        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
+        if (!RaidUtils.isRaidDimension(this.level()))
+            return;
+        if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY))
+            return;
         cir.setReturnValue(false);
     }
 
@@ -93,11 +98,17 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
         if (this.crd_homeLevel != null) {
             compoundTag.putString("crd_level", this.crd_homeLevel.toString());
         }
+
+        if (this.crd_homePos != null && this.crd_homeLevel != null && RaidUtils.isRaidDimension(this.level())) {
+            compoundTag.put("Pos",
+                    this.newDoubleList(this.crd_homePos.x(), this.crd_homePos.y(), this.crd_homePos.z()));
+            compoundTag.putString("Dimension", this.crd_homeLevel.toString());
+        }
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     public void readAdditionalSaveDataInject(CompoundTag compoundTag, CallbackInfo ci) {
-        if (compoundTag.contains("crdb_pos_x")) {
+        if (compoundTag.contains("crd_pos_x")) {
             double x = compoundTag.getDouble("crd_pos_x");
             double y = compoundTag.getDouble("crd_pos_y");
             double z = compoundTag.getDouble("crd_pos_z");

@@ -3,6 +3,7 @@ package com.necro.raid.dens.neoforge.events;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
@@ -43,8 +44,13 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
-        RaidJoinHelper.onPlayerDisconnect(event.getEntity());
-        RaidHelper.teleportFromRaid((ServerPlayer) event.getEntity());
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        RaidJoinHelper.onPlayerDisconnect(player);
+        RequestHandler request = RaidHelper.getRequest(player);
+        RaidHelper.removeRequests(player.getUUID());
+        if (request != null) {
+            request.getBlockEntity().closeRaid();
+        }
     }
 
     @SubscribeEvent
