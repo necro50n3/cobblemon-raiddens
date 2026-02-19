@@ -31,6 +31,7 @@ import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -88,6 +89,8 @@ public class RaidBoss {
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
+    @SerializedName("boss_bar_text")
+    private Component bossBarText;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -102,7 +105,7 @@ public class RaidBoss {
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
                     Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
-                    Integer energy, Float requiredDamage) {
+                    Integer energy, Float requiredDamage, Component bossBarText) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -130,6 +133,7 @@ public class RaidBoss {
         this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
+        this.bossBarText = bossBarText;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -166,6 +170,7 @@ public class RaidBoss {
         this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
+        this.bossBarText = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -504,6 +509,10 @@ public class RaidBoss {
         else return this.densActual.get(random.nextInt(this.densActual.size()));
     }
 
+    public Component getBossBarText() {
+        return this.bossBarText;
+    }
+
     private void resolveDens() {
         List<ResourceLocation> validDens = new ArrayList<>();
         for (String value : this.den) {
@@ -671,7 +680,8 @@ public class RaidBoss {
             this.lives,
             this.playersShareLives,
             this.energy,
-            this.requiredDamage
+            this.requiredDamage,
+            this.bossBarText
         );
     }
 
@@ -683,6 +693,7 @@ public class RaidBoss {
             .registerTypeAdapter(Script.class, new ScriptAdapter())
             .registerTypeAdapter(UniqueKey.class, new UniqueKeyAdapter())
             .registerTypeAdapter(BossLootTable.class, new BossLootTableAdapter())
+            .registerTypeAdapter(Component.class, new RaidBossTextAdapter())
             .create();
     }
 }
