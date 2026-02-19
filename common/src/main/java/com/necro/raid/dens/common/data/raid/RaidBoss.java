@@ -88,8 +88,8 @@ public class RaidBoss {
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
-    @SerializedName("boss_bar_name")
-    private String bossBarName;
+    @SerializedName("boss_bar_text")
+    private String bossBarText;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -104,7 +104,7 @@ public class RaidBoss {
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
                     Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
-                    Integer energy, Float requiredDamage, String bossBarName) {
+                    Integer energy, Float requiredDamage, String bossBarText) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -132,7 +132,7 @@ public class RaidBoss {
         this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
-        this.bossBarName = bossBarName;
+        this.bossBarText = bossBarText;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -169,7 +169,7 @@ public class RaidBoss {
         this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
-        this.bossBarName = null;
+        this.bossBarText = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -508,8 +508,8 @@ public class RaidBoss {
         else return this.densActual.get(random.nextInt(this.densActual.size()));
     }
 
-    public String getBossBarName() {
-        return this.bossBarName;
+    public String getBossBarText() {
+        return this.bossBarText;
     }
 
     private void resolveDens() {
@@ -680,7 +680,7 @@ public class RaidBoss {
             this.playersShareLives,
             this.energy,
             this.requiredDamage,
-            this.bossBarName
+            this.bossBarText
         );
     }
 
