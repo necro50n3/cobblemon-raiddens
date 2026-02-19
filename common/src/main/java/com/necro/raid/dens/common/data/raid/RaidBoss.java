@@ -31,6 +31,7 @@ import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -89,7 +90,7 @@ public class RaidBoss {
     @SerializedName("required_damage")
     private Float requiredDamage;
     @SerializedName("boss_bar_text")
-    private String bossBarText;
+    private Component bossBarText;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -104,7 +105,7 @@ public class RaidBoss {
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
                     Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
                     Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
-                    Integer energy, Float requiredDamage, String bossBarText) {
+                    Integer energy, Float requiredDamage, Component bossBarText) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -508,7 +509,7 @@ public class RaidBoss {
         else return this.densActual.get(random.nextInt(this.densActual.size()));
     }
 
-    public String getBossBarText() {
+    public Component getBossBarText() {
         return this.bossBarText;
     }
 
@@ -692,6 +693,7 @@ public class RaidBoss {
             .registerTypeAdapter(Script.class, new ScriptAdapter())
             .registerTypeAdapter(UniqueKey.class, new UniqueKeyAdapter())
             .registerTypeAdapter(BossLootTable.class, new BossLootTableAdapter())
+            .registerTypeAdapter(Component.class, new RaidBossTextAdapter())
             .create();
     }
 }
