@@ -479,6 +479,10 @@ public class RaidBoss {
         return this.requiredDamage;
     }
 
+    public Component getBossBarText() {
+        return this.bossBarText;
+    }
+
     public Species getDisplaySpecies() {
         if (this.displaySpecies == null) return null;
         return PokemonSpecies.getByIdentifier(this.displaySpecies);
@@ -507,10 +511,6 @@ public class RaidBoss {
 
         if (this.densActual.size() == 1) return this.densActual.getFirst();
         else return this.densActual.get(random.nextInt(this.densActual.size()));
-    }
-
-    public Component getBossBarText() {
-        return this.bossBarText;
     }
 
     private void resolveDens() {
@@ -630,6 +630,10 @@ public class RaidBoss {
 
     public void setRequiredDamage(Float requiredDamage) {
         this.requiredDamage = requiredDamage;
+    }
+
+    public void setBossBarText(Component component) {
+        this.bossBarText = component;
     }
 
     public void clearCaches() {

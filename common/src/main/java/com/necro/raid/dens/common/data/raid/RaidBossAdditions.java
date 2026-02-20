@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
 import com.necro.raid.dens.common.registry.RaidRegistry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
@@ -96,6 +97,7 @@ public class RaidBossAdditions {
             getPlayersShareLives(this.additions()).ifPresent(boss::setPlayersShareLives);
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
             getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
+            getBossBarText(this.additions()).ifPresent(boss::setBossBarText);
 
             boss.clearCaches();
             boss.applyAspects();
@@ -237,6 +239,10 @@ public class RaidBossAdditions {
 
     private static Optional<Float> getRequiredDamage(RaidBoss boss) {
         return Optional.ofNullable(boss.getRequiredDamage());
+    }
+
+    private static Optional<Component> getBossBarText(RaidBoss boss) {
+        return Optional.ofNullable(boss.getBossBarText());
     }
 
     static {
