@@ -34,7 +34,6 @@ public class ModEvents {
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        RaidHelper.teleportFromRaid(player);
         if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
@@ -43,8 +42,8 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
-        RaidJoinHelper.onPlayerDisconnect(event.getEntity());
-        RaidHelper.teleportFromRaid((ServerPlayer) event.getEntity());
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        RaidJoinHelper.onPlayerDisconnect(player);
     }
 
     @SubscribeEvent

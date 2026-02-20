@@ -119,7 +119,10 @@ public class RaidUtils {
             leaveRaidFallback(player);
             return;
         }
-        else if (instance.getRaidState() != RaidState.NOT_STARTED) return;
+        else if (instance.getRaidState() != RaidState.NOT_STARTED) {
+            instance.removePlayer((ServerPlayer) player);
+            return;
+        }
 
         int players = level.getEntitiesOfClass(Player.class, region.bound(), p -> RaidJoinHelper.isParticipating(p, false)).size();
         if (players > (isRaidDimension(player.level()) ? 1 : 0)) return;

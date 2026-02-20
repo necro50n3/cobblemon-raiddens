@@ -16,7 +16,6 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
-        RaidHelper.teleportFromRaid(player);
         if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
             RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
         }
@@ -24,8 +23,8 @@ public class ModEvents {
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
-        RaidJoinHelper.onPlayerDisconnect(listener.getPlayer());
-        RaidHelper.teleportFromRaid(listener.getPlayer());
+        ServerPlayer player = listener.getPlayer();
+        RaidJoinHelper.onPlayerDisconnect(player);
     }
 
     public static void initRaidHelper(MinecraftServer server) {

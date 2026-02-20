@@ -4,10 +4,7 @@ import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
-import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
-import com.cobblemon.mod.common.battles.BagItemActionResponse;
-import com.cobblemon.mod.common.battles.PassActionResponse;
-import com.cobblemon.mod.common.battles.ShowdownActionResponse;
+import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
@@ -190,6 +187,8 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
+        if (!this.bossEvent.getPlayers().contains(player)) return;
+
         this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
@@ -208,7 +207,8 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player) {
-        this.removePlayer(player, null, true);
+        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+        this.removePlayer(player, battle, true);
     }
 
     private boolean loseLife(UUID player) {
