@@ -304,7 +304,9 @@ public class RaidBoss {
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
-        float scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getForm(pokemonEntity.getAspects()).getHeight(), 1.0f, 5.0f);
+        float scale;
+        if (this.isGmax(pokemon)) scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
+        else scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getForm(pokemonEntity.getAspects()).getHeight(), 1.0f, 5.0f);
         pokemonEntity.getPokemon().setScaleModifier(scale);
         pokemonEntity.refreshDimensions();
         pokemon.onChange(null);
@@ -341,7 +343,7 @@ public class RaidBoss {
         }
 
         if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-        if (this.raidFeature == RaidFeature.DYNAMAX && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon)) pokemon.setGmaxFactor(true);
+        if (this.isGmax(pokemon)) pokemon.setGmaxFactor(true);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         this.setMoveSet(properties, pokemon, false);
@@ -655,6 +657,10 @@ public class RaidBoss {
 
     public boolean isDynamax() {
         return this.raidFeature == RaidFeature.DYNAMAX;
+    }
+
+    public boolean isGmax(Pokemon pokemon) {
+        return this.isDynamax() && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon);
     }
 
     public RaidBoss copy() {
