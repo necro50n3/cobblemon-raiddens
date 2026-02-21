@@ -17,6 +17,7 @@ public class BlacklistConfig implements ConfigData {
     public String[] held_items = {};
     @Comment("List of blacklisted moves for the player in raid battles.")
     public String[] moves = {
+        "assist",
         "bestow",
         "circlethrow",
         "destinybond",
@@ -40,6 +41,7 @@ public class BlacklistConfig implements ConfigData {
         "simplebeam",
         "skillswap",
         "skydrop",
+        "sleeptalk",
         "superfang",
         "taunt",
         "torment",
