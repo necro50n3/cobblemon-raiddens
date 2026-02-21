@@ -79,6 +79,8 @@ public class RaidBossAdditions {
             getWeight(this.additions()).ifPresent(weight -> boss.setWeight(boss.getWeight() * weight));
             getDens(this.additions()).ifPresent(boss::setDens);
             getKey(this.additions()).ifPresent(boss::setKey);
+            getBossBarText(this.additions()).ifPresent(boss::setBossBarText);
+            getScale(this.additions()).ifPresent(boss::setScale);
 
             getMaxPlayers(this.additions()).ifPresent(boss::setMaxPlayers);
             getMaxClears(this.additions()).ifPresent(boss::setMaxClears);
@@ -97,7 +99,6 @@ public class RaidBossAdditions {
             getPlayersShareLives(this.additions()).ifPresent(boss::setPlayersShareLives);
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
             getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
-            getBossBarText(this.additions()).ifPresent(boss::setBossBarText);
 
             boss.clearCaches();
             boss.applyAspects();
@@ -173,6 +174,14 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getKey());
     }
 
+    private static Optional<Component> getBossBarText(RaidBoss boss) {
+        return Optional.ofNullable(boss.getBossBarText());
+    }
+
+    private static Optional<Float> getScale(RaidBoss boss) {
+        return Optional.ofNullable(boss.getScale());
+    }
+
     private static Optional<Integer> getMaxPlayers(RaidBoss boss) {
         return Optional.ofNullable(boss.getMaxPlayers());
     }
@@ -239,10 +248,6 @@ public class RaidBossAdditions {
 
     private static Optional<Float> getRequiredDamage(RaidBoss boss) {
         return Optional.ofNullable(boss.getRequiredDamage());
-    }
-
-    private static Optional<Component> getBossBarText(RaidBoss boss) {
-        return Optional.ofNullable(boss.getBossBarText());
     }
 
     static {

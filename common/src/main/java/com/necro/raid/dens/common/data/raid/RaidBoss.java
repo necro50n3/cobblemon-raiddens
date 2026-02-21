@@ -37,6 +37,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -59,6 +60,9 @@ public class RaidBoss {
     private Double weight;
     private List<String> den;
     private UniqueKey key;
+    @SerializedName("boss_bar_text")
+    private Component bossBarText;
+    private Float scale;
 
     @SerializedName("max_players")
     private Integer maxPlayers;
@@ -89,8 +93,6 @@ public class RaidBoss {
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
-    @SerializedName("boss_bar_text")
-    private Component bossBarText;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -102,10 +104,10 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
-                    Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize,
-                    Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches,
-                    Map<String, Script> script, RaidAI raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives,
-                    Integer energy, Float requiredDamage, Component bossBarText) {
+                    Component bossBarText, Float scale, Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers,
+                    Integer raidPartySize, Integer healthMulti, Float multiplayerHealthMulti, Float shinyRate,
+                    Integer currency, Integer maxCatches, Map<String, Script> script, RaidAI raidAI, List<Mark> marks,
+                    Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -115,6 +117,8 @@ public class RaidBoss {
         this.weight = weight;
         this.den = den;
         this.key = key;
+        this.bossBarText = bossBarText;
+        this.scale = scale;
 
         this.maxPlayers = maxPlayers;
         this.maxClears = maxClears;
@@ -133,7 +137,6 @@ public class RaidBoss {
         this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
-        this.bossBarText = bossBarText;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -152,6 +155,8 @@ public class RaidBoss {
         this.weight = null;
         this.den = null;
         this.key = null;
+        this.bossBarText = null;
+        this.scale = null;
 
         this.maxPlayers = null;
         this.maxClears = null;
@@ -170,7 +175,6 @@ public class RaidBoss {
         this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
-        this.bossBarText = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -304,14 +308,32 @@ public class RaidBoss {
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
-        float scale;
-        if (this.isGmax(pokemon)) scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getHeight(), 1.0f, 5.0f);
-        else scale = Mth.clamp(80f / pokemonEntity.getExposedSpecies().getForm(pokemonEntity.getAspects()).getHeight(), 1.0f, 5.0f);
-        pokemonEntity.getPokemon().setScaleModifier(scale);
+        pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
+
         pokemonEntity.refreshDimensions();
         pokemon.onChange(null);
 
         return pokemonEntity;
+    }
+
+    private float calculateScale(PokemonEntity pokemon) {
+        float height;
+        if (this.isGmax(pokemon.getPokemon())) height = pokemon.getExposedSpecies().getHeight();
+        else height = pokemon.getExposedSpecies().getForm(pokemon.getAspects()).getHeight();
+
+        EntityDimensions dimension = pokemon.getExposedSpecies().getForm(pokemon.getAspects()).getHitbox();
+        float hitbox = Math.max(dimension.height(), dimension.width() / 1.5F);
+        float baseScale = pokemon.getExposedSpecies().getForm(pokemon.getAspects()).getBaseScale();
+
+        float scaleFactor;
+        if (hitbox == 1F && baseScale == 1F) scaleFactor = height / 10F;
+        else scaleFactor = hitbox * baseScale;
+
+        return this.applyScaling(scaleFactor);
+    }
+
+    private float applyScaling(float scale) {
+        return Mth.clamp(10F / scale, 1.0F, 6.0F);
     }
 
     public Pokemon getRewardPokemon(ServerPlayer player) {
@@ -413,6 +435,14 @@ public class RaidBoss {
         return this.key;
     }
 
+    public Component getBossBarText() {
+        return this.bossBarText;
+    }
+
+    public Float getScale() {
+        return this.scale;
+    }
+
     public Integer getMaxPlayers() {
         return this.maxPlayers;
     }
@@ -479,10 +509,6 @@ public class RaidBoss {
 
     public Float getRequiredDamage() {
         return this.requiredDamage;
-    }
-
-    public Component getBossBarText() {
-        return this.bossBarText;
     }
 
     public Species getDisplaySpecies() {
@@ -566,6 +592,14 @@ public class RaidBoss {
         this.key = key;
     }
 
+    public void setBossBarText(Component component) {
+        this.bossBarText = component;
+    }
+
+    public void setScale(Float scale) {
+        this.scale = scale;
+    }
+
     public void setMaxPlayers(Integer maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
@@ -634,10 +668,6 @@ public class RaidBoss {
         this.requiredDamage = requiredDamage;
     }
 
-    public void setBossBarText(Component component) {
-        this.bossBarText = component;
-    }
-
     public void clearCaches() {
         this.cachedBossProperties = null;
         if (this.lootTable != null) this.lootTable.clearCache();
@@ -674,6 +704,8 @@ public class RaidBoss {
             this.weight,
             new ArrayList<>(this.den),
             this.key,
+            this.bossBarText,
+            this.scale,
             this.maxPlayers,
             this.maxClears,
             this.haRate,
@@ -690,8 +722,7 @@ public class RaidBoss {
             this.lives,
             this.playersShareLives,
             this.energy,
-            this.requiredDamage,
-            this.bossBarText
+            this.requiredDamage
         );
     }
 
