@@ -1,6 +1,5 @@
 package com.necro.raid.dens.fabric.events;
 
-import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
@@ -16,15 +15,17 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
-        if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
-            RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
-        }
-        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
+        server.execute(() -> {
+            if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
+                RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
+            }
+            if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
+        });
     }
 
     public static void onPlayerDisconnect(ServerGamePacketListenerImpl listener, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
-        RaidJoinHelper.onPlayerDisconnect(player);
+        server.execute(() -> RaidJoinHelper.onPlayerDisconnect(player));
     }
 
     public static void initRaidHelper(MinecraftServer server) {
@@ -45,7 +46,6 @@ public class ModEvents {
     }
 
     public static void clientTick(Minecraft client) {
-        ClientManager.clientTick();
         RaidDenGuiManager.tick();
     }
 

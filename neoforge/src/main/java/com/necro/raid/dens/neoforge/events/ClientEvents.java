@@ -1,7 +1,6 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.client.ClientManager;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
@@ -23,7 +22,6 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 public class ClientEvents {
     @SubscribeEvent
     public static void clientTick(ClientTickEvent.Post event) {
-        ClientManager.clientTick();
         RaidDenGuiManager.tick();
     }
 

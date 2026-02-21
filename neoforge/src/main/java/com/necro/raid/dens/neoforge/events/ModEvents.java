@@ -33,17 +33,19 @@ public class ModEvents {
 
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
-            RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
-        }
-        if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
+        if (!(event.getEntity() instanceof ServerPlayer player) || player.getServer() == null) return;
+        player.getServer().execute(() -> {
+            if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
+                RaidDenNetworkMessages.JOIN_RAID.accept(player, true);
+            }
+            if (RaidHelper.REWARD_QUEUE.containsKey(player.getUUID())) RaidHelper.REWARD_QUEUE.get(player.getUUID()).sendRewardMessage(player);
+        });
     }
 
     @SubscribeEvent
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        RaidJoinHelper.onPlayerDisconnect(player);
+        if (!(event.getEntity() instanceof ServerPlayer player) || player.getServer() == null) return;
+        player.getServer().execute(() -> RaidJoinHelper.onPlayerDisconnect(player));
     }
 
     @SubscribeEvent
