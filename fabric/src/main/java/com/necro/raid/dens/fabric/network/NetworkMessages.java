@@ -84,6 +84,6 @@ public class NetworkMessages {
     }
 
     private static void handle(ServerPacket packet, ServerPlayNetworking.Context context) {
-        packet.handleServer(context.player());
+        context.server().execute(() -> packet.handleServer(context.player()));
     }
 }
