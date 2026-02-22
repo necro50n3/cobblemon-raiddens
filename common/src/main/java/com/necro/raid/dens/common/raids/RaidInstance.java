@@ -496,7 +496,7 @@ public class RaidInstance {
     }
 
     public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
-        if (this.isFinished()) return;
+        if (this.isFinished() || this.battles.isEmpty()) return;
         if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
         else if (event instanceof TimerRaidEvent(int time)) this.initTimer(time * 20);
         else event.send(battle == null ? this.battles.getFirst() : battle);
