@@ -34,10 +34,6 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven {
-        name = "Terraformers"
-        url = "https://maven.terraformersmc.com/"
-    }
     mavenCentral()
 }
 
@@ -60,6 +56,16 @@ dependencies {
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
     modImplementation "curse.maven:carpet-349239:5425253"
+
+    modCompileOnly("mezz.jei:jei-1.21.1-fabric-api:19.27.0.340")
+    // modRuntimeOnly("mezz.jei:jei-1.21.1-fabric:19.27.0.340")
+
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:16.0.799"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:16.0.799"
+
+    modCompileOnly "dev.emi:emi-fabric:1.1.22+1.21.1:api"
+    // modRuntimeOnly "dev.emi:emi-fabric:1.1.22+1.21.1"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

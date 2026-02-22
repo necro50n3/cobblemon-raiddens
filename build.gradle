@@ -50,6 +50,11 @@ subprojects {
                 includeGroup "mcp.mobius.waila"
             }
         }
+        maven { url "https://maven.blamejared.com/" }
+        maven {
+            name = "Terraformers"
+            url = "https://maven.terraformersmc.com/"
+        }
     }
 
     dependencies {

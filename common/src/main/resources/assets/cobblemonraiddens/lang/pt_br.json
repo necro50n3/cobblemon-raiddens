@@ -166,5 +166,6 @@
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup da Raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup da Raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Status da Raid X (%)",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)"
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)",
+
 }

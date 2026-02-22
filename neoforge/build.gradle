@@ -64,6 +64,16 @@ dependencies {
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
     modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 
+    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:19.27.0.340")
+    modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:19.27.0.340")
+
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:16.0.799"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:16.0.799"
+    // modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:16.0.799"
+
+    modCompileOnly "dev.emi:emi-neoforge:1.1.22+1.21.1:api"
+    // modRuntimeOnly "dev.emi:emi-neoforge:1.1.22+1.21.1"
+
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }

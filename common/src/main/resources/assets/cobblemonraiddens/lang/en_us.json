@@ -166,5 +166,6 @@
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Raid Popup X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Raid Popup Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Raid Status X (%)",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Raid Status Y (%)"
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Raid Status Y (%)",
+    "xei.cobblemonraiddens.raid_shard": "Clear raids with this in your inventory to slowly gain Raid Energy. Once the raid shard is full, right clicking it will transform it into a Raid Den Crystal, which can be placed in the world."
 }

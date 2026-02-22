@@ -35,6 +35,13 @@ dependencies {
     modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:7257752"
     modCompileOnly "dev.architectury:architectury:13.0.8"
 
+    modCompileOnly("mezz.jei:jei-1.21.1-common-api:19.27.0.340")
+
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:16.0.799"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:16.0.799"
+
+    compileOnly "dev.emi:emi-xplat-mojmap:1.1.22+1.21.1:api"
+
     include(modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version")
 }
 
