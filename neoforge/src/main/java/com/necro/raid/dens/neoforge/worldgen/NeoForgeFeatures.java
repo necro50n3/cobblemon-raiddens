@@ -3,6 +3,7 @@ package com.necro.raid.dens.neoforge.worldgen;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.worldgen.ModFeatures;
 import com.necro.raid.dens.common.worldgen.RaidDenFeature;
+import com.necro.raid.dens.common.worldgen.RaidDenFeatureIgnoreSky;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -17,10 +18,12 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 public class NeoForgeFeatures {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, CobblemonRaidDens.MOD_ID);
     public static final ResourceKey<BiomeModifier> ADD_RAID_DENS = registerKey("add_raid_dens");
+    public static final ResourceKey<BiomeModifier> ADD_RAID_DENS_IGNORE_SKY = registerKey("add_raid_dens_ignore_sky");
 
     @SuppressWarnings("unchecked")
     public static void registerFeatures() {
         ModFeatures.RAID_DEN_FEATURE = (Holder<Feature<BlockStateConfiguration>>) (Object) FEATURES.register("raid_den_feature", RaidDenFeature::new);
+        ModFeatures.RAID_DEN_FEATURE_IGNORE_SKY = (Holder<Feature<BlockStateConfiguration>>) (Object) FEATURES.register("raid_den_feature_ignore_sky", RaidDenFeatureIgnoreSky::new);
     }
 
     private static ResourceKey<BiomeModifier> registerKey(String name) {

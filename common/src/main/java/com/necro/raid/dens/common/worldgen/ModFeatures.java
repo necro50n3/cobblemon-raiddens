@@ -11,7 +11,12 @@ import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfi
 
 public class ModFeatures {
     public static Holder<Feature<BlockStateConfiguration>> RAID_DEN_FEATURE;
+    public static Holder<Feature<BlockStateConfiguration>> RAID_DEN_FEATURE_IGNORE_SKY;
+
     public static final TagKey<Biome> RAID_SPAWNABLE = TagKey.create(
         Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_spawnable")
+    );
+    public static final TagKey<Biome> RAID_SPAWNABLE_IGNORE_SKY = TagKey.create(
+        Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_spawnable_ignore_sky")
     );
 }

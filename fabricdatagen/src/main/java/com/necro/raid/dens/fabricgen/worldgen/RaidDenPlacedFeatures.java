@@ -7,6 +7,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -16,14 +17,24 @@ import java.util.List;
 
 public class RaidDenPlacedFeatures {
     public static final ResourceKey<PlacedFeature> RAID_DEN_PLACED_KEY = registerKey("raid_den_placed");
+    public static final ResourceKey<PlacedFeature> RAID_DEN_PLACED_IGNORE_SKY_KEY = registerKey("raid_den_placed_ignore_sky");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         var configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
         register(context, RAID_DEN_PLACED_KEY,
             configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_KEY),
-            RarityFilter.onAverageOnceEvery(256), InSquarePlacement.spread(),
-            PlacementUtils.HEIGHTMAP, BiomeFilter.biome()
+            RarityFilter.onAverageOnceEvery(256),
+            InSquarePlacement.spread(),
+            PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+            BiomeFilter.biome()
+        );
+
+        register(context, RAID_DEN_PLACED_IGNORE_SKY_KEY,
+            configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_IGNORE_SKY_KEY),
+            RarityFilter.onAverageOnceEvery(128),
+            HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(30), VerticalAnchor.belowTop(30)),
+            BiomeFilter.biome()
         );
     }
 

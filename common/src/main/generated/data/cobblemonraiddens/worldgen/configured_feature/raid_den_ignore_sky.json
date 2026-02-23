@@ -1,0 +1,16 @@
+{
+  "type": "cobblemonraiddens:raid_den_feature_ignore_sky",
+  "config": {
+    "state": {
+      "Name": "cobblemonraiddens:raid_crystal_block",
+      "Properties": {
+        "can_reset": "true",
+        "cycle_mode": "config",
+        "is_active": "true",
+        "is_natural": "true",
+        "raid_tier": "tier_one",
+        "raid_type": "stellar"
+      }
+    }
+  }
+}

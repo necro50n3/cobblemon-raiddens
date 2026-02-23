@@ -11,9 +11,9 @@ import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,9 +40,13 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         BlockPos blockPos = context.origin();
         BlockState blockState = context.config().state;
 
+        CobblemonRaidDens.LOGGER.info("Running spawn at {}", blockPos);
+
         if (level.isClientSide()) return false;
-        else if (!RaidUtils.hasSkyAccess(level, blockPos)) return false;
-        else if (!level.getBlockState(blockPos.below()).isSolidRender(level, blockPos.below())) return false;
+        blockPos = this.checkAdditionalRequirements(level, blockPos);
+        if (blockPos == null) return false;
+
+        CobblemonRaidDens.LOGGER.info("Success! at {}", blockPos);
 
         RaidCycleMode cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
         ResourceLocation bucket = null;
@@ -79,5 +83,11 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, raidBoss));
         return true;
+    }
+
+    protected BlockPos checkAdditionalRequirements(WorldGenLevel level, BlockPos blockPos) {
+        if (!level.isEmptyBlock(blockPos)) return null;
+        else if (!level.getBlockState(blockPos.below()).isFaceSturdy(level, blockPos.below(), Direction.UP)) return null;
+        return blockPos;
     }
 }

@@ -14,9 +14,13 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 
 public class RaidDenConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RAID_DEN_KEY = registerKey("raid_den");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RAID_DEN_IGNORE_SKY_KEY = registerKey("raid_den_ignore_sky");
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         register(context, RAID_DEN_KEY, ModFeatures.RAID_DEN_FEATURE.value(),
+            new BlockStateConfiguration(FabricBlocks.RAID_CRYSTAL_BLOCK.defaultBlockState())
+        );
+        register(context, RAID_DEN_IGNORE_SKY_KEY, ModFeatures.RAID_DEN_FEATURE_IGNORE_SKY.value(),
             new BlockStateConfiguration(FabricBlocks.RAID_CRYSTAL_BLOCK.defaultBlockState())
         );
     }

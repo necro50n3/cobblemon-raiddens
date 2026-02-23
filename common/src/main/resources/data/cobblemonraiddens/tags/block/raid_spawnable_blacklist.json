@@ -1,0 +1,11 @@
+{
+    "values": [
+        "minecraft:glowstone",
+        "minecraft:shroomlight",
+        "#minecraft:wart_blocks",
+        {
+            "id": "#cobblemon:nether_structure_blocks",
+            "required": false
+        }
+    ]
+}

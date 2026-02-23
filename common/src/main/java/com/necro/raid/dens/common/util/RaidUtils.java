@@ -75,8 +75,8 @@ public class RaidUtils {
     }
 
     public static boolean hasSkyAccess(LevelReader level, BlockPos blockPos) {
-        int topY = level.getChunk(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING, blockPos.getX() & 15, blockPos.getZ() & 15);
-        return blockPos.getY() >= topY;
+        int topY = level.getChunk(blockPos).getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, blockPos.getX() & 15, blockPos.getZ() & 15);
+        return level.canSeeSky(blockPos) || blockPos.getY() >= topY;
     }
 
     public static void teleportPlayerToRaid(ServerPlayer player, MinecraftServer server, RaidRegion region) {

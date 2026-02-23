@@ -1,0 +1,24 @@
+{
+  "feature": "cobblemonraiddens:raid_den_ignore_sky",
+  "placement": [
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 128
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "max_inclusive": {
+          "below_top": 30
+        },
+        "min_inclusive": {
+          "above_bottom": 30
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

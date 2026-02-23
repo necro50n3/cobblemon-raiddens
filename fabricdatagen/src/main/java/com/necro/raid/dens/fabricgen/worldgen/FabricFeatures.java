@@ -3,6 +3,7 @@ package com.necro.raid.dens.fabricgen.worldgen;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.worldgen.ModFeatures;
 import com.necro.raid.dens.common.worldgen.RaidDenFeature;
+import com.necro.raid.dens.common.worldgen.RaidDenFeatureIgnoreSky;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.core.Holder;
@@ -19,6 +20,10 @@ public class FabricFeatures {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_feature"),
             new RaidDenFeature()
         ));
+        ModFeatures.RAID_DEN_FEATURE_IGNORE_SKY = Holder.direct(Registry.register(BuiltInRegistries.FEATURE,
+            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_feature_ignore_sky"),
+            new RaidDenFeatureIgnoreSky()
+        ));
         addToBiome();
     }
 
@@ -27,6 +32,12 @@ public class FabricFeatures {
             BiomeSelectors.tag(ModFeatures.RAID_SPAWNABLE),
             GenerationStep.Decoration.SURFACE_STRUCTURES,
             ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_placed"))
+        );
+
+        BiomeModifications.addFeature(
+            BiomeSelectors.tag(ModFeatures.RAID_SPAWNABLE_IGNORE_SKY),
+            GenerationStep.Decoration.VEGETAL_DECORATION,
+            ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_placed_ignore_sky"))
         );
     }
 }
