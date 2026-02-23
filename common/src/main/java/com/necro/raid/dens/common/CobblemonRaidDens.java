@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
+import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -76,6 +77,7 @@ public class CobblemonRaidDens {
         RaidStatistics.init();
         RaidDenCriteriaTriggers.init();
         RaidConditions.init();
+        RaidScriptRegistry.init();
 
         Statuses.registerStatus(new ShieldStatus());
 

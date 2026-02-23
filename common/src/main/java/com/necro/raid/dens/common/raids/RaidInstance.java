@@ -21,7 +21,7 @@ import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.raids.helpers.RaidScriptHelper;
+import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -431,7 +431,7 @@ public class RaidInstance {
     }
 
     private ShowdownEvent getInstructions(@NotNull String function) {
-        return RaidScriptHelper.decode(function);
+        return RaidScriptRegistry.decode(function);
     }
 
     public void runScriptByTurn(int turn, PokemonBattle battle) {
