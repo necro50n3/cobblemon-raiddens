@@ -127,13 +127,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         PoseStack matrix = new PoseStack();
         wrapper.updateMatrix(matrix.last().pose());
         wrapper.updatePosition(blockPos.getBottomCenter());
+        RaidBoss boss = RaidRegistry.getRaidBoss(this.raidBoss);
+        RaidFeature feature = boss == null ? RaidFeature.DEFAULT : boss.getFeature();
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        Vector4f colorVec = type == RaidType.STELLAR ? null : new Vector4f(
-            ((type.getColor() >> 16) & 0xFF) / 255F,
-            ((type.getColor() >> 8) & 0xFF) / 255F,
-            (type.getColor() & 0xFF) / 255F,
-            0.5F
-        );
         new ParticleStorm(
             effect,
             wrapper,
@@ -144,10 +140,15 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             () -> true,
             () -> null,
             () -> Unit.INSTANCE,
-            () -> colorVec,
+            () -> this.getParticleColor(feature, type),
             new MoLangRuntime(),
             null
         ).spawn();
+    }
+
+    private Vector4f getParticleColor(RaidFeature feature, RaidType type) {
+        if (feature == RaidFeature.DYNAMAX) return new Vector4f(1.0F, 0F, 0F, 0.5F);
+        else return type.getVectorColor();
     }
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {

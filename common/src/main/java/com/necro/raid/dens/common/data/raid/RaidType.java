@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector4f;
 
 public enum RaidType implements StringRepresentable {
     NONE("none", DyeColor.GRAY.getTextureDiffuseColor()),
@@ -39,6 +40,15 @@ public enum RaidType implements StringRepresentable {
 
     public int getColor() {
         return this.color;
+    }
+
+    public Vector4f getVectorColor() {
+        return this == STELLAR ? null : new Vector4f(
+            ((this.getColor() >> 16) & 0xFF) / 255F,
+            ((this.getColor() >> 8) & 0xFF) / 255F,
+            (this.getColor() & 0xFF) / 255F,
+            0.5F
+        );
     }
 
     public boolean isPresent() {
