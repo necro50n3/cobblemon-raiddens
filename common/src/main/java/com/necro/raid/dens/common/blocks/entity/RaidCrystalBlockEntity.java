@@ -1,6 +1,12 @@
 package com.necro.raid.dens.common.blocks.entity;
 
+import com.bedrockk.molang.runtime.MoLangRuntime;
+import com.cobblemon.mod.common.api.snowstorm.BedrockParticleOptions;
+import com.cobblemon.mod.common.client.particle.BedrockParticleOptionsRepository;
+import com.cobblemon.mod.common.client.particle.ParticleStorm;
+import com.cobblemon.mod.common.client.render.MatrixWrapper;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
@@ -17,6 +23,8 @@ import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.*;
+import kotlin.Unit;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +44,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector4f;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -52,6 +62,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private int clears;
     private int inactiveTicks;
     private int soundTicks;
+    private int particleTicks;
 
     private UUID uuid;
     private ResourceLocation raidBucket;
@@ -67,12 +78,16 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public RaidCrystalBlockEntity(BlockEntityType<? extends RaidCrystalBlockEntity> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.soundTicks = 0;
+        this.particleTicks = 0;
         this.uuid = UUID.randomUUID();
         this.isOpen = false;
     }
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
-        if (level.isClientSide()) return;
+        if (level.isClientSide()) {
+            this.clientTick(level, blockPos, blockState);
+            return;
+        }
 
         boolean isIdle = this.isIdle();
         if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
@@ -100,6 +115,39 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else if (gameTime - this.lastReset > CobblemonRaidDens.CONFIG.reset_time * 20L) {
             this.generateRaidBoss(level, blockPos, blockState);
         }
+    }
+
+    private void clientTick(Level level, BlockPos blockPos, BlockState blockState) {
+        if (!this.isActive(blockState)) return;
+        else if (this.particleTicks++ % 20 != 0) return;
+
+        BedrockParticleOptions effect = BedrockParticleOptionsRepository.INSTANCE.getEffect(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_sparkle"));
+        if (effect == null) return;
+        MatrixWrapper wrapper = new MatrixWrapper();
+        PoseStack matrix = new PoseStack();
+        wrapper.updateMatrix(matrix.last().pose());
+        wrapper.updatePosition(blockPos.getBottomCenter());
+        RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
+        Vector4f colorVec = type == RaidType.STELLAR ? null : new Vector4f(
+            ((type.getColor() >> 16) & 0xFF) / 255F,
+            ((type.getColor() >> 8) & 0xFF) / 255F,
+            (type.getColor() & 0xFF) / 255F,
+            0.5F
+        );
+        new ParticleStorm(
+            effect,
+            wrapper,
+            wrapper,
+            (ClientLevel) level,
+            () -> Vec3.ZERO,
+            () -> this.isActive(blockState) && !this.isRemoved(),
+            () -> true,
+            () -> null,
+            () -> Unit.INSTANCE,
+            () -> colorVec,
+            new MoLangRuntime(),
+            null
+        ).spawn();
     }
 
     public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
@@ -245,10 +293,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return RaidBucketRegistry.getBucket(this.raidBucket);
     }
 
-    public ResourceLocation getRaidBucketLocation() {
-        return this.raidBucket;
-    }
-
     public RaidBoss getRaidBoss() {
         return RaidRegistry.getRaidBoss(this.raidBoss);
     }
@@ -259,15 +303,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public int getClears() {
         return this.clears;
-    }
-
-
-    public long getLastReset() {
-        return this.lastReset;
-    }
-
-    public Set<String> getAspects() {
-        return this.aspects;
     }
 
     public int getPlayerCount() {
@@ -313,10 +348,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void setClears(int clears) {
         this.clears = clears;
-    }
-
-    public void setAspects(Set<String> aspects) {
-        this.aspects = aspects;
     }
 
     public void setOpen() {

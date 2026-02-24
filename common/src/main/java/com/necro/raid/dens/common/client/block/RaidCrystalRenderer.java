@@ -33,8 +33,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     public void actuallyRender(PoseStack poseStack, RaidCrystalBlockEntity blockEntity, BakedGeoModel model, @Nullable RenderType renderType,
                                MultiBufferSource multiBufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float f, int i,
                                int j, int colour) {
-        if (shouldRenderBeacon(blockEntity) && blockEntity.canGenerateBoss(blockEntity.getBlockState())
-            && blockEntity.getLevel() != null && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos())) {
+        if (blockEntity.getLevel() != null && shouldRenderBeacon(blockEntity)) {
             poseStack.pushPose();
             poseStack.scale(0.75f, 1.0f, 0.75f);
             poseStack.translate(-0.5, 0, -0.5);
@@ -46,6 +45,12 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         }
 
         super.actuallyRender(poseStack, blockEntity, model, renderType, multiBufferSource, buffer, isReRender, f, i, j, colour);
+    }
+
+    private static boolean shouldRenderBeacon(RaidCrystalBlockEntity blockEntity) {
+        if (!checkConfig(blockEntity)) return false;
+        else if (!blockEntity.canGenerateBoss(blockEntity.getBlockState())) return false;
+        return blockEntity.getLevel() != null && RaidUtils.hasSkyAccess(blockEntity.getLevel(), blockEntity.getBlockPos());
     }
 
     @Override
@@ -63,7 +68,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0, 0.0, 1.0).closerThan(vec3.multiply(1.0, 0.0, 1.0), this.getViewDistance());
     }
 
-    private static boolean shouldRenderBeacon(RaidCrystalBlockEntity blockEntity) {
+    private static boolean checkConfig(RaidCrystalBlockEntity blockEntity) {
         return switch (blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER)) {
             case TIER_ONE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one;
             case TIER_TWO -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two;
