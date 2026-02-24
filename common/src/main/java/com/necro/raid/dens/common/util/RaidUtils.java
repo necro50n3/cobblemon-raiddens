@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.api.abilities.Ability;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
+import com.cobblemon.mod.common.pokemon.activestate.ShoulderedState;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.BlockTags;
@@ -92,7 +93,7 @@ public class RaidUtils {
 
     public static void teleportPlayerSafe(ServerPlayer player, ServerLevel level, Vec3 targetPos, float yaw, float pitch) {
         PlayerExtensionsKt.party(player).forEach(pokemon -> {
-            if (pokemon.getState() instanceof ActivePokemonState) pokemon.recall();
+            if (pokemon.getState() instanceof ActivePokemonState && !(pokemon.getState() instanceof ShoulderedState)) pokemon.recall();
         });
 
         player.teleportTo(level, targetPos.x(), targetPos.y(), targetPos.z(), new HashSet<>(), yaw, pitch);
