@@ -5,12 +5,12 @@
             "identifier": "cobblemonraiddens:raid_den_sparkle",
             "basic_render_parameters": {
                 "material": "particles_alpha",
-                "texture": "minecraft:textures/particles/generic_0"
+                "texture": "cobblemonraiddens:textures/particles/sparkle"
             }
         },
         "components": {
             "minecraft:emitter_rate_steady": {
-                "spawn_rate": 40,
+                "spawn_rate": 30,
                 "max_particles": 100
             },
             "minecraft:emitter_lifetime_once": {
@@ -18,14 +18,14 @@
             },
             "minecraft:emitter_shape_point": {
                 "offset": [
-                    "1.1 * (v.particle_random_1 - 0.5)",
-                    "1.1 * v.particle_random_2",
-                    "1.1 * (v.particle_random_3 - 0.5)"
+                    "0.65 * math.sin(v.particle_random_1 * 360) * v.particle_random_2 * (1 - 0.4 * v.particle_random_4)",
+                    "1.1 * v.particle_random_4",
+                    "0.65 * math.cos(v.particle_random_1 * 360) * v.particle_random_2 * (1 - 0.4 * v.particle_random_4)"
                 ],
                 "direction": [
-                    "v.particle_random_1 - 0.5",
-                    "0.8 + 0.2 * v.particle_random_4",
-                    "v.particle_random_3 - 0.5"
+                    "-0.6 * math.sin(v.particle_random_1 * 360) * v.particle_random_2",
+                    "0.7 + 0.3 * math.random(0, 1)",
+                    "0.6 * math.cos(v.particle_random_1 * 360) * v.particle_random_2"
                 ]
             },
             "minecraft:particle_lifetime_expression": {
@@ -38,15 +38,21 @@
             "minecraft:particle_motion_dynamic": {},
             "minecraft:particle_appearance_billboard": {
                 "size": [
-                    "0.05 + 0.05 * (v.particle_random_2 + v.particle_random_4)",
-                    "0.05 + 0.05 * (v.particle_random_2 + v.particle_random_4)"
+                    "0.02 + 0.01 * (v.particle_random_2 + v.particle_random_4)",
+                    "0.02 + 0.01 * (v.particle_random_2 + v.particle_random_4)"
                 ],
                 "facing_camera_mode": "rotate_xyz",
                 "uv": {
                     "texture_width": 8,
-                    "texture_height": 8,
-                    "uv": [0, 0],
-                    "uv_size": [8, 8]
+                    "texture_height": 48,
+                    "flipbook": {
+                        "base_UV": [0, 0],
+                        "size_UV": [8, 8],
+                        "step_UV": [0, 8],
+                        "max_frame": "4 + 2 * math.floor(v.particle_random_3 * 2)",
+                        "stretch_to_lifetime": true,
+                        "loop": true
+                    }
                 }
             },
             "minecraft:particle_appearance_tinting": {
