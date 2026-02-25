@@ -25,7 +25,6 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
     protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
         if (!level.isClientSide()) {
             if (!RaidUtils.isRaidDimension(level)) return InteractionResult.FAIL;
-            RaidUtils.leaveRaid(player);
             ((IRaidTeleporter) player).crd_returnHome();
             return InteractionResult.SUCCESS;
         }

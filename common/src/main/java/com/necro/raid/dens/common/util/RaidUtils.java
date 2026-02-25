@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.util;
 
 import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.activestate.ActivePokemonState;
@@ -120,7 +121,7 @@ public class RaidUtils {
             leaveRaidFallback(player);
             return;
         }
-        else if (instance.getRaidState() != RaidState.NOT_STARTED) {
+        else if (instance.getRaidState() != RaidState.NOT_STARTED && BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player) != null) {
             instance.removePlayer((ServerPlayer) player);
             return;
         }

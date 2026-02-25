@@ -40,7 +40,10 @@ public class ModDimensions {
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(participant.raid());
         if (raid == null) return;
 
-        if (RaidUtils.isRaidDimension(from)) raid.removeFromBossEvent(player);
+        if (RaidUtils.isRaidDimension(from)) {
+            raid.removeFromBossEvent(player);
+            RaidUtils.leaveRaid(player);
+        }
         else if (RaidUtils.isRaidDimension(to)) raid.addToBossEvent(player);
     }
 }

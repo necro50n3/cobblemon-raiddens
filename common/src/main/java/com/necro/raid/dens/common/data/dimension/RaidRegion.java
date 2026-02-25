@@ -72,10 +72,7 @@ public class RaidRegion {
         int chunkMaxZ = maxZ >> 4;
 
         level.getEntitiesOfClass(ServerPlayer.class, this.bound())
-            .forEach(player -> {
-                RaidUtils.leaveRaid(player);
-                ((IRaidTeleporter) player).crd_returnHome();
-            });
+            .forEach(player -> ((IRaidTeleporter) player).crd_returnHome());
 
         for (Entity e : level.getEntitiesOfClass(Entity.class, this.bound())) {
             if (e != null && !(e instanceof Player)) e.discard();

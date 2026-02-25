@@ -187,9 +187,7 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
-        if (!this.bossEvent.getPlayers().contains(player)) return;
-
-        this.removeFromBossEvent(player);
+        if (this.bossEvent.getPlayers().contains(player)) this.removeFromBossEvent(player);
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);

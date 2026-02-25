@@ -28,6 +28,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.JsonElement;
+import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,14 +84,14 @@ public class CobblemonRaidDens {
         Statuses.registerStatus(new ShieldStatus());
 
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
-            raidFailEvent(event.getBattle(), true);
+            raidFailEvent(event.getPlayer().getEntity(), event.getBattle(), true);
             return Unit.INSTANCE;
         });
         CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
             BattlePokemon battlePokemon = event.getWinners().getFirst().getActivePokemon().getFirst().getBattlePokemon();
             if (battlePokemon == null || battlePokemon.getEntity() == null) return Unit.INSTANCE;
             else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return Unit.INSTANCE;
-            raidFailEvent(event.getBattle(), false);
+            raidFailEvent(null, event.getBattle(), false);
             return Unit.INSTANCE;
         });
         CobblemonEvents.LOOT_DROPPED.subscribe(Priority.HIGHEST, event -> {
@@ -108,11 +110,12 @@ public class CobblemonRaidDens {
         RaidEvents.registerEvents();
     }
 
-    private static void raidFailEvent(PokemonBattle battle, boolean ignoreLives) {
+    private static void raidFailEvent(@Nullable ServerPlayer player, PokemonBattle battle, boolean ignoreLives) {
         try {
             RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
             if (raid == null || raid.isFinished()) return;
-            raid.removePlayer(battle, ignoreLives);
+            if (player == null) raid.removePlayer(battle, ignoreLives);
+            else raid.removePlayer(player, battle, ignoreLives);
         }
         catch (NullPointerException ignored) {}
     }
