@@ -161,6 +161,7 @@
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_five": "Tier Five Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_six": "Tier Six Beacon",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Tier Seven Beacon",
+    "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "Render the legacy beacon effect",
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Auto-Accept Join Requests",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Show Raid Logs",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Raid Popup X (%)",
