@@ -17,6 +17,10 @@ public class RaidConfig implements ConfigData {
     public Map<String, double[]> dimension_tier_weights = new HashMap<>(Map.of(
         "minecraft:overworld", new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0}
     ));
+    @Comment("The chance of a raid den spawning per dimension as 1 in X. Leave empty to use overworld/default. Default: {\"minecraft:overworld\": 256}")
+    public Map<String, Integer> dimension_spawn_rate = new HashMap<>(Map.of(
+        "minecraft:overworld", 256
+    ));
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")
     public int reset_time = 7200;
     @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, BUCKET, ALL). Default: ALL")

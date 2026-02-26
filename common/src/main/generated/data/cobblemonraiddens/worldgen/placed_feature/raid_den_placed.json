@@ -2,10 +2,6 @@
   "feature": "cobblemonraiddens:raid_den",
   "placement": [
     {
-      "type": "minecraft:rarity_filter",
-      "chance": 256
-    },
-    {
       "type": "minecraft:in_square"
     },
     {

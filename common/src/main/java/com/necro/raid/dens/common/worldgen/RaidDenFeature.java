@@ -40,13 +40,13 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         BlockPos blockPos = context.origin();
         BlockState blockState = context.config().state;
 
-        CobblemonRaidDens.LOGGER.info("Running spawn at {}", blockPos);
+        String dimension = level.getLevel().dimension().location().toString();
+        int chance = Math.max(CobblemonRaidDens.CONFIG.dimension_spawn_rate.getOrDefault(dimension, 256), 1);
+        if (level.getRandom().nextInt(chance) != 0) return false;
 
         if (level.isClientSide()) return false;
         blockPos = this.checkAdditionalRequirements(level, blockPos);
         if (blockPos == null) return false;
-
-        CobblemonRaidDens.LOGGER.info("Success! at {}", blockPos);
 
         RaidCycleMode cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
         ResourceLocation bucket = null;

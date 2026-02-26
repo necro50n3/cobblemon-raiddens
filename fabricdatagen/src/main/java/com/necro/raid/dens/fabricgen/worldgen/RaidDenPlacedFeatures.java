@@ -24,7 +24,6 @@ public class RaidDenPlacedFeatures {
 
         register(context, RAID_DEN_PLACED_KEY,
             configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_KEY),
-            RarityFilter.onAverageOnceEvery(256),
             InSquarePlacement.spread(),
             PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
             BiomeFilter.biome()
@@ -32,7 +31,6 @@ public class RaidDenPlacedFeatures {
 
         register(context, RAID_DEN_PLACED_IGNORE_SKY_KEY,
             configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_IGNORE_SKY_KEY),
-            RarityFilter.onAverageOnceEvery(128),
             HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(30), VerticalAnchor.belowTop(30)),
             BiomeFilter.biome()
         );
