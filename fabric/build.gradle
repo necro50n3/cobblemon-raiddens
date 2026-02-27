@@ -56,7 +56,6 @@ dependencies {
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
     modImplementation "curse.maven:carpet-349239:5425253"
-    modImplementation "curse.maven:loot-beams-up-1161712:6313537"
 
     modCompileOnly("mezz.jei:jei-1.21.1-fabric-api:19.27.0.340")
     modRuntimeOnly("mezz.jei:jei-1.21.1-fabric:19.27.0.340")

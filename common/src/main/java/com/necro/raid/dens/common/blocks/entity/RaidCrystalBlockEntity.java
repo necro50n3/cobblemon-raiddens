@@ -53,8 +53,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private int clears;
     private int inactiveTicks;
     private int soundTicks;
-    private int beamHeight;
     private int particleTicks;
+
+    private int beamHeight;
+    private int lastCheckedY;
+    private int checkingHeight;
 
     private UUID uuid;
     private ResourceLocation raidBucket;
@@ -70,8 +73,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public RaidCrystalBlockEntity(BlockEntityType<? extends RaidCrystalBlockEntity> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.soundTicks = 0;
-        this.beamHeight = -1;
         this.particleTicks = 0;
+        this.beamHeight = 0;
+        this.lastCheckedY = -1;
+        this.checkingHeight = 0;
         this.uuid = UUID.randomUUID();
         this.isOpen = false;
     }
@@ -113,20 +118,39 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private void clientTick(BlockState blockState) {
         if (!this.isActive(blockState) || this.particleTicks++ >= 3600) this.particleTicks = 0;
         ClientLevel level = (ClientLevel) this.getLevel();
-        if (level != null && (this.beamHeight == -1 || this.particleTicks % 40 == 0)) this.calculateBeamHeight(level);
+        this.calculateBeamHeight(level);
     }
 
     private void calculateBeamHeight(Level level) {
-        int maxHeight = 320 - this.getBlockPos().getY();
         BlockPos blockPos = this.getBlockPos();
-        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-        for (int i = 0; i < maxHeight; i++) {
-            mutableBlockPos.move(0, 1, 0);
-            if (!level.getBlockState(mutableBlockPos).isCollisionShapeFullBlock(level, mutableBlockPos)) continue;
-            this.beamHeight = i;
-            return;
+        int maxHeight = 320 - blockPos.getY();
+        boolean hasSkyAccess = RaidUtils.hasSkyAccess(level, blockPos);
+        if (!hasSkyAccess) {
+            if (this.lastCheckedY < blockPos.getY()) {
+                this.lastCheckedY = blockPos.getY();
+                this.checkingHeight = 0;
+            }
+
+            BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(blockPos.getX(), this.lastCheckedY + 1, blockPos.getZ());
+
+            for (int i = 0; i < 10 && this.checkingHeight < maxHeight; i++) {
+                if (level.getBlockState(mutableBlockPos).getLightBlock(level, mutableBlockPos) >= 15) {
+                    this.beamHeight = this.checkingHeight;
+                    this.lastCheckedY = blockPos.getY() - 1;
+                    return;
+                }
+
+                this.checkingHeight++;
+                this.lastCheckedY++;
+                mutableBlockPos.move(0, 1, 0);
+            }
         }
-        this.beamHeight = maxHeight + 192;
+
+        if (hasSkyAccess || this.checkingHeight >= maxHeight){
+            this.beamHeight = maxHeight + 192;
+            this.lastCheckedY = blockPos.getY() - 1;
+            this.checkingHeight = 0;
+        }
     }
 
     public int getBeamHeight() {

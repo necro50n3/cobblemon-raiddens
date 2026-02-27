@@ -34,7 +34,6 @@ dependencies {
     modCompileOnly(files "libs/CobblemonSizeVariationFabric-1.4.0+1.7.0.jar")
     modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:7257752"
     modCompileOnly "dev.architectury:architectury:13.0.8"
-    modCompileOnly "curse.maven:loot-beams-up-1161712:6313537"
     modCompileOnly "curse.maven:irisshaders-455508:6213635"
 
     modCompileOnly("mezz.jei:jei-1.21.1-common-api:19.27.0.340")

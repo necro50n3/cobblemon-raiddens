@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.client.block;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,12 +17,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class RaidDenBeamRenderer {
-    public static final Set<BiConsumer<PoseStack, MultiBufferSource.BufferSource>> RENDER_QUEUE = new HashSet<>();
+    private static final List<Instance> RENDER_QUEUE = new ArrayList<>();
+
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_den_beam.png");
     public static final ResourceLocation GLOW_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_den_glow.png");
 
@@ -31,19 +32,17 @@ public class RaidDenBeamRenderer {
     private static final RenderType RAID_DEN_GLOW;
 
     public static void tick(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
-        RaidDenBeamRenderer.RENDER_QUEUE.forEach(consumer -> consumer.accept(poseStack, bufferSource));
+        RENDER_QUEUE.sort(Comparator.comparingDouble(Instance::distanceSqr));
+        RENDER_QUEUE.forEach(inst -> inst.consumer().accept(poseStack, bufferSource));
         bufferSource.endBatch();
-        RaidDenBeamRenderer.RENDER_QUEUE.clear();
+        RENDER_QUEUE.clear();
     }
 
-    public static void render(Vec3 pos, int height, int color) {
-        RENDER_QUEUE.add((poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color));
+    public static void render(Vec3 pos, double distanceSqr, int height, int color) {
+        RENDER_QUEUE.add(new Instance(-distanceSqr, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color)));
     }
 
     private static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color) {
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderTexture(1, Minecraft.getInstance().getMainRenderTarget().getDepthTextureId());
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
         poseStack.pushPose();
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
@@ -62,20 +61,23 @@ public class RaidDenBeamRenderer {
         if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(GLOW_LOCATION, false);
         else renderType = RAID_DEN_GLOW;
         vertexConsumer = bufferSource.getBuffer(renderType);
-        pose = poseStack.last();
         addVertices(vertexConsumer, pose, 0.8F, 5.0F, color);
 
         poseStack.popPose();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableDepthTest();
     }
 
     private static void addVertices(VertexConsumer vertexConsumer, PoseStack.Pose pose, float radius, float height, int color) {
-        vertexConsumer.addVertex(pose.pose(), -radius, 0, 0.0F).setUv(0, 1).setColor(color).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), radius, 0, 0.0F).setUv(1, 1).setColor(color).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), radius, height, 0.0F).setUv(1, 0).setColor(color).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), -radius, height, 0.0F).setUv(0, 0).setColor(color).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+
+        vertexConsumer.addVertex(pose.pose(), -radius, 0, 0.0F).setUv(0, 1).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), radius, 0, 0.0F).setUv(1, 1).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), radius, height, 0.0F).setUv(1, 0).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), -radius, height, 0.0F).setUv(0, 0).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
     }
+
+    private record Instance(double distanceSqr, BiConsumer<PoseStack, MultiBufferSource.BufferSource> consumer) {}
 
     static {
         RenderType.CompositeState beamState = RenderType.CompositeState.builder()

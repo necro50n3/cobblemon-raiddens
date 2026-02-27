@@ -19,6 +19,7 @@ import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -75,9 +76,13 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         int tick = blockEntity.getParticleTick();
         if (tick % 20 == 1) this.renderSparkle(blockEntity, level, blockEntity.getBlockState(), blockEntity.getBlockPos());
 
+        assert Minecraft.getInstance().player != null;
+        BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
+
         if (blockEntity.getBeamHeight() > 4) {
             RaidDenBeamRenderer.render(
                 blockEntity.getBlockPos().getBottomCenter(),
+                playerPos.distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),
                 blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor()
             );
