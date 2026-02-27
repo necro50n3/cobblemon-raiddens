@@ -43,11 +43,15 @@ public enum RaidType implements StringRepresentable {
     }
 
     public Vector4f getVectorColor() {
-        return this == STELLAR ? null : new Vector4f(
+        return this.getVectorColor(0.5F);
+    }
+
+    public Vector4f getVectorColor(float alpha) {
+        return new Vector4f(
             ((this.getColor() >> 16) & 0xFF) / 255F,
             ((this.getColor() >> 8) & 0xFF) / 255F,
             (this.getColor() & 0xFF) / 255F,
-            0.5F
+            alpha
         );
     }
 

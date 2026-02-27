@@ -4,7 +4,8 @@ public enum ModCompat {
     COBBLEDOLLARS("cobbledollars"),
     MEGA_SHOWDOWN("mega_showdown"),
     RCT_API("rctapi"),
-    SIZE_VARIATIONS("cobblemonsizevariation");
+    SIZE_VARIATIONS("cobblemonsizevariation"),
+    IRIS("iris");
 
     private final String modid;
     private boolean loaded;

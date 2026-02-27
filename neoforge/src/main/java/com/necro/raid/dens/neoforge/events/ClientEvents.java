@@ -1,6 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.block.RaidDenBeamRenderer;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
@@ -14,9 +15,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
+import net.neoforged.neoforge.client.event.*;
 
 @EventBusSubscriber(modid = CobblemonRaidDens.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
@@ -57,5 +56,11 @@ public class ClientEvents {
                 })
             )
         );
+    }
+
+    @SubscribeEvent
+    public static void onRender(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
+        RaidDenBeamRenderer.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource());
     }
 }

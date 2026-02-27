@@ -17,6 +17,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.*;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -52,6 +53,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private int clears;
     private int inactiveTicks;
     private int soundTicks;
+    private int beamHeight;
     private int particleTicks;
 
     private UUID uuid;
@@ -68,6 +70,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public RaidCrystalBlockEntity(BlockEntityType<? extends RaidCrystalBlockEntity> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.soundTicks = 0;
+        this.beamHeight = -1;
         this.particleTicks = 0;
         this.uuid = UUID.randomUUID();
         this.isOpen = false;
@@ -109,6 +112,25 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private void clientTick(BlockState blockState) {
         if (!this.isActive(blockState) || this.particleTicks++ >= 3600) this.particleTicks = 0;
+        ClientLevel level = (ClientLevel) this.getLevel();
+        if (level != null && (this.beamHeight == -1 || this.particleTicks % 40 == 0)) this.calculateBeamHeight(level);
+    }
+
+    private void calculateBeamHeight(Level level) {
+        int maxHeight = 320 - this.getBlockPos().getY();
+        BlockPos blockPos = this.getBlockPos();
+        BlockPos.MutableBlockPos mutableBlockPos = new BlockPos.MutableBlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        for (int i = 0; i < maxHeight; i++) {
+            mutableBlockPos.move(0, 1, 0);
+            if (!level.getBlockState(mutableBlockPos).isCollisionShapeFullBlock(level, mutableBlockPos)) continue;
+            this.beamHeight = i;
+            return;
+        }
+        this.beamHeight = maxHeight + 192;
+    }
+
+    public int getBeamHeight() {
+        return this.beamHeight;
     }
 
     public int getParticleTick() {

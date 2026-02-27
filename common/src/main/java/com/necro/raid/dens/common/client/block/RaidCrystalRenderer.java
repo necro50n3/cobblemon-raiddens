@@ -35,9 +35,11 @@ import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
+import java.awt.*;
+
 @Environment(EnvType.CLIENT)
 public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity> {
-    public static final ResourceLocation BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
+    public static final ResourceLocation LEGACY_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
 
     @SuppressWarnings("unused")
     public RaidCrystalRenderer(BlockEntityRendererProvider.Context context) {
@@ -63,7 +65,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         poseStack.scale(0.75f, 1.0f, 0.75f);
         poseStack.translate(-0.5, 0, -0.5);
         BeaconRenderer.renderBeaconBeam(
-            poseStack, multiBufferSource, BEAM_LOCATION, f, 1.0f, level.getGameTime(), 0, 1024,
+            poseStack, multiBufferSource, LEGACY_BEAM_LOCATION, f, 1.0f, level.getGameTime(), 0, 1024,
             blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor(), 0.2f, 0.25f
         );
         poseStack.popPose();
@@ -72,6 +74,14 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     private void renderBeam(RaidCrystalBlockEntity blockEntity, Level level) {
         int tick = blockEntity.getParticleTick();
         if (tick % 20 == 1) this.renderSparkle(blockEntity, level, blockEntity.getBlockState(), blockEntity.getBlockPos());
+
+        if (blockEntity.getBeamHeight() > 4) {
+            RaidDenBeamRenderer.render(
+                blockEntity.getBlockPos().getBottomCenter(),
+                blockEntity.getBeamHeight(),
+                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor()
+            );
+        }
     }
 
     private void renderSparkle(RaidCrystalBlockEntity blockEntity, Level level, BlockState blockState, BlockPos blockPos) {
@@ -102,6 +112,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
 
     private Vector4f getParticleColor(RaidFeature feature, RaidType type) {
         if (feature == RaidFeature.DYNAMAX) return new Vector4f(1.0F, 0F, 0F, 0.5F);
+        else if (feature == RaidFeature.TERA) return null;
         else return type.getVectorColor();
     }
 

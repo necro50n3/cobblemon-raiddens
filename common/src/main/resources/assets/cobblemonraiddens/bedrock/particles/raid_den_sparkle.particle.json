@@ -38,8 +38,8 @@
             "minecraft:particle_motion_dynamic": {},
             "minecraft:particle_appearance_billboard": {
                 "size": [
-                    "0.02 + 0.01 * (v.particle_random_2 + v.particle_random_4)",
-                    "0.02 + 0.01 * (v.particle_random_2 + v.particle_random_4)"
+                    "0.025 + 0.02 * (v.particle_random_2 + v.particle_random_4)",
+                    "0.025 + 0.02 * (v.particle_random_2 + v.particle_random_4)"
                 ],
                 "facing_camera_mode": "rotate_xyz",
                 "uv": {

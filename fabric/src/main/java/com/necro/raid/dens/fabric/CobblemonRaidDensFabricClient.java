@@ -1,9 +1,11 @@
 package com.necro.raid.dens.fabric;
 
+import com.cobblemon.mod.common.platform.events.RenderEvent;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.client.ClientHud;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
+import com.necro.raid.dens.common.client.block.RaidDenBeamRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltipData;
@@ -18,6 +20,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +41,7 @@ public class CobblemonRaidDensFabricClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(ModEvents::clientTick);
         HudRenderCallback.EVENT.register(new FabricHud());
         TooltipComponentCallback.EVENT.register(component -> component instanceof ProgressTooltipData(double progress, double total) ? new ProgressTooltip(progress, total) : null);
-
+        WorldRenderEvents.LAST.register(context -> RaidDenBeamRenderer.tick(context.matrixStack(), (MultiBufferSource.BufferSource) context.consumers()));
 
         ItemProperties.register(
             ModItems.RAID_SHARD.value(),
