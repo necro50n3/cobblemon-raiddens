@@ -8,6 +8,7 @@ import com.mojang.math.Axis;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.iris.RaidDensIrisCompat;
+import com.necro.raid.dens.common.data.raid.RaidTier;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -38,11 +39,11 @@ public class RaidDenBeamRenderer {
         RENDER_QUEUE.clear();
     }
 
-    public static void render(Vec3 pos, double distanceSqr, int height, int color) {
-        RENDER_QUEUE.add(new Instance(-distanceSqr, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color)));
+    public static void render(Vec3 pos, double distanceSqr, int height, int color, int alpha) {
+        RENDER_QUEUE.add(new Instance(-distanceSqr, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color, alpha)));
     }
 
-    private static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color) {
+    private static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color, int alpha) {
         poseStack.pushPose();
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
@@ -56,25 +57,25 @@ public class RaidDenBeamRenderer {
 
         VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
         PoseStack.Pose pose = poseStack.last();
-        addVertices(vertexConsumer, pose, 0.5F, height, color);
+        addVertices(vertexConsumer, pose, 0.5F, height, color, alpha);
 
         if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(GLOW_LOCATION, false);
         else renderType = RAID_DEN_GLOW;
         vertexConsumer = bufferSource.getBuffer(renderType);
-        addVertices(vertexConsumer, pose, 0.8F, 5.0F, color);
+        addVertices(vertexConsumer, pose, 1.0F, 5.0F, color, alpha);
 
         poseStack.popPose();
     }
 
-    private static void addVertices(VertexConsumer vertexConsumer, PoseStack.Pose pose, float radius, float height, int color) {
+    private static void addVertices(VertexConsumer vertexConsumer, PoseStack.Pose pose, float radius, float height, int color, int alpha) {
         int r = (color >> 16) & 0xFF;
         int g = (color >> 8) & 0xFF;
         int b = color & 0xFF;
 
-        vertexConsumer.addVertex(pose.pose(), -radius, 0, 0.0F).setUv(0, 1).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), radius, 0, 0.0F).setUv(1, 1).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), radius, height, 0.0F).setUv(1, 0).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
-        vertexConsumer.addVertex(pose.pose(), -radius, height, 0.0F).setUv(0, 0).setColor(r, g, b, 128).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), -radius, 0, 0.0F).setUv(0, 1).setColor(r, g, b, alpha).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), radius, 0, 0.0F).setUv(1, 1).setColor(r, g, b, alpha).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), radius, height, 0.0F).setUv(1, 0).setColor(r, g, b, alpha).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
+        vertexConsumer.addVertex(pose.pose(), -radius, height, 0.0F).setUv(0, 0).setColor(r, g, b, alpha).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
     }
 
     private record Instance(double distanceSqr, BiConsumer<PoseStack, MultiBufferSource.BufferSource> consumer) {}

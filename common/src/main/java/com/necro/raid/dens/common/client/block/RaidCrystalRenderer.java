@@ -84,7 +84,8 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
                 blockEntity.getBlockPos().getBottomCenter(),
                 playerPos.distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),
-                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor()
+                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor(),
+                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getAlpha()
             );
         }
     }

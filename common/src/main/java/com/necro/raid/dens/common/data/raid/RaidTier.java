@@ -11,22 +11,28 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public enum RaidTier implements StringRepresentable {
-    TIER_ONE("tier_one"),
-    TIER_TWO("tier_two"),
-    TIER_THREE("tier_three"),
-    TIER_FOUR("tier_four"),
-    TIER_FIVE("tier_five"),
-    TIER_SIX("tier_six"),
-    TIER_SEVEN("tier_seven");
+    TIER_ONE("tier_one", 32),
+    TIER_TWO("tier_two", 64),
+    TIER_THREE("tier_three", 96),
+    TIER_FOUR("tier_four", 128),
+    TIER_FIVE("tier_five", 160),
+    TIER_SIX("tier_six", 192),
+    TIER_SEVEN("tier_seven", 224);
 
     private final String id;
+    private final int alpha;
     private boolean isPresent;
 
     private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
 
-    RaidTier(String id) {
+    RaidTier(String id, int alpha) {
         this.id = id;
+        this.alpha = alpha;
         this.isPresent = false;
+    }
+
+    public int getAlpha() {
+        return this.alpha;
     }
 
     public String getLootTableId() {
