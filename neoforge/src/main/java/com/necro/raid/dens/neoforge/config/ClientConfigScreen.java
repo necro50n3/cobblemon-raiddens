@@ -68,6 +68,13 @@ public class ClientConfigScreen {
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_particles"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.show_particles)
+                .setDefaultValue(true)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_particles = value)
+                .build()
+            )
+            .addEntry(entryBuilder.startBooleanToggle(
                     Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon"),
                     CobblemonRaidDensClient.CLIENT_CONFIG.show_legacy_beacon)
                 .setDefaultValue(false)

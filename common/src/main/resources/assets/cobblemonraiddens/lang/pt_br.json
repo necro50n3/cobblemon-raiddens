@@ -161,11 +161,13 @@
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_five": "Sinalizador de nível cinco",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_six": "Sinalizador de nível seis",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Sinalizador de nível sete",
+
+
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Mostrar logs da Raid",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup da Raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup da Raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Status da Raid X (%)",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)",
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)"
 
 }

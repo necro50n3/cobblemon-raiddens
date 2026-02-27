@@ -1,38 +1,24 @@
 package com.necro.raid.dens.common.client.block;
 
-import com.bedrockk.molang.runtime.MoLangRuntime;
-import com.cobblemon.mod.common.api.snowstorm.BedrockParticleOptions;
-import com.cobblemon.mod.common.client.particle.BedrockParticleOptionsRepository;
-import com.cobblemon.mod.common.client.particle.ParticleStorm;
-import com.cobblemon.mod.common.client.render.MatrixWrapper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.blocks.model.RaidCrystalBlockModel;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
-import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.util.RaidUtils;
-import kotlin.Unit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector4f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
@@ -54,7 +40,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         Level level = blockEntity.getLevel();
         if (level != null && checkConfig(blockEntity) && blockEntity.canGenerateBoss(blockEntity.getBlockState())) {
             if (CobblemonRaidDensClient.CLIENT_CONFIG.show_legacy_beacon) this.renderLegacyBeacon(blockEntity, level, poseStack, multiBufferSource, f);
-            else this.renderBeam(blockEntity, level);
+            else this.renderBeam(blockEntity);
         }
 
         super.actuallyRender(poseStack, blockEntity, model, renderType, multiBufferSource, buffer, isReRender, f, i, j, colour);
@@ -72,54 +58,18 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         poseStack.popPose();
     }
 
-    private void renderBeam(RaidCrystalBlockEntity blockEntity, Level level) {
-        int tick = blockEntity.getParticleTick();
-        if (tick % 20 == 1) this.renderSparkle(blockEntity, level, blockEntity.getBlockState(), blockEntity.getBlockPos());
-
-        assert Minecraft.getInstance().player != null;
-        BlockPos playerPos = Minecraft.getInstance().player.blockPosition();
+    private void renderBeam(RaidCrystalBlockEntity blockEntity) {
+        if (Minecraft.getInstance().player == null) return;
 
         if (blockEntity.getBeamHeight() > 4) {
             RaidDenBeamRenderer.render(
                 blockEntity.getBlockPos().getBottomCenter(),
-                playerPos.distSqr(blockEntity.getBlockPos()),
+                Minecraft.getInstance().player.blockPosition().distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),
                 blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor(),
                 blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getAlpha()
             );
         }
-    }
-
-    private void renderSparkle(RaidCrystalBlockEntity blockEntity, Level level, BlockState blockState, BlockPos blockPos) {
-        BedrockParticleOptions effect = BedrockParticleOptionsRepository.INSTANCE.getEffect(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_sparkle"));
-        if (effect == null) return;
-        MatrixWrapper wrapper = new MatrixWrapper();
-        PoseStack matrix = new PoseStack();
-        wrapper.updateMatrix(matrix.last().pose());
-        wrapper.updatePosition(blockPos.getBottomCenter());
-        RaidBoss boss = blockEntity.getRaidBoss();
-        RaidFeature feature = boss == null ? RaidFeature.DEFAULT : boss.getFeature();
-        RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        new ParticleStorm(
-            effect,
-            wrapper,
-            wrapper,
-            (ClientLevel) level,
-            () -> Vec3.ZERO,
-            () -> blockEntity.isActive(blockState) && !blockEntity.isRemoved(),
-            () -> true,
-            () -> null,
-            () -> Unit.INSTANCE,
-            () -> this.getParticleColor(feature, type),
-            new MoLangRuntime(),
-            null
-        ).spawn();
-    }
-
-    private Vector4f getParticleColor(RaidFeature feature, RaidType type) {
-        if (feature == RaidFeature.DYNAMAX) return new Vector4f(1.0F, 0F, 0F, 0.5F);
-        else if (feature == RaidFeature.TERA) return null;
-        else return type.getVectorColor();
     }
 
     @Override
@@ -137,7 +87,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply(1.0, 0.0, 1.0).closerThan(vec3.multiply(1.0, 0.0, 1.0), this.getViewDistance());
     }
 
-    private static boolean checkConfig(RaidCrystalBlockEntity blockEntity) {
+    public static boolean checkConfig(RaidCrystalBlockEntity blockEntity) {
         return switch (blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER)) {
             case TIER_ONE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one;
             case TIER_TWO -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two;

@@ -29,6 +29,9 @@ public class ClientConfig implements ConfigData {
     @Comment("Show Beacon Beam for Tier Seven Raids")
     public boolean show_beam_tier_seven = true;
     @ConfigEntry.Category("beacon_beam")
+    @Comment("Render the raid crystal particle effects")
+    public boolean show_particles = true;
+    @ConfigEntry.Category("beacon_beam")
     @Comment("Render the legacy beacon effect")
     public boolean show_legacy_beacon = false;
 

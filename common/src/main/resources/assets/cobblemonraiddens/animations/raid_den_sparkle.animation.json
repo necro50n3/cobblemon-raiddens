@@ -1,0 +1,14 @@
+{
+    "format_version": "1.8.0",
+    "animations": {
+        "animation.raid_den.sparkle": {
+            "loop": true,
+            "animation_length": 1.0,
+            "timeline": {
+                "0.0": [
+                    { "event": "sparkle" }
+                ]
+            }
+        }
+    }
+}

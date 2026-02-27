@@ -8,7 +8,6 @@ import com.mojang.math.Axis;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.iris.RaidDensIrisCompat;
-import com.necro.raid.dens.common.data.raid.RaidTier;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;

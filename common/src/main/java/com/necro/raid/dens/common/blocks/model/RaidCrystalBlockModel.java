@@ -22,6 +22,6 @@ public class RaidCrystalBlockModel extends GeoModel<RaidCrystalBlockEntity> {
 
     @Override
     public ResourceLocation getAnimationResource(RaidCrystalBlockEntity blockEntity) {
-        return null;
+        return ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "animations/raid_den_sparkle.animation.json");
     }
 }
