@@ -1,4 +1,4 @@
-[Main Article](https://github.com/necro50n3/cobblemon-raiddens/wiki/Raid-Den-Spawning)
+[Main Article](https://github.com/necro50n3/cobblemon-raiddens/wiki/Raid-Den-Spawning-%5BPre-0.8.0%5D)
 
 Change the value in `placement.chance` to change the spawn rate of raid dens in the world.
 The higher the number, the rarer the raid den.
