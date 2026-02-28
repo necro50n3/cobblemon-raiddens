@@ -12,6 +12,7 @@ public class RaidTemplateReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
+        CobblemonRaidDens.LOGGER.info("Registering raid den structures");
         RaidDenRegistry.clear();
     }
 

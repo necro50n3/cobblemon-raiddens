@@ -13,6 +13,7 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
+        CobblemonRaidDens.LOGGER.info("Registering raid bosses");
         RaidRegistry.clear();
     }
 

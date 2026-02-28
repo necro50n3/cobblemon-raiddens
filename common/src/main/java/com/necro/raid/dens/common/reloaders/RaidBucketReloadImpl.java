@@ -17,6 +17,7 @@ public class RaidBucketReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
+        CobblemonRaidDens.LOGGER.info("Registering raid buckets");
         RaidBucketRegistry.clear();
     }
 

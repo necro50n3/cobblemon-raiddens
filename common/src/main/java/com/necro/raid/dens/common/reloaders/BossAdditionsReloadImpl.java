@@ -23,6 +23,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
+        CobblemonRaidDens.LOGGER.info("Registering boss additions");
         this.registry = null;
         this.additionsList.clear();
     }
@@ -47,6 +48,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
             if (additions.replace() || additions.forceApply()) additions.apply(RaidRegistry.getAll());
             else additions.apply(this.registry);
         });
+        CobblemonRaidDens.LOGGER.info("Registered {} boss additions", this.additionsList.size());
 
         RaidRegistry.registerAll();
         RaidTier.updateRandom();
