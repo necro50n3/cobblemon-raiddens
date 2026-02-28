@@ -41,7 +41,8 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         BlockState blockState = context.config().state;
 
         String dimension = level.getLevel().dimension().location().toString();
-        int chance = Math.max(CobblemonRaidDens.CONFIG.dimension_spawn_rate.getOrDefault(dimension, 256), 1);
+        int chance = CobblemonRaidDens.CONFIG.dimension_spawn_rate.getOrDefault(dimension, 256);
+        if (chance < 1) return false;
         if (level.getRandom().nextInt(chance) != 0) return false;
 
         if (level.isClientSide()) return false;
