@@ -61,7 +61,8 @@ public class RaidBucket {
         this.excludeBossesInner = excludeBosses;
         this.biomesInner = biomes;
 
-        this.isAlwaysValid = this.biomesInner.contains("*") || this.biomesInner.contains("#cobblemonraiddens:raid_spawnable");
+        this.isAlwaysValid = this.biomesInner.contains("*")
+            || (this.biomesInner.contains("#cobblemonraiddens:raid_spawnable") && this.biomesInner.contains("#cobblemonraiddens:raid_spawnable_ignore_sky"));
     }
 
     private HashSet<String> getBiomes() {
