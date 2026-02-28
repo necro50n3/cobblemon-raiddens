@@ -483,6 +483,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             .setCustomInstructionKeyframeHandler(event -> {
                 RaidCrystalBlockEntity blockEntity = (RaidCrystalBlockEntity) event.getAnimatable();
                 if (!CobblemonRaidDensClient.CLIENT_CONFIG.show_particles) return;
+                else if (!blockEntity.isActive(blockEntity.getBlockState())) return;
                 else if (!blockEntity.canGenerateBoss(blockEntity.getBlockState())) return;
                 this.sparkle();
             })

@@ -40,7 +40,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         Level level = blockEntity.getLevel();
         if (level != null && checkConfig(blockEntity) && blockEntity.canGenerateBoss(blockEntity.getBlockState())) {
             if (CobblemonRaidDensClient.CLIENT_CONFIG.show_legacy_beacon) this.renderLegacyBeacon(blockEntity, level, poseStack, multiBufferSource, f);
-            else this.renderBeam(blockEntity);
+            else this.renderBeam(blockEntity, f);
         }
 
         super.actuallyRender(poseStack, blockEntity, model, renderType, multiBufferSource, buffer, isReRender, f, i, j, colour);
@@ -58,7 +58,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         poseStack.popPose();
     }
 
-    private void renderBeam(RaidCrystalBlockEntity blockEntity) {
+    private void renderBeam(RaidCrystalBlockEntity blockEntity, float f) {
         if (Minecraft.getInstance().player == null) return;
 
         if (blockEntity.getBeamHeight() > 4) {
@@ -74,7 +74,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
 
     @Override
     public boolean shouldRenderOffScreen(@NotNull RaidCrystalBlockEntity blockEntity) {
-        return true;
+        return blockEntity.isActive(blockEntity.getBlockState());
     }
 
     @Override

@@ -60,7 +60,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onRender(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_WEATHER) return;
         RaidDenBeamRenderer.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource());
     }
 }

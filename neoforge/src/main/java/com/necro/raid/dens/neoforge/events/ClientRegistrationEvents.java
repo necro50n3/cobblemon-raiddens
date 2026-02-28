@@ -2,11 +2,11 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientHud;
-import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
+import com.necro.raid.dens.neoforge.client.block.RaidCrystalRendererNeoForge;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -19,7 +19,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 public class ClientRegistrationEvents {
     @SubscribeEvent
     public static void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(NeoForgeBlockEntities.RAID_CRYSTAL_BLOCK_ENTITY.get(), RaidCrystalRenderer::new);
+        event.registerBlockEntityRenderer(NeoForgeBlockEntities.RAID_CRYSTAL_BLOCK_ENTITY.get(), RaidCrystalRendererNeoForge::new);
         event.registerBlockEntityRenderer(NeoForgeBlockEntities.RAID_HOME_BLOCK_ENTITY.get(), RaidHomeRenderer::new);
     }
 

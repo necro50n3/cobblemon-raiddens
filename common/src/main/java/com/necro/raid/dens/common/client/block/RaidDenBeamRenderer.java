@@ -42,13 +42,13 @@ public class RaidDenBeamRenderer {
         RENDER_QUEUE.add(new Instance(-distanceSqr, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color, alpha)));
     }
 
-    private static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color, int alpha) {
+    public static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color, int alpha) {
         poseStack.pushPose();
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
         poseStack.translate(pos.x - cameraPos.x, pos.y - cameraPos.y + 0.15, pos.z - cameraPos.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-camera.getYRot() + 180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(180F - camera.getYRot()));
 
         RenderType renderType;
         if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(BEAM_LOCATION, false);
