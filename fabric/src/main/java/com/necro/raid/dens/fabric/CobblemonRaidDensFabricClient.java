@@ -1,11 +1,10 @@
 package com.necro.raid.dens.fabric;
 
-import com.cobblemon.mod.common.platform.events.RenderEvent;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.client.ClientHud;
+import com.necro.raid.dens.common.client.block.RaidCrystalBeamRenderer;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
-import com.necro.raid.dens.common.client.block.RaidDenBeamRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltipData;
@@ -41,7 +40,7 @@ public class CobblemonRaidDensFabricClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(ModEvents::clientTick);
         HudRenderCallback.EVENT.register(new FabricHud());
         TooltipComponentCallback.EVENT.register(component -> component instanceof ProgressTooltipData(double progress, double total) ? new ProgressTooltip(progress, total) : null);
-        WorldRenderEvents.LAST.register(context -> RaidDenBeamRenderer.tick(context.matrixStack(), (MultiBufferSource.BufferSource) context.consumers()));
+        WorldRenderEvents.LAST.register(context -> RaidCrystalBeamRenderer.tick(context.matrixStack(), (MultiBufferSource.BufferSource) context.consumers()));
 
         ItemProperties.register(
             ModItems.RAID_SHARD.value(),

@@ -22,8 +22,6 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
-import java.awt.*;
-
 @Environment(EnvType.CLIENT)
 public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity> {
     public static final ResourceLocation LEGACY_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/beacon_beam.png");
@@ -62,7 +60,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         if (Minecraft.getInstance().player == null) return;
 
         if (blockEntity.getBeamHeight() > 4) {
-            RaidDenBeamRenderer.render(
+            RaidCrystalBeamRenderer.render(
                 blockEntity.getBlockPos().getBottomCenter(),
                 Minecraft.getInstance().player.blockPosition().distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),

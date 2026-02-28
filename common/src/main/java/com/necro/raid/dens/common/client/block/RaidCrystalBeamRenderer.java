@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class RaidDenBeamRenderer {
+public class RaidCrystalBeamRenderer {
     private static final List<Instance> RENDER_QUEUE = new ArrayList<>();
 
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_den_beam.png");

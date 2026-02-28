@@ -1,7 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.client.block.RaidDenBeamRenderer;
+import com.necro.raid.dens.common.client.block.RaidCrystalBeamRenderer;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
@@ -61,6 +61,6 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onRender(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_WEATHER) return;
-        RaidDenBeamRenderer.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource());
+        RaidCrystalBeamRenderer.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource());
     }
 }
