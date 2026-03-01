@@ -101,6 +101,22 @@
 
         return false;
     },
+    onFoeBeforeSwitchOut(pokemon) {
+        let wasDamaged = false;
+        for (let i = 0; i < this.log.length - 2; i++) {
+            if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-damage|p2a:') && this.log[i + 2].startsWith('|-damage|p2a:')) {
+                this.log.splice(i, 3);
+                wasDamaged = true;
+                i--;
+            }
+            else if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-heal|p2a:') && this.log[i + 2].startsWith('|-heal|p2a:')) {
+                this.log.splice(i, 3);
+                i--;
+            }
+        }
+
+        if (wasDamaged && pokemon.hp === pokemon.maxhp) pokemon.hp = Math.max(1, pokemon.hp - 1);
+    },
     onResidual(pokemon) {
         let wasDamaged = false;
         for (let i = 0; i < this.log.length - 2; i++) {
