@@ -51,7 +51,11 @@ public class RaidCrystalBeamRenderer {
         poseStack.mulPose(Axis.YP.rotationDegrees(180F - camera.getYRot()));
 
         RenderType renderType;
-        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(BEAM_LOCATION, false);
+        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) {
+            // Black does not render as light beams using shaders. Change to a gray.
+            if (color == 657930) color = 6250335;
+            renderType = RenderType.entityTranslucentEmissive(BEAM_LOCATION, false);
+        }
         else renderType = RAID_DEN_BEAM;
 
         VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);

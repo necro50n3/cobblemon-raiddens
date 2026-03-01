@@ -14,7 +14,7 @@ public enum RaidType implements StringRepresentable {
     GROUND("ground", 10446848),
     ROCK("rock", 11889741),
     BUG("bug", 8107086),
-    GHOST("ghost", 3679364),
+    GHOST("ghost", 4398799),
     STEEL("steel", 8559783),
     FIRE("fire", 13842747),
     WATER("water", 4805581),
