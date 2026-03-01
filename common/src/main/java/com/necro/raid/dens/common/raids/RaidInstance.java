@@ -152,8 +152,8 @@ public class RaidInstance {
     public void addPlayer(ServerPlayer player) {
         this.addToBossEvent(player);
 
-        this.damageTracker.put(player.getUUID(), 0f);
-        if (!this.activePlayers.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0f) {
+        this.damageTracker.put(player.getUUID(), 0F);
+        if (!this.activePlayers.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0F) {
             this.applyHealthMulti();
         }
 
@@ -165,7 +165,7 @@ public class RaidInstance {
         ((IRaidBattle) battle).crd_setRaidBattle(this);
         this.sendHealthPacket(battle);
 
-        if (!this.battles.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0f) {
+        if (!this.battles.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0F) {
             this.playerJoin(battle.getPlayers().getFirst().getName().getString());
         }
 
@@ -176,7 +176,7 @@ public class RaidInstance {
     }
 
     private void applyHealthMulti() {
-        float bonusHealth = this.initMaxHealth * (this.raidBoss.getMultiplayerHealthMulti() - 1f) * this.activePlayers.size();
+        float bonusHealth = this.initMaxHealth * (this.raidBoss.getMultiplayerHealthMulti() - 1F) * this.activePlayers.size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
         this.currentHealth = this.maxHealth * currentRatio;
@@ -226,10 +226,10 @@ public class RaidInstance {
         if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).crd_isRaidBattle()) this.addPlayerAndBattle(player, battle);
         this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);
 
-        this.currentHealth = Math.clamp(this.currentHealth - damage, 0f, this.maxHealth);
+        this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
 
-        if (this.currentHealth == 0f) {
+        if (this.currentHealth == 0F) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
             this.queueStopRaid();
         }
@@ -296,7 +296,7 @@ public class RaidInstance {
         this.timerEvent.setVisible(false);
         this.timerEvent.removeAllPlayers();
 
-        if (raidSuccess) this.bossEntity.setHealth(0f);
+        if (raidSuccess) this.bossEntity.setHealth(0F);
         if (this.raidBoss == null) return;
 
         if (raidSuccess) this.handleSuccess();
@@ -316,10 +316,10 @@ public class RaidInstance {
 
         List<ServerPlayer> players = new ArrayList<>(this.activePlayers);
         Iterator<ServerPlayer> iter = players.iterator();
-        if (this.raidBoss.getRequiredDamage() > 0f) {
+        if (this.raidBoss.getRequiredDamage() > 0F) {
             while (iter.hasNext()) {
                 ServerPlayer p = iter.next();
-                if (this.damageTracker.getOrDefault(p.getUUID(), 0f) / this.maxHealth < this.raidBoss.getRequiredDamage()) {
+                if (this.damageTracker.getOrDefault(p.getUUID(), 0F) / this.maxHealth < this.raidBoss.getRequiredDamage()) {
                     noItems.add(p);
                     iter.remove();
                 }
@@ -379,8 +379,8 @@ public class RaidInstance {
     private void sortPlayers() {
         if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.DAMAGE) {
             this.activePlayers.sort((a, b) -> Float.compare(
-                this.damageTracker.getOrDefault(b.getUUID(), 0f),
-                this.damageTracker.getOrDefault(a.getUUID(), 0f)
+                this.damageTracker.getOrDefault(b.getUUID(), 0F),
+                this.damageTracker.getOrDefault(a.getUUID(), 0F)
             ));
         }
         else {
@@ -472,7 +472,7 @@ public class RaidInstance {
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;
         if (bagItem instanceof CheerBagItem(CheerBagItem.CheerType cheerType) && cheerType == CheerBagItem.CheerType.HEAL && target.getFirst().getBattlePokemon().getEntity() instanceof PokemonEntity entity) {
-            entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1f, 1f);
+            entity.playSound(CobblemonSounds.MEDICINE_HERB_USE, 1F, 1F);
         }
         this.sendAction(side1, side2,new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), origin), skipEnemyAction);
     }
@@ -490,7 +490,7 @@ public class RaidInstance {
 
     private void initTimer(int time) {
         this.timerEvent.setVisible(true);
-        this.runQueue.add(new TimerRunnable(this, time));
+        this.runQueue.add(new TimerRunnable(time));
     }
 
     public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
@@ -586,14 +586,12 @@ public class RaidInstance {
         }
     }
 
-    private static class TimerRunnable extends DelayedRunnable {
-        private final RaidInstance raid;
+    private class TimerRunnable extends DelayedRunnable {
         private int time;
         private final int maxTime;
 
-        public TimerRunnable(RaidInstance raid, int time) {
+        public TimerRunnable(int time) {
             super(() -> {}, 20, true);
-            this.raid = raid;
             this.time = time;
             this.maxTime = time;
         }
@@ -601,12 +599,12 @@ public class RaidInstance {
         @Override
         public boolean tick() {
             if (++this.tick < this.delay) return false;
-            else if (this.raid.isFinished()) return false;
+            else if (RaidInstance.this.isFinished()) return false;
             else if (--this.time <= 0) {
-                raid.stopRaid(false);
+                RaidInstance.this.stopRaid(false);
                 return false;
             }
-            this.raid.timerEvent.setProgress((float) this.time / this.maxTime);
+            RaidInstance.this.timerEvent.setProgress((float) this.time / this.maxTime);
             return false;
         }
     }
