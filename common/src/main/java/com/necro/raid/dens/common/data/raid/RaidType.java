@@ -2,31 +2,30 @@ package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector4f;
 
 public enum RaidType implements StringRepresentable {
-    NONE("none", DyeColor.GRAY.getTextureDiffuseColor()),
-    NORMAL("normal", DyeColor.WHITE.getTextureDiffuseColor()),
-    FIGHTING("fighting", DyeColor.BROWN.getTextureDiffuseColor()),
-    FLYING("flying", DyeColor.LIGHT_GRAY.getTextureDiffuseColor()),
-    POISON("poison", DyeColor.PURPLE.getTextureDiffuseColor()),
-    GROUND("ground", DyeColor.BROWN.getTextureDiffuseColor()),
-    ROCK("rock", DyeColor.BROWN.getTextureDiffuseColor()),
-    BUG("bug", DyeColor.LIME.getTextureDiffuseColor()),
-    GHOST("ghost", DyeColor.MAGENTA.getTextureDiffuseColor()),
-    STEEL("steel", DyeColor.LIGHT_GRAY.getTextureDiffuseColor()),
-    FIRE("fire", DyeColor.RED.getTextureDiffuseColor()),
-    WATER("water", DyeColor.BLUE.getTextureDiffuseColor()),
-    GRASS("grass", DyeColor.GREEN.getTextureDiffuseColor()),
-    ELECTRIC("electric", DyeColor.YELLOW.getTextureDiffuseColor()),
-    PSYCHIC("psychic", DyeColor.PINK.getTextureDiffuseColor()),
-    ICE("ice", DyeColor.LIGHT_BLUE.getTextureDiffuseColor()),
-    DRAGON("dragon", DyeColor.BLUE.getTextureDiffuseColor()),
-    DARK("dark", DyeColor.BLACK.getTextureDiffuseColor()),
-    FAIRY("fairy", DyeColor.PINK.getTextureDiffuseColor()),
-    STELLAR("stellar", DyeColor.WHITE.getTextureDiffuseColor());
+    NONE("none", 4079166),
+    NORMAL("normal", 16383998),
+    FIGHTING("fighting", 16742955),
+    FLYING("flying", 11390705),
+    POISON("poison", 6109847),
+    GROUND("ground", 10446848),
+    ROCK("rock", 11889741),
+    BUG("bug", 8107086),
+    GHOST("ghost", 3679364),
+    STEEL("steel", 8559783),
+    FIRE("fire", 13842747),
+    WATER("water", 4805581),
+    GRASS("grass", 3007286),
+    ELECTRIC("electric", 15251206),
+    PSYCHIC("psychic", 11608720),
+    ICE("ice", 9362175),
+    DRAGON("dragon", 1069463),
+    DARK("dark", 657930),
+    FAIRY("fairy", 14111371),
+    STELLAR("stellar", 16383998);
 
     private final String id;
     private final int color;
