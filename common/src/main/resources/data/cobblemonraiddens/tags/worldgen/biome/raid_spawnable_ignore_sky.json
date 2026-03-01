@@ -1,5 +1,17 @@
 {
     "values": [
-        "#minecraft:is_nether"
+        "#minecraft:is_nether",
+        {
+            "id": "#deeperdarker:is_deeperdarker",
+            "required": false
+        },
+        {
+            "id": "#undergarden:is_undergarden",
+            "required": false
+        },
+        {
+            "id": "#the_bumblezone:the_bumblezone",
+            "required": false
+        }
     ]
 }

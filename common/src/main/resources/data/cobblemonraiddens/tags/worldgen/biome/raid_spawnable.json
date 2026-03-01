@@ -1,6 +1,18 @@
 {
     "values": [
         "#minecraft:is_overworld",
-        "#minecraft:is_end"
+        "#minecraft:is_end",
+        {
+            "id": "#aether:is_aether",
+            "required": false
+        },
+        {
+            "id": "#eternal_starlight:is_eternal_starlight",
+            "required": false
+        },
+        {
+            "id": "#twilightforest:in_twilight_forest",
+            "required": false
+        }
     ]
 }
