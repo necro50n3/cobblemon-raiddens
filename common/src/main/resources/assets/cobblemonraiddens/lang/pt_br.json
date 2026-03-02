@@ -46,6 +46,7 @@
     "cobblemonraiddens.status.shield.apply": "Energia começou a se reunir ao redor de %1$s!",
     "cobblemonraiddens.status.shield.cure": "%1$s sucumbiu ao ataque e quebrou sua postura!",
     "config.jade.plugin_cobblemonraiddens.raid_crystal": "Toca de Raid",
+
     "error.cobblemonraiddens.command_blacklist": "Você não pode usar esse comando em uma raid.",
     "error.cobblemonraiddens.dimension_exist": "Você já está hospedando outra raid. Se isso for um erro, use /crd refresh ou contate um admin.",
     "error.cobblemonraiddens.invalid_dimension": "Dimensão inválida.",

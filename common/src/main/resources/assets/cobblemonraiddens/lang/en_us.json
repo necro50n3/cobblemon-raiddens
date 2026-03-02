@@ -46,6 +46,7 @@
     "cobblemonraiddens.status.shield.apply": "Energy has begun to gather around %1$s!",
     "cobblemonraiddens.status.shield.cure": "%1$s succumbed to the onslaught and broke its stance!",
     "config.jade.plugin_cobblemonraiddens.raid_crystal": "Raid Den",
+    "dimension.cobblemonraiddens.raid_dimension": "???",
     "error.cobblemonraiddens.command_blacklist": "You cannot use that command in a raid.",
     "error.cobblemonraiddens.dimension_exist": "You are already hosting another raid. If this is an error, use /crd refresh or contact an admin.",
     "error.cobblemonraiddens.invalid_dimension": "Invalid dimension.",
