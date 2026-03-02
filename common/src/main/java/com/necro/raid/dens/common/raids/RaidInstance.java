@@ -350,7 +350,7 @@ public class RaidInstance {
             failed = List.of();
         }
         else {
-            this.sortPlayers();
+            this.sortPlayers(players);
             success = players.subList(0, catches);
             failed = players.subList(catches, players.size());
         }
@@ -376,15 +376,15 @@ public class RaidInstance {
         noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
     }
 
-    private void sortPlayers() {
+    private void sortPlayers(List<ServerPlayer> players) {
         if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.DAMAGE) {
-            this.activePlayers.sort((a, b) -> Float.compare(
+            players.sort((a, b) -> Float.compare(
                 this.damageTracker.getOrDefault(b.getUUID(), 0F),
                 this.damageTracker.getOrDefault(a.getUUID(), 0F)
             ));
         }
         else {
-            Collections.shuffle(this.activePlayers);
+            Collections.shuffle(players);
         }
     }
 
