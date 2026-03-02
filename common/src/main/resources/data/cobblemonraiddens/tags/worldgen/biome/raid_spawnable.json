@@ -13,6 +13,14 @@
         {
             "id": "#twilightforest:in_twilight_forest",
             "required": false
+        },
+        {
+            "id": "legendarymonuments:distortion_world_biome",
+            "required": false
+        },
+        {
+            "id": "#cobblesafari:is_safari",
+            "required": false
         }
     ]
 }

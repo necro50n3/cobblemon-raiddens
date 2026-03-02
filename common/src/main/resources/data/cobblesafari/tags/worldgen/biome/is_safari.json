@@ -1,0 +1,76 @@
+{
+    "values": [
+        {
+            "id": "cobblesafari:bug",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:dark",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:dragon",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:electric",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:fairy",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:fighting",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:fire",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:flying",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:ghost",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:grass",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:ground",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:ice",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:normal",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:poison",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:psychic",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:rock",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:steel",
+            "required": false
+        },
+        {
+            "id": "cobblesafari:water",
+            "required": false
+        }
+    ]
+}

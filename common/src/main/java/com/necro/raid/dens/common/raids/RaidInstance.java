@@ -315,8 +315,8 @@ public class RaidInstance {
         List<ServerPlayer> noItems = new ArrayList<>();
 
         List<ServerPlayer> players = new ArrayList<>(this.activePlayers);
-        Iterator<ServerPlayer> iter = players.iterator();
         if (this.raidBoss.getRequiredDamage() > 0F) {
+            Iterator<ServerPlayer> iter = players.iterator();
             while (iter.hasNext()) {
                 ServerPlayer p = iter.next();
                 if (this.damageTracker.getOrDefault(p.getUUID(), 0F) / this.maxHealth < this.raidBoss.getRequiredDamage()) {
