@@ -140,10 +140,7 @@ public class RaidInstance {
         this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
             TimerTrigger trigger = (TimerTrigger) t;
             this.runQueue.add(
-                new DelayedRunnable(() -> {
-                    if (this.isFinished()) return;
-                    trigger.trigger(this, null);
-                }, trigger.after() * 20, trigger.repeat())
+                new DelayedRunnable(() -> trigger.trigger(this, null), trigger.after() * 20, trigger.repeat())
             );
         });
     }
@@ -254,10 +251,7 @@ public class RaidInstance {
             this.queueStopRaid();
         }
         else {
-            this.runQueue.add(new DelayedRunnable(() -> {
-                if (this.isFinished()) return;
-                this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
-            }, 20));
+            this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.setProgress(this.currentHealth / this.maxHealth), 20));
         }
     }
 
@@ -303,10 +297,7 @@ public class RaidInstance {
     }
 
     public void queueStopRaid(boolean raidSuccess) {
-        this.runQueue.add(new DelayedRunnable(() -> {
-            if (this.isFinished()) return;
-            this.stopRaid(raidSuccess);
-        }, 60));
+        this.runQueue.add(new DelayedRunnable(() -> this.stopRaid(raidSuccess), 60));
     }
 
     public void stopRaid(boolean raidSuccess) {
@@ -428,7 +419,6 @@ public class RaidInstance {
 
     public void addToBossEvent(ServerPlayer player) {
         this.runQueue.add(new DelayedRunnable(() -> {
-            if (this.isFinished()) return;
             this.bossEvent.addPlayer(player);
             this.timerEvent.addPlayer(player);
         }, 2));
@@ -597,7 +587,7 @@ public class RaidInstance {
         this.battles.forEach(this::sendHealthPacket);
     }
 
-    private static class DelayedRunnable {
+    private class DelayedRunnable {
         private final Runnable runnable;
         final int delay;
         int tick;
@@ -616,6 +606,7 @@ public class RaidInstance {
 
         public boolean tick() {
             if (++this.tick < this.delay) return false;
+            else if (RaidInstance.this.isFinished()) return false;
             this.runnable.run();
             if (this.repeat) this.tick = 0;
             return !this.repeat;
