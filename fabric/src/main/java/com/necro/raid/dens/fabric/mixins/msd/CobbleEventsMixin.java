@@ -2,6 +2,8 @@ package com.necro.raid.dens.fabric.mixins.msd;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.battles.instruction.TerastallizationEvent;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.github.yajatkaul.mega_showdown.event.CobbleEvents;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -16,9 +18,18 @@ public class CobbleEventsMixin {
     private static void terrastallizationUsedInject(TerastallizationEvent event, CallbackInfo ci) {
         PokemonBattle battle = event.getBattle();
         if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        else if (event.getPokemon().getEntity() == null) return;
-        else if (!((IRaidAccessor) event.getPokemon().getEntity()).crd_isRaidBoss()) return;
-        else if (!((IRaidAccessor) event.getPokemon().getEntity()).crd_getRaidBoss().isTera()) return;
+        PokemonEntity pokemon = event.getPokemon().getEntity();
+        if (pokemon == null) return;
+        else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
+        ci.cancel();
+    }
+
+    @Inject(method = "dynamaxStarted", at = @At("HEAD"), remap = false, cancellable = true)
+    private static void dynamaxStartedInject(PokemonBattle battle, BattlePokemon battlePokemon, Boolean gmax, CallbackInfo ci) {
+        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        PokemonEntity pokemon = battlePokemon.getEntity();
+        if (pokemon == null) return;
+        else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
         ci.cancel();
     }
 }

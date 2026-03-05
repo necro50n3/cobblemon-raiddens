@@ -103,7 +103,7 @@
     },
     onFoeBeforeSwitchOut(pokemon) {
         let wasDamaged = false;
-        for (let i = 0; i < this.log.length - 2; i++) {
+        for (let i = this.sentLogPos; i < this.log.length - 2; i++) {
             if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-damage|p2a:') && this.log[i + 2].startsWith('|-damage|p2a:')) {
                 this.log.splice(i, 3);
                 wasDamaged = true;
@@ -119,7 +119,7 @@
     },
     onResidual(pokemon) {
         let wasDamaged = false;
-        for (let i = 0; i < this.log.length - 2; i++) {
+        for (let i = this.sentLogPos; i < this.log.length - 2; i++) {
             if (this.log[i] === '|split|p2' && this.log[i + 1].startsWith('|-damage|p2a:') && this.log[i + 2].startsWith('|-damage|p2a:')) {
                 this.log.splice(i, 3);
                 wasDamaged = true;
@@ -132,6 +132,7 @@
         }
 
         this.effectState.stage = 0;
+        if (pokemon.volatiles['dynamax']) pokemon.volatiles['dynamax'].turns = 0;
         if (wasDamaged && pokemon.hp === pokemon.maxhp) pokemon.hp = Math.max(1, pokemon.hp - 1);
     }
 }

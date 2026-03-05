@@ -81,6 +81,7 @@ public class RaidBossAdditions {
             getKey(this.additions()).ifPresent(boss::setKey);
             getBossBarText(this.additions()).ifPresent(boss::setBossBarText);
             getScale(this.additions()).ifPresent(boss::setScale);
+            getForceDynamax(this.additions()).ifPresent(boss::setForceDynamax);
 
             getMaxPlayers(this.additions()).ifPresent(boss::setMaxPlayers);
             getMaxClears(this.additions()).ifPresent(boss::setMaxClears);
@@ -180,6 +181,10 @@ public class RaidBossAdditions {
 
     private static Optional<Float> getScale(RaidBoss boss) {
         return Optional.ofNullable(boss.getScale());
+    }
+
+    private static Optional<Boolean> getForceDynamax(RaidBoss boss) {
+        return Optional.ofNullable(boss.getForceDynamax());
     }
 
     private static Optional<Integer> getMaxPlayers(RaidBoss boss) {

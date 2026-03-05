@@ -38,6 +38,9 @@ public class ShowdownInterpreter171Impl {
         parser.put("shieldremove", (battle, instruction, message, messageIterator) ->
             new ShieldRemoveInstruction(battle, message)
         );
+        parser.put("donothing", (battle, instruction, message, messageIterator) ->
+            new DoNothingInstruction()
+        );
         parser.put("-raidboost", (battle, instruction, message, messageIterator) ->
             new RaidBoostInstruction(battle, message, true)
         );

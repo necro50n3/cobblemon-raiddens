@@ -30,6 +30,9 @@ public class RaidDensShowdownRegistry {
         ShowdownInterpreter.registerUpdateInstructionParser("shieldremove", (battle, instruction, message, messageIterator) ->
             new ShieldRemoveInstruction(battle, message)
         );
+        ShowdownInterpreter.registerUpdateInstructionParser("donothing", (battle, instruction, message, messageIterator) ->
+            new DoNothingInstruction()
+        );
         ShowdownInterpreter.registerUpdateInstructionParser("-raidboost", (battle, instruction, message, messageIterator) ->
             new RaidBoostInstruction(battle, message, true)
         );

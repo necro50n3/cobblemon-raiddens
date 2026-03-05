@@ -9,16 +9,17 @@ import com.cobblemon.mod.common.battles.interpreter.ContextManager;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
 import com.mojang.datafixers.util.Pair;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record StartRaidShowdownEvent(RaidBattleState battleState) implements ShowdownEvent {
+public record StartRaidShowdownEvent(RaidBattleState battleState, List<RaidFeature> effects) implements ShowdownEvent {
     @SuppressWarnings("deprecation")
     public String build(PokemonBattle battle) {
-        Builder builder = new Builder();
+        Builder builder = new Builder(this.effects);
         List<Pair<ContextManager, BattleContext>> contexts = new ArrayList<>();
 
         if (this.battleState.terrain != null) {
@@ -73,8 +74,10 @@ public record StartRaidShowdownEvent(RaidBattleState battleState) implements Sho
     private static class Builder {
         private String string;
 
-        private Builder() {
+        private Builder(List<RaidFeature> effects) {
             this.string = ">eval battle.sides[1].pokemon[0].addVolatile('raidboss'); ";
+            if (effects.contains(RaidFeature.DYNAMAX)) this.string += "battle.sides[1].pokemon[0].addVolatile('dynamax'); ";
+            if (effects.contains(RaidFeature.TERA)) this.string += "battle.actions.terastallize(battle.sides[1].pokemon[0]); ";
         }
 
         private void addTerrain(String terrain) {

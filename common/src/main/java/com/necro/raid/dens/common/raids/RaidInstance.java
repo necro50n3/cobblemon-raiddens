@@ -14,6 +14,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -170,7 +171,11 @@ public class RaidInstance {
         }
 
         this.battles.add(battle);
-        new StartRaidShowdownEvent(this.battleState).send(battle);
+        List<RaidFeature> effects = new ArrayList<>();
+        if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.DYNAMAX);
+        if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
+        new StartRaidShowdownEvent(this.battleState, effects).send(battle);
+        new DoNothingShowdownEvent().send(battle);
         this.runScriptByTurn(0, battle);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }

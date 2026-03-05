@@ -421,7 +421,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         this.clears = compoundTag.getInt("raid_cleared");
         this.lastReset = compoundTag.getLong("last_reset");
-        this.inactiveTicks = compoundTag.getInt("raid_inactive_for");
 
         if (compoundTag.contains("uuid")) this.uuid = UUID.fromString(compoundTag.getString("uuid"));
         else this.uuid = UUID.randomUUID();
@@ -441,7 +440,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         compoundTag.putInt("raid_cleared", this.clears);
         compoundTag.putLong("last_reset", this.lastReset);
-        compoundTag.putInt("raid_inactive_for", this.inactiveTicks);
 
         if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
