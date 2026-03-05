@@ -12,8 +12,11 @@ import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -358,6 +361,10 @@ public class RaidSpawnCommands {
         if (noAI) pokemonEntity.setNoAi(true);
         if (isInvulnerable) pokemonEntity.setInvulnerable(true);
         if (isPersistent) pokemonEntity.setPersistenceRequired();
+
+        ((IRaidAccessor) pokemonEntity).crd_setRaidId(pokemonEntity.getUUID());
+        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getUUID(), new RaidInstance(pokemonEntity, null, false));
+
         pokemonEntity.moveTo(vec3);
         dimension.addFreshEntity(pokemonEntity);
         return 1;

@@ -45,7 +45,7 @@ import java.util.function.Function;
 
 public class RaidInstance {
     private final PokemonEntity bossEntity;
-    private final UUID host;
+    private final @Nullable UUID host;
     private final UUID raid;
     private final RaidBoss raidBoss;
     private final ServerBossEvent bossEvent;
@@ -69,7 +69,7 @@ public class RaidInstance {
     private final RaidBattleState battleState;
     private final boolean isInDen;
 
-    public RaidInstance(PokemonEntity entity, UUID host, boolean isInDen) {
+    public RaidInstance(PokemonEntity entity, @Nullable UUID host, boolean isInDen) {
         this.bossEntity = entity;
         this.host = host;
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
@@ -160,6 +160,10 @@ public class RaidInstance {
 
         this.playerMap.put(player.getUUID(), new RaidPlayer(this.raidBoss));
         this.activePlayers.add(player);
+    }
+
+    public boolean isPlayerIn(ServerPlayer player) {
+        return this.activePlayers.contains(player);
     }
 
     public void addBattle(PokemonBattle battle) {
@@ -555,7 +559,7 @@ public class RaidInstance {
 
         if (this.isInDen) RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.raidState, ModDimensions.getRaidDimension(server));
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
-        RaidHelper.removeRequests(this.host);
+        if (this.host != null) RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
     }
 

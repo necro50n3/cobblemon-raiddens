@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.network.packets;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSeenEvent;
 import com.cobblemon.mod.common.battles.BattleFormat;
@@ -78,18 +77,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-
-        // Initiate raid instance for spawnboss
-        if (raidId == null && !RaidUtils.isRaidDimension(player.level())) {
-            raidId = UUID.randomUUID();
-            ((IRaidAccessor) pokemonEntity).crd_setRaidId(raidId);
-            RaidInstance newInstance = new RaidInstance(pokemonEntity, player.getUUID());
-            newInstance.addPlayer(player);
-            RaidHelper.ACTIVE_RAIDS.put(raidId, newInstance);
-        }
-
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
-        if (raidId == null || raid == null) return;
+        if (raid == null) return;
         else if (raid.hasFailed(player)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
@@ -124,11 +113,12 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
+                    if (!raid.isPlayerIn(player)) raid.addPlayer(player);
                     raid.addBattle(battle);
                     RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
 
                     if (pokemonEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
-                        this.setTransformTarget(pokemonEntity, pokemon, battle.getSide2().getActors()[0]);
+                        this.setTransformTarget(pokemonEntity, pokemon);
                     }
 
                     return Unit.INSTANCE;
@@ -140,7 +130,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         }
     }
 
-    private void setTransformTarget(PokemonEntity pokemonEntity, Pokemon pokemon, BattleActor actor) {
+    private void setTransformTarget(PokemonEntity pokemonEntity, Pokemon pokemon) {
         if (((ITransformer) pokemonEntity).crd_getTransformTarget() == null) {
             ((ITransformer) pokemonEntity).crd_setTransformTarget(pokemon);
         }
