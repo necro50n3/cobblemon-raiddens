@@ -200,7 +200,7 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
-        if (this.bossEvent.getPlayers().contains(player)) this.removeFromBossEvent(player);
+        this.removeFromBossEvent(player);
 
         if (battle == null) return;
         this.battles.remove(battle);
@@ -425,6 +425,7 @@ public class RaidInstance {
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
+        if (!this.bossEvent.getPlayers().contains(player)) return;
         this.bossEvent.removePlayer(player);
         this.timerEvent.removePlayer(player);
     }
@@ -553,6 +554,9 @@ public class RaidInstance {
             ((ServerLevel) this.bossEntity.level()).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
             this.bossEntity.discard();
         }
+
+        this.bossEvent.removeAllPlayers();
+        this.timerEvent.removeAllPlayers();
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
         if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));
