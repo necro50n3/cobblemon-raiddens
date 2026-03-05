@@ -25,6 +25,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.HPTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
+import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TurnTrigger;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
@@ -127,22 +128,23 @@ public class RaidInstance {
             if (functions.isEmpty()) return;
 
             try {
-                if (key.startsWith("after:") || key.startsWith("repeat:")) {
-                    int time = Integer.parseInt(key.split(":")[1]) * 20;
-                    this.runQueue.add(
-                        new DelayedRunnable(() -> {
-                            if (this.isFinished()) return;
-                            functions.forEach(event -> this.sendEvent(event, null));
-                        }, time, key.startsWith("repeat:"))
-                    );
-                }
-                else {
-                    RaidTrigger<?> trigger = RaidTriggerType.decode(key, functions);
-                    if (trigger == null) return;
-                    this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
-                }
+                RaidTrigger<?> trigger = RaidTriggerType.decode(key, functions);
+                if (trigger == null) return;
+                this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
             }
-            catch (Exception ignored) {}
+            catch (Exception e) {
+                CobblemonRaidDens.LOGGER.error("Failed to parse script {}: ", key, e);
+            }
+        });
+
+        this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
+            TimerTrigger trigger = (TimerTrigger) t;
+            this.runQueue.add(
+                new DelayedRunnable(() -> {
+                    if (this.isFinished()) return;
+                    trigger.trigger(this, null);
+                }, trigger.after() * 20, trigger.repeat())
+            );
         });
     }
 
