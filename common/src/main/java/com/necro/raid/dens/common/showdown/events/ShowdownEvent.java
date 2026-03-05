@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.showdown.events;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.runner.ShowdownService;
 
-public interface ShowdownEvent {
+public interface ShowdownEvent extends AbstractEvent {
     String build(PokemonBattle battle);
 
     default void send(PokemonBattle battle) {

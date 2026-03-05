@@ -163,7 +163,12 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
             }
 
             float damage = Float.parseFloat(damageStr);
-            boolean causedFaint = raidInstance.getRemainingHealth() < damage;
+
+            ServerPlayer player = battle.getPlayers().getFirst();
+            raidInstance.syncHealth(player, battle, damage);
+            battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getCurrentHealth());
+
+            boolean causedFaint = raidInstance.getCurrentHealth() <= 0;
             if (causedFaint) {
                 battle.getDispatches().clear();
                 battle.dispatchToFront(() -> {
@@ -173,14 +178,10 @@ public class RaidDamageInstruction implements ActionEffectInstruction {
                 });
             }
 
-            ServerPlayer player = battle.getPlayers().getFirst();
-            raidInstance.syncHealth(player, battle, damage);
-            battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getRemainingHealth());
-
             Pair<String, String> pnxUuid = this.privateMessage.pnxAndUuid(0);
             if (pnxUuid != null) {
                 String pnx = pnxUuid.getFirst();
-                float remainingHealth = raidInstance.getRemainingHealth();
+                float remainingHealth = raidInstance.getCurrentHealth();
                 float healthRatio = remainingHealth / raidInstance.getMaxHealth();
                 battle.sendSidedUpdate(
                     this.actor,

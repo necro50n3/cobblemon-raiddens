@@ -2,9 +2,9 @@ package com.necro.raid.dens.common.showdown.events;
 
 import com.necro.raid.dens.common.raids.RaidInstance;
 
-public record TimerRaidEvent(int time) implements RaidEvent {
+public record HealRaidEvent(float ratio) implements RaidEvent {
     @Override
     public void run(RaidInstance raid) {
-        raid.initTimer(this.time);
+        raid.healBoss(this.ratio);
     }
 }

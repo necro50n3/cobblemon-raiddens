@@ -22,6 +22,10 @@ import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
+import com.necro.raid.dens.common.raids.scripts.triggers.HPTrigger;
+import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
+import com.necro.raid.dens.common.raids.scripts.triggers.TurnTrigger;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
@@ -59,8 +63,10 @@ public class RaidInstance {
     private float maxHealth;
     private final float initMaxHealth;
     private int sharedLives;
-    private final Map<Integer, List<ShowdownEvent>> scriptByTurn;
-    private final NavigableMap<Double, List<ShowdownEvent>> scriptByHp;
+    private final Map<RaidTriggerType, List<RaidTrigger<?>>> triggers;
+
+    private int time;
+    private int maxTime;
 
     private final Map<UUID, RaidPlayer> playerMap;
     private final List<DelayedRunnable> runQueue;
@@ -95,6 +101,9 @@ public class RaidInstance {
         this.initMaxHealth = this.maxHealth;
         this.sharedLives = this.raidBoss.getLives();
 
+        this.time = 0;
+        this.maxTime = 0;
+
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(() -> {
@@ -109,25 +118,16 @@ public class RaidInstance {
         this.battleState = new RaidBattleState();
         this.isInDen = isInDen;
 
-        this.scriptByTurn = new HashMap<>();
-        this.scriptByHp = new TreeMap<>();
+        this.triggers = new EnumMap<>(RaidTriggerType.class);
         raidBoss.getScript().forEach((key, scripts) -> {
-            List<ShowdownEvent> functions = scripts.functions().stream()
+            List<AbstractEvent> functions = scripts.functions().stream()
                 .map(this::getInstructions)
                 .filter(Objects::nonNull)
                 .toList();
             if (functions.isEmpty()) return;
 
             try {
-                if (key.startsWith("turn:")) {
-                    this.scriptByTurn.put(Integer.parseInt(key.split(":")[1]), functions);
-                }
-                else if (key.startsWith("hp:")) {
-                    double threshold = Double.parseDouble(key.split(":")[1]);
-                    if ((this.currentHealth / this.maxHealth) < threshold) return;
-                    this.scriptByHp.put(threshold, functions);
-                }
-                else if (key.startsWith("after:") || key.startsWith("repeat:")) {
+                if (key.startsWith("after:") || key.startsWith("repeat:")) {
                     int time = Integer.parseInt(key.split(":")[1]) * 20;
                     this.runQueue.add(
                         new DelayedRunnable(() -> {
@@ -135,6 +135,11 @@ public class RaidInstance {
                             functions.forEach(event -> this.sendEvent(event, null));
                         }, time, key.startsWith("repeat:"))
                     );
+                }
+                else {
+                    RaidTrigger<?> trigger = RaidTriggerType.decode(key, functions);
+                    if (trigger == null) return;
+                    this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
                 }
             }
             catch (Exception ignored) {}
@@ -197,14 +202,16 @@ public class RaidInstance {
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         if (this.bossEvent.getPlayers().contains(player)) this.removeFromBossEvent(player);
-        if (this.raidState != RaidState.NOT_STARTED) {
-            if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
-            if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-        }
 
         if (battle == null) return;
         this.battles.remove(battle);
         ((IRaidBattle) battle).crd_setRaidBattle(null);
+
+        if (this.raidState != RaidState.NOT_STARTED) {
+            if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
+            if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
+            if (!this.isFinished()) this.runScriptAfterFaint();
+        }
     }
 
     public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
@@ -238,7 +245,9 @@ public class RaidInstance {
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
 
-        if (this.currentHealth == 0F) {
+        this.runScriptByHp((double) this.currentHealth / this.maxHealth);
+
+        if (this.currentHealth <= 0F) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
             this.queueStopRaid();
         }
@@ -246,7 +255,6 @@ public class RaidInstance {
             this.runQueue.add(new DelayedRunnable(() -> {
                 if (this.isFinished()) return;
                 this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
-                this.runScriptByHp((double) this.currentHealth / this.maxHealth);
             }, 20));
         }
     }
@@ -256,8 +264,8 @@ public class RaidInstance {
         BattleActor actor = battle.getActorAndActiveSlotFromPNX(pnx).getFirst();
         battle.sendSidedUpdate(
             actor,
-            new BattleHealthChangePacket(pnx, this.getRemainingHealth(), null),
-            new BattleHealthChangePacket(pnx, this.getRemainingHealth() / this.getMaxHealth(), null),
+            new BattleHealthChangePacket(pnx, this.getCurrentHealth(), null),
+            new BattleHealthChangePacket(pnx, this.getCurrentHealth() / this.getMaxHealth(), null),
             false
         );
     }
@@ -270,7 +278,7 @@ public class RaidInstance {
         return this.battles;
     }
 
-    public float getRemainingHealth() {
+    public float getCurrentHealth() {
         return this.currentHealth;
     }
 
@@ -437,22 +445,24 @@ public class RaidInstance {
         return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
-    private ShowdownEvent getInstructions(@NotNull String function) {
+    private AbstractEvent getInstructions(@NotNull String function) {
         return RaidScriptRegistry.decode(function);
     }
 
+    private List<RaidTrigger<?>> getTriggers(RaidTriggerType type) {
+        return this.triggers.computeIfAbsent(type, t -> new ArrayList<>());
+    }
+
     public void runScriptByTurn(int turn, PokemonBattle battle) {
-        List<ShowdownEvent> functions = this.scriptByTurn.remove(turn);
-        if (functions == null) return;
-        functions.forEach(event -> this.sendEvent(event, battle));
+        this.getTriggers(RaidTriggerType.TURN).removeIf(trigger -> ((TurnTrigger) trigger).trigger(this, battle, turn));
     }
 
     public void runScriptByHp(double hpRatio) {
-        this.scriptByHp.tailMap(hpRatio, true)
-            .values()
-            .forEach(events -> events.forEach(event -> this.sendEvent(event, null)));
+        this.getTriggers(RaidTriggerType.HP).removeIf(trigger -> ((HPTrigger) trigger).trigger(this, hpRatio));
+    }
 
-        this.scriptByHp.keySet().removeIf(hp -> hp >= hpRatio);
+    public void runScriptAfterFaint() {
+        this.getTriggers(RaidTriggerType.FAINT).removeIf(trigger -> trigger.trigger(this, null));
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
@@ -497,16 +507,14 @@ public class RaidInstance {
         side1.sendUpdate(new BattleApplyPassResponsePacket());
     }
 
-    private void initTimer(int time) {
-        this.timerEvent.setVisible(true);
-        this.runQueue.add(new TimerRunnable(time));
-    }
-
-    public void sendEvent(ShowdownEvent event, @Nullable PokemonBattle battle) {
+    public void sendEvent(AbstractEvent event, @Nullable PokemonBattle battle) {
         if (this.isFinished() || this.battles.isEmpty()) return;
-        if (event instanceof BroadcastingShowdownEvent broadcast) broadcast.broadcast(this.battles);
-        else if (event instanceof TimerRaidEvent(int time)) this.initTimer(time * 20);
-        else event.send(battle == null ? this.battles.getFirst() : battle);
+        switch (event) {
+            case RaidEvent raidEvent -> raidEvent.run(this);
+            case BroadcastingShowdownEvent broadcastEvent -> broadcastEvent.broadcast(this.battles);
+            case ShowdownEvent showdownEvent -> showdownEvent.send(battle == null ? this.battles.getFirst() : battle);
+            default -> {}
+        }
     }
 
     public boolean canSync() {
@@ -570,6 +578,23 @@ public class RaidInstance {
         return ComponentUtils.getRaidBossDefault(entityName);
     }
 
+    public void initTimer(int time) {
+        this.maxTime = time * 20;
+        this.time = this.maxTime;
+
+        this.timerEvent.setVisible(true);
+        this.runQueue.add(new TimerRunnable());
+    }
+
+    public void reduceTimer(float ratio) {
+        this.time -= (int) (this.maxTime * ratio);
+    }
+
+    public void healBoss(float ratio) {
+        this.currentHealth = Math.min(this.currentHealth + this.getMaxHealth() * ratio, this.getMaxHealth());
+        this.battles.forEach(this::sendHealthPacket);
+    }
+
     private static class DelayedRunnable {
         private final Runnable runnable;
         final int delay;
@@ -596,24 +621,19 @@ public class RaidInstance {
     }
 
     private class TimerRunnable extends DelayedRunnable {
-        private int time;
-        private final int maxTime;
-
-        public TimerRunnable(int time) {
+        public TimerRunnable() {
             super(() -> {}, 20, true);
-            this.time = time;
-            this.maxTime = time;
         }
 
         @Override
         public boolean tick() {
             if (++this.tick < this.delay) return false;
             else if (RaidInstance.this.isFinished()) return false;
-            else if (--this.time <= 0) {
+            else if (--RaidInstance.this.time <= 0) {
                 RaidInstance.this.stopRaid(false);
                 return false;
             }
-            RaidInstance.this.timerEvent.setProgress((float) this.time / this.maxTime);
+            RaidInstance.this.timerEvent.setProgress((float) RaidInstance.this.time / RaidInstance.this.maxTime);
             return false;
         }
     }

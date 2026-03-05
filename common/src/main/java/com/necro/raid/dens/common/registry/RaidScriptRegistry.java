@@ -25,11 +25,11 @@ public class RaidScriptRegistry {
         SCRIPTS.put(key, event);
     }
 
-    public static void registerStatic(String key, ShowdownEvent event) {
+    public static void registerStatic(String key, AbstractEvent event) {
         SCRIPTS.put(key, args -> event);
     }
 
-    public static ShowdownEvent decode(String function) {
+    public static AbstractEvent decode(String function) {
         try {
             return decodeInner(function);
         }
@@ -38,7 +38,7 @@ public class RaidScriptRegistry {
         }
     }
 
-    private static ShowdownEvent decodeInner(String function) {
+    private static AbstractEvent decodeInner(String function) {
         if (function == null || function.isEmpty()) return null;
         String[] args = function.split("_");
 
@@ -55,6 +55,10 @@ public class RaidScriptRegistry {
 
     private static int parseInt(String number) throws NumberFormatException {
         return Integer.parseInt(number);
+    }
+
+    private static double parseDouble(String number) throws NumberFormatException {
+        return Double.parseDouble(number);
     }
 
     public static void init() {
@@ -82,6 +86,16 @@ public class RaidScriptRegistry {
             if (args.length != 2) return null;
             int time = parseInt(args[1]);
             return new TimerRaidEvent(time);
+        });
+        registerDecoder("REDUCE_TIMER", args -> {
+            if (args.length != 3) return null;
+            float ratio = (float) parseDouble(args[2]);
+            return new ReduceTimerRaidEvent(ratio);
+        });
+        registerDecoder("HEAL", args -> {
+            if (args.length != 2) return null;
+            float ratio = (float) parseDouble(args[1]);
+            return new HealRaidEvent(ratio);
         });
 
         registerStatic("RESET_BOSS", new ResetBossShowdownEvent());
