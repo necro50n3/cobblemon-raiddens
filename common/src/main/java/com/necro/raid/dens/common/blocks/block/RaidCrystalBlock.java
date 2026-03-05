@@ -89,6 +89,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return ItemInteractionResult.FAIL;
         if (raidCrystal.getRaidBoss() == null) return ItemInteractionResult.FAIL;
         else if (RaidRegionHelper.getRegion(raidCrystal.getUuid()) != null && raidCrystal.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        else if (raidCrystal.isOpen()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         if (raidCrystal.getRaidBoss().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         else if (!this.handleKey(player, raidCrystal, itemStack)) return ItemInteractionResult.FAIL;
