@@ -25,7 +25,7 @@ public enum RaidTriggerType {
 
     static {
         PARSER.put("turn", (turn, events) -> new TurnTrigger(Integer.parseInt(turn), events));
-        PARSER.put("hp", (hp, events) -> new HPTrigger(Double.parseDouble(hp), events));
+        PARSER.put("hp", (hp, events) -> new HPTrigger(Float.parseFloat(hp), events));
         PARSER.put("faint", (repeats, events) -> new FaintTrigger(Integer.parseInt(repeats), events));
         PARSER.put("after", (after, events) -> new TimerTrigger(Integer.parseInt(after), false, events));
         PARSER.put("repeat", (after, events) -> new TimerTrigger(Integer.parseInt(after), true, events));

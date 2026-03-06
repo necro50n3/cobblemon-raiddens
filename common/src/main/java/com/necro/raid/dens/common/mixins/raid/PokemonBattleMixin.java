@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.mixins.raid;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,7 +46,7 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     @Inject(method = "turn", at = @At("RETURN"), remap = false)
     private void turnInject(int newTurnNumber, CallbackInfo ci) {
         if (!this.crd_isRaidBattle()) return;
-        this.crd_raidInstance.runScriptByTurn(newTurnNumber, (PokemonBattle) (Object) this);
+        this.crd_raidInstance.runScripts(RaidTriggerType.TURN, (PokemonBattle) (Object) this, newTurnNumber);
     }
 
     @Inject(method = "checkFlee", at = @At("HEAD"), remap = false, cancellable = true)

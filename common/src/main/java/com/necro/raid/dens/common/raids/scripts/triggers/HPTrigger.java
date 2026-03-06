@@ -5,16 +5,16 @@ import com.necro.raid.dens.common.showdown.events.AbstractEvent;
 
 import java.util.List;
 
-public class HPTrigger extends RaidTrigger<Double> {
-    private final double threshold;
+public class HPTrigger extends RaidTrigger<Float> {
+    private final float threshold;
 
-    public HPTrigger(double threshold, List<AbstractEvent> events) {
+    public HPTrigger(float threshold, List<AbstractEvent> events) {
         super(RaidTriggerType.HP, events);
         this.threshold = threshold;
     }
 
     @Override
-    protected boolean check(Double predicate) {
+    protected boolean check(Float predicate) {
         return this.threshold >= predicate;
     }
 }

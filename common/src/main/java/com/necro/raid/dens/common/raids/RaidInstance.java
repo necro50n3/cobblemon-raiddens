@@ -23,10 +23,8 @@ import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
-import com.necro.raid.dens.common.raids.scripts.triggers.HPTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
-import com.necro.raid.dens.common.raids.scripts.triggers.TurnTrigger;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
@@ -184,7 +182,7 @@ public class RaidInstance {
         if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
         new StartRaidShowdownEvent(this.battleState, effects).send(battle);
         new DoNothingShowdownEvent().send(battle);
-        this.runScriptByTurn(0, battle);
+        this.runScripts(RaidTriggerType.TURN, battle, 0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
     }
 
@@ -200,16 +198,15 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
-        this.removeFromBossEvent(player);
-
-        if (battle == null) return;
-        this.battles.remove(battle);
-        ((IRaidBattle) battle).crd_setRaidBattle(null);
+        if (battle != null) {
+            this.battles.remove(battle);
+            ((IRaidBattle) battle).crd_setRaidBattle(null);
+        }
 
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-            if (!this.isFinished()) this.runScriptAfterFaint();
+            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT);
         }
     }
 
@@ -244,7 +241,7 @@ public class RaidInstance {
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
 
-        this.runScriptByHp((double) this.currentHealth / this.maxHealth);
+        this.runScripts(RaidTriggerType.HP, this.currentHealth / this.maxHealth);
 
         if (this.currentHealth <= 0F) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
@@ -450,16 +447,17 @@ public class RaidInstance {
         return this.triggers.computeIfAbsent(type, t -> new ArrayList<>());
     }
 
-    public void runScriptByTurn(int turn, PokemonBattle battle) {
-        this.getTriggers(RaidTriggerType.TURN).removeIf(trigger -> ((TurnTrigger) trigger).trigger(this, battle, turn));
+    @SuppressWarnings("unchecked")
+    public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, T predicate) {
+        this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate));
     }
 
-    public void runScriptByHp(double hpRatio) {
-        this.getTriggers(RaidTriggerType.HP).removeIf(trigger -> ((HPTrigger) trigger).trigger(this, hpRatio));
+    public <T> void runScripts(RaidTriggerType type, T predicate) {
+        this.runScripts(type, null, predicate);
     }
 
-    public void runScriptAfterFaint() {
-        this.getTriggers(RaidTriggerType.FAINT).removeIf(trigger -> trigger.trigger(this, null));
+    public void runScripts(RaidTriggerType type) {
+        this.runScripts(type, null, (Void) null);
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
@@ -505,11 +503,13 @@ public class RaidInstance {
     }
 
     public void sendEvent(AbstractEvent event, @Nullable PokemonBattle battle) {
-        if (this.isFinished() || this.battles.isEmpty()) return;
+        if (this.isFinished()) return;
         switch (event) {
             case RaidEvent raidEvent -> raidEvent.run(this);
             case BroadcastingShowdownEvent broadcastEvent -> broadcastEvent.broadcast(this.battles);
-            case ShowdownEvent showdownEvent -> showdownEvent.send(battle == null ? this.battles.getFirst() : battle);
+            case ShowdownEvent showdownEvent -> {
+                if (!this.battles.isEmpty()) showdownEvent.send(battle == null ? this.battles.getFirst() : battle);
+            }
             default -> {}
         }
     }
