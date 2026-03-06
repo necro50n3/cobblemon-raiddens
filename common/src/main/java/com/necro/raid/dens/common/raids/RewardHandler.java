@@ -107,6 +107,7 @@ public class RewardHandler {
         item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
         item.set(ModComponents.TYPE_COMPONENT.value(), this.raidBoss.getType());
         if (this.raidBoss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), this.raidBoss.getId());
+        item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), this.pokemonReward == null);
         return item;
     }
 

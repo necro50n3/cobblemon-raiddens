@@ -12,6 +12,7 @@ public class ModComponents {
     public static Holder<DataComponentType<RaidFeature>> FEATURE_COMPONENT;
     public static Holder<DataComponentType<RaidType>> TYPE_COMPONENT;
     public static Holder<DataComponentType<ResourceLocation>> BOSS_COMPONENT;
+    public static Holder<DataComponentType<Boolean>> BONUS_LOOT_COMPONENT;
 
     public static Holder<DataComponentType<Boolean>> RAID_DEN_KEY;
     public static Holder<DataComponentType<Boolean>> REMOTE_KEY;

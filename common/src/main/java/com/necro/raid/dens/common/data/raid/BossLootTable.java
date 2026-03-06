@@ -53,7 +53,7 @@ public class BossLootTable {
         return this.lootTable;
     }
 
-    public List<ItemStack> getRandomRewards(ServerLevel level, ItemStack itemStack, Player player) {
+    public List<ItemStack> getRandomRewards(ServerLevel level, ItemStack itemStack, Player player, boolean applyBonus) {
         if (this.lootTable == null) return new ArrayList<>();
         if (this.cachedLootTable == null) {
             this.cachedLootTable = level.getServer().reloadableRegistries().getLootTable(
@@ -63,6 +63,7 @@ public class BossLootTable {
         return this.cachedLootTable.getRandomItems(
             new LootParams.Builder(level)
                 .withParameter(RaidLootContexts.RAID_POUCH, itemStack)
+                .withOptionalParameter(RaidLootContexts.BONUS_LOOT, applyBonus)
                 .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
                 .create(RaidLootContexts.RAID_POUCH_USE)
         );

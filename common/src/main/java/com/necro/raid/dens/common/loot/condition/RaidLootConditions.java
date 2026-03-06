@@ -5,4 +5,5 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 public class RaidLootConditions {
     public static Holder<LootItemConditionType> RAID_POUCH_CONDITION;
+    public static Holder<LootItemConditionType> BONUS_LOOT_CONDITION;
 }
