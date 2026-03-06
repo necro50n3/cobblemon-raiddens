@@ -102,8 +102,15 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         }
 
         int catches = raidBoss.getMaxCatches();
-        if (catches == 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
-        else if (catches > 0) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+        float catchRate = raidBoss.getCatchRate();
+        if (catches == 0 || catchRate == 0F) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
+        else {
+            MutableComponent component1 = Component.empty();
+            if (catchRate < 1F) component1.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (catches > 0 && catchRate < 1F) component1.append(Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (catches > 0) component1.append(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            tooltip.add(helper.text(component1).scale(0.5f));
+        }
     }
 
     @Override
