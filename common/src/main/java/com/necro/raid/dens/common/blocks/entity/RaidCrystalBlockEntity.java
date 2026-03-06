@@ -53,7 +53,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
-    private UUID raidHost;
     private int clears;
     private int inactiveTicks;
     private int soundTicks;
@@ -96,7 +95,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.generateRaidBoss(level, blockPos, blockState);
         }
 
-        if (this.raidHost != null && isIdle) {
+        if (this.isInProgress() && isIdle) {
             if (++this.inactiveTicks > 2400) this.closeRaid();
         }
         else this.inactiveTicks = 0;
@@ -211,7 +210,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.raidBoss == null ? this.generateRandom(level, blockState, cycleMode) : this.raidBoss;
     }
 
-    public boolean spawnRaidBoss() {
+    public boolean spawnRaidBoss(UUID playerId) {
         if (this.getLevel() == null) return false;
         RaidBoss raidBoss = this.getRaidBoss();
         RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
@@ -241,7 +240,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
         }
 
-        RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), new RaidInstance(pokemonEntity, this.raidHost));
+        RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), new RaidInstance(pokemonEntity, playerId));
         return true;
     }
 
@@ -273,24 +272,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         RaidRegionHelper.clearRegion(this.getUuid(), level);
 
-        this.clearRaidHost();
         this.inactiveTicks = 0;
         this.getLevel().getChunkAt(this.getBlockPos()).setUnsaved(true);
         this.setChanged();
         this.isOpen = false;
         this.setAspectSync(null);
-    }
-
-    public UUID getRaidHost() {
-        return this.raidHost;
-    }
-
-    public boolean canSetRaidHost() {
-        return this.getRaidHost() == null;
-    }
-
-    public void clearRaidHost() {
-        this.raidHost = null;
     }
 
     public UUID getUuid() {
@@ -332,11 +318,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
-    }
-
-    public void setRaidHost(Player player) {
-        this.raidHost = player.getUUID();
-        this.setChanged();
     }
 
     public void setRaidBucket(ResourceLocation bucket) {

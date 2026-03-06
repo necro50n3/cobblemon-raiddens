@@ -409,6 +409,10 @@ public class RaidInstance {
         });
     }
 
+    public @Nullable UUID getHost() {
+        return this.host;
+    }
+
     public PokemonEntity getBossEntity() {
         return this.bossEntity;
     }

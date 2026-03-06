@@ -120,10 +120,8 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             // System message is handled by checker
             return false;
         }
-        else if (blockEntity.canSetRaidHost()) {
-            boolean success = this.startRaid(player, blockEntity);
-            if (!success) blockEntity.clearRaidHost();
-            return success;
+        else if (!blockEntity.isInProgress()) {
+            return this.startRaid(player, blockEntity);
         }
         else if (blockEntity.isFull()) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
@@ -133,9 +131,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
+        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        if (raid == null) return false;
         MinecraftServer server = player.getServer();
         if (server == null) return false;
-        ServerPlayer raidHost = server.getPlayerList().getPlayer(blockEntity.getRaidHost());
+        ServerPlayer raidHost = raid.getHost() == null ? null : server.getPlayerList().getPlayer(raid.getHost());
         if (raidHost == null) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_host"), true);
             return false;
@@ -150,14 +150,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         if (player.getServer() == null) return false;
 
-        blockEntity.setRaidHost(player);
-
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
         if (!success) return false;
 
         ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(player.level().getRandom());
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure);
-        if (region == null || !blockEntity.spawnRaidBoss()) {
+        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID())) {
             blockEntity.closeRaid();
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.boss_spawn_failed"), true);
             return false;
