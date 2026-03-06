@@ -57,6 +57,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public int energy = 10;
     @Comment("The required damage percentage contribution a player needs to do to get rewards. Default: 0.0")
     public float required_damage = 0f;
+    @Comment("The base catch rate of the raid boss. Default: 1.0")
+    public float catch_rate = 1.0f;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -124,5 +126,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     }
     public float requiredDamage() {
         return this.required_damage;
+    }
+    public float catchRate() {
+        return this.catch_rate;
     }
 }

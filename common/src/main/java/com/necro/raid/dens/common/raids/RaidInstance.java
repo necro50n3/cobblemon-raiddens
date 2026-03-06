@@ -38,6 +38,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -374,9 +375,15 @@ public class RaidInstance {
             cachedReward = null;
         }
 
-        success.forEach(player ->
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null), true))
-        );
+        success.forEach(player -> {
+            Pokemon reward;
+            float catchRate = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer()).catchRate();
+            if (player.getRandom().nextFloat() < catchRate) {
+                reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
+            }
+            else reward = null;
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, true));
+        });
         failed.forEach(player ->
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
         );
@@ -592,6 +599,16 @@ public class RaidInstance {
         this.battles.forEach(this::sendHealthPacket);
     }
 
+    public void addCatchRate(ServerPlayer player, float mod) {
+        RaidPlayer p = this.playerMap.get(player.getUUID());
+        if (p != null) p.addCatchRate(mod);
+    }
+
+    public void mulCatchRate(ServerPlayer player, float mod) {
+        RaidPlayer p = this.playerMap.get(player.getUUID());
+        if (p != null) p.mulCatchRate(mod);
+    }
+
     private class DelayedRunnable {
         private final Runnable runnable;
         final int delay;
@@ -639,15 +656,18 @@ public class RaidInstance {
     private static class RaidPlayer {
         private int cheers;
         private int lives;
+        private float catchRate;
 
         private RaidPlayer() {
             this.cheers = 0;
             this.lives = 0;
+            this.catchRate = 0.0F;
         }
 
         private RaidPlayer(RaidBoss boss) {
             this.cheers = boss.getMaxCheers();
             this.lives = boss.getLives();
+            this.catchRate = boss.getCatchRate();
         }
 
         private boolean useCheer() {
@@ -658,6 +678,18 @@ public class RaidInstance {
 
         private boolean loseLife() {
             return --this.lives <= 0;
+        }
+
+        private void addCatchRate(float mod) {
+            this.catchRate = Mth.clamp(this.catchRate + mod, 0F, 1F);
+        }
+
+        private void mulCatchRate(float mod) {
+            this.catchRate = Mth.clamp(this.catchRate * mod, 0F, 1F);
+        }
+
+        private float catchRate() {
+            return this.catchRate;
         }
     }
 }

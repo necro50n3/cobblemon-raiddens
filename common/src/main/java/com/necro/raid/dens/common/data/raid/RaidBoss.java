@@ -95,6 +95,8 @@ public class RaidBoss {
     private Integer energy;
     @SerializedName("required_damage")
     private Float requiredDamage;
+    @SerializedName("catch_rate")
+    private Float catchRate;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -109,7 +111,8 @@ public class RaidBoss {
                     Component bossBarText, Float scale, Boolean forceDynamax, Integer maxPlayers, Integer maxClears,
                     Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti, Float multiplayerHealthMulti,
                     Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script, RaidAI raidAI,
-                    List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage) {
+                    List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
+                    Float catchRate) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -140,6 +143,7 @@ public class RaidBoss {
         this.playersShareLives = playersShareLives;
         this.energy = energy;
         this.requiredDamage = requiredDamage;
+        this.catchRate = catchRate;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -179,6 +183,7 @@ public class RaidBoss {
         this.playersShareLives = null;
         this.energy = null;
         this.requiredDamage = null;
+        this.catchRate = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -234,6 +239,7 @@ public class RaidBoss {
         if (this.playersShareLives == null) this.playersShareLives = tierConfig.playersShareLives();
         if (this.energy == null) this.energy = tierConfig.energy();
         if (this.requiredDamage == null) this.requiredDamage = tierConfig.requiredDamage();
+        if (this.catchRate == null) this.catchRate = tierConfig.catchRate();
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
@@ -520,6 +526,10 @@ public class RaidBoss {
         return this.requiredDamage;
     }
 
+    public Float getCatchRate() {
+        return this.catchRate;
+    }
+
     public Species getDisplaySpecies() {
         if (this.displaySpecies == null) return null;
         return PokemonSpecies.getByIdentifier(this.displaySpecies);
@@ -538,9 +548,9 @@ public class RaidBoss {
         return this.cachedBossProperties;
     }
 
-    public List<ItemStack> getRandomRewards(ServerLevel level, ItemStack itemStack, Player player) {
+    public List<ItemStack> getRandomRewards(ServerLevel level, ItemStack itemStack, Player player, boolean applyBonus) {
         if (this.lootTable == null) return new ArrayList<>();
-        return this.lootTable.getRandomRewards(level, itemStack, player);
+        return this.lootTable.getRandomRewards(level, itemStack, player, applyBonus);
     }
 
     public ResourceLocation getRandomDen(RandomSource random) {
@@ -681,6 +691,10 @@ public class RaidBoss {
         this.requiredDamage = requiredDamage;
     }
 
+    public void setCatchRate(Float catchRate) {
+        this.catchRate = catchRate;
+    }
+
     public void clearCaches() {
         this.cachedBossProperties = null;
         if (this.lootTable != null) this.lootTable.clearCache();
@@ -736,7 +750,8 @@ public class RaidBoss {
             this.lives,
             this.playersShareLives,
             this.energy,
-            this.requiredDamage
+            this.requiredDamage,
+            this.catchRate
         );
     }
 

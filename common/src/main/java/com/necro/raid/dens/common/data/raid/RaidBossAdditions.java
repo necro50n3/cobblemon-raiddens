@@ -100,6 +100,7 @@ public class RaidBossAdditions {
             getPlayersShareLives(this.additions()).ifPresent(boss::setPlayersShareLives);
             getEnergy(this.additions()).ifPresent(boss::setEnergy);
             getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
+            getCatchRate(this.additions()).ifPresent(boss::setCatchRate);
 
             boss.clearCaches();
             boss.applyAspects();
@@ -253,6 +254,10 @@ public class RaidBossAdditions {
 
     private static Optional<Float> getRequiredDamage(RaidBoss boss) {
         return Optional.ofNullable(boss.getRequiredDamage());
+    }
+
+    private static Optional<Float> getCatchRate(RaidBoss boss) {
+        return Optional.ofNullable(boss.getCatchRate());
     }
 
     static {

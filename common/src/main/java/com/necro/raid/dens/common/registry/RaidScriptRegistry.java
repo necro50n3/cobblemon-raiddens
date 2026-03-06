@@ -97,6 +97,16 @@ public class RaidScriptRegistry {
             float ratio = (float) parseDouble(args[1]);
             return new HealRaidEvent(ratio);
         });
+        registerDecoder("CATCH_RATE_ADD", args -> {
+            if (args.length != 4) return null;
+            float mod = (float) parseDouble(args[3]);
+            return new CatchRateAddRaidEvent(mod);
+        });
+        registerDecoder("CATCH_RATE_MULTIPLY", args -> {
+            if (args.length != 4) return null;
+            float mod = (float) parseDouble(args[3]);
+            return new CatchRateMultiplyRaidEvent(mod);
+        });
 
         registerStatic("RESET_BOSS", new ResetBossShowdownEvent());
         registerStatic("RESET_PLAYER", new ResetPlayerShowdownEvent());
