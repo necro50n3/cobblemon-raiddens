@@ -206,7 +206,7 @@ public class RaidInstance {
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT);
+            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle, (Void) null);
         }
     }
 
@@ -456,10 +456,6 @@ public class RaidInstance {
         this.runScripts(type, null, predicate);
     }
 
-    public void runScripts(RaidTriggerType type) {
-        this.runScripts(type, null, (Void) null);
-    }
-
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
         RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
         if (!raidPlayer.useCheer()) return false;
@@ -505,10 +501,15 @@ public class RaidInstance {
     public void sendEvent(AbstractEvent event, @Nullable PokemonBattle battle) {
         if (this.isFinished()) return;
         switch (event) {
-            case RaidEvent raidEvent -> raidEvent.run(this);
+            case RaidEvent raidEvent -> {
+                ServerPlayer player = battle == null || battle.getPlayers().isEmpty() ? null : battle.getPlayers().getFirst();
+                raidEvent.run(this, player);
+            }
             case BroadcastingShowdownEvent broadcastEvent -> broadcastEvent.broadcast(this.battles);
             case ShowdownEvent showdownEvent -> {
-                if (!this.battles.isEmpty()) showdownEvent.send(battle == null ? this.battles.getFirst() : battle);
+                if (this.battles.isEmpty()) return;
+                if (battle == null || !this.battles.contains(battle)) battle = this.battles.getFirst();
+                showdownEvent.send(battle);
             }
             default -> {}
         }
