@@ -241,7 +241,7 @@ public class RaidInstance {
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
 
-        this.runScripts(RaidTriggerType.HP, this.currentHealth / this.maxHealth);
+        this.runScripts(RaidTriggerType.HP, battle, this.currentHealth / this.maxHealth);
 
         if (this.currentHealth <= 0F) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
@@ -450,10 +450,6 @@ public class RaidInstance {
     @SuppressWarnings("unchecked")
     public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, T predicate) {
         this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate));
-    }
-
-    public <T> void runScripts(RaidTriggerType type, T predicate) {
-        this.runScripts(type, null, predicate);
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
