@@ -27,6 +27,7 @@ public class FabricComponents {
         ModComponents.UNIQUE_KEY = Holder.direct(registerComponent("unique_key", builder -> builder.persistent(Codec.STRING)));
 
         ModComponents.RAID_ENERGY = Holder.direct(registerComponent("raid_energy", builder -> builder.persistent(Codec.INT)));
+        ModComponents.CATCH_BOOST = Holder.direct(registerComponent("catch_boost", builder -> builder.persistent(Codec.floatRange(0F, Float.POSITIVE_INFINITY))));
     }
 
     private static <T> DataComponentType<T> registerComponent(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {

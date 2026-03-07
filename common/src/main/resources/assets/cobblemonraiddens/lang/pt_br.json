@@ -64,6 +64,8 @@
     "feature.cobblemonraiddens.primal": "Primal",
     "feature.cobblemonraiddens.tera": "Tera",
     "feature.cobblemonraiddens.stellar": "Estelar",
+
+
     "item.cobblemonraiddens.cheer.tooltip": "Só pode ser usado em Batalhas de Raid",
     "item.cobblemonraiddens.cheer_attack": "Apoio de Ataque",
     "item.cobblemonraiddens.cheer_attack.tooltip": "Aumenta o Atk e Sp. Atk do seu grupo em 50%",

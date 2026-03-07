@@ -64,6 +64,8 @@
     "feature.cobblemonraiddens.primal": "Primal",
     "feature.cobblemonraiddens.tera": "Téra",
     "feature.cobblemonraiddens.stellar": "Stellaire",
+
+
     "item.cobblemonraiddens.cheer.tooltip": "Utilisable uniquement lors des Raids",
     "item.cobblemonraiddens.cheer_attack": "Encouragement d’Attaque",
     "item.cobblemonraiddens.cheer_attack.tooltip": "Augmente l’Attaque et l’Attaque Spéciale du groupe de 50 %",

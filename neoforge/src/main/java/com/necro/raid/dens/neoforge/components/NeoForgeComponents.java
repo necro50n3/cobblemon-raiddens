@@ -30,6 +30,7 @@ public class NeoForgeComponents {
         ModComponents.UNIQUE_KEY = registerComponent("unique_key", Codec.STRING);
 
         ModComponents.RAID_ENERGY = registerComponent("raid_energy", Codec.INT);
+        ModComponents.CATCH_BOOST = registerComponent("catch_boost", Codec.floatRange(0F, Float.POSITIVE_INFINITY));
     }
 
     @SuppressWarnings("unchecked")

@@ -41,8 +41,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
-        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
-            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, catchRate, pokemon) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(catchRate, pokemon));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->

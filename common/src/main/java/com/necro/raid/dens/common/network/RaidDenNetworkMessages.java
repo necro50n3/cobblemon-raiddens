@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public class RaidDenNetworkMessages {
     public static BiConsumer<ServerPlayer, Boolean> JOIN_RAID;
     public static BiConsumer<ServerPlayer, String> REQUEST_PACKET;
-    public static TriConsumer<ServerPlayer, Boolean, String> REWARD_PACKET;
+    public static TriConsumer<ServerPlayer, Float, String> REWARD_PACKET;
     public static BiConsumer<ServerPlayer, Entity> RAID_ASPECT;
     public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
 

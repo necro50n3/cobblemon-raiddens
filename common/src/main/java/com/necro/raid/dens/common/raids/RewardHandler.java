@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.item.PokeBallItem;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
@@ -8,7 +9,6 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
@@ -16,12 +16,17 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +60,7 @@ public class RewardHandler {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
         String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
-        RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.pokemonReward != null, speciesName);
+        RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.catchRate, speciesName);
         RaidHelper.REWARD_QUEUE.put(player.getUUID(), this);
     }
 
@@ -68,7 +73,7 @@ public class RewardHandler {
                 player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
                 return false;
             }
-            success = this.rollPokemon(player);
+            success = this.checkCatchingCharm(player);
             if (success) {
                 this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
                 if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
@@ -76,18 +81,27 @@ public class RewardHandler {
                 PlayerExtensionsKt.party(player).add(this.pokemonReward);
                 player.getMainHandItem().consume(1, player);
                 RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
+                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
+                player.playNotifySound(SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Cobblemon.MODID, "poke_ball.capture_succeeded")), SoundSource.PLAYERS, 1F,1F);
+            }
+            else {
+                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.failed_catch_rate"), true);
             }
         }
 
         return this.giveItemToPlayer(player, !success);
     }
 
-    private boolean rollPokemon(ServerPlayer player) {
-        ModifyCatchRateEvent event = new ModifyCatchRateEvent(player, this.pokemonReward, this.catchRate);
-        RaidEvents.MODIFY_CATCH_RATE.emit(event);
-        if (player.getRandom().nextFloat() < event.catchRate()) return true;
-        player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.failed_catch_rate"), true);
-        return false;
+    private boolean checkCatchingCharm(ServerPlayer player) {
+        ItemStack charm = player.getOffhandItem();
+        float catchRate = this.catchRate;
+        if (charm.is(ModItems.CATCHING_CHARM)) {
+            catchRate = Mth.clamp(1F + charm.getOrDefault(ModComponents.CATCH_BOOST.value(), 0F), 0F, 1F);
+            charm.consume(1, player);
+            player.awardStat(Stats.ITEM_USED.get(ModItems.CATCHING_CHARM.value()));
+            CriteriaTriggers.CONSUME_ITEM.trigger(player, charm);
+        }
+        return player.getRandom().nextFloat() < catchRate;
     }
 
     public boolean giveItemToPlayer(ServerPlayer player, boolean applyBonus) {

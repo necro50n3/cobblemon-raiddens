@@ -2,6 +2,7 @@ package com.necro.raid.dens.neoforge.items;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.items.item.CatchingCharmItem;
 import com.necro.raid.dens.common.items.item.CheerItem;
 import com.necro.raid.dens.common.items.item.RaidPouchItem;
 import com.necro.raid.dens.common.items.item.RaidShardItem;
@@ -20,6 +21,7 @@ public class NeoForgeItems {
         ModItems.DEFENSE_CHEER = ITEMS.register("cheer_defense", () -> new CheerItem(CheerBagItem.CheerType.DEFENSE));
         ModItems.HEAL_CHEER = ITEMS.register("cheer_heal", () -> new CheerItem(CheerBagItem.CheerType.HEAL));
         ModItems.RAID_SHARD = ITEMS.register("raid_shard", RaidShardItem::new);
+        ModItems.CATCHING_CHARM = ITEMS.register("catching_charm", CatchingCharmItem::new);
     }
 
     public static void registerBlockItem(String name, Supplier<BlockItem> blockItem) {

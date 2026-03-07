@@ -19,4 +19,5 @@ public class ModComponents {
     public static Holder<DataComponentType<String>> UNIQUE_KEY;
 
     public static Holder<DataComponentType<Integer>> RAID_ENERGY;
+    public static Holder<DataComponentType<Float>> CATCH_BOOST;
 }

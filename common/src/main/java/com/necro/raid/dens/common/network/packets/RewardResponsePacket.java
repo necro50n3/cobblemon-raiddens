@@ -44,7 +44,6 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
 
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
         if (handler.givePokemonToPlayer(player)) {
-            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
             handler.giveCurrency(player);
         }

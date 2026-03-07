@@ -24,6 +24,7 @@ public class RaidDenTab {
                 entries.accept(ModItems.ATTACK_CHEER.value());
                 entries.accept(ModItems.DEFENSE_CHEER.value());
                 entries.accept(ModItems.HEAL_CHEER.value());
+                entries.accept(ModItems.CATCHING_CHARM.value());
             }).build()
     );
 

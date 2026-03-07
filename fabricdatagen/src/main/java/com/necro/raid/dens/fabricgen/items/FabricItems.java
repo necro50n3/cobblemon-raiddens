@@ -2,6 +2,7 @@ package com.necro.raid.dens.fabricgen.items;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.items.item.CatchingCharmItem;
 import com.necro.raid.dens.common.items.item.CheerItem;
 import com.necro.raid.dens.common.items.item.RaidPouchItem;
 import com.necro.raid.dens.common.items.item.RaidShardItem;
@@ -19,6 +20,7 @@ public class FabricItems {
         ModItems.DEFENSE_CHEER = registerItem("cheer_defense", new CheerItem(CheerBagItem.CheerType.DEFENSE));
         ModItems.HEAL_CHEER = registerItem("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
         ModItems.RAID_SHARD = registerItem("raid_shard", new RaidShardItem());
+        ModItems.CATCHING_CHARM = registerItem("catching_charm", new CatchingCharmItem());
     }
 
     private static Holder<Item> registerItem(String name, Item item) {

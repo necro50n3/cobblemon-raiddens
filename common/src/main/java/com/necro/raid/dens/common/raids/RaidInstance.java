@@ -16,6 +16,7 @@ import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
@@ -378,7 +379,9 @@ public class RaidInstance {
         success.forEach(player -> {
             Pokemon reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
             float catchRate = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer()).catchRate();
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, catchRate, true));
+            ModifyCatchRateEvent event = new ModifyCatchRateEvent(player, reward, catchRate);
+            RaidEvents.MODIFY_CATCH_RATE.emit(event);
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, event.catchRate(), true));
         });
         failed.forEach(player ->
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, 0F, true))

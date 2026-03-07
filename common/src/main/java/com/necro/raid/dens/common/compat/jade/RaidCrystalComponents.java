@@ -109,7 +109,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             if (catchRate < 1F) component1.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
             if (catches > 0 && catchRate < 1F) component1.append(Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
             if (catches > 0) component1.append(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-            tooltip.add(helper.text(component1).scale(0.5f));
+            if (!component1.equals(Component.empty())) tooltip.add(helper.text(component1).scale(0.5f));
         }
     }
 
