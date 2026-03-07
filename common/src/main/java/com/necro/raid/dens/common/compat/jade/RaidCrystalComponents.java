@@ -106,17 +106,14 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         if (catches == 0 || catchRate == 0F) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
         else {
             MutableComponent component1 = Component.empty();
-            boolean apply = false;
-            if (catchRate < 1F) {
-                apply = true;
-                component1.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            List<Component> parts = new ArrayList<>();
+            if (catchRate < 1F) parts.add(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (catches > 0) parts.add(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (parts.size() == 2) parts.add(1, Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (!parts.isEmpty()) {
+                parts.forEach(component1::append);
+                tooltip.add(helper.text(component1).scale(0.5f));
             }
-            if (catches > 0 && catchRate < 1F) component1.append(Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-            if (catches > 0) {
-                apply = true;
-                component1.append(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-            }
-            if (apply) tooltip.add(helper.text(component1).scale(0.5f));
         }
     }
 
