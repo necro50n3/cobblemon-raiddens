@@ -18,7 +18,7 @@ public class RaidCrystalRendererNeoForge extends RaidCrystalRenderer {
         if(!blockEntity.isActive(blockEntity.getBlockState())) return new AABB(blockPos);
         return new AABB(
             blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-            blockPos.getX() + 1, blockPos.getY() + 500, blockPos.getZ()
+            blockPos.getX() + 1, blockPos.getY() + 500, blockPos.getZ() + 1
         );
     }
 }
