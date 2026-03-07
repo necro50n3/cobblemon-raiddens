@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
@@ -32,19 +33,22 @@ public class RewardHandler {
     private RaidBoss raidBoss;
     private final UUID playerUUID;
     private final @Nullable Pokemon pokemonReward;
+    private final float catchRate;
 
-    public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward) {
+    public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
         this.raidBossId = raidBoss.getId();
         this.raidBoss = raidBoss;
         this.playerUUID = playerUUID;
         this.pokemonReward = pokemonReward;
+        this.catchRate = catchRate;
     }
 
-    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable Pokemon pokemonReward) {
+    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
         this.raidBossId = raidBossId;
         this.raidBoss = null;
         this.playerUUID = playerUUID;
         this.pokemonReward = pokemonReward;
+        this.catchRate = catchRate;
     }
 
     public void sendRewardMessage(ServerPlayer player) {
@@ -58,25 +62,37 @@ public class RewardHandler {
     public boolean givePokemonToPlayer(ServerPlayer player) {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
 
+        boolean success = true;
         if (this.pokemonReward != null) {
             if (!(player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
                 player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
                 return false;
             }
-            this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
-            if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
+            success = this.rollPokemon(player);
+            if (success) {
+                this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
+                if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
 
-            PlayerExtensionsKt.party(player).add(this.pokemonReward);
-            player.getMainHandItem().consume(1, player);
-            RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
+                PlayerExtensionsKt.party(player).add(this.pokemonReward);
+                player.getMainHandItem().consume(1, player);
+                RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
+            }
         }
 
-        return this.giveItemToPlayer(player);
+        return this.giveItemToPlayer(player, !success);
     }
 
-    public boolean giveItemToPlayer(ServerPlayer player) {
+    private boolean rollPokemon(ServerPlayer player) {
+        ModifyCatchRateEvent event = new ModifyCatchRateEvent(player, this.pokemonReward, this.catchRate);
+        RaidEvents.MODIFY_CATCH_RATE.emit(event);
+        if (player.getRandom().nextFloat() < event.catchRate()) return true;
+        player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.failed_catch_rate"), true);
+        return false;
+    }
+
+    public boolean giveItemToPlayer(ServerPlayer player, boolean applyBonus) {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        ItemStack raidPouch = this.buildRaidPouch();
+        ItemStack raidPouch = this.buildRaidPouch(applyBonus);
         if (raidPouch == null) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.raid_boss_not_found"), true);
             return true;
@@ -98,7 +114,7 @@ public class RewardHandler {
         RaidDensCobbleDollarsCompat.addCurrency(player, this.raidBoss.getCurrency());
     }
 
-    private ItemStack buildRaidPouch() {
+    private ItemStack buildRaidPouch(boolean applyBonus) {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
         if (this.raidBoss == null) return null;
 
@@ -107,7 +123,7 @@ public class RewardHandler {
         item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
         item.set(ModComponents.TYPE_COMPONENT.value(), this.raidBoss.getType());
         if (this.raidBoss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), this.raidBoss.getId());
-        item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), this.pokemonReward == null);
+        item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
         return item;
     }
 
@@ -118,6 +134,7 @@ public class RewardHandler {
         if (this.pokemonReward != null) {
             tag.put("pokemon_reward", this.pokemonReward.saveToNBT((RegistryAccess) provider, new CompoundTag()));
         }
+        tag.putFloat("catch_rate", this.catchRate);
         return tag;
     }
 
@@ -129,6 +146,7 @@ public class RewardHandler {
             pokemonReward = new Pokemon();
             pokemonReward.loadFromNBT((net.minecraft.core.RegistryAccess) provider, tag.getCompound("cached_reward"));
         }
-        return new RewardHandler(raidBossId, playerUUID, pokemonReward);
+        float catchRate = tag.getFloat("catch_rate");
+        return new RewardHandler(raidBossId, playerUUID, pokemonReward, catchRate);
     }
 }

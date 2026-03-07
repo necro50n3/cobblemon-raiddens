@@ -123,6 +123,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "The join request has timed out.",
     "message.cobblemonraiddens.raid_shard.not_fully_charged": "You have not gathered enough raid energy.",
     "message.cobblemonraiddens.reward.already_received_reward": "You have already claimed the rewards.",
+    "message.cobblemonraiddens.reward.failed_catch_rate": "The Pokemon broke free!",
     "message.cobblemonraiddens.reward.reward_item": "You have received the reward!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "You need to hold a Pokeball to claim the Pokemon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "You have received the Pokemon!",

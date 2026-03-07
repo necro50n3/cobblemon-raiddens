@@ -123,6 +123,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "La demande de participation a expiré.",
 
     "message.cobblemonraiddens.reward.already_received_reward": "Vous avez déjà récupéré les récompenses.",
+
     "message.cobblemonraiddens.reward.reward_item": "Vous avez reçu la récompense !",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Vous devez tenir une Poké Ball pour récupérer le Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Vous avez reçu le Pokémon !",

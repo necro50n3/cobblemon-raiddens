@@ -376,16 +376,12 @@ public class RaidInstance {
         }
 
         success.forEach(player -> {
-            Pokemon reward;
+            Pokemon reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
             float catchRate = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer()).catchRate();
-            if (player.getRandom().nextFloat() < catchRate) {
-                reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
-            }
-            else reward = null;
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, true));
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, catchRate, true));
         });
         failed.forEach(player ->
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, 0F, true))
         );
         noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
     }
@@ -409,7 +405,7 @@ public class RaidInstance {
         Component component = ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.raid_fail");
         this.activePlayers.forEach(player -> {
             player.displayClientMessage(component, true);
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), 0F, false));
         });
     }
 

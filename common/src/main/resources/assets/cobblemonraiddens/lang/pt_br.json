@@ -123,6 +123,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "O pedido de entrada expirou.",
     "message.cobblemonraiddens.raid_shard.not_fully_charged": "Você não reuniu energia de Raid suficiente.",
     "message.cobblemonraiddens.reward.already_received_reward": "Você já reivindicou as recompensas.",
+
     "message.cobblemonraiddens.reward.reward_item": "Você recebeu a recompensa!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Você precisa segurar uma Pokébola para reivindicar o Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Você recebeu o Pokémon!",

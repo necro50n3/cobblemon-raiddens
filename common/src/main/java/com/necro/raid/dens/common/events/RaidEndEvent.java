@@ -6,32 +6,4 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class RaidEndEvent {
-    private final ServerPlayer player;
-    private final RaidBoss raidBoss;
-    private final Pokemon pokemon;
-    private final boolean isWin;
-
-    public RaidEndEvent(@NotNull ServerPlayer player, @NotNull RaidBoss raidBoss, @Nullable Pokemon pokemon, boolean isWin) {
-        this.player = player;
-        this.raidBoss = raidBoss;
-        this.pokemon = pokemon;
-        this.isWin = isWin;
-    }
-
-    public ServerPlayer getPlayer() {
-        return this.player;
-    }
-
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
-    }
-
-    public Pokemon getPokemon() {
-        return this.pokemon;
-    }
-
-    public boolean isWin() {
-        return this.isWin;
-    }
-}
+public record RaidEndEvent(ServerPlayer player, RaidBoss raidBoss, @Nullable Pokemon pokemon, float catchRate, boolean isWin) {}
