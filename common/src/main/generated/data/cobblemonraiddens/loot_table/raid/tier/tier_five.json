@@ -18,7 +18,7 @@
             }
           ],
           "name": "minecraft:iron_ingot",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -34,7 +34,7 @@
             }
           ],
           "name": "minecraft:copper_ingot",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -50,7 +50,7 @@
             }
           ],
           "name": "minecraft:gold_ingot",
-          "weight": 10
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -101,6 +101,22 @@
           "weight": 5
         },
         {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:rare_candy",
+          "weight": 5
+        },
+        {
           "type": "minecraft:tag",
           "expand": true,
           "functions": [
@@ -114,7 +130,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:feathers",
+          "name": "cobblemon:mochis",
           "weight": 5
         },
         {
@@ -132,7 +148,7 @@
             }
           ],
           "name": "cobblemon:mint_leaf",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:tag",
@@ -356,6 +372,21 @@
             }
           ],
           "name": "cobblemon:exp_candy_xl"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:rare_candy"
         },
         {
           "type": "minecraft:item",

@@ -18,7 +18,7 @@
             }
           ],
           "name": "minecraft:iron_ingot",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -34,7 +34,7 @@
             }
           ],
           "name": "minecraft:copper_ingot",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -50,7 +50,7 @@
             }
           ],
           "name": "minecraft:gold_ingot",
-          "weight": 5
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -61,7 +61,8 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond"
+          "name": "minecraft:diamond",
+          "weight": 2
         },
         {
           "type": "minecraft:item",
@@ -120,6 +121,23 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:mochis",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:tag",
+          "expand": true,
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
                 "max": 4.0,
                 "min": 2.0
               },
@@ -127,7 +145,7 @@
             }
           ],
           "name": "cobblemon:mint_leaf",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:tag",
