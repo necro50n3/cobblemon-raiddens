@@ -94,10 +94,17 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         if (catches == 0 || catchRate == 0F) tooltip.addLine(new ScalableComponent(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY), 0.5f));
         else {
             MutableComponent component1 = Component.empty();
-            if (catchRate < 1F) component1.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            boolean apply = false;
+            if (catchRate < 1F) {
+                apply = true;
+                component1.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            }
             if (catches > 0 && catchRate < 1F) component1.append(Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-            if (catches > 0) component1.append(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
-            tooltip.addLine(new ScalableComponent(component1, 0.5f));
+            if (catches > 0) {
+                apply = true;
+                component1.append(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            }
+            if (apply) tooltip.addLine(new ScalableComponent(component1, 0.5f));
         }
     }
 }
