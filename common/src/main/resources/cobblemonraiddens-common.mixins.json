@@ -4,7 +4,8 @@
     "compatibilityLevel": "JAVA_21",
     "client": [
         "client.KeyMappingAccessor",
-        "client.PartySendBindingMixin"
+        "client.PartySendBindingMixin",
+        "client.PokemonRendererMixin"
     ],
     "mixins": [
         "ai.RandomBattleAIMixin",

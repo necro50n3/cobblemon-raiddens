@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
@@ -19,6 +20,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -107,13 +109,8 @@ public class RaidInstance {
 
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
-        this.runQueue.add(new DelayedRunnable(() -> {
-            if (this.bossEntity.isDeadOrDying()) return;
-            List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
-            for (PokemonBattle battle : battleCache) {
-                if (!battle.getEnded()) battle.checkFlee();
-            }
-        }, 20, true));
+        this.runQueue.add(new DelayedRunnable(this::checkFlee, 20, true));
+        this.runQueue.add(new DelayedRunnable(this::updateHealthBars, 40, true));
 
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();
@@ -186,6 +183,21 @@ public class RaidInstance {
         new DoNothingShowdownEvent().send(battle);
         this.runScripts(RaidTriggerType.TURN, battle, 0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
+
+        List<Integer> entityIds = this.getEntityIds(this.battles);
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, true));
+    }
+
+    private List<Integer> getEntityIds(List<PokemonBattle> battles) {
+        List<Integer> entityIds = new ArrayList<>();
+        for (PokemonBattle battle : battles) {
+            BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon == null) continue;
+            PokemonEntity leadingPokemon = battlePokemon.getEntity();
+            if (leadingPokemon == null) continue;
+            entityIds.add(leadingPokemon.getId());
+        }
+        return entityIds;
     }
 
     private void applyHealthMulti() {
@@ -254,6 +266,28 @@ public class RaidInstance {
         }
     }
 
+    private void checkFlee() {
+        if (this.bossEntity.isDeadOrDying()) return;
+        List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
+        for (PokemonBattle battle : battleCache) {
+            if (!battle.getEnded()) battle.checkFlee();
+        }
+    }
+
+    private void updateHealthBars() {
+        List<Integer> entityIds = new ArrayList<>();
+        List<Float> health = new ArrayList<>();
+        for (PokemonBattle battle : this.battles) {
+            BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon == null || battlePokemon.getEntity() == null) continue;
+            entityIds.add(battlePokemon.getEntity().getId());
+            float currentHealth = battlePokemon.getEffectedPokemon().getCurrentHealth();
+            float maxHealth = battlePokemon.getEffectedPokemon().getMaxHealth();
+            health.add(currentHealth / maxHealth);
+        }
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_UPDATE.accept(player, entityIds, health));
+    }
+
     private void sendHealthPacket(PokemonBattle battle) {
         String pnx = battle.getSide2().getActivePokemon().getFirst().getPNX();
         BattleActor actor = battle.getActorAndActiveSlotFromPNX(pnx).getFirst();
@@ -304,6 +338,9 @@ public class RaidInstance {
         this.bossEvent.removeAllPlayers();
         this.timerEvent.setVisible(false);
         this.timerEvent.removeAllPlayers();
+
+        List<Integer> entityIds = this.getEntityIds(this.battles);
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, false));
 
         if (raidSuccess) this.bossEntity.setHealth(0F);
         if (this.raidBoss == null) return;

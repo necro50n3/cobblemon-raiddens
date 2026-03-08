@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -21,4 +22,6 @@ public class RaidDenNetworkMessages {
     public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
     public static Consumer<Boolean> REWARD_RESPONSE;
     public static Consumer<ServerPlayer> SYNC_REGISTRY;
+    public static TriConsumer<ServerPlayer, List<Integer>, Boolean> RAID_HEALTH_BAR;
+    public static TriConsumer<ServerPlayer, List<Integer>, List<Float>> RAID_HEALTH_UPDATE;
 }

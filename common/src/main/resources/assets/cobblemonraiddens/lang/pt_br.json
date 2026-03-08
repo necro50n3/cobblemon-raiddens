@@ -170,6 +170,7 @@
 
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Mostrar logs da Raid",
+
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup da Raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup da Raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Status da Raid X (%)",
