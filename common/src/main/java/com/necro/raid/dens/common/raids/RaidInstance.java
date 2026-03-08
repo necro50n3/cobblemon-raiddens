@@ -110,7 +110,7 @@ public class RaidInstance {
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
         this.runQueue.add(new DelayedRunnable(this::checkFlee, 20, true));
-        this.runQueue.add(new DelayedRunnable(this::updateHealthBars, 40, true));
+        this.runQueue.add(new DelayedRunnable(this::updateHealthBars, 80, true));
 
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();

@@ -59,7 +59,7 @@ public abstract class PokemonRendererMixin extends EntityRenderer<PokemonEntity>
         poseStack.translate(0.0, entityHeight, 0.0);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
         poseStack.translate(0.0, 0.0 + (offsetScale / 2), 0.0);
-        poseStack.scale((float) (0.0125 * sizeScale), (float) (-0.0125 * sizeScale), (float) (1 * sizeScale));
+        poseStack.scale((float) (0.02 * sizeScale), (float) (-0.02 * sizeScale), (float) (1 * sizeScale));
 
         float currentHeath = entity.getPokemon().getCurrentHealth();
         float maxHealth = entity.getPokemon().getMaxHealth();
