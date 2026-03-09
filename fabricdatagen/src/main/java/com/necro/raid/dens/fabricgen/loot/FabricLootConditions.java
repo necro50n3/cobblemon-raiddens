@@ -1,6 +1,7 @@
 package com.necro.raid.dens.fabricgen.loot;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.loot.condition.BonusLootCondition;
 import com.necro.raid.dens.common.loot.condition.RaidPouchCondition;
 import com.necro.raid.dens.common.loot.condition.RaidLootConditions;
 import net.minecraft.core.Holder;
@@ -16,5 +17,6 @@ public class FabricLootConditions {
 
     public static void registerLootConditions() {
         RaidLootConditions.RAID_POUCH_CONDITION = register("raid_pouch_condition", RaidPouchCondition.TYPE);
+        RaidLootConditions.BONUS_LOOT_CONDITION = register("bonus_loot_condition", BonusLootCondition.TYPE);
     }
 }

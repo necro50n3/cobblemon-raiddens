@@ -15,4 +15,6 @@ public interface IRaidAccessor {
     void crd_flagForRemoval();
     void crd_setRaidState(RaidState state);
     RaidState crd_getRaidState();
+    void crd_setShouldRenderHpBar(boolean render);
+    boolean crd_shouldRenderHpBar();
 }

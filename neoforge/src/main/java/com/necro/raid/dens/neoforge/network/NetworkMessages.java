@@ -29,6 +29,8 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(ResizePacket.PACKET_TYPE, ResizePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC, NetworkMessages::handle);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
@@ -41,8 +43,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
-        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
-            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, catchRate, pokemon) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(catchRate, pokemon));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
@@ -57,6 +59,10 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+        RaidDenNetworkMessages.RAID_HEALTH_BAR = (player, entityIds, shouldRender) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
+        RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

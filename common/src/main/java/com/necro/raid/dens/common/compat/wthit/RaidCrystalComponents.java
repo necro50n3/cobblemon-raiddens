@@ -19,6 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RaidCrystalComponents implements IBlockComponentProvider {
     @Override
     public ITooltipComponent getIcon(IBlockAccessor accessor, IPluginConfig config) {
@@ -90,7 +93,18 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         }
 
         int catches = raidBoss.getMaxCatches();
-        if (catches == 0) tooltip.addLine(new ScalableComponent(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY), 0.5f));
-        else if (catches > 0) tooltip.addLine(new ScalableComponent(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY), 0.5f));
+        float catchRate = raidBoss.getCatchRate();
+        if (catches == 0 || catchRate == 0F) tooltip.addLine(new ScalableComponent(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY), 0.5f));
+        else {
+            MutableComponent component1 = Component.empty();
+            List<Component> parts = new ArrayList<>();
+            if (catchRate < 1F) parts.add(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (catches > 0) parts.add(Component.translatable("jade.cobblemonraiddens.max_catches", catches).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (parts.size() == 2) parts.add(1, Component.literal(" | ").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            if (!parts.isEmpty()) {
+                parts.forEach(component1::append);
+                tooltip.addLine(new ScalableComponent(component1, 0.5f));
+            }
+        }
     }
 }

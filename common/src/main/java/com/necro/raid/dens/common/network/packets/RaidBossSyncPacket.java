@@ -43,6 +43,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         buf.writeEnum(boss.getFeature());
         buf.writeFloat(boss.getShinyRate());
         buf.writeInt(boss.getMaxCatches());
+        buf.writeFloat(boss.getCatchRate());
 
         buf.writeResourceLocation(boss.getDisplaySpeciesIdentifier());
         buf.writeCollection(boss.getDisplayAspects(), FriendlyByteBuf::writeUtf);
@@ -56,6 +57,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         boss.setFeature(buf.readEnum(RaidFeature.class));
         boss.setShinyRate(buf.readFloat());
         boss.setMaxCatches(buf.readInt());
+        boss.setCatchRate(buf.readFloat());
 
         boss.setDisplaySpecies(buf.readResourceLocation());
         boss.setDisplayAspects(buf.readCollection(HashSet::new, FriendlyByteBuf::readUtf));

@@ -17,6 +17,7 @@ public class RaidEvents {
     public static final SimpleObservable<RaidEndEvent> RAID_END = new SimpleObservable<>();
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
     public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
+    public static final SimpleObservable<ModifyCatchRateEvent> MODIFY_CATCH_RATE = new SimpleObservable<>();
 
     public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
     public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
@@ -31,13 +32,13 @@ public class RaidEvents {
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return;
-            new RewardHandler(event.getRaidBoss(), event.getPlayer().getUUID(), event.getPokemon()).sendRewardMessage(event.getPlayer());
+            new RewardHandler(event.raidBoss(), event.player().getUUID(), event.pokemon(), event.catchRate()).sendRewardMessage(event.player());
         });
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
 
-            Inventory inventory = event.getPlayer().getInventory();
+            Inventory inventory = event.player().getInventory();
             ItemStack raidShard = null;
             for (int i = 0; i <= Inventory.SLOT_OFFHAND; i++) {
                 ItemStack itemStack = inventory.getItem(i);
@@ -48,7 +49,7 @@ public class RaidEvents {
             }
             if (raidShard == null) return Unit.INSTANCE;
 
-            TierConfig config = CobblemonRaidDens.TIER_CONFIG.get(event.getRaidBoss().getTier());
+            TierConfig config = CobblemonRaidDens.TIER_CONFIG.get(event.raidBoss().getTier());
             raidShard.set(
                 ModComponents.RAID_ENERGY.value(),
                 Math.min(raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy(), CobblemonRaidDens.CONFIG.required_energy)

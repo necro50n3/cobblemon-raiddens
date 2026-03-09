@@ -25,6 +25,7 @@ public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<Raid
             RaidFeaturePredicate.CODEC.optionalFieldOf("feature").forGetter(RaidPouchCondition::feature)
         ).apply(instance, RaidPouchCondition::new));
     public static final LootItemConditionType TYPE = new LootItemConditionType(CODEC);
+
     @Override
     public @NotNull LootItemConditionType getType() {
         return TYPE;

@@ -10,18 +10,18 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public record RewardPacket(boolean isCatchable, String pokemon) implements CustomPacketPayload, ClientPacket {
+public record RewardPacket(float catchRate, String pokemon) implements CustomPacketPayload, ClientPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_reward");
     public static final Type<RewardPacket> PACKET_TYPE = new Type<>(ID);
     public static final StreamCodec<FriendlyByteBuf, RewardPacket> CODEC = StreamCodec.ofMember(RewardPacket::write, RewardPacket::read);
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeBoolean(this.isCatchable);
+        buf.writeFloat(catchRate);
         buf.writeUtf(this.pokemon);
     }
 
     public static RewardPacket read(FriendlyByteBuf buf) {
-        return new RewardPacket(buf.readBoolean(), buf.readUtf());
+        return new RewardPacket(buf.readFloat(), buf.readUtf());
     }
 
     @Override
@@ -31,6 +31,6 @@ public record RewardPacket(boolean isCatchable, String pokemon) implements Custo
 
     @Override
     public void handleClient() {
-        RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(this.isCatchable, this.pokemon));
+        RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(this.catchRate, this.pokemon));
     }
 }

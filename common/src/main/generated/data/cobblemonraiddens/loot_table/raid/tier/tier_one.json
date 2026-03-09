@@ -18,7 +18,7 @@
             }
           ],
           "name": "cobblemon:red_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -34,7 +34,7 @@
             }
           ],
           "name": "cobblemon:yellow_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -50,7 +50,7 @@
             }
           ],
           "name": "cobblemon:green_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -66,7 +66,7 @@
             }
           ],
           "name": "cobblemon:blue_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -82,7 +82,7 @@
             }
           ],
           "name": "cobblemon:pink_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -98,7 +98,7 @@
             }
           ],
           "name": "cobblemon:white_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -114,7 +114,7 @@
             }
           ],
           "name": "cobblemon:black_apricorn",
-          "weight": 10
+          "weight": 5
         },
         {
           "type": "minecraft:item",
@@ -130,7 +130,7 @@
             }
           ],
           "name": "cobblemon:medicinal_leek",
-          "weight": 5
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -162,23 +162,7 @@
             }
           ],
           "name": "minecraft:iron_nugget",
-          "weight": 5
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 4.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:stick",
-          "weight": 5
+          "weight": 10
         }
       ],
       "rolls": {
@@ -243,6 +227,49 @@
             }
           ],
           "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "apply": true,
+          "condition": "cobblemonraiddens:bonus_loot_condition"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:gem_type_function"
+            },
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air",
+          "weight": 9
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "cobblemonraiddens:catch_boost": 0.1
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "cobblemonraiddens:catching_charm"
         }
       ],
       "rolls": 1.0

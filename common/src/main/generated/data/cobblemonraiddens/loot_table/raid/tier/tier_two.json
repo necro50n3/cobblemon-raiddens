@@ -155,22 +155,6 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 6.0,
-                "min": 2.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:stick",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
                 "max": 2.0,
                 "min": 1.0
               },
@@ -249,7 +233,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:black_apricorn_seed",
+          "name": "cobblemon:white_apricorn_seed",
           "weight": 2
         },
         {
@@ -261,7 +245,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "cobblemon:white_apricorn_seed",
+          "name": "cobblemon:black_apricorn_seed",
           "weight": 2
         },
         {
@@ -362,6 +346,85 @@
         }
       ],
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "apply": true,
+          "condition": "cobblemonraiddens:bonus_loot_condition"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:gem_type_function"
+            },
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 6.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:exp_candy_xs",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemon:exp_candy_s",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "components": {
+                "cobblemonraiddens:catch_boost": 0.1
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "cobblemonraiddens:catching_charm"
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      }
     }
   ]
 }

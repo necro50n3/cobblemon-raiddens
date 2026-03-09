@@ -20,12 +20,14 @@ public class FabricComponents {
         ModComponents.FEATURE_COMPONENT = Holder.direct(registerComponent("raid_feature", builder -> builder.persistent(RaidFeature.codec())));
         ModComponents.TYPE_COMPONENT = Holder.direct(registerComponent("raid_type", builder -> builder.persistent(RaidType.codec())));
         ModComponents.BOSS_COMPONENT = Holder.direct(registerComponent("raid_boss", builder -> builder.persistent(ResourceLocation.CODEC)));
+        ModComponents.BONUS_LOOT_COMPONENT = Holder.direct(registerComponent("bonus_loot", builder -> builder.persistent(Codec.BOOL)));
 
         ModComponents.RAID_DEN_KEY = Holder.direct(registerComponent("raid_den_key", builder -> builder.persistent(Codec.BOOL)));
         ModComponents.REMOTE_KEY = Holder.direct(registerComponent("remote_key", builder -> builder.persistent(Codec.BOOL)));
         ModComponents.UNIQUE_KEY = Holder.direct(registerComponent("unique_key", builder -> builder.persistent(Codec.STRING)));
 
         ModComponents.RAID_ENERGY = Holder.direct(registerComponent("raid_energy", builder -> builder.persistent(Codec.INT)));
+        ModComponents.CATCH_BOOST = Holder.direct(registerComponent("catch_boost", builder -> builder.persistent(Codec.floatRange(0F, Float.POSITIVE_INFINITY))));
     }
 
     private static <T> DataComponentType<T> registerComponent(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {

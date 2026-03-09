@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
+import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
@@ -16,8 +17,10 @@ import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
+import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -38,6 +41,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,13 +109,8 @@ public class RaidInstance {
 
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
-        this.runQueue.add(new DelayedRunnable(() -> {
-            if (this.bossEntity.isDeadOrDying()) return;
-            List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
-            for (PokemonBattle battle : battleCache) {
-                if (!battle.getEnded()) battle.checkFlee();
-            }
-        }, 20, true));
+        this.runQueue.add(new DelayedRunnable(this::checkFlee, 20, true));
+        this.runQueue.add(new DelayedRunnable(this::updateHealthBars, 80, true));
 
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();
@@ -184,6 +183,21 @@ public class RaidInstance {
         new DoNothingShowdownEvent().send(battle);
         this.runScripts(RaidTriggerType.TURN, battle, 0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
+
+        List<Integer> entityIds = this.getEntityIds(this.battles);
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, true));
+    }
+
+    private List<Integer> getEntityIds(List<PokemonBattle> battles) {
+        List<Integer> entityIds = new ArrayList<>();
+        for (PokemonBattle battle : battles) {
+            BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon == null) continue;
+            PokemonEntity leadingPokemon = battlePokemon.getEntity();
+            if (leadingPokemon == null) continue;
+            entityIds.add(leadingPokemon.getId());
+        }
+        return entityIds;
     }
 
     private void applyHealthMulti() {
@@ -252,6 +266,28 @@ public class RaidInstance {
         }
     }
 
+    private void checkFlee() {
+        if (this.bossEntity.isDeadOrDying()) return;
+        List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
+        for (PokemonBattle battle : battleCache) {
+            if (!battle.getEnded()) battle.checkFlee();
+        }
+    }
+
+    private void updateHealthBars() {
+        List<Integer> entityIds = new ArrayList<>();
+        List<Float> health = new ArrayList<>();
+        for (PokemonBattle battle : this.battles) {
+            BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+            if (battlePokemon == null || battlePokemon.getEntity() == null) continue;
+            entityIds.add(battlePokemon.getEntity().getId());
+            float currentHealth = battlePokemon.getEffectedPokemon().getCurrentHealth();
+            float maxHealth = battlePokemon.getEffectedPokemon().getMaxHealth();
+            health.add(currentHealth / maxHealth);
+        }
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_UPDATE.accept(player, entityIds, health));
+    }
+
     private void sendHealthPacket(PokemonBattle battle) {
         String pnx = battle.getSide2().getActivePokemon().getFirst().getPNX();
         BattleActor actor = battle.getActorAndActiveSlotFromPNX(pnx).getFirst();
@@ -302,6 +338,9 @@ public class RaidInstance {
         this.bossEvent.removeAllPlayers();
         this.timerEvent.setVisible(false);
         this.timerEvent.removeAllPlayers();
+
+        List<Integer> entityIds = this.getEntityIds(this.battles);
+        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, false));
 
         if (raidSuccess) this.bossEntity.setHealth(0F);
         if (this.raidBoss == null) return;
@@ -374,11 +413,15 @@ public class RaidInstance {
             cachedReward = null;
         }
 
-        success.forEach(player ->
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null), true))
-        );
+        success.forEach(player -> {
+            Pokemon reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
+            float catchRate = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer()).catchRate();
+            ModifyCatchRateEvent event = new ModifyCatchRateEvent(player, reward, catchRate);
+            RaidEvents.MODIFY_CATCH_RATE.emit(event);
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, reward, event.catchRate(), true));
+        });
         failed.forEach(player ->
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, true))
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, 0F, true))
         );
         noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
     }
@@ -402,7 +445,7 @@ public class RaidInstance {
         Component component = ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.raid_fail");
         this.activePlayers.forEach(player -> {
             player.displayClientMessage(component, true);
-            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), false));
+            RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), 0F, false));
         });
     }
 
@@ -592,6 +635,16 @@ public class RaidInstance {
         this.battles.forEach(this::sendHealthPacket);
     }
 
+    public void addCatchRate(ServerPlayer player, float mod) {
+        RaidPlayer p = this.playerMap.get(player.getUUID());
+        if (p != null) p.addCatchRate(mod);
+    }
+
+    public void mulCatchRate(ServerPlayer player, float mod) {
+        RaidPlayer p = this.playerMap.get(player.getUUID());
+        if (p != null) p.mulCatchRate(mod);
+    }
+
     private class DelayedRunnable {
         private final Runnable runnable;
         final int delay;
@@ -639,15 +692,18 @@ public class RaidInstance {
     private static class RaidPlayer {
         private int cheers;
         private int lives;
+        private float catchRate;
 
         private RaidPlayer() {
             this.cheers = 0;
             this.lives = 0;
+            this.catchRate = 0.0F;
         }
 
         private RaidPlayer(RaidBoss boss) {
             this.cheers = boss.getMaxCheers();
             this.lives = boss.getLives();
+            this.catchRate = boss.getCatchRate();
         }
 
         private boolean useCheer() {
@@ -658,6 +714,18 @@ public class RaidInstance {
 
         private boolean loseLife() {
             return --this.lives <= 0;
+        }
+
+        private void addCatchRate(float mod) {
+            this.catchRate = Mth.clamp(this.catchRate + mod, 0F, 1F);
+        }
+
+        private void mulCatchRate(float mod) {
+            this.catchRate = Mth.clamp(this.catchRate * mod, 0F, 1F);
+        }
+
+        private float catchRate() {
+            return this.catchRate;
         }
     }
 }

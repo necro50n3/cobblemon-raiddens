@@ -64,6 +64,8 @@
     "feature.cobblemonraiddens.primal": "Primal",
     "feature.cobblemonraiddens.tera": "Tera",
     "feature.cobblemonraiddens.stellar": "Estelar",
+
+
     "item.cobblemonraiddens.cheer.tooltip": "Só pode ser usado em Batalhas de Raid",
     "item.cobblemonraiddens.cheer_attack": "Apoio de Ataque",
     "item.cobblemonraiddens.cheer_attack.tooltip": "Aumenta o Atk e Sp. Atk do seu grupo em 50%",
@@ -77,7 +79,8 @@
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
     "jade.cobblemonraiddens.player_count": "%s dentro",
     "jade.cobblemonraiddens.max_catches": "Máx capturável: %s",
-    "jade.cobblemonraiddens.not_catchable": "*Não Pode Ser Capturado",
+    "jade.cobblemonraiddens.not_catchable": "Não Pode Ser Capturado",
+
     "key.cobblemonraiddens.accept": "Aceitar Atalho",
     "key.cobblemonraiddens.deny": "Recusar Atalho",
     "key.cobblemonraiddens.mouse": "Mostrar Mouse",
@@ -122,6 +125,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "O pedido de entrada expirou.",
     "message.cobblemonraiddens.raid_shard.not_fully_charged": "Você não reuniu energia de Raid suficiente.",
     "message.cobblemonraiddens.reward.already_received_reward": "Você já reivindicou as recompensas.",
+
     "message.cobblemonraiddens.reward.reward_item": "Você recebeu a recompensa!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Você precisa segurar uma Pokébola para reivindicar o Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Você recebeu o Pokémon!",
@@ -166,6 +170,7 @@
 
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Mostrar logs da Raid",
+
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup da Raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup da Raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Status da Raid X (%)",

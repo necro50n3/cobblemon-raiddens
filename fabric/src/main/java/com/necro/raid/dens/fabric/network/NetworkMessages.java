@@ -22,6 +22,8 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(ResizePacket.PACKET_TYPE, ResizePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
@@ -42,6 +44,8 @@ public class NetworkMessages {
         ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidAspectPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidLogPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RaidHealthBarPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RaidHealthUpdatePacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void init() {
@@ -49,8 +53,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
             NetworkMessages.sendPacketToPlayer(player, new RequestPacket(name));
-        RaidDenNetworkMessages.REWARD_PACKET = (player, isCatchable, pokemon) ->
-            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(isCatchable, pokemon));
+        RaidDenNetworkMessages.REWARD_PACKET = (player, catchRate, pokemon) ->
+            NetworkMessages.sendPacketToPlayer(player, new RewardPacket(catchRate, pokemon));
         RaidDenNetworkMessages.RAID_ASPECT = (player, entity) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
@@ -65,6 +69,10 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+        RaidDenNetworkMessages.RAID_HEALTH_BAR = (player, entityIds, shouldRender) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
+        RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

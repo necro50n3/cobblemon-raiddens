@@ -45,10 +45,11 @@ public class RaidPouchItem extends Item {
         RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
+        boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
         if (tier == null || feature == null || raidType == null) return InteractionResultHolder.fail(itemStack);
 
         if (!level.isClientSide) {
-            List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, (ServerLevel) level, player);
+            List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, (ServerLevel) level, player, applyBonus);
             if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
                 return InteractionResultHolder.fail(itemStack);
             }
@@ -78,22 +79,23 @@ public class RaidPouchItem extends Item {
         tooltip.add(Component.translatable(feature.getTranslatable()).append(" | ").append(tier.getStars()));
     }
 
-    private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player) {
+    private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {
         List<ItemStack> rewards;
         BossLootTable lootTable = boss == null ? null : boss.getLootTable();
         if (lootTable != null && lootTable.replace()) rewards = new ArrayList<>();
-        else rewards = this.getDefault(itemStack, tier, level, player);
+        else rewards = this.getDefault(itemStack, tier, level, player, applyBonus);
 
-        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level, itemStack, player));
+        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level, itemStack, player, applyBonus));
         return rewards;
     }
 
-    private List<ItemStack> getDefault( ItemStack itemStack, RaidTier tier, ServerLevel level, Player player) {
+    private List<ItemStack> getDefault( ItemStack itemStack, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {
         return level.getServer().reloadableRegistries()
             .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, tier.getLootTableId())))
             .getRandomItems(
                 new LootParams.Builder(level)
                     .withParameter(RaidLootContexts.RAID_POUCH, itemStack)
+                    .withOptionalParameter(RaidLootContexts.BONUS_LOOT, applyBonus)
                     .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
                     .create(RaidLootContexts.RAID_POUCH_USE)
             );

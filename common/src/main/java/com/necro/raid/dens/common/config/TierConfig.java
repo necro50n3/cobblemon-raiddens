@@ -30,4 +30,5 @@ public interface TierConfig {
     boolean playersShareLives();
     int energy();
     float requiredDamage();
+    float catchRate();
 }

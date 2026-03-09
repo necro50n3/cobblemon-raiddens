@@ -64,6 +64,8 @@
     "feature.cobblemonraiddens.primal": "Primal",
     "feature.cobblemonraiddens.tera": "Téra",
     "feature.cobblemonraiddens.stellar": "Stellaire",
+
+
     "item.cobblemonraiddens.cheer.tooltip": "Utilisable uniquement lors des Raids",
     "item.cobblemonraiddens.cheer_attack": "Encouragement d’Attaque",
     "item.cobblemonraiddens.cheer_attack.tooltip": "Augmente l’Attaque et l’Attaque Spéciale du groupe de 50 %",
@@ -77,7 +79,8 @@
     "itemgroup.cobblemonraiddens.raid_den_tab": "Antres de Raid",
     "jade.cobblemonraiddens.player_count": "%s à l’intérieur",
     "jade.cobblemonraiddens.max_catches": "Captures max : %s",
-    "jade.cobblemonraiddens.not_catchable": "*Impossible à capturer",
+    "jade.cobblemonraiddens.not_catchable": "Impossible à capturer",
+
     "key.cobblemonraiddens.accept": "Raccourci Accepter",
     "key.cobblemonraiddens.deny": "Raccourci Refuser",
     "key.cobblemonraiddens.mouse": "Afficher la souris",
@@ -122,6 +125,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "La demande de participation a expiré.",
 
     "message.cobblemonraiddens.reward.already_received_reward": "Vous avez déjà récupéré les récompenses.",
+
     "message.cobblemonraiddens.reward.reward_item": "Vous avez reçu la récompense !",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Vous devez tenir une Poké Ball pour récupérer le Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Vous avez reçu le Pokémon !",
@@ -166,6 +170,7 @@
 
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Acceptation automatique des demandes",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Afficher les journaux de raid",
+
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup de raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup de raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Statut du raid X (%)",

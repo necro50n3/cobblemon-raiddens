@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
 import com.cobblemon.mod.common.api.events.entity.SpawnEvent;
+import com.cobblemon.mod.common.api.events.pokemon.PokemonSentEvent;
 import com.cobblemon.mod.common.api.events.pokemon.ShinyChanceCalculationEvent;
 import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
@@ -13,6 +14,7 @@ import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
@@ -34,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class CobblemonRaidDens {
@@ -106,6 +109,10 @@ public class CobblemonRaidDens {
             cancelWildSpawn(event);
             return Unit.INSTANCE;
         });
+        CobblemonEvents.POKEMON_SENT_POST.subscribe(Priority.NORMAL, event -> {
+            sendHealthBarPacket(event);
+            return Unit.INSTANCE;
+        });
 
         RaidEvents.registerEvents();
     }
@@ -138,5 +145,15 @@ public class CobblemonRaidDens {
         else if (event.getEntity().getOwner() != null) return;
         else if (((IRaidAccessor) event.getEntity()).crd_isRaidBoss()) return;
         event.cancel();
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private static void sendHealthBarPacket(PokemonSentEvent.Post event) {
+        PokemonEntity pokemonEntity = event.getPokemonEntity();
+        if (pokemonEntity == null) return;
+        PokemonBattle battle = pokemonEntity.getBattle();
+        if (battle == null || !((IRaidBattle) battle).crd_isRaidBattle()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        raid.getPlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, List.of(pokemonEntity.getId()), true));
     }
 }

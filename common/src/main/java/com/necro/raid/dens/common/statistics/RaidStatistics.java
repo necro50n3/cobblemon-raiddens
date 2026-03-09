@@ -28,9 +28,9 @@ public class RaidStatistics {
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
-            event.getPlayer().awardStat(RAIDS_COMPLETED);
+            event.player().awardStat(RAIDS_COMPLETED);
 
-            ResourceLocation tier = switch (event.getRaidBoss().getTier()) {
+            ResourceLocation tier = switch (event.raidBoss().getTier()) {
                 case TIER_ONE -> TIER_ONE_COMPLETED;
                 case TIER_TWO -> TIER_TWO_COMPLETED;
                 case TIER_THREE -> TIER_THREE_COMPLETED;
@@ -39,7 +39,7 @@ public class RaidStatistics {
                 case TIER_SIX -> TIER_SIX_COMPLETED;
                 case TIER_SEVEN -> TIER_SEVEN_COMPLETED;
             };
-            event.getPlayer().awardStat(tier);
+            event.player().awardStat(tier);
             return Unit.INSTANCE;
         });
     }

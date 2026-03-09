@@ -41,6 +41,9 @@ public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("raiding")
     @Comment("Show raid logs during raids")
     public boolean enable_raid_logs = true;
+    @ConfigEntry.Category("raiding")
+    @Comment("Show health bars above Pokemon during raids")
+    public boolean enable_health_bars = true;
 
     @ConfigEntry.Category("gui")
     @ConfigEntry.BoundedDiscrete(max=100)

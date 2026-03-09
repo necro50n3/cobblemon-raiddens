@@ -41,8 +41,8 @@ public class RaidDenCriteriaTriggers {
 
         RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
-            triggerRaidTier(event.getPlayer(), event.getRaidBoss().getTier());
-            triggerRaidFeature(event.getPlayer(), event.getRaidBoss().getFeature());
+            triggerRaidTier(event.player(), event.raidBoss().getTier());
+            triggerRaidFeature(event.player(), event.raidBoss().getFeature());
             return Unit.INSTANCE;
         });
     }

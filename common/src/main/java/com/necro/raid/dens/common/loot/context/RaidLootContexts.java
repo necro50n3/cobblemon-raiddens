@@ -9,8 +9,10 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 public class RaidLootContexts {
     public static final LootContextParam<ItemStack> RAID_POUCH = new LootContextParam<>(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_pouch"));
+    public static final LootContextParam<Boolean> BONUS_LOOT = new LootContextParam<>(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "bonus_loot"));
     public static final LootContextParamSet RAID_POUCH_USE = new LootContextParamSet.Builder()
         .required(RAID_POUCH)
+        .optional(BONUS_LOOT)
         .optional(LootContextParams.THIS_ENTITY)
         .build();
 }

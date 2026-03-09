@@ -48,6 +48,9 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Unique
     private Pokemon crd_transformTarget = null;
 
+    @Unique
+    private boolean crd_shouldRenderHpBar = false;
+
     protected PokemonEntityMixin(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
@@ -92,6 +95,16 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Override
     public RaidState crd_getRaidState() {
         return this.crd_raidState;
+    }
+
+    @Override
+    public void crd_setShouldRenderHpBar(boolean render) {
+        this.crd_shouldRenderHpBar = render;
+    }
+
+    @Override
+    public boolean crd_shouldRenderHpBar() {
+        return this.crd_shouldRenderHpBar;
     }
 
     @Override

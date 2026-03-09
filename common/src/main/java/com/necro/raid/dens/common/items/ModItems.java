@@ -9,4 +9,5 @@ public class ModItems {
     public static Holder<Item> DEFENSE_CHEER;
     public static Holder<Item> HEAL_CHEER;
     public static Holder<Item> RAID_SHARD;
+    public static Holder<Item> CATCHING_CHARM;
 }

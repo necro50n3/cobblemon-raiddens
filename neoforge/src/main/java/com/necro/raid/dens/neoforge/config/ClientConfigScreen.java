@@ -96,6 +96,13 @@ public class ClientConfigScreen {
                 .setDefaultValue(true)
                 .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.enable_raid_logs = value)
                 .build()
+            )
+            .addEntry(entryBuilder.startBooleanToggle(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.enable_health_bars"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.enable_health_bars)
+                .setDefaultValue(true)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.enable_health_bars = value)
+                .build()
             );
 
         builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.gui"))
