@@ -54,21 +54,22 @@ public class RaidRewardOverlay extends AbstractOverlay {
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
         MutableComponent component;
 
-        if (this.isCatchable() && this.catchRate < 1F) {
+        if (this.isCatchable()) {
             component = Component.translatable("screen.cobblemonraiddens.reward.description.1", Component.translatable(this.pokemon));
+            if (this.catchRate < 1F) {
+                assert Minecraft.getInstance().player != null;
+                float catchRate = this.catchRate;
+                ItemStack charm = Minecraft.getInstance().player.getOffhandItem();
+                if (charm.is(ModItems.CATCHING_CHARM)) {
+                    float mod = charm.getOrDefault(ModComponents.CATCH_BOOST.value(), 0F);
+                    catchRate = Mth.clamp(catchRate * (1F + mod), 0F, 1F);
+                }
+                int color = this.catchRateColor(catchRate);
 
-            assert Minecraft.getInstance().player != null;
-            float catchRate = this.catchRate;
-            ItemStack charm = Minecraft.getInstance().player.getOffhandItem();
-            if (charm.is(ModItems.CATCHING_CHARM)) {
-                float mod = charm.getOrDefault(ModComponents.CATCH_BOOST.value(), 0F);
-                catchRate = Mth.clamp(catchRate * (1F + mod), 0F, 1F);
+                component.append(Component.literal(" (").withColor(color));
+                component.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withColor(color));
+                component.append(Component.literal(")").withColor(color));
             }
-            int color = this.catchRateColor(catchRate);
-
-            component.append(Component.literal(" (").withColor(color));
-            component.append(Component.translatable("jade.cobblemonraiddens.catch_rate", Math.round(catchRate * 100)).withColor(color));
-            component.append(Component.literal(")").withColor(color));
         }
         else component = Component.translatable("screen.cobblemonraiddens.reward.description.2", Component.translatable(this.pokemon));
         List<FormattedCharSequence> wrapped = font.split(component, WIDTH * 2 - 16);
