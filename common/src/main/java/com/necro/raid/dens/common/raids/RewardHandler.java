@@ -96,7 +96,8 @@ public class RewardHandler {
         ItemStack charm = player.getOffhandItem();
         float catchRate = this.catchRate;
         if (charm.is(ModItems.CATCHING_CHARM)) {
-            catchRate = Mth.clamp(1F + charm.getOrDefault(ModComponents.CATCH_BOOST.value(), 0F), 0F, 1F);
+            float boost = charm.getOrDefault(ModComponents.CATCH_BOOST.value(), 0F);
+            catchRate = Mth.clamp(catchRate * (1F + boost), 0F, 1F);
             charm.consume(1, player);
             player.awardStat(Stats.ITEM_USED.get(ModItems.CATCHING_CHARM.value()));
             CriteriaTriggers.CONSUME_ITEM.trigger(player, charm);
