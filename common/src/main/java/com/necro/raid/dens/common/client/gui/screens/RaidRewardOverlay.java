@@ -54,7 +54,7 @@ public class RaidRewardOverlay extends AbstractOverlay {
         guiGraphics.pose().scale(0.5f, 0.5f, 1.0f);
         MutableComponent component;
 
-        if (this.isCatchable()) {
+        if (this.isCatchable() && this.catchRate < 1F) {
             component = Component.translatable("screen.cobblemonraiddens.reward.description.1", Component.translatable(this.pokemon));
 
             assert Minecraft.getInstance().player != null;
