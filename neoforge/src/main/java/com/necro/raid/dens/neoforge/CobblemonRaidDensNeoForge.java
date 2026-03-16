@@ -14,6 +14,7 @@ import com.necro.raid.dens.neoforge.loot.NeoForgeLootConditions;
 import com.necro.raid.dens.neoforge.loot.NeoForgeLootFunctions;
 import com.necro.raid.dens.neoforge.network.NetworkMessages;
 import com.necro.raid.dens.neoforge.items.*;
+import com.necro.raid.dens.neoforge.sound.NeoForgeSounds;
 import com.necro.raid.dens.neoforge.statistics.NeoForgeStatistics;
 import com.necro.raid.dens.neoforge.worldgen.NeoForgeFeatures;
 import net.neoforged.bus.api.IEventBus;
@@ -53,6 +54,8 @@ public class CobblemonRaidDensNeoForge {
         NeoForgeLootConditions.LOOT_CONDITION_TYPES.register(modBus);
         NeoForgeLootFunctions.registerLootFunctions();
         NeoForgeLootFunctions.LOOT_FUNCTION_TYPES.register(modBus);
+        NeoForgeSounds.registerSounds();
+        NeoForgeSounds.SOUNDS.register(modBus);
         NeoForgeStatistics.registerStatistics();
         NeoForgeStatistics.CUSTOM_STATS.register(modBus);
         NeoForgeCriteriaTriggers.registerCriteriaTriggers();

@@ -1,0 +1,74 @@
+{
+    "battle.raid.default": {
+        "sounds": [
+            {
+                "name": "cobblemon:battle.pvw.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_one": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_two": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_three": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_four": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_five": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_six": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    },
+    "battle.raid.tier_seven": {
+        "sounds": [
+            {
+                "name": "cobblemonraiddens:battle.raid.default",
+                "type": "event",
+                "stream": true
+            }
+        ]
+    }
+}

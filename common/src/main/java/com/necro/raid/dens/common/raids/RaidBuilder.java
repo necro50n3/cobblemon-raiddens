@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
-import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
@@ -9,10 +8,12 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -35,8 +36,7 @@ public class RaidBuilder {
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
             Cobblemon.config.getDefaultFleeDistance() * 5, boss.getRaidAI().create()
         );
-        Pokemon transformTarget = ((ITransformer) pokemonEntity).crd_getTransformTarget();
-        if (transformTarget != null) ((ITransformer) (BattleActor) wildActor).crd_setTransformTarget(transformTarget);
+        setTransformTarget(pokemonEntity, wildActor);
 
         BattleFormat battleFormat = BattleFormat.Companion.getGEN_9_SINGLES();
         ErroredBattleStart errors = new ErroredBattleStart();
@@ -57,11 +57,19 @@ public class RaidBuilder {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
 
-        playerActor.setBattleTheme(pokemonEntity.getBattleTheme());
+        playerActor.setBattleTheme(ResourceLocation.fromNamespaceAndPath(
+            CobblemonRaidDens.MOD_ID,
+            String.format("battle.raid.%s", boss.getTier().getSerializedName())
+        ));
 
         if (errors.isEmpty()) {
             return BattleRegistry.startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
         }
         else return errors;
+    }
+
+    private static void setTransformTarget(PokemonEntity pokemonEntity, PokemonBattleActor wildActor) {
+        Pokemon transformTarget = ((ITransformer) pokemonEntity).crd_getTransformTarget();
+        if (transformTarget != null) ((ITransformer) wildActor).crd_setTransformTarget(transformTarget);
     }
 }
