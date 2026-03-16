@@ -19,6 +19,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
+import com.necro.raid.dens.common.registry.RaidAIRegistry;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -51,6 +52,14 @@ public class CobblemonRaidDens {
     public static void init() {
         LOGGER.info("Initialising {}", MOD_ID);
 
+        initConfig();
+        initUtils();
+        initRegistries();
+        registerCobblemonEvents();
+        RaidEvents.registerEvents();
+    }
+
+    private static void initConfig() {
         AutoConfig.register(RaidConfig.class, JanksonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(RaidConfig.class).getConfig();
         AutoConfig.register(BlacklistConfig.class, JanksonConfigSerializer::new);
@@ -77,15 +86,22 @@ public class CobblemonRaidDens {
         TIER_CONFIG.put(RaidTier.TIER_SIX, AutoConfig.getConfigHolder(TierSixConfig.class).getConfig());
         AutoConfig.register(TierSevenConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
         TIER_CONFIG.put(RaidTier.TIER_SEVEN, AutoConfig.getConfigHolder(TierSevenConfig.class).getConfig());
+    }
 
+    private static void initUtils() {
         RaidUtils.init();
         RaidStatistics.init();
         RaidDenCriteriaTriggers.init();
         RaidConditions.init();
+    }
+
+    private static void initRegistries() {
         RaidScriptRegistry.init();
-
+        RaidAIRegistry.init();
         Statuses.registerStatus(new ShieldStatus());
+    }
 
+    private static void registerCobblemonEvents() {
         CobblemonEvents.BATTLE_FLED.subscribe(Priority.NORMAL, event -> {
             raidFailEvent(event.getPlayer().getEntity(), event.getBattle(), true);
             return Unit.INSTANCE;
@@ -113,8 +129,6 @@ public class CobblemonRaidDens {
             sendHealthBarPacket(event);
             return Unit.INSTANCE;
         });
-
-        RaidEvents.registerEvents();
     }
 
     private static void raidFailEvent(@Nullable ServerPlayer player, PokemonBattle battle, boolean ignoreLives) {

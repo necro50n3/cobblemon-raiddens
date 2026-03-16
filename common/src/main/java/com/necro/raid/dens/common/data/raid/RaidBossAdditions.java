@@ -232,7 +232,7 @@ public class RaidBossAdditions {
         return Optional.ofNullable(boss.getScript());
     }
 
-    private static Optional<RaidAI> getRaidAI(RaidBoss boss) {
+    private static Optional<ResourceLocation> getRaidAI(RaidBoss boss) {
         return Optional.ofNullable(boss.getRaidAI());
     }
 
