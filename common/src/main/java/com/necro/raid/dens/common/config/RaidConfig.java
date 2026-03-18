@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.config;
 
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
-import com.necro.raid.dens.common.raids.rewards.RewardDistribution;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
