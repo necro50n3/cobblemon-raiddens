@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.cobblemon.mod.common.battles.ai.strongBattleAI.TrackerPokemon;
-import com.necro.raid.dens.common.data.raid.RaidAI;
+import com.necro.raid.dens.common.compat.rctapi.RCTBattleAIImpl;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +19,7 @@ public abstract class StrongBattleAIMixin {
             pokemon.getPokemon() != null
                 && pokemon.getPokemon().getEntity() != null
                 && ((IRaidAccessor) pokemon.getPokemon().getEntity()).crd_isRaidBoss()
-            && RaidAI.BLOCKED_MOVES.contains(move.id)
+            && RCTBattleAIImpl.BLOCKED_MOVES.contains(move.id)
         ) cir.setReturnValue(0.0);
         else if (!move.canBeUsed()) cir.setReturnValue(0.0);
     }
@@ -33,7 +33,7 @@ public abstract class StrongBattleAIMixin {
         ) {
             ShowdownActionResponse response = cir.getReturnValue();
             if (!(response instanceof MoveActionResponse move)) return;
-            else if (!RaidAI.BLOCKED_MOVES.contains(move.getMoveName())) return;
+            else if (!RCTBattleAIImpl.BLOCKED_MOVES.contains(move.getMoveName())) return;
             cir.setReturnValue(PassActionResponse.INSTANCE);
         }
     }

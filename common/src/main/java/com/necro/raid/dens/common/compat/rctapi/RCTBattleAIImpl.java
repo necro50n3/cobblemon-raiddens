@@ -5,13 +5,21 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.mojang.datafixers.util.Function3;
-import com.necro.raid.dens.common.data.raid.RaidAI;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
 public class RCTBattleAIImpl {
+    public static final Set<String> BLOCKED_MOVES = Set.of(
+        "lastresort",
+        "explosion",
+        "selfdestruct",
+        "mistyexplosion",
+        "transform",
+        "perishsong"
+    );
+
     public static void choose(ActiveBattlePokemon pokemon, ShowdownMoveset moveset,
                               Function3<BattlePokemon, BattlePokemon, InBattleMove, Double> eval,
                               CallbackInfoReturnable<ShowdownActionResponse> cir
@@ -51,6 +59,6 @@ public class RCTBattleAIImpl {
     }
 
     public static void evalMove(InBattleMove move, CallbackInfoReturnable<Double> cir) {
-        if (RaidAI.BLOCKED_MOVES.contains(move.id) || !move.canBeUsed()) cir.setReturnValue(-1.0);
+        if (BLOCKED_MOVES.contains(move.id) || !move.canBeUsed()) cir.setReturnValue(-1.0);
     }
 }

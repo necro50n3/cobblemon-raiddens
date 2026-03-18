@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.mixins.ai;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
-import com.necro.raid.dens.common.data.raid.RaidAI;
+import com.necro.raid.dens.common.compat.rctapi.RCTBattleAIImpl;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 public abstract class RandomBattleAIMixin {
 
     @Unique
-    private List<InBattleMove> getFilteredMoves(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean checkTargets) {
+    private List<InBattleMove> crd_getFilteredMoves(ActiveBattlePokemon pokemon, ShowdownMoveset moveset, boolean checkTargets) {
         return moveset.getMoves().stream()
             .filter(InBattleMove::canBeUsed)
-            .filter(move -> !RaidAI.BLOCKED_MOVES.contains(move.id))
+            .filter(move -> !RCTBattleAIImpl.BLOCKED_MOVES.contains(move.id))
             .filter(move -> {
                 if (!checkTargets) return true;
                 if (move.mustBeUsed()) return true;
@@ -41,10 +41,10 @@ public abstract class RandomBattleAIMixin {
             return;
         }
 
-        List<InBattleMove> filteredMoves = getFilteredMoves(pokemon, moveset, true);
+        List<InBattleMove> filteredMoves = crd_getFilteredMoves(pokemon, moveset, true);
 
         if (filteredMoves.isEmpty()) {
-            filteredMoves = getFilteredMoves(pokemon, moveset, false);
+            filteredMoves = crd_getFilteredMoves(pokemon, moveset, false);
         }
 
         if (filteredMoves.isEmpty()) {
