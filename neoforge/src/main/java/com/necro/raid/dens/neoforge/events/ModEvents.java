@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidAIRegistry;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.RewardDistributorRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
 import net.minecraft.server.MinecraftServer;
@@ -53,6 +54,7 @@ public class ModEvents {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         RaidAIRegistry.freeze();
+        RewardDistributorRegistry.freeze();
     }
 
     @SubscribeEvent

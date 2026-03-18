@@ -87,7 +87,7 @@ public class RaidBoss {
     private Integer maxCatches;
     private Map<String, Script> script;
     @SerializedName("raid_ai")
-    private ResourceLocation raidAI;
+    private String raidAI;
     private List<Mark> marks;
     private Integer lives;
     @SerializedName("players_share_lives")
@@ -110,7 +110,7 @@ public class RaidBoss {
                     RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
                     Component bossBarText, Float scale, Boolean forceDynamax, Integer maxPlayers, Integer maxClears,
                     Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti, Float multiplayerHealthMulti,
-                    Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script, ResourceLocation raidAI,
+                    Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script, String raidAI,
                     List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
                     Float catchRate) {
         this.reward = reward;
@@ -502,7 +502,7 @@ public class RaidBoss {
         return this.script;
     }
 
-    public ResourceLocation getRaidAI() {
+    public String getRaidAI() {
         return this.raidAI;
     }
 
@@ -667,7 +667,7 @@ public class RaidBoss {
         this.script = new HashMap<>(script);
     }
 
-    public void setRaidAI(ResourceLocation raidAI) {
+    public void setRaidAI(String raidAI) {
         this.raidAI = raidAI;
     }
 

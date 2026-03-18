@@ -6,17 +6,16 @@ import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
 
 public class RaidAIRegistry {
-    private static final Object2ObjectOpenHashMap<ResourceLocation, Supplier<BattleAI>> REGISTRY = new Object2ObjectOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<String, Supplier<BattleAI>> REGISTRY = new Object2ObjectOpenHashMap<>();
     private static boolean FROZEN = false;
 
-    public static void register(ResourceLocation id, Supplier<BattleAI> factory) {
+    public static void register(String id, Supplier<BattleAI> factory) {
         if (FROZEN) throw new IllegalStateException("Attempted to register Raid AI after initialization.");
-        REGISTRY.put(id, factory);
+        REGISTRY.put(id.toLowerCase(), factory);
     }
 
     public static void freeze() {
@@ -25,12 +24,12 @@ public class RaidAIRegistry {
     }
 
     public static void init() {
-        register(ResourceLocation.parse("cobblemon:random"), RandomBattleAI::new);
-        register(ResourceLocation.parse("cobblemon:strong"), () -> new StrongBattleAI(5));
-        register(ResourceLocation.parse("rctapi:rct"), () -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
+        register("random", RandomBattleAI::new);
+        register("strong", () -> new StrongBattleAI(5));
+        register("rct", () -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
     }
 
-    public static BattleAI build(ResourceLocation key) {
-        return REGISTRY.getOrDefault(key, RandomBattleAI::new).get();
+    public static BattleAI build(String key) {
+        return REGISTRY.getOrDefault(key.toLowerCase(), RandomBattleAI::new).get();
     }
 }

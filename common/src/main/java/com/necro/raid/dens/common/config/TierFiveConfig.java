@@ -44,8 +44,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public int max_catches = -1;
     @Comment("The default script to add to raid bosses without a script. Default: {}")
     public Map<String, Script> default_scripts = new HashMap<>();
-    @Comment("The battle AI used by the raid boss (Options: cobblemon:random, cobblemon:strong, rctapi:rct). Default: cobblemon:random")
-    public String raid_ai = "cobblemon:random";
+    @Comment("The battle AI used by the raid boss (Options: random, strong, rct). Default: random")
+    public String raid_ai = "random";
     @Comment("The list of marks the reward Pokemon will have. Default: [].")
     public String[] marks = {};
     @Comment("The number of lives a player has per raid battle. Default: 1")
@@ -108,8 +108,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public Map<String, Script> defaultScripts() {
         return this.default_scripts;
     }
-    public ResourceLocation raidAI() {
-        return ResourceLocation.parse(this.raid_ai);
+    public String raidAI() {
+        return this.raid_ai;
     }
     public List<Mark> marks() {
         return Arrays.stream(this.marks).map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
