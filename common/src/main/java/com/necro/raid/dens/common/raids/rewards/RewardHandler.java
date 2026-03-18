@@ -1,4 +1,4 @@
-package com.necro.raid.dens.common.raids;
+package com.necro.raid.dens.common.raids.rewards;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.item.PokeBallItem;

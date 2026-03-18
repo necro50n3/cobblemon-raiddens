@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.registry;
 import com.cobblemon.mod.common.api.battles.model.ai.BattleAI;
 import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
 import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -32,8 +31,6 @@ public class RaidAIRegistry {
     }
 
     public static BattleAI build(ResourceLocation key) {
-        BattleAI result = REGISTRY.getOrDefault(key, RandomBattleAI::new).get();
-        CobblemonRaidDens.LOGGER.info(result.getClass().getName());
-        return result;
+        return REGISTRY.getOrDefault(key, RandomBattleAI::new).get();
     }
 }

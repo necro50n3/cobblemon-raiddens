@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.network.packets;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
-import com.necro.raid.dens.common.raids.RewardHandler;
+import com.necro.raid.dens.common.raids.rewards.RewardHandler;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

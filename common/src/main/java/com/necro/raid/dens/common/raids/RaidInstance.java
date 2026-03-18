@@ -25,10 +25,12 @@ import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.raids.rewards.RewardDistributionContext;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
+import com.necro.raid.dens.common.registry.RewardDistributorRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -319,6 +321,10 @@ public class RaidInstance {
         return this.failedPlayers.contains(player.getUUID());
     }
 
+    public float getDamage(ServerPlayer player) {
+        return this.damageTracker.getOrDefault(player.getUUID(), 0F);
+    }
+
     public void tick() {
         if (this.isFinished()) return;
         try { this.runQueue.removeIf(DelayedRunnable::tick); }
@@ -376,29 +382,10 @@ public class RaidInstance {
             success = List.of();
             failed = players;
         }
-        else if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.SURVIVOR) {
-            List<ServerPlayer> survivors = new ArrayList<>();
-            failed = new ArrayList<>();
-            for (ServerPlayer player : players) {
-                if (this.failedPlayers.contains(player.getUUID())) failed.add(player);
-                else survivors.add(player);
-            }
-
-            if (catches > 0 && survivors.size() > catches) {
-                Collections.shuffle(survivors);
-                success = survivors.subList(0, catches);
-                failed.addAll(survivors.subList(catches, survivors.size()));
-            }
-            else success = survivors;
-        }
-        else if (catches < 0 || players.size() < catches) {
-            success = players;
-            failed = List.of();
-        }
         else {
-            this.sortPlayers(players);
-            success = players.subList(0, catches);
-            failed = players.subList(catches, players.size());
+            RewardDistributionContext context = new RewardDistributionContext(players, RewardDistributorRegistry.get(CobblemonRaidDens.CONFIG.reward_distribution), this);
+            success = context.success();
+            failed = context.fail();
         }
 
         Pokemon cachedReward;
@@ -424,18 +411,6 @@ public class RaidInstance {
             RaidEvents.RAID_END.emit(new RaidEndEvent(player, this.raidBoss, null, 0F, true))
         );
         noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
-    }
-
-    private void sortPlayers(List<ServerPlayer> players) {
-        if (CobblemonRaidDens.CONFIG.reward_distribution == RewardDistribution.DAMAGE) {
-            players.sort((a, b) -> Float.compare(
-                this.damageTracker.getOrDefault(b.getUUID(), 0F),
-                this.damageTracker.getOrDefault(a.getUUID(), 0F)
-            ));
-        }
-        else {
-            Collections.shuffle(players);
-        }
     }
 
     private void handleFailed() {

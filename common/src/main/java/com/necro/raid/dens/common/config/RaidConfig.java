@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.config;
 
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
-import com.necro.raid.dens.common.raids.RewardDistribution;
+import com.necro.raid.dens.common.raids.rewards.RewardDistribution;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -31,8 +31,8 @@ public class RaidConfig implements ConfigData {
     public boolean sync_rewards = true;
     @Comment("Whether raid crystals can be broken. Default: true")
     public boolean can_break = true;
-    @Comment("The reward distribution algorithm (Options: RANDOM, DAMAGE, SURVIVOR). Default: RANDOM")
-    public RewardDistribution reward_distribution = RewardDistribution.RANDOM;
+    @Comment("The reward distribution algorithm (Options: random, damage, survivor). Default: random")
+    public String reward_distribution = "random";
     @Comment("The maximum number of players in a raid before shared supporting moves are disabled. Default: 4")
     public int max_players_for_support = 4;
     @Comment("The amount of raid energy required to convert a raid shard. Default: 100")

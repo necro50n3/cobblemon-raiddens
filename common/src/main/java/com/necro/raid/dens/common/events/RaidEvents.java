@@ -7,7 +7,7 @@ import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RewardHandler;
+import com.necro.raid.dens.common.raids.rewards.RewardHandler;
 import kotlin.Unit;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
