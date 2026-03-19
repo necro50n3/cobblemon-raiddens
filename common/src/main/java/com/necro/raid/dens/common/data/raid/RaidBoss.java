@@ -721,9 +721,14 @@ public class RaidBoss {
     }
 
     public RaidBoss copy() {
+        PokemonProperties rewardCopy = this.reward.copy();
+        rewardCopy.setCustomProperties(List.copyOf(this.reward.getCustomProperties()));
+        PokemonProperties bossCopy = this.boss.copy();
+        bossCopy.setCustomProperties(List.copyOf(this.boss.getCustomProperties()));
+
         return new RaidBoss(
-            this.reward.copy(),
-            this.boss.copy(),
+            rewardCopy,
+            bossCopy,
             this.raidTier,
             this.raidType,
             this.raidFeature,
