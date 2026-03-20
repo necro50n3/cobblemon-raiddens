@@ -55,8 +55,8 @@ public class RewardDistributorRegistry {
 
             if (maxCatches > 0 && success.size() > maxCatches) {
                 Collections.shuffle(success);
-                success = success.subList(0, maxCatches);
                 failed.addAll(success.subList(maxCatches, success.size()));
+                success = success.subList(0, maxCatches);
             }
 
             return new Pair<>(success, failed);
