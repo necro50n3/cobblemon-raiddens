@@ -20,6 +20,11 @@ public class CustomRaidRegistries {
     public static final CustomRegistry<String, Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final CustomRegistry<String, RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
 
+    public static void freeze() {
+        AI_REGISTRY.freeze();
+        REWARD_DIST_REGISTRY.freeze();
+    }
+
     public static void registerDefaults() {
         AI_REGISTRY.register("random", RandomBattleAI::new);
         AI_REGISTRY.register("strong", () -> new StrongBattleAI(5));

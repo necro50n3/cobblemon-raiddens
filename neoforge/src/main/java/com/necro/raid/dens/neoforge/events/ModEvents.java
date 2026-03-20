@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -46,6 +48,11 @@ public class ModEvents {
     public static void onPlayerDisconnect(PlayerEvent.PlayerLoggedOutEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.getServer() == null) return;
         player.getServer().execute(() -> RaidJoinHelper.onPlayerDisconnect(player));
+    }
+
+    @SubscribeEvent
+    public static void onServerStarting(ServerStartingEvent event) {
+        CustomRaidRegistries.freeze();
     }
 
     @SubscribeEvent
