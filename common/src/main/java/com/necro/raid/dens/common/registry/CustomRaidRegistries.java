@@ -1,30 +1,36 @@
 package com.necro.raid.dens.common.registry;
 
+import com.cobblemon.mod.common.api.battles.model.ai.BattleAI;
+import com.cobblemon.mod.common.battles.ai.RandomBattleAI;
+import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import com.necro.raid.dens.common.registry.custom.CustomRegistry;
+import com.necro.raid.dens.common.registry.custom.StringRegistry;
 import kotlin.Pair;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
-public class RewardDistributorRegistry {
-    private static final Object2ObjectOpenHashMap<String, RewardDistributor> REGISTRY = new Object2ObjectOpenHashMap<>();
-    private static boolean FROZEN = false;
-
-    public static void register(String id, RewardDistributor distributor) {
-        if (FROZEN) throw new IllegalStateException("Attempted to register Reward Distributor after initialization.");
-        REGISTRY.put(id.toLowerCase(), distributor);
-    }
+public class CustomRaidRegistries {
+    public static final CustomRegistry<String, Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
+    public static final CustomRegistry<String, RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
 
     public static void freeze() {
-        FROZEN = true;
-        REGISTRY.trim();
+        AI_REGISTRY.freeze();
+        REWARD_DIST_REGISTRY.freeze();
     }
 
-    public static void init() {
-        register("random", (players, raid) -> {
+    public static void registerDefaults() {
+        AI_REGISTRY.register("random", RandomBattleAI::new);
+        AI_REGISTRY.register("strong", () -> new StrongBattleAI(5));
+        AI_REGISTRY.register("rct", () -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
+
+        REWARD_DIST_REGISTRY.register("random", (players, raid) -> {
             int maxCatches = raid.getRaidBoss().getMaxCatches();
             if (maxCatches < 0 || players.size() < maxCatches) return new Pair<>(players, List.of());
 
@@ -33,8 +39,7 @@ public class RewardDistributorRegistry {
             List<ServerPlayer> failed = players.subList(maxCatches, players.size());
             return new Pair<>(success, failed);
         });
-
-        register("damage", (players, raid) -> {
+        REWARD_DIST_REGISTRY.register("damage", (players, raid) -> {
             int maxCatches = raid.getRaidBoss().getMaxCatches();
             if (maxCatches < 0 || players.size() < maxCatches) return new Pair<>(players, List.of());
 
@@ -43,8 +48,7 @@ public class RewardDistributorRegistry {
             List<ServerPlayer> failed = players.subList(maxCatches, players.size());
             return new Pair<>(success, failed);
         });
-
-        register("survivor", (players, raid) -> {
+        REWARD_DIST_REGISTRY.register("survivor", (players, raid) -> {
             int maxCatches = raid.getRaidBoss().getMaxCatches();
             List<ServerPlayer> success = new ArrayList<>();
             List<ServerPlayer> failed = new ArrayList<>();
@@ -61,9 +65,5 @@ public class RewardDistributorRegistry {
 
             return new Pair<>(success, failed);
         });
-    }
-
-    public static RewardDistributor get(String key) {
-        return REGISTRY.getOrDefault(key.toLowerCase(), REGISTRY.get("random"));
     }
 }

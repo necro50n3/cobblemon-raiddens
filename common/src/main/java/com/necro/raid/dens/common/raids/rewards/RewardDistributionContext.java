@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.raids.rewards;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import kotlin.Pair;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -10,7 +12,8 @@ public class RewardDistributionContext {
     private final List<ServerPlayer> success;
     private final List<ServerPlayer> fail;
 
-    public  RewardDistributionContext(List<ServerPlayer> players, RewardDistributor distributor, RaidInstance raid) {
+    public  RewardDistributionContext(List<ServerPlayer> players, RaidInstance raid) {
+        RewardDistributor distributor = CustomRaidRegistries.REWARD_DIST_REGISTRY.get(CobblemonRaidDens.CONFIG.reward_distribution);
         Pair<List<ServerPlayer>, List<ServerPlayer>> result = distributor.distribute(players, raid);
         this.success = result.getFirst();
         this.fail = result.getSecond();

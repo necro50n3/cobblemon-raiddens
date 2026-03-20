@@ -9,8 +9,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.registry.RaidAIRegistry;
-import com.necro.raid.dens.common.registry.RewardDistributorRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.showdown.RaidDensShowdownRegistry;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
@@ -67,8 +66,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricCriteriaTriggers.registerCriteriaTriggers();
         RaidDenTab.registerItemGroups();
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> RaidAIRegistry.freeze());
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> RewardDistributorRegistry.freeze());
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> CustomRaidRegistries.freeze());
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
         ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);
         ServerLifecycleEvents.SERVER_STOPPING.register(ModEvents::onServerClose);

@@ -10,7 +10,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.registry.RaidAIRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
@@ -35,7 +35,7 @@ public class RaidBuilder {
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
-            Cobblemon.config.getDefaultFleeDistance() * 5, RaidAIRegistry.build(boss.getRaidAI())
+            Cobblemon.config.getDefaultFleeDistance() * 5, CustomRaidRegistries.AI_REGISTRY.get(boss.getRaidAI()).get()
         );
         setTransformTarget(pokemonEntity, wildActor);
 

@@ -30,7 +30,6 @@ import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
 import com.necro.raid.dens.common.registry.RaidScriptRegistry;
-import com.necro.raid.dens.common.registry.RewardDistributorRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -383,7 +382,7 @@ public class RaidInstance {
             failed = players;
         }
         else {
-            RewardDistributionContext context = new RewardDistributionContext(players, RewardDistributorRegistry.get(CobblemonRaidDens.CONFIG.reward_distribution), this);
+            RewardDistributionContext context = new RewardDistributionContext(players, this);
             success = context.success();
             failed = context.fail();
         }
