@@ -20,7 +20,7 @@ import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidScriptRegistry;
+import com.necro.raid.dens.common.raids.scripts.RaidScriptDecoder;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -68,8 +68,7 @@ public class CobblemonRaidDens {
         CONDITIONS_CONFIG = AutoConfig.getConfigHolder(ConditionsConfig.class).getConfig();
 
         Jankson jankson = Jankson.builder()
-            .registerSerializer(Script.class, (script, marshaller) -> script.serialize())
-            .registerDeserializer(JsonElement.class, Script.class, (json, marshaller) -> Script.deserialize(json))
+            .registerDeserializer(JsonElement.class, Script.class, (script, marshaller) -> Script.deserialize(script))
             .build();
 
         AutoConfig.register(TierOneConfig.class, (config, cls) -> new JanksonConfigSerializer<>(config, cls, jankson));
@@ -96,7 +95,7 @@ public class CobblemonRaidDens {
     }
 
     private static void initRegistries() {
-        RaidScriptRegistry.init();
+        RaidScriptDecoder.init();
         CustomRaidRegistries.registerDefaults();
         Statuses.registerStatus(new ShieldStatus());
     }

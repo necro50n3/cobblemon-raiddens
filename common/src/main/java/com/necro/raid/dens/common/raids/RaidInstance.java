@@ -29,7 +29,7 @@ import com.necro.raid.dens.common.raids.rewards.RewardDistributionContext;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
-import com.necro.raid.dens.common.registry.RaidScriptRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -44,7 +44,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -119,8 +118,8 @@ public class RaidInstance {
 
         this.triggers = new EnumMap<>(RaidTriggerType.class);
         raidBoss.getScript().forEach((key, scripts) -> {
-            List<AbstractEvent> functions = scripts.functions().stream()
-                .map(this::getInstructions)
+            List<AbstractEvent> functions = scripts.stream()
+                .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
                 .filter(Objects::nonNull)
                 .toList();
             if (functions.isEmpty()) return;
@@ -456,10 +455,6 @@ public class RaidInstance {
         return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
-    private AbstractEvent getInstructions(@NotNull String function) {
-        return RaidScriptRegistry.decode(function);
-    }
-
     private List<RaidTrigger<?>> getTriggers(RaidTriggerType type) {
         return this.triggers.computeIfAbsent(type, t -> new ArrayList<>());
     }
@@ -593,6 +588,7 @@ public class RaidInstance {
     }
 
     public void initTimer(int time) {
+        if (this.maxTime > 0) return;
         this.maxTime = time * 20;
         this.time = this.maxTime;
 

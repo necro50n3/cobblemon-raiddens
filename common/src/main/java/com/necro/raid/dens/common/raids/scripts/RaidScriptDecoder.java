@@ -1,16 +1,15 @@
-package com.necro.raid.dens.common.registry;
+package com.necro.raid.dens.common.raids.scripts;
 
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
-import com.necro.raid.dens.common.raids.scripts.ScriptDecoder;
 import com.necro.raid.dens.common.showdown.events.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RaidScriptRegistry {
-    private static final Map<String, ScriptDecoder> SCRIPTS = new HashMap<>();
+public class RaidScriptDecoder {
+    private static final Map<String, StringDecoder> SCRIPTS = new HashMap<>();
     private static final Map<String, Stat> STAT_MAP = Map.of(
         "ATK", Stats.ATTACK,
         "DEF", Stats.DEFENCE,
@@ -21,11 +20,11 @@ public class RaidScriptRegistry {
         "EVA", Stats.EVASION
     );
 
-    public static void registerDecoder(String key, ScriptDecoder event) {
+    private static void registerDecoder(String key, StringDecoder event) {
         SCRIPTS.put(key, event);
     }
 
-    public static void registerStatic(String key, AbstractEvent event) {
+    private static void registerStatic(String key, AbstractEvent event) {
         SCRIPTS.put(key, args -> event);
     }
 
@@ -42,7 +41,7 @@ public class RaidScriptRegistry {
         if (function == null || function.isEmpty()) return null;
         String[] args = function.split("_");
 
-        ScriptDecoder decoder = null;
+        StringDecoder decoder = null;
         String key;
         for (int i = args.length; i > 0; i--) {
             key = String.join("_", Arrays.copyOfRange(args, 0, i));
@@ -123,5 +122,10 @@ public class RaidScriptRegistry {
 
         registerStatic("SHIELD_UP", new ShieldAddShowdownEvent());
         registerStatic("SHIELD_DOWN", new ShieldRemoveShowdownEvent());
+    }
+
+    @FunctionalInterface
+    private interface StringDecoder {
+        AbstractEvent decode(String[] args);
     }
 }

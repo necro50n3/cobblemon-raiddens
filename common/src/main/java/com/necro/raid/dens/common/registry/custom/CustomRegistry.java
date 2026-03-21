@@ -30,7 +30,7 @@ public class CustomRegistry<K, T> {
     }
 
     public T get(K key) {
-        return this.registry.getOrDefault(key, this.registry.get(this.defaultKey));
+        return this.registry.getOrDefault(key, this.defaultKey == null ? null : this.registry.get(this.defaultKey));
     }
 
     public Optional<T> getOptional(K key) {
