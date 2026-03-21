@@ -49,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class RaidInstance {
     private final PokemonEntity bossEntity;
@@ -181,7 +182,7 @@ public class RaidInstance {
         if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
         new StartRaidShowdownEvent(this.battleState, effects).send(battle);
         new DoNothingShowdownEvent().send(battle);
-        this.runScripts(RaidTriggerType.TURN, battle, 0);
+        this.runScripts(RaidTriggerType.TURN, battle, () -> 0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
         List<Integer> entityIds = this.getEntityIds(this.battles);
@@ -220,7 +221,7 @@ public class RaidInstance {
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle, (Void) null);
+            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle, () -> (Void) null);
         }
     }
 
@@ -255,7 +256,7 @@ public class RaidInstance {
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
 
-        this.runScripts(RaidTriggerType.HP, battle, this.currentHealth / this.maxHealth);
+        this.runScripts(RaidTriggerType.HP, battle, () -> this.currentHealth / this.maxHealth);
 
         if (this.currentHealth <= 0F) {
             this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
@@ -460,8 +461,8 @@ public class RaidInstance {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, T predicate) {
-        this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate));
+    public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, Supplier<T> predicate) {
+        this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate.get()));
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {

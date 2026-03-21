@@ -46,7 +46,7 @@ public abstract class PokemonBattleMixin implements IRaidBattle {
     @Inject(method = "turn", at = @At("RETURN"), remap = false)
     private void turnInject(int newTurnNumber, CallbackInfo ci) {
         if (!this.crd_isRaidBattle()) return;
-        this.crd_raidInstance.runScripts(RaidTriggerType.TURN, (PokemonBattle) (Object) this, newTurnNumber);
+        this.crd_raidInstance.runScripts(RaidTriggerType.TURN, (PokemonBattle) (Object) this, () -> newTurnNumber);
     }
 
     @Inject(method = "checkFlee", at = @At("HEAD"), remap = false, cancellable = true)
