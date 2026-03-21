@@ -509,6 +509,7 @@ public class RaidInstance {
     public void sendEvent(AbstractEvent event, @Nullable PokemonBattle battle) {
         if (this.isFinished()) return;
         switch (event) {
+            case BroadcastingRaidEvent broadcastRaidEvent -> broadcastRaidEvent.broadcast(this, this.activePlayers);
             case RaidEvent raidEvent -> {
                 ServerPlayer player = battle == null || battle.getPlayers().isEmpty() ? null : battle.getPlayers().getFirst();
                 raidEvent.run(this, player);

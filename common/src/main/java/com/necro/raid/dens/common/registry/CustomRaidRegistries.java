@@ -16,10 +16,7 @@ import com.necro.raid.dens.common.showdown.events.*;
 import kotlin.Pair;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -86,7 +83,7 @@ public class CustomRaidRegistries {
         });
 
         SCRIPT_REGISTRY.register("shield", script -> {
-            boolean apply = (Boolean) script.getOrDefault("apply", true);
+            boolean apply = (boolean) script.getOrDefault("apply", true);
             return apply ? new ShieldAddShowdownEvent() : new ShieldRemoveShowdownEvent();
         });
         SCRIPT_REGISTRY.register("set_terrain", script -> {
@@ -108,11 +105,11 @@ public class CustomRaidRegistries {
         SCRIPT_REGISTRY.register("modify_catch_rate", script -> {
             if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
             float value = Script.toFloat(script.get("value"));
-            boolean applyToAll = (Boolean) script.getOrDefault("apply_to_all", false);
+            boolean applyToAll = (boolean) script.getOrDefault("apply_to_all", false);
             String operation = (String) script.get("operation");
-            if ("add".equals(operation)) return new CatchRateAddRaidEvent(value);
-            else if ("multiply".equals(operation)) return new CatchRateMultiplyRaidEvent(value);
-            else throw new JsonSyntaxException("Missing or incorrect field \"operation\"");
+            if (!Set.of("add", "multiply").contains(operation)) throw new JsonSyntaxException("Missing or incorrect field \"operation\"");
+            if (applyToAll) return new ModifyCatchRateAllRaidEvent(value, operation);
+            else return new ModifyCatchRateRaidEvent(value, operation);
         });
         SCRIPT_REGISTRY.register("heal", script -> {
             if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
