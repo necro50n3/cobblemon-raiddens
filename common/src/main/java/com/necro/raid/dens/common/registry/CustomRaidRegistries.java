@@ -153,5 +153,11 @@ public class CustomRaidRegistries {
             if (stats.isEmpty()) throw new JsonSyntaxException("Invalid field \"stats\"");
             return new RaidMapBoostShowdownEvent(stats);
         });
+        SCRIPT_REGISTRY.register("forme_change", script -> {
+            String form = (String) script.get("form");
+            if (form == null) throw new JsonSyntaxException("Missing field \"form\"");
+            return new FormeChangeShowdownEvent(form);
+        });
+        SCRIPT_REGISTRY.register("mega_evolve", script -> new MegaEvolveShowdownEvent());
     }
 }
