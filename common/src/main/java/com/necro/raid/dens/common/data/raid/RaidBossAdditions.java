@@ -1,7 +1,5 @@
 package com.necro.raid.dens.common.data.raid;
 
-import com.cobblemon.mod.common.api.mark.Mark;
-import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -10,10 +8,10 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
 import com.necro.raid.dens.common.registry.RaidRegistry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class RaidBossAdditions {
     public static final Gson GSON;
@@ -70,37 +68,38 @@ public class RaidBossAdditions {
             if (!this.replace() && !this.forceApply() && RaidRegistry.isTag(BLACKLIST, id)) continue;
             final RaidBoss boss = this.replace() ? temp : temp.copy();
 
-            getReward(this.additions()).ifPresent(properties -> boss.setReward(PropertiesAdapter.apply(boss.getReward(), properties)));
-            getBoss(this.additions()).ifPresent(properties -> boss.setBoss(PropertiesAdapter.apply(boss.getBoss(), properties)));
-            getTier(this.additions()).ifPresent(boss::setTier);
-            getType(this.additions()).ifPresent(boss::setType);
-            getFeature(this.additions()).ifPresent(boss::setFeature);
-            getLootTable(this.additions()).ifPresent(boss::setLootTable);
-            getWeight(this.additions()).ifPresent(weight -> boss.setWeight(boss.getWeight() * weight));
-            getDens(this.additions()).ifPresent(boss::setDens);
-            getKey(this.additions()).ifPresent(boss::setKey);
-            getBossBarText(this.additions()).ifPresent(boss::setBossBarText);
-            getScale(this.additions()).ifPresent(boss::setScale);
-            getForceDynamax(this.additions()).ifPresent(boss::setForceDynamax);
+            getOptional(this.additions()::getReward).ifPresent(properties -> boss.setReward(PropertiesAdapter.apply(boss.getReward(), properties)));
+            getOptional(this.additions()::getBoss).ifPresent(properties -> boss.setBoss(PropertiesAdapter.apply(boss.getBoss(), properties)));
+            getOptional(this.additions()::getTier).ifPresent(boss::setTier);
+            getOptional(this.additions()::getType).ifPresent(boss::setType);
+            getOptional(this.additions()::getFeature).ifPresent(boss::setFeature);
+            getOptional(this.additions()::getLootTable).ifPresent(boss::setLootTable);
+            getOptional(this.additions()::getWeight).ifPresent(weight -> boss.setWeight(boss.getWeight() * weight));
+            getOptional(this.additions()::getDens).ifPresent(boss::setDens);
+            getOptional(this.additions()::getKey).ifPresent(boss::setKey);
+            getOptional(this.additions()::getBossBarText).ifPresent(boss::setBossBarText);
+            getOptional(this.additions()::getScale).ifPresent(boss::setScale);
+            getOptional(this.additions()::getForceDynamax).ifPresent(boss::setForceDynamax);
+            getOptional(this.additions()::getMusic).ifPresent(boss::setMusic);
 
-            getMaxPlayers(this.additions()).ifPresent(boss::setMaxPlayers);
-            getMaxClears(this.additions()).ifPresent(boss::setMaxClears);
-            getHaRate(this.additions()).ifPresent(boss::setHaRate);
-            getMaxCheers(this.additions()).ifPresent(boss::setMaxCheers);
-            getRaidPartySize(this.additions()).ifPresent(boss::setRaidPartySize);
-            getHealthMulti(this.additions()).ifPresent(boss::setHealthMulti);
-            getMultiplayerHealthMulti(this.additions()).ifPresent(boss::setMultiplayerHealthMulti);
-            getShinyRate(this.additions()).ifPresent(boss::setShinyRate);
-            getCurrency(this.additions()).ifPresent(boss::setCurrency);
-            getMaxCatches(this.additions()).ifPresent(boss::setMaxCatches);
-            getScript(this.additions()).ifPresent(boss::setScript);
-            getRaidAI(this.additions()).ifPresent(boss::setRaidAI);
-            getMarks(this.additions()).ifPresent(boss::setMarks);
-            getLives(this.additions()).ifPresent(boss::setLives);
-            getPlayersShareLives(this.additions()).ifPresent(boss::setPlayersShareLives);
-            getEnergy(this.additions()).ifPresent(boss::setEnergy);
-            getRequiredDamage(this.additions()).ifPresent(boss::setRequiredDamage);
-            getCatchRate(this.additions()).ifPresent(boss::setCatchRate);
+            getOptional(this.additions()::getMaxPlayers).ifPresent(boss::setMaxPlayers);
+            getOptional(this.additions()::getMaxClears).ifPresent(boss::setMaxClears);
+            getOptional(this.additions()::getHaRate).ifPresent(boss::setHaRate);
+            getOptional(this.additions()::getMaxCheers).ifPresent(boss::setMaxCheers);
+            getOptional(this.additions()::getRaidPartySize).ifPresent(boss::setRaidPartySize);
+            getOptional(this.additions()::getHealthMulti).ifPresent(boss::setHealthMulti);
+            getOptional(this.additions()::getMultiplayerHealthMulti).ifPresent(boss::setMultiplayerHealthMulti);
+            getOptional(this.additions()::getShinyRate).ifPresent(boss::setShinyRate);
+            getOptional(this.additions()::getCurrency).ifPresent(boss::setCurrency);
+            getOptional(this.additions()::getMaxCatches).ifPresent(boss::setMaxCatches);
+            getOptional(this.additions()::getScript).ifPresent(boss::setScript);
+            getOptional(this.additions()::getRaidAI).ifPresent(boss::setRaidAI);
+            getOptional(this.additions()::getMarks).ifPresent(boss::setMarks);
+            getOptional(this.additions()::getLives).ifPresent(boss::setLives);
+            getOptional(this.additions()::getPlayersShareLives).ifPresent(boss::setPlayersShareLives);
+            getOptional(this.additions()::getEnergy).ifPresent(boss::setEnergy);
+            getOptional(this.additions()::getRequiredDamage).ifPresent(boss::setRequiredDamage);
+            getOptional(this.additions()::getCatchRate).ifPresent(boss::setCatchRate);
 
             boss.clearCaches();
             boss.applyAspects();
@@ -140,124 +139,8 @@ public class RaidBossAdditions {
         return this.forceApply;
     }
 
-    private static Optional<PokemonProperties> getReward(RaidBoss boss) {
-        return Optional.ofNullable(boss.getReward());
-    }
-
-    private static Optional<PokemonProperties> getBoss(RaidBoss boss) {
-        return Optional.ofNullable(boss.getBoss());
-    }
-
-    private static Optional<RaidTier> getTier(RaidBoss boss) {
-        return Optional.ofNullable(boss.getTier());
-    }
-
-    private static Optional<RaidFeature> getFeature(RaidBoss boss) {
-        return Optional.ofNullable(boss.getFeature());
-    }
-
-    private static Optional<RaidType> getType(RaidBoss boss) {
-        return Optional.ofNullable(boss.getType());
-    }
-
-    private static Optional<BossLootTable> getLootTable(RaidBoss boss) {
-        return Optional.ofNullable(boss.getLootTable());
-    }
-
-    private static Optional<Double> getWeight(RaidBoss boss) {
-        return Optional.ofNullable(boss.getWeight());
-    }
-
-    private static Optional<List<String>> getDens(RaidBoss boss) {
-        return Optional.ofNullable(boss.getDens());
-    }
-
-    private static Optional<UniqueKey> getKey(RaidBoss boss) {
-        return Optional.ofNullable(boss.getKey());
-    }
-
-    private static Optional<Component> getBossBarText(RaidBoss boss) {
-        return Optional.ofNullable(boss.getBossBarText());
-    }
-
-    private static Optional<Float> getScale(RaidBoss boss) {
-        return Optional.ofNullable(boss.getScale());
-    }
-
-    private static Optional<Boolean> getForceDynamax(RaidBoss boss) {
-        return Optional.ofNullable(boss.getForceDynamax());
-    }
-
-    private static Optional<Integer> getMaxPlayers(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMaxPlayers());
-    }
-
-    private static Optional<Integer> getMaxClears(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMaxClears());
-    }
-
-    private static Optional<Double> getHaRate(RaidBoss boss) {
-        return Optional.ofNullable(boss.getHaRate());
-    }
-
-    private static Optional<Integer> getMaxCheers(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMaxCheers());
-    }
-
-    private static Optional<Integer> getRaidPartySize(RaidBoss boss) {
-        return Optional.ofNullable(boss.getRaidPartySize());
-    }
-
-    private static Optional<Integer> getHealthMulti(RaidBoss boss) {
-        return Optional.ofNullable(boss.getHealthMulti());
-    }
-
-    private static Optional<Float> getMultiplayerHealthMulti(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMultiplayerHealthMulti());
-    }
-
-    private static Optional<Float> getShinyRate(RaidBoss boss) {
-        return Optional.ofNullable(boss.getShinyRate());
-    }
-
-    private static Optional<Integer> getCurrency(RaidBoss boss) {
-        return Optional.ofNullable(boss.getCurrency());
-    }
-
-    private static Optional<Integer> getMaxCatches(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMaxCatches());
-    }
-
-    private static Optional<Map<String, Script>> getScript(RaidBoss boss) {
-        return Optional.ofNullable(boss.getScript());
-    }
-
-    private static Optional<String> getRaidAI(RaidBoss boss) {
-        return Optional.ofNullable(boss.getRaidAI());
-    }
-
-    private static Optional<List<Mark>> getMarks(RaidBoss boss) {
-        return Optional.ofNullable(boss.getMarks());
-    }
-
-    private static Optional<Integer> getLives(RaidBoss boss) {
-        return Optional.ofNullable(boss.getLives());
-    }
-
-    private static Optional<Boolean> getPlayersShareLives(RaidBoss boss) {
-        return Optional.ofNullable(boss.getPlayersShareLives());
-    }
-
-    private static Optional<Integer> getEnergy(RaidBoss boss) {
-        return Optional.ofNullable(boss.getEnergy());
-    }
-
-    private static Optional<Float> getRequiredDamage(RaidBoss boss) {
-        return Optional.ofNullable(boss.getRequiredDamage());
-    }
-
-    private static Optional<Float> getCatchRate(RaidBoss boss) {
-        return Optional.ofNullable(boss.getCatchRate());
+    private static <T> Optional<T> getOptional(Supplier<T> supplier) {
+        return Optional.ofNullable(supplier.get());
     }
 
     static {

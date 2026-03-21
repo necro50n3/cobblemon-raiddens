@@ -65,6 +65,7 @@ public class RaidBoss {
     private Float scale;
     @SerializedName("force_dynamax")
     private Boolean forceDynamax;
+    private ResourceLocation music;
 
     @SerializedName("max_players")
     private Integer maxPlayers;
@@ -108,10 +109,10 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
-                    Component bossBarText, Float scale, Boolean forceDynamax, Integer maxPlayers, Integer maxClears,
-                    Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti, Float multiplayerHealthMulti,
-                    Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script, String raidAI,
-                    List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
+                    Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Integer maxPlayers,
+                    Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
+                    Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
+                    String raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
                     Float catchRate) {
         this.reward = reward;
         this.boss = boss;
@@ -125,6 +126,7 @@ public class RaidBoss {
         this.bossBarText = bossBarText;
         this.scale = scale;
         this.forceDynamax = forceDynamax;
+        this.music = music;
 
         this.maxPlayers = maxPlayers;
         this.maxClears = maxClears;
@@ -165,6 +167,7 @@ public class RaidBoss {
         this.bossBarText = null;
         this.scale = null;
         this.forceDynamax = null;
+        this.music = null;
 
         this.maxPlayers = null;
         this.maxClears = null;
@@ -221,6 +224,7 @@ public class RaidBoss {
         if (this.den == null) this.den = List.of("#cobblemonraiddens:default");
         if (this.key == null) this.key = new UniqueKey();
         if (this.forceDynamax == null) this.forceDynamax = false;
+        if (this.music == null) this.music = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "battle.raid." + this.raidTier.getSerializedName());
 
         if (this.maxPlayers == null) this.maxPlayers = tierConfig.maxPlayers();
         if (this.maxClears == null) this.maxClears = tierConfig.maxClears();
@@ -458,6 +462,10 @@ public class RaidBoss {
         return this.forceDynamax;
     }
 
+    public ResourceLocation getMusic() {
+        return this.music;
+    }
+
     public Integer getMaxPlayers() {
         return this.maxPlayers;
     }
@@ -623,6 +631,10 @@ public class RaidBoss {
         this.forceDynamax = forceDynamax;
     }
 
+    public void setMusic(ResourceLocation music) {
+        this.music = music;
+    }
+
     public void setMaxPlayers(Integer maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
@@ -739,6 +751,7 @@ public class RaidBoss {
             this.bossBarText,
             this.scale,
             this.forceDynamax,
+            this.music,
             this.maxPlayers,
             this.maxClears,
             this.haRate,
