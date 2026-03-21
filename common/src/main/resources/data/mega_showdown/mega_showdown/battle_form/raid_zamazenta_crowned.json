@@ -1,0 +1,16 @@
+{
+    "pokemons": ["Zamazenta"],
+    "showdown_form_change_id": "crowned",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["behemoth_warrior=crowned"]
+        },
+        "revert": {
+            "aspects": ["behemoth_warrior=hero"]
+        }
+    },
+    "effect": "mega_showdown:end_rod"
+}

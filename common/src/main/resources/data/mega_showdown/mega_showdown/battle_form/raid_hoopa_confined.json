@@ -1,0 +1,13 @@
+{
+    "pokemons": ["Hoopa"],
+    "showdown_form_change_id": "hoopa",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["djinn_state=confined"]
+        }
+    },
+    "effect": "mega_showdown:prison_bottle"
+}

@@ -1,0 +1,16 @@
+{
+    "pokemons": ["Giratina"],
+    "showdown_form_change_id": "origin",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["orb_forme=origin"]
+        },
+        "revert": {
+            "aspects": ["orb_forme=altered"]
+        }
+    },
+    "effect": "mega_showdown:origin_g_effect"
+}

@@ -1,0 +1,13 @@
+{
+    "pokemons": ["Deoxys"],
+    "showdown_form_change_id": "attack",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["meteorite_forme=attack"]
+        }
+    },
+    "effect": "mega_showdown:deoxys_effect"
+}

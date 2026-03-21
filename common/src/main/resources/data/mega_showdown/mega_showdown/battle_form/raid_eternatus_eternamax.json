@@ -1,0 +1,16 @@
+{
+    "pokemons": ["Eternatus"],
+    "showdown_form_change_id": "eternamax",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["dynamax_form=eternamax"]
+        },
+        "revert": {
+            "aspects": ["dynamax_form=none"]
+        }
+    },
+    "effect": "mega_showdown:end_rod"
+}

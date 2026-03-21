@@ -1,0 +1,13 @@
+{
+    "pokemons": ["Dialga"],
+    "showdown_form_change_id": "dialga",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["orb_forme=altered"]
+        }
+    },
+    "effect": "mega_showdown:origin_effect"
+}
