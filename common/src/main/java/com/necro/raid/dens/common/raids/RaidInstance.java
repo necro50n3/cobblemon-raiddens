@@ -636,7 +636,7 @@ public class RaidInstance {
             if (++this.tick < this.delay) return false;
             else if (RaidInstance.this.isFinished()) return false;
             this.runnable.run();
-            if (this.repeat) this.tick = 0;
+            this.tick = 0;
             return !this.repeat;
         }
     }
