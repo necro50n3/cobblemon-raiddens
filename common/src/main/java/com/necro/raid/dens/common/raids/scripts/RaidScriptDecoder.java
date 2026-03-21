@@ -99,12 +99,12 @@ public class RaidScriptDecoder {
         registerDecoder("CATCH_RATE_ADD", args -> {
             if (args.length != 4) return null;
             float mod = (float) parseDouble(args[3]);
-            return new ModifyCatchRateRaidEvent(mod);
+            return new ModifyCatchRateRaidEvent(mod, "add");
         });
         registerDecoder("CATCH_RATE_MULTIPLY", args -> {
             if (args.length != 4) return null;
             float mod = (float) parseDouble(args[3]);
-            return new ModifyCatchRateAllRaidEvent(mod);
+            return new ModifyCatchRateRaidEvent(mod, "multiply");
         });
 
         registerStatic("RESET_BOSS", new ResetBossShowdownEvent());
