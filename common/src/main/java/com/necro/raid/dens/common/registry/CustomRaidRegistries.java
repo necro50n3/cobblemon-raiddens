@@ -10,8 +10,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
-import com.necro.raid.dens.common.registry.custom.ScriptRegistry;
-import com.necro.raid.dens.common.registry.custom.StringRegistry;
+import com.necro.raid.dens.common.registry.custom.*;
 import com.necro.raid.dens.common.showdown.events.*;
 import kotlin.Pair;
 import net.minecraft.server.level.ServerPlayer;
@@ -159,5 +158,7 @@ public class CustomRaidRegistries {
             return new FormeChangeShowdownEvent(form);
         });
         SCRIPT_REGISTRY.register("mega_evolve", script -> new MegaEvolveShowdownEvent());
+        SCRIPT_REGISTRY.register("dynamax", script -> new DynamaxShowdownEvent());
+        SCRIPT_REGISTRY.register("terastallize", script -> new TerastallizeShowdownEvent());
     }
 }
