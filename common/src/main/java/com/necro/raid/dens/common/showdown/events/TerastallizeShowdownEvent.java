@@ -10,7 +10,7 @@ public class TerastallizeShowdownEvent implements BroadcastingShowdownEvent {
     @Override
     public String build(PokemonBattle battle) {
         if (ModCompat.MEGA_SHOWDOWN.isLoaded()) {
-            battle.dispatch(() -> {
+            battle.dispatchToFront(() -> {
                 battle.getSide2().getActivePokemon().forEach(active -> {
                     BattlePokemon battlePokemon = active.getBattlePokemon();
                     if (battlePokemon == null || battlePokemon.getEntity() == null) return;
