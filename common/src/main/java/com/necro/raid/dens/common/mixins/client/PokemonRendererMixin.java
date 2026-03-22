@@ -41,7 +41,7 @@ public abstract class PokemonRendererMixin extends EntityRenderer<PokemonEntity>
     private boolean crd_shouldRenderHpBar(PokemonEntity entity) {
         assert Minecraft.getInstance().player != null;
         return CobblemonRaidDensClient.CLIENT_CONFIG.enable_health_bars
-            && !Minecraft.getInstance().player.getUUID().equals(entity.getOwnerUUID())
+            //&& !Minecraft.getInstance().player.getUUID().equals(entity.getOwnerUUID())
             && ((IRaidAccessor) entity).crd_shouldRenderHpBar()
             && !((IRaidAccessor) entity).crd_isRaidBoss();
     }
@@ -77,17 +77,17 @@ public abstract class PokemonRendererMixin extends EntityRenderer<PokemonEntity>
         float filledX = -x + filledWidth;
 
         Matrix4f pose = poseStack.last().pose();
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(crd_TEXTURE));
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(crd_TEXTURE));
 
-        vertexConsumer.addVertex(pose, -x, y0, -0.003F).setUv(0F, 0F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, -x, y1, -0.003F).setUv(0F, 0.5F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, x, y1, -0.003F).setUv(1F, 0.5F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, x, y0, -0.003F).setUv(1F, 0F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, -x, y0, -0.003F).setUv(0F, 0F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, -x, y1, -0.003F).setUv(0F, 0.5F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, x, y1, -0.003F).setUv(1F, 0.5F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, x, y0, -0.003F).setUv(1F, 0F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
 
-        vertexConsumer.addVertex(pose, -x, y0, -0.002F).setUv(0F, 0.5F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, -x, y1, -0.002F).setUv(0F, 1F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, filledX, y1, -0.002F).setUv(healthRatio, 1F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
-        vertexConsumer.addVertex(pose, filledX, y0, -0.002F).setUv(healthRatio, 0.5F).setColor(16777215).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, -x, y0, -0.002F).setUv(0F, 0.5F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, -x, y1, -0.002F).setUv(0F, 1F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, filledX, y1, -0.002F).setUv(healthRatio, 1F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
+        vertexConsumer.addVertex(pose, filledX, y0, -0.002F).setUv(healthRatio, 0.5F).setColor(255, 255, 255,255).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(0, 1, 0);
 
         float h = -this.getFont().width(label) / 2F;
         int packedLight = LightTexture.pack(15, 15);
