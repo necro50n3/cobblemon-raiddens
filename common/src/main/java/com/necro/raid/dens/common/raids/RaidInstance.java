@@ -68,6 +68,7 @@ public class RaidInstance {
     private final float initMaxHealth;
     private int sharedLives;
     private final Map<RaidTriggerType, List<RaidTrigger<?>>> triggers;
+    private final List<RaidTrigger<?>> triggerAddQueue;
 
     private int time;
     private int maxTime;
@@ -118,6 +119,7 @@ public class RaidInstance {
         this.isInDen = isInDen;
 
         this.triggers = new EnumMap<>(RaidTriggerType.class);
+        this.triggerAddQueue = new ArrayList<>();
         raidBoss.getScript().forEach((key, scripts) -> {
             List<AbstractEvent> functions = scripts.stream()
                 .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
@@ -326,6 +328,7 @@ public class RaidInstance {
         if (this.isFinished()) return;
         try { this.runQueue.removeIf(DelayedRunnable::tick); }
         catch (ConcurrentModificationException ignored) {}
+        this.actuallyAddTriggers();
     }
 
     public void queueStopRaid() {
@@ -621,16 +624,17 @@ public class RaidInstance {
     }
 
     public void addTrigger(RaidTrigger<?> trigger) {
-        if (this.isFinished()) return;
-        try {
+        this.triggerAddQueue.add(trigger);
+    }
+
+    public void actuallyAddTriggers() {
+        this.triggerAddQueue.forEach(trigger -> {
             if (trigger.type() == RaidTriggerType.TIMER && trigger instanceof TimerTrigger timerTrigger) {
                 this.schedule(() -> timerTrigger.trigger(this, null), timerTrigger.after() * 20, timerTrigger.repeat());
             }
             else this.triggers.get(trigger.type()).add(trigger);
-        }
-        catch (ConcurrentModificationException e) {
-            CobblemonRaidDens.LOGGER.info("Cannot add to or modify the event list from the same trigger.");
-        }
+        });
+        this.triggerAddQueue.clear();
     }
 
     private class DelayedRunnable {

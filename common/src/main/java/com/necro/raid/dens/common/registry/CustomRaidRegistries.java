@@ -134,7 +134,7 @@ public class CustomRaidRegistries {
             int target = Script.toInt(script.get("target"));
             return new UseMoveShowdownEvent(move, target);
         });
-        SCRIPT_REGISTRY.register("player_stat", script -> {
+        SCRIPT_REGISTRY.register("player_stats", script -> {
             Object map = script.get("stats");
             if (map == null) throw new JsonSyntaxException("Missing field \"stats\"");
             Map<Stat, Integer> stats = ((Map<?, ?>) script.get("stats")).entrySet().stream()
@@ -144,7 +144,7 @@ public class CustomRaidRegistries {
             if (stats.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"stats\"");
             return new PlayerMapBoostShowdownEvent(stats);
         });
-        SCRIPT_REGISTRY.register("boss_stat", script -> {
+        SCRIPT_REGISTRY.register("boss_stats", script -> {
             Object map = script.get("stats");
             if (map == null) throw new JsonSyntaxException("Missing field \"stats\"");
             Map<Stat, Integer> stats = ((Map<?, ?>) script.get("stats")).entrySet().stream()
