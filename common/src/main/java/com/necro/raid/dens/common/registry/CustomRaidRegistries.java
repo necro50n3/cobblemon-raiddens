@@ -10,6 +10,8 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
+import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
+import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.registry.custom.*;
 import com.necro.raid.dens.common.showdown.events.*;
 import kotlin.Pair;
@@ -139,7 +141,7 @@ public class CustomRaidRegistries {
                 .filter(e -> e.getKey() instanceof String string && STAT_MAP.containsKey(string))
                 .filter(e -> e.getValue() instanceof Number)
                 .collect(Collectors.toMap(e -> STAT_MAP.get((String) e.getKey()), e -> -Script.toInt(e.getValue())));
-            if (stats.isEmpty()) throw new JsonSyntaxException("Invalid field \"stats\"");
+            if (stats.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"stats\"");
             return new PlayerMapBoostShowdownEvent(stats);
         });
         SCRIPT_REGISTRY.register("boss_stat", script -> {
@@ -149,7 +151,7 @@ public class CustomRaidRegistries {
                 .filter(e -> e.getKey() instanceof String string && STAT_MAP.containsKey(string))
                 .filter(e -> e.getValue() instanceof Number)
                 .collect(Collectors.toMap(e -> STAT_MAP.get((String) e.getKey()), e -> Script.toInt(e.getValue())));
-            if (stats.isEmpty()) throw new JsonSyntaxException("Invalid field \"stats\"");
+            if (stats.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"stats\"");
             return new RaidMapBoostShowdownEvent(stats);
         });
         SCRIPT_REGISTRY.register("forme_change", script -> {
@@ -160,5 +162,17 @@ public class CustomRaidRegistries {
         SCRIPT_REGISTRY.register("mega_evolve", script -> new MegaEvolveShowdownEvent());
         SCRIPT_REGISTRY.register("dynamax", script -> new DynamaxShowdownEvent());
         SCRIPT_REGISTRY.register("terastallize", script -> new TerastallizeShowdownEvent());
+        SCRIPT_REGISTRY.register("add_script", script -> {
+            String trigger = (String) script.get("trigger");
+            if (trigger == null) throw new JsonSyntaxException("Missing field \"trigger\"");
+            Object scripts = script.get("scripts");
+            if (scripts == null) throw new JsonSyntaxException("Missing field \"scripts\"");
+            else if (!(scripts instanceof List<?>)) throw new JsonSyntaxException("Invalid field \"scripts\"");
+            List<AbstractEvent> events = ((List<?>) scripts).stream().map(SCRIPT_REGISTRY::decode).filter(Objects::nonNull).toList();
+            if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
+            RaidTrigger<?> raidTrigger = RaidTriggerType.decode(trigger, events);
+            if (raidTrigger == null) throw new JsonSyntaxException("Failed to parse field \"trigger\"");
+            return new AddScriptRaidEvent(raidTrigger);
+        });
     }
 }

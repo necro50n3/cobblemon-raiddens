@@ -110,8 +110,8 @@ public class RaidInstance {
 
         this.playerMap = new HashMap<>();
         this.runQueue = new ArrayList<>();
-        this.runQueue.add(new DelayedRunnable(this::checkFlee, 20, true));
-        this.runQueue.add(new DelayedRunnable(this::updateHealthBars, 80, true));
+        this.schedule(this::checkFlee, 20, true);
+        this.schedule(this::updateHealthBars, 80, true);
 
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();
@@ -137,9 +137,7 @@ public class RaidInstance {
 
         this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
             TimerTrigger trigger = (TimerTrigger) t;
-            this.runQueue.add(
-                new DelayedRunnable(() -> trigger.trigger(this, null), trigger.after() * 20, trigger.repeat())
-            );
+            this.schedule(() -> trigger.trigger(this, null), trigger.after() * 20, trigger.repeat());
         });
     }
 
@@ -263,7 +261,7 @@ public class RaidInstance {
             this.queueStopRaid();
         }
         else {
-            this.runQueue.add(new DelayedRunnable(() -> this.bossEvent.setProgress(this.currentHealth / this.maxHealth), 20));
+            this.schedule(() -> this.bossEvent.setProgress(this.currentHealth / this.maxHealth), 20, false);
         }
     }
 
@@ -335,7 +333,7 @@ public class RaidInstance {
     }
 
     public void queueStopRaid(boolean raidSuccess) {
-        this.runQueue.add(new DelayedRunnable(() -> this.stopRaid(raidSuccess), 60));
+        this.schedule(() -> this.stopRaid(raidSuccess), 60, false);
     }
 
     public void stopRaid(boolean raidSuccess) {
@@ -436,10 +434,10 @@ public class RaidInstance {
     }
 
     public void addToBossEvent(ServerPlayer player) {
-        this.runQueue.add(new DelayedRunnable(() -> {
+        this.schedule(() -> {
             this.bossEvent.addPlayer(player);
             this.timerEvent.addPlayer(player);
-        }, 2));
+        }, 2, false);
     }
 
     public void removeFromBossEvent(ServerPlayer player) {
@@ -617,6 +615,24 @@ public class RaidInstance {
         if (p != null) p.mulCatchRate(mod);
     }
 
+    public void schedule(Runnable runnable, int delay, boolean repeat) {
+        if (this.isFinished()) return;
+        this.runQueue.add(new DelayedRunnable(runnable, delay, repeat));
+    }
+
+    public void addTrigger(RaidTrigger<?> trigger) {
+        if (this.isFinished()) return;
+        try {
+            if (trigger.type() == RaidTriggerType.TIMER && trigger instanceof TimerTrigger timerTrigger) {
+                this.schedule(() -> timerTrigger.trigger(this, null), timerTrigger.after() * 20, timerTrigger.repeat());
+            }
+            else this.triggers.get(trigger.type()).add(trigger);
+        }
+        catch (ConcurrentModificationException e) {
+            CobblemonRaidDens.LOGGER.info("Cannot add to or modify the event list from the same trigger.");
+        }
+    }
+
     private class DelayedRunnable {
         private final Runnable runnable;
         final int delay;
@@ -628,10 +644,6 @@ public class RaidInstance {
             this.delay = delay;
             this.tick = 0;
             this.repeat = repeat;
-        }
-
-        public DelayedRunnable(Runnable runnable, int delay) {
-            this(runnable, delay, false);
         }
 
         public boolean tick() {
