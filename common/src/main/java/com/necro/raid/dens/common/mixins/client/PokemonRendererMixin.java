@@ -41,7 +41,7 @@ public abstract class PokemonRendererMixin extends EntityRenderer<PokemonEntity>
     private boolean crd_shouldRenderHpBar(PokemonEntity entity) {
         assert Minecraft.getInstance().player != null;
         return CobblemonRaidDensClient.CLIENT_CONFIG.enable_health_bars
-            //&& !Minecraft.getInstance().player.getUUID().equals(entity.getOwnerUUID())
+            && !Minecraft.getInstance().player.getUUID().equals(entity.getOwnerUUID())
             && ((IRaidAccessor) entity).crd_shouldRenderHpBar()
             && !((IRaidAccessor) entity).crd_isRaidBoss();
     }

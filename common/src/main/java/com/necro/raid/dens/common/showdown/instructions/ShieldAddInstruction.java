@@ -79,9 +79,11 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
                 new ArrayList<>(), battle.getPlayers().getFirst().level()
             );
 
-            this.setFuture(actionEffect.run(context));
-            this.setHolds(context.getHolds());
-            this.future.thenAccept(v -> this.holds.clear());
+            if (this.pokemon.getEffectedPokemon().getEntity() != null) {
+                this.setFuture(actionEffect.run(context));
+                this.setHolds(context.getHolds());
+                this.future.thenAccept(v -> this.holds.clear());
+            }
 
             return DispatchResultKt.getGO();
         });
