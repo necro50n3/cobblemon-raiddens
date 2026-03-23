@@ -42,7 +42,7 @@ public record ScaleBossRaidEvent(float scale, float rate) implements RaidEvent {
         }
 
         private boolean isFinished() {
-            return this.direction == -1 ? this.scale < this.targetScale : this.scale > this.targetScale;
+            return this.direction == -1 ? this.scale <= this.targetScale : this.scale >= this.targetScale;
         }
     }
 }
