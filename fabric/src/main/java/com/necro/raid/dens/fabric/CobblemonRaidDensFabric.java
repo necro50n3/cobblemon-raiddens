@@ -73,7 +73,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ServerPlayConnectionEvents.JOIN.register(ModEvents::onPlayerJoin);
         ServerPlayConnectionEvents.DISCONNECT.register(ModEvents::onPlayerDisconnect);
         ServerTickEvents.END_SERVER_TICK.register(ModEvents::commonTick);
-        ServerTickEvents.END_SERVER_TICK.register(ModEvents::serverTick);
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register(ModDimensions::onDimensionChange);
         CommandRegistrationCallback.EVENT.register(RaidAdminCommands::register);
         CommandRegistrationCallback.EVENT.register(RaidDenCommands::register);

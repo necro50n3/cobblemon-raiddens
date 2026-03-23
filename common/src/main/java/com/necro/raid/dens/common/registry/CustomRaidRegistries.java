@@ -174,5 +174,11 @@ public class CustomRaidRegistries {
             if (raidTrigger == null) throw new JsonSyntaxException("Failed to parse field \"trigger\"");
             return new AddScriptRaidEvent(raidTrigger);
         });
+        SCRIPT_REGISTRY.register("scale", script -> {
+            if (!script.containsKey("scale")) throw new JsonSyntaxException("Missing field \"scale\"");
+            float scale = Script.toFloat(script.get("scale"));
+            float rate = script.containsKey("rate") ? Script.toFloat(script.get("rate")) : 1F / 20F;
+            return new ScaleBossRaidEvent(scale, rate);
+        });
     }
 }

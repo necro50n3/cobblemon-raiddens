@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.showdown.events.ScaleBossRaidEvent;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
 import net.minecraft.server.MinecraftServer;
@@ -31,6 +32,7 @@ public class ModEvents {
     public static void commonTick(ServerTickEvent.Post event) {
         RaidHelper.commonTick();
         RaidJoinHelper.serverTick();
+        ScaleBossRaidEvent.tick();
     }
 
     @SubscribeEvent

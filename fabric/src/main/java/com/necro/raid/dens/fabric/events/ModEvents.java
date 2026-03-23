@@ -5,6 +5,7 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.showdown.events.ScaleBossRaidEvent;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
@@ -37,12 +38,10 @@ public class ModEvents {
         RaidHelper.onServerClose(server);
     }
 
-    public static void serverTick(MinecraftServer server) {
-        RaidJoinHelper.serverTick();
-    }
-
     public static void commonTick(MinecraftServer server) {
         RaidHelper.commonTick();
+        RaidJoinHelper.serverTick();
+        ScaleBossRaidEvent.tick();
     }
 
     public static void clientTick(Minecraft client) {
