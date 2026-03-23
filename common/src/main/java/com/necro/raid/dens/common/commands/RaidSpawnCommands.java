@@ -363,7 +363,9 @@ public class RaidSpawnCommands {
         if (isPersistent) pokemonEntity.setPersistenceRequired();
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidId(pokemonEntity.getUUID());
-        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getUUID(), new RaidInstance(pokemonEntity, null, false));
+        RaidInstance raid = new RaidInstance(pokemonEntity, null, false);
+        if (!raid.failedToStart()) return 0;
+        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getUUID(), raid);
 
         pokemonEntity.moveTo(vec3);
         dimension.addFreshEntity(pokemonEntity);

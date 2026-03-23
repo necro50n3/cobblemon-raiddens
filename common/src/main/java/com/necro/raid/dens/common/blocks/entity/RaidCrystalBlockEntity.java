@@ -223,7 +223,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         region.placeStructure(level);
 
-        PokemonEntity pokemonEntity = raidBoss.getBossEntity(level, this.aspects);
+        PokemonEntity pokemonEntity;
+        try { pokemonEntity = raidBoss.getBossEntity(level, this.aspects); }
+        catch (Exception e) {
+            CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidBoss, e);
+            return false;
+        }
         pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         pokemonEntity.setPersistenceRequired();
@@ -233,14 +238,16 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             this.aspects = pokemonEntity.getAspects();
         }
 
+        RaidInstance raid = new RaidInstance(pokemonEntity, playerId);
+        if (raid.failedToStart()) return false;
+        RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), raid);
+
         pokemonEntity.moveTo(region.getBossPos());
         level.addFreshEntity(pokemonEntity);
 
         if (pokemonEntity.getPokemon().getAbility().getName().equals("imposter")) {
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
         }
-
-        RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), new RaidInstance(pokemonEntity, playerId));
         return true;
     }
 

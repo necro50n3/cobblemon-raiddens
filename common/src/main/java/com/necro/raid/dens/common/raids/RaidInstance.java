@@ -80,7 +80,10 @@ public class RaidInstance {
     private final RaidBattleState battleState;
     private final boolean isInDen;
 
+    private boolean failedToStart;
+
     public RaidInstance(PokemonEntity entity, @Nullable UUID host, boolean isInDen) {
+        this.failedToStart = false;
         this.bossEntity = entity;
         this.host = host;
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
@@ -120,11 +123,20 @@ public class RaidInstance {
 
         this.triggers = new EnumMap<>(RaidTriggerType.class);
         this.triggerAddQueue = new ArrayList<>();
+
         raidBoss.getScript().forEach((key, scripts) -> {
-            List<AbstractEvent> functions = scripts.stream()
-                .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
-                .filter(Objects::nonNull)
-                .toList();
+            List<AbstractEvent> functions;
+            try {
+                functions = scripts.stream()
+                    .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
+                    .filter(Objects::nonNull)
+                    .toList();
+            }
+            catch (Exception e) {
+                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.raidBoss.getId(), e);
+                this.failedToStart = true;
+                return;
+            }
             if (functions.isEmpty()) return;
 
             try {
@@ -133,9 +145,14 @@ public class RaidInstance {
                 this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
             }
             catch (Exception e) {
-                CobblemonRaidDens.LOGGER.error("Failed to parse script {}: ", key, e);
+                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.raidBoss.getId(), e);
+                this.failedToStart = true;
             }
         });
+        if (this.failedToStart) {
+            this.closeRaid(this.bossEntity.getServer(), true);
+            return;
+        }
 
         this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
             TimerTrigger trigger = (TimerTrigger) t;
@@ -322,6 +339,10 @@ public class RaidInstance {
 
     public float getDamage(ServerPlayer player) {
         return this.damageTracker.getOrDefault(player.getUUID(), 0F);
+    }
+
+    public boolean failedToStart() {
+        return this.failedToStart;
     }
 
     public void tick() {

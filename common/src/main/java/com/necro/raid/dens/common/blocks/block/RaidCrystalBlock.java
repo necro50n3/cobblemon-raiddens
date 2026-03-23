@@ -150,14 +150,16 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         if (player.getServer() == null) return false;
 
-        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
-        if (!success) return false;
-
         ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(player.level().getRandom());
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure);
         if (region == null || !blockEntity.spawnRaidBoss(player.getUUID())) {
-            blockEntity.closeRaid();
-            player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.boss_spawn_failed"), true);
+            this.failRaidStart((ServerPlayer) player, blockEntity);
+            return false;
+        }
+
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
+        if (!success) {
+            this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
         }
 
@@ -170,6 +172,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         blockEntity.syncAspects((ServerPlayer) player);
         player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", raid.getBossEntity().getDisplayName())), true);
         return true;
+    }
+
+    private void failRaidStart(ServerPlayer player, RaidCrystalBlockEntity blockEntity) {
+        RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
+        blockEntity.closeRaid();
+        player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.boss_spawn_failed"), true);
     }
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
