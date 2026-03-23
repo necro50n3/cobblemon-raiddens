@@ -177,7 +177,10 @@ public class CustomRaidRegistries {
         SCRIPT_REGISTRY.register("scale", script -> {
             if (!script.containsKey("scale")) throw new JsonSyntaxException("Missing field \"scale\"");
             float scale = Script.toFloat(script.get("scale"));
+            if (scale <= 0F) throw new JsonSyntaxException("Cannot have negative field \"scale\"");
+            else if (scale == 1F) throw new JsonSyntaxException("Invalid field \"scale\"");
             float rate = script.containsKey("rate") ? Script.toFloat(script.get("rate")) : 1F / 20F;
+            if (rate <= 0F) throw new JsonSyntaxException("Cannot have negative field \"rate\"");
             return new ScaleBossRaidEvent(scale, rate);
         });
     }
