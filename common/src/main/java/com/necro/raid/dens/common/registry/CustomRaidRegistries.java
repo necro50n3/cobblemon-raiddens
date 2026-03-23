@@ -43,10 +43,18 @@ public class CustomRaidRegistries {
     }
 
     public static void registerDefaults() {
+        registerAI();
+        registerRewardDistributors();
+        registerScripts();
+    }
+
+    private static void registerAI() {
         AI_REGISTRY.register("random", RandomBattleAI::new);
         AI_REGISTRY.register("strong", () -> new StrongBattleAI(5));
         AI_REGISTRY.register("rct", () -> ModCompat.RCT_API.isLoaded() ? RaidDensRCTCompat.getRctApi() : new StrongBattleAI(5));
+    }
 
+    private static void registerRewardDistributors() {
         REWARD_DIST_REGISTRY.register("random", (players, raid) -> {
             int maxCatches = raid.getRaidBoss().getMaxCatches();
             if (maxCatches < 0 || players.size() < maxCatches) return new Pair<>(players, List.of());
@@ -82,7 +90,9 @@ public class CustomRaidRegistries {
 
             return new Pair<>(success, failed);
         });
+    }
 
+    private static void registerScripts() {
         SCRIPT_REGISTRY.register("shield", script -> {
             boolean apply = (boolean) script.getOrDefault("apply", true);
             return apply ? new ShieldAddShowdownEvent() : new ShieldRemoveShowdownEvent();
