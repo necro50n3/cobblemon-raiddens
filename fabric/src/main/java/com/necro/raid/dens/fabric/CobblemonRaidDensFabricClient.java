@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.client.ClientHud;
 import com.necro.raid.dens.common.client.block.RaidCrystalBeamRenderer;
 import com.necro.raid.dens.common.client.block.RaidCrystalRenderer;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
+import com.necro.raid.dens.common.client.config.RaidConfigSync;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltip;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltipData;
 import com.necro.raid.dens.common.components.ModComponents;
@@ -47,7 +48,7 @@ public class CobblemonRaidDensFabricClient implements ClientModInitializer {
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_energy"),
             ((itemStack, level, entity, seed) -> {
                 float energy = itemStack.getOrDefault(ModComponents.RAID_ENERGY.value(), 0);
-                return energy / ((float) CobblemonRaidDens.CONFIG.required_energy);
+                return energy / ((float) RaidConfigSync.required_energy);
             })
         );
     }

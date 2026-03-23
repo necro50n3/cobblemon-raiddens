@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.items.item;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.ModBlocks;
+import com.necro.raid.dens.common.client.config.RaidConfigSync;
 import com.necro.raid.dens.common.client.tooltip.ProgressTooltipData;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -65,7 +66,7 @@ public class RaidShardItem extends Item {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack itemStack) {
-        return Optional.of(new ProgressTooltipData(getRaidEnergy(itemStack), CobblemonRaidDens.CONFIG.required_energy));
+        return Optional.of(new ProgressTooltipData(getRaidEnergy(itemStack), RaidConfigSync.required_energy));
     }
 
     public static int getRaidEnergy(ItemStack itemStack) {

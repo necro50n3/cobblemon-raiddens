@@ -16,6 +16,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 public class ModEvents {
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
+        RaidDenNetworkMessages.SYNC_CONFIG.accept(player);
         server.execute(() -> {
             if (RaidJoinHelper.isParticipatingOrInQueue(player, false)) {
                 RaidDenNetworkMessages.JOIN_RAID.accept(player, true);

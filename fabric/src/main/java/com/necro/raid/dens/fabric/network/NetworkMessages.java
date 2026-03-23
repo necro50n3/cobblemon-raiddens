@@ -16,10 +16,10 @@ import net.minecraft.server.level.ServerPlayer;
 public class NetworkMessages {
     public static void registerPayload() {
         PayloadTypeRegistry.playS2C().register(RaidBossSyncPacket.PACKET_TYPE, RaidBossSyncPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(ConfigSyncPacket.PACKET_TYPE, ConfigSyncPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RequestPacket.PACKET_TYPE, RequestPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RewardPacket.PACKET_TYPE, RewardPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(ResizePacket.PACKET_TYPE, ResizePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidAspectPacket.PACKET_TYPE, RaidAspectPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC);
@@ -38,10 +38,10 @@ public class NetworkMessages {
 
     public static void registerS2CPackets() {
         ClientPlayNetworking.registerGlobalReceiver(RaidBossSyncPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RequestPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RewardPacket.PACKET_TYPE, NetworkMessages::handle);
-        ClientPlayNetworking.registerGlobalReceiver(ResizePacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidAspectPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidLogPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidHealthBarPacket.PACKET_TYPE, NetworkMessages::handle);
@@ -49,6 +49,10 @@ public class NetworkMessages {
     }
 
     public static void init() {
+        RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+        RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
+            NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
             NetworkMessages.sendPacketToPlayer(player, new JoinRaidPacket(isJoining));
         RaidDenNetworkMessages.REQUEST_PACKET = (player, name) ->
@@ -59,6 +63,10 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RaidAspectPacket(entity.getId()));
         RaidDenNetworkMessages.RAID_LOG = (player, pokemon, move) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidLogPacket(pokemon, move));
+        RaidDenNetworkMessages.RAID_HEALTH_BAR = (player, entityIds, shouldRender) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
+        RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
+            NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
 
         RaidDenNetworkMessages.RAID_CHALLENGE = (pokemonEntity, pokemon) ->
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));
@@ -67,12 +75,6 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
-        RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
-        RaidDenNetworkMessages.RAID_HEALTH_BAR = (player, entityIds, shouldRender) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
-        RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
