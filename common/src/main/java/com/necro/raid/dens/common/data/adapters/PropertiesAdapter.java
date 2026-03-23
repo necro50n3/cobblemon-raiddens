@@ -107,6 +107,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .fieldOf("aspects").orElse(new HashSet<>())
             .forGetter(PokemonProperties::getAspects),
         Codec.STRING.fieldOf("form").orElse("").forGetter(PokemonProperties::getForm),
+        Codec.BOOL.fieldOf("gmax").orElse(false).forGetter(PokemonProperties::getGmaxFactor),
         FEATURE_CODEC.listOf()
             .xmap(
                 list -> list.stream().map(feature -> (CustomPokemonProperty) feature).toList(),
@@ -115,7 +116,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .fieldOf("custom_properties")
             .orElse(new ArrayList<>())
             .forGetter(PokemonProperties::getCustomProperties)
-    ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, customProperties) -> {
+    ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, gmax, customProperties) -> {
         PokemonProperties properties = PokemonProperties.Companion.parse("");
         if (!species.isBlank()) properties.setSpecies(species);
         try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
@@ -129,6 +130,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         if (!heldItem.isBlank()) properties.setHeldItem(heldItem);
         if (!aspects.isEmpty()) properties.setAspects(aspects);
         if (!form.isBlank()) properties.setForm(form);
+        if (gmax) properties.setGmaxFactor(true);
         if (!customProperties.isEmpty()) properties.setCustomProperties(customProperties);
         return properties;
     }));
@@ -139,6 +141,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         properties.setEvs(extra.getEvs() == null ? base.getEvs() : extra.getEvs());
         properties.setForm(extra.getForm() == null ? base.getForm() : extra.getForm());
         properties.setGender(extra.getGender() == null ? base.getGender() : extra.getGender());
+        properties.setGmaxFactor(extra.getGmaxFactor() == null ? base.getGmaxFactor() : extra.getGmaxFactor());
         properties.setHeldItem(extra.getHeldItem() == null ? base.getHeldItem() : extra.getHeldItem());
         properties.setLevel(extra.getLevel() == null ? base.getLevel() : extra.getLevel());
         properties.setMoves(extra.getMoves() == null ? base.getMoves() : extra.getMoves());

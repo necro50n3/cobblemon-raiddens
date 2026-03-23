@@ -18,13 +18,14 @@ import java.util.Optional;
 public abstract class RaidDensMSDCompat {
     public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
         AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
-        applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase());
+        applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase(), false);
         pokemon.getPersistentData().putBoolean("is_tera", true);
     }
 
     public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
+        boolean isGmax = pokemon.getGmaxFactor();
         AspectPropertyType.INSTANCE.fromString("msd:dmax").apply(pokemon);
-        applyEffects(pokemon, "mega_showdown:dynamax");
+        applyEffects(pokemon, "mega_showdown:dynamax", isGmax);
         pokemon.getPersistentData().putBoolean("is_max", true);
         GlowHandler.applyDynamaxGlow(pokemonEntity);
     }
@@ -59,12 +60,12 @@ public abstract class RaidDensMSDCompat {
 
     // Reflection to maintain compatibility with older versions
     // To be removed in Cobblemon 1.8 update
-    private static void applyEffects(Pokemon pokemon, String effectId) {
+    private static void applyEffects(Pokemon pokemon, String effectId, boolean isGmax) {
         try {
             Class<?> effect = getEffectClass();
             Method getEffect = effect.getMethod("getEffect", String.class);
             Object effectInstance = getEffect.invoke( null, effectId);
-            runApplyEffects(effect, effectInstance, pokemon);
+            runApplyEffects(effect, effectInstance, pokemon, isGmax);
         }
         catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
             CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
@@ -80,14 +81,14 @@ public abstract class RaidDensMSDCompat {
         }
     }
 
-    private static void runApplyEffects(Class<?> clazz, Object instance, Pokemon pokemon) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private static void runApplyEffects(Class<?> clazz, Object instance, Pokemon pokemon, boolean isGmax) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         try {
             Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, Optional.class, PokemonEntity.class);
-            method.invoke(instance, pokemon, List.of(), Optional.empty(), null);
+            method.invoke(instance, pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), Optional.empty(), null);
         }
         catch (NoSuchMethodException e) {
             Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
-            method.invoke(instance, pokemon, List.of(), null);
+            method.invoke(instance, pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), null);
         }
     }
 }
