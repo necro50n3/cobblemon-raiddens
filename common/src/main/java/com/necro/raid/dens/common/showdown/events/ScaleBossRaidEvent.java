@@ -30,8 +30,8 @@ public record ScaleBossRaidEvent(float scale, float rate) implements RaidEvent {
             this.pokemonEntity = pokemonEntity;
             this.scale = pokemonEntity.getPokemon().getScaleModifier();
             this.targetScale = (scale <= 0F ? 1F : scale) * this.scale;
-            this.rate = rate <= 0F ? 1F : Math.min(rate, 1F) * (this.targetScale - this.scale);
-            this.direction = this.targetScale < 1F ? -1 : 1;
+            this.rate = (rate <= 0F ? 1F : Math.min(rate, 1F)) * (this.targetScale - this.scale);
+            this.direction = this.targetScale < this.scale ? -1 : 1;
         }
 
         private boolean scale() {
