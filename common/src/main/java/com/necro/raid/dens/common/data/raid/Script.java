@@ -17,6 +17,11 @@ public class Script extends ArrayList<Object> {
             return result;
         }
 
+        if (json instanceof JsonObject jsonObject) {
+            result.add(toMap(jsonObject));
+            return result;
+        }
+
         if (json instanceof JsonArray jsonArray) {
             for (JsonElement element : jsonArray) {
                 if (element instanceof JsonPrimitive primitive && primitive.getValue() instanceof String string) result.add(string);

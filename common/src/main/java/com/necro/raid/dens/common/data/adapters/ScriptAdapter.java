@@ -25,6 +25,11 @@ public class ScriptAdapter implements JsonSerializer<Script>, JsonDeserializer<S
             return result;
         }
 
+        if (json.isJsonObject()) {
+            result.add(toMap((JsonObject) json));
+            return result;
+        }
+
         if (json.isJsonArray()) {
             for (JsonElement element : json.getAsJsonArray()) {
                 if (element instanceof JsonPrimitive primitive && primitive.isString()) result.add(primitive.getAsString());
