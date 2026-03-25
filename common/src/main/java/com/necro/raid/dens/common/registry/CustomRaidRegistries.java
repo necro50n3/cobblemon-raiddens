@@ -15,6 +15,7 @@ import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.registry.custom.*;
 import com.necro.raid.dens.common.showdown.events.*;
 import kotlin.Pair;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
@@ -191,6 +192,15 @@ public class CustomRaidRegistries {
             float rate = script.containsKey("rate") ? Script.toFloat(script.get("rate")) : 1F / 20F;
             if (rate <= 0F) throw new JsonSyntaxException("Cannot have negative field \"rate\"");
             return new ScaleBossRaidEvent(scale, rate);
+        });
+        SCRIPT_REGISTRY.register("play_sound", script -> {
+            String soundId = (String) script.get("sound");
+            if (soundId == null) throw new JsonSyntaxException("Missing field \"sound\"");
+            ResourceLocation sound;
+            try { sound = ResourceLocation.parse(soundId); }
+            catch (Exception e) { throw new JsonSyntaxException("Failed to parse field \"sound\""); }
+            boolean isMusic = (Boolean) script.getOrDefault("is_music", true);
+            return new PlaySoundRaidEvent(sound, isMusic);
         });
     }
 }
