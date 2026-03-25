@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.mixins.battlesync;
 
-import com.cobblemon.mod.common.api.battles.interpreter.BasicContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.interpreter.Effect;
@@ -45,7 +44,7 @@ public abstract class FieldEndInstructionMixin {
             if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, RaidBattleState::removeTerrain);
             else raid.updateBattleState(battle, battleState -> battleState.removeField(field));
             raid.updateBattleContext(battle, b -> {
-                b.getContextManager().add(new BasicContext(field, b.getTurn(), type, null));
+                if (b.getContextManager().get(type) != null) b.getContextManager().remove(field, type);
                 b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("fieldend.%s", field)));
             });
             return DispatchResultKt.getGO();
