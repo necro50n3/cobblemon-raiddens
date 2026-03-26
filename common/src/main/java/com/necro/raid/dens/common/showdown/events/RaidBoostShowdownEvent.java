@@ -12,13 +12,12 @@ public record RaidBoostShowdownEvent(Stat stat, int stages) implements ShowdownE
                 "boosts['%1$s'] = %2$d; " +
                 "for (let p of battle.sides[1].pokemon) { " +
                     "if (!p) continue; " +
-                    "var boost = battle.runEvent('ChangeBoost', p, null, null, {...boosts}); " +
+                    "var boost = battle.runEvent('ChangeBoost', p, p, {name: 'Raid Energy'}, {...boosts}); " +
                     "boost = p.getCappedBoost(boost); " +
-                    "boost = battle.runEvent('TryBoost', p, null, null, {...boost}); " +
+                    "boost = battle.runEvent('TryBoost', p, p, {name: 'Raid Energy'}, {...boost}); " +
                     "for (let boostName in boost) { " +
                         "const currentBoost = { [boostName]: boost[boostName], }; " +
                         "let boostBy = p.boostBy(currentBoost); " +
-                        "if (boostBy) battle.runEvent('AfterEachBoost', p, null, null, currentBoost); " +
                         "let msg = '-raidboost'; " +
                         "if (boost[boostName] < 0 || p.boosts[boostName] === -6) { " +
                             "msg = '-raidunboost'; " +
@@ -26,7 +25,7 @@ public record RaidBoostShowdownEvent(Stat stat, int stages) implements ShowdownE
                         "} " +
                         "if (boostBy) { " +
                             "battle.add(msg, p, boostName, boostBy); " +
-                            "battle.runEvent('AfterEachBoost', p, null, null, currentBoost); " +
+                            "battle.runEvent('AfterEachBoost', p, p, {name: 'Raid Energy'}, currentBoost); " +
                         "} " +
                     "} " +
                 "} ",

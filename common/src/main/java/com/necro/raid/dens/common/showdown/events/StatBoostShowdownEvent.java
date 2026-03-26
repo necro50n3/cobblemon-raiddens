@@ -12,13 +12,13 @@ public record StatBoostShowdownEvent(Stat stat, int stages, int targetSide, bool
                     "boosts['%1$s'] = %2$d; " +
                     "for (let p of battle.sides[%3$d].pokemon) { " +
                         "if (!p) continue; " +
-                        "var boost = battle.runEvent('ChangeBoost', p, null, null, {...boosts}); " +
+                        "var boost = battle.runEvent('ChangeBoost', p, p, {name: 'Raid Energy'}, {...boosts}); " +
                         "boost = p.getCappedBoost(boost); " +
-                        "boost = battle.runEvent('TryBoost', p, null, null, {...boost}); " +
+                        "boost = battle.runEvent('TryBoost', p, p, {name: 'Raid Energy'}, {...boost}); " +
                         "for (let boostName in boost) { " +
                             "const currentBoost = { [boostName]: boost[boostName], }; " +
                             "let boostBy = p.boostBy(currentBoost); " +
-                            "if (boostBy) battle.runEvent('AfterEachBoost', p, null, null, currentBoost); " +
+                            "if (boostBy) battle.runEvent('AfterEachBoost', p, p, {name: 'Raid Energy'}, currentBoost); " +
                         "} " +
                     "} ",
                 this.stat.getShowdownId(), this.stages, this.targetSide - 1
