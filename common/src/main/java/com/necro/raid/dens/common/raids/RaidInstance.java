@@ -198,7 +198,7 @@ public class RaidInstance {
         if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.DYNAMAX);
         if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
         new StartRaidShowdownEvent(this.battleState, effects).send(battle);
-        new DoNothingShowdownEvent().send(battle);
+        new ShowdownEvents.DoNothingShowdownEvent().send(battle);
         this.runScripts(RaidTriggerType.TURN, battle, () -> 0);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
@@ -226,7 +226,7 @@ public class RaidInstance {
     }
 
     private void playerJoin(String newPlayer) {
-        this.sendEvent(new PlayerJoinShowdownEvent(newPlayer), null);
+        this.sendEvent(new ShowdownEvents.PlayerJoinShowdownEvent(newPlayer), null);
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
@@ -494,9 +494,9 @@ public class RaidInstance {
         this.cheer(oBattle, bagItem, origin, false);
 
         Consumer<PokemonBattle> cheer = switch (bagItem.cheerType()) {
-            case CheerBagItem.CheerType.ATTACK -> battle -> new CheerAttackShowdownEvent(origin).send(battle);
-            case CheerBagItem.CheerType.DEFENSE -> battle -> new CheerDefenseShowdownEvent(origin).send(battle);
-            case CheerBagItem.CheerType.HEAL -> battle -> new CheerHealShowdownEvent(origin).send(battle);
+            case CheerBagItem.CheerType.ATTACK -> battle -> new ShowdownEvents.CheerAttackShowdownEvent(origin).send(battle);
+            case CheerBagItem.CheerType.DEFENSE -> battle -> new ShowdownEvents.CheerDefenseShowdownEvent(origin).send(battle);
+            case CheerBagItem.CheerType.HEAL -> battle -> new ShowdownEvents.CheerHealShowdownEvent(origin).send(battle);
         };
 
         for (PokemonBattle b : this.battles) {
@@ -531,20 +531,8 @@ public class RaidInstance {
 
     public void sendEvent(AbstractEvent event, @Nullable PokemonBattle battle) {
         if (this.isFinished()) return;
-        switch (event) {
-            case BroadcastingRaidEvent broadcastRaidEvent -> broadcastRaidEvent.broadcast(this, this.activePlayers);
-            case RaidEvent raidEvent -> {
-                ServerPlayer player = battle == null || battle.getPlayers().isEmpty() ? null : battle.getPlayers().getFirst();
-                raidEvent.run(this, player);
-            }
-            case BroadcastingShowdownEvent broadcastEvent -> broadcastEvent.broadcast(this.battles);
-            case ShowdownEvent showdownEvent -> {
-                if (this.battles.isEmpty()) return;
-                if (battle == null || !this.battles.contains(battle)) battle = this.battles.getFirst();
-                showdownEvent.send(battle);
-            }
-            default -> {}
-        }
+        RaidContext context = new RaidContext(this, battle);
+        event.execute(context);
     }
 
     public boolean canSync() {

@@ -3,7 +3,8 @@ package com.necro.raid.dens.common.raids.battle;
 import com.cobblemon.mod.common.api.pokemon.stats.Stat;
 import com.cobblemon.mod.common.api.pokemon.status.Status;
 import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
-import com.necro.raid.dens.common.showdown.events.*;
+import com.necro.raid.dens.common.showdown.events.ShowdownEvent;
+import com.necro.raid.dens.common.showdown.events.ShowdownEvents;
 import net.minecraft.util.Mth;
 
 import java.util.*;
@@ -22,25 +23,25 @@ public class RaidPokemon {
     public Optional<ShowdownEvent> addStatus(Status status) {
         if (this.status != null) return Optional.empty();
         this.status = status;
-        return Optional.of(new SetStatusShowdownEvent(status, 2));
+        return Optional.of(new ShowdownEvents.SetStatusShowdownEvent(status, 2));
     }
 
     public Optional<ShowdownEvent> removeStatus() {
         if (this.status == null) return Optional.empty();
         this.status = null;
-        return Optional.of(new CureStatusShowdownEvent(null, 2));
+        return Optional.of(new ShowdownEvents.CureStatusShowdownEvent(null, 2));
     }
 
     public Optional<ShowdownEvent> addVolatile(VolatileStatus status) {
         if (this.volatileStatus.contains(status)) return Optional.empty();
         this.volatileStatus.add(status);
-        return Optional.of(new SetStatusShowdownEvent(status, 2));
+        return Optional.of(new ShowdownEvents.SetStatusShowdownEvent(status, 2));
     }
 
     public Optional<ShowdownEvent> removeVolatile(VolatileStatus status) {
         if (!this.volatileStatus.contains(status)) return Optional.empty();
         this.volatileStatus.remove(status);
-        return Optional.of(new CureStatusShowdownEvent(status, 2));
+        return Optional.of(new ShowdownEvents.CureStatusShowdownEvent(status, 2));
     }
 
     public Optional<ShowdownEvent> boost(Stat stat, int boost) {
@@ -49,20 +50,20 @@ public class RaidPokemon {
         if (originalStages == stages) return Optional.empty();
         this.boosts.put(stat, stages);
         boost = stages - originalStages;
-        return Optional.of(new StatBoostShowdownEvent(stat, boost, 2, true));
+        return Optional.of(new ShowdownEvents.StatBoostShowdownEvent(stat, boost, 2, true));
     }
 
     public Optional<ShowdownEvent> setBoost(Stat stat, int boost) {
         int stages = this.boosts.getOrDefault(stat, 0);
         if (stages == boost) return Optional.empty();
         this.boosts.put(stat, boost);
-        return Optional.of(new SetBoostShowdownEvent(stat, boost, 2));
+        return Optional.of(new ShowdownEvents.SetBoostShowdownEvent(stat, boost, 2));
     }
 
     public Optional<ShowdownEvent> clearBoosts() {
         if (this.boosts.isEmpty()) return Optional.empty();
         this.boosts.clear();
-        return Optional.of(new ClearBoostShowdownEvent(2));
+        return Optional.of(new ShowdownEvents.ClearBoostShowdownEvent(2));
     }
 
     public Optional<ShowdownEvent> clearNegativeBoosts() {
@@ -75,12 +76,12 @@ public class RaidPokemon {
             }
         }
         if (!wasCleared) return Optional.empty();
-        return Optional.of(new ClearNegativeBoostShowdownEvent(2));
+        return Optional.of(new ShowdownEvents.ClearNegativeBoostShowdownEvent(2));
     }
 
     public Optional<ShowdownEvent> invertBoosts() {
         if (this.boosts.isEmpty()) return Optional.empty();
         this.boosts.replaceAll((stat, stages) -> -stages);
-        return Optional.of(new InvertBoostShowdownEvent(2));
+        return Optional.of(new ShowdownEvents.InvertBoostShowdownEvent(2));
     }
 }

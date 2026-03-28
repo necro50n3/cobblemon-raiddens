@@ -319,7 +319,7 @@ public class RaidBoss {
         pokemonEntity.setDrops(new DropTable());
         pokemonEntity.addTag("alphas.non_wild");
 
-        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemonEntity, pokemon);
+        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);

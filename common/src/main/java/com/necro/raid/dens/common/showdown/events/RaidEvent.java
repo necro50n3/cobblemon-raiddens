@@ -5,5 +5,10 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 public interface RaidEvent extends AbstractEvent {
+    @Override
+    default void execute(RaidContext context) {
+        run(context.raid(), context.player());
+    }
+
     void run(RaidInstance raid, @Nullable ServerPlayer player);
 }

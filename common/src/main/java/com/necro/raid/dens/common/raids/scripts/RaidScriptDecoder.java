@@ -66,62 +66,62 @@ public class RaidScriptDecoder {
             Stat stat = STAT_MAP.get(args[1]);
             if (stat == null) return null;
             int stages = Math.clamp(parseInt(args[2]), -6, 6);
-            return new RaidBoostShowdownEvent(stat, stages);
+            return new ShowdownEvents.RaidBoostShowdownEvent(stat, stages);
         });
         registerDecoder("PLAYER", args -> {
             if (args.length != 3) return null;
             Stat stat = STAT_MAP.get(args[1]);
             if (stat == null) return null;
             int stages = Math.clamp(parseInt(args[2]), -6, 6);
-            return new PlayerBoostShowdownEvent(stat, -stages);
+            return new ShowdownEvents.PlayerBoostShowdownEvent(stat, -stages);
         });
         registerDecoder("USE_MOVE", args -> {
             if (args.length != 4) return null;
             String move = args[2].toLowerCase();
             int target = parseInt(args[3]);
-            return new UseMoveShowdownEvent(move, target);
+            return new ShowdownEvents.UseMoveShowdownEvent(move, target);
         });
         registerDecoder("TIMER", args -> {
             if (args.length != 2) return null;
             int time = parseInt(args[1]);
-            return new TimerRaidEvent(time);
+            return new RaidEvents.TimerRaidEvent(time);
         });
         registerDecoder("REDUCE_TIMER", args -> {
             if (args.length != 3) return null;
             float ratio = (float) parseDouble(args[2]);
-            return new ReduceTimerRaidEvent(ratio);
+            return new RaidEvents.ReduceTimerRaidEvent(ratio);
         });
         registerDecoder("HEAL", args -> {
             if (args.length != 2) return null;
             float ratio = (float) parseDouble(args[1]);
-            return new HealRaidEvent(ratio);
+            return new RaidEvents.HealRaidEvent(ratio);
         });
         registerDecoder("CATCH_RATE_ADD", args -> {
             if (args.length != 4) return null;
             float mod = (float) parseDouble(args[3]);
-            return new ModifyCatchRateRaidEvent(mod, "add");
+            return new RaidEvents.ModifyCatchRateRaidEvent(mod, "add");
         });
         registerDecoder("CATCH_RATE_MULTIPLY", args -> {
             if (args.length != 4) return null;
             float mod = (float) parseDouble(args[3]);
-            return new ModifyCatchRateRaidEvent(mod, "multiply");
+            return new RaidEvents.ModifyCatchRateRaidEvent(mod, "multiply");
         });
 
-        registerStatic("RESET_BOSS", new ResetBossShowdownEvent());
-        registerStatic("RESET_PLAYER", new ResetPlayerShowdownEvent());
+        registerStatic("RESET_BOSS", new ShowdownEvents.ResetBossShowdownEvent());
+        registerStatic("RESET_PLAYER", new ShowdownEvents.ResetPlayerShowdownEvent());
 
-        registerStatic("SET_RAIN", new SetWeatherShowdownEvent("raindance", false));
-        registerStatic("SET_SANDSTORM", new SetWeatherShowdownEvent("sandstorm", false));
-        registerStatic("SET_SNOW", new SetWeatherShowdownEvent("snow", false));
-        registerStatic("SET_SUN", new SetWeatherShowdownEvent("sunnyday", false));
+        registerStatic("SET_RAIN", new ShowdownEvents.SetWeatherShowdownEvent("raindance", false));
+        registerStatic("SET_SANDSTORM", new ShowdownEvents.SetWeatherShowdownEvent("sandstorm", false));
+        registerStatic("SET_SNOW", new ShowdownEvents.SetWeatherShowdownEvent("snow", false));
+        registerStatic("SET_SUN", new ShowdownEvents.SetWeatherShowdownEvent("sunnyday", false));
 
-        registerStatic("SET_ELECTRIC_TERRAIN", new SetTerrainShowdownEvent("electricterrain", false));
-        registerStatic("SET_GRASSY_TERRAIN", new SetTerrainShowdownEvent("grassyterrain", false));
-        registerStatic("SET_MISTY_TERRAIN", new SetTerrainShowdownEvent("mistyterrain", false));
-        registerStatic("SET_PSYCHIC_TERRAIN", new SetTerrainShowdownEvent("psychicterrain", false));
+        registerStatic("SET_ELECTRIC_TERRAIN", new ShowdownEvents.SetTerrainShowdownEvent("electricterrain", false));
+        registerStatic("SET_GRASSY_TERRAIN", new ShowdownEvents.SetTerrainShowdownEvent("grassyterrain", false));
+        registerStatic("SET_MISTY_TERRAIN", new ShowdownEvents.SetTerrainShowdownEvent("mistyterrain", false));
+        registerStatic("SET_PSYCHIC_TERRAIN", new ShowdownEvents.SetTerrainShowdownEvent("psychicterrain", false));
 
-        registerStatic("SHIELD_UP", new ShieldAddShowdownEvent());
-        registerStatic("SHIELD_DOWN", new ShieldRemoveShowdownEvent());
+        registerStatic("SHIELD_UP", new ShowdownEvents.ShieldAddShowdownEvent());
+        registerStatic("SHIELD_DOWN", new ShowdownEvents.ShieldRemoveShowdownEvent());
     }
 
     @FunctionalInterface

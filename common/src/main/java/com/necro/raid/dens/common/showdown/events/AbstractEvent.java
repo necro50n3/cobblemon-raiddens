@@ -1,3 +1,5 @@
 package com.necro.raid.dens.common.showdown.events;
 
-public interface AbstractEvent {}
+public interface AbstractEvent {
+    void execute(RaidContext context);
+}

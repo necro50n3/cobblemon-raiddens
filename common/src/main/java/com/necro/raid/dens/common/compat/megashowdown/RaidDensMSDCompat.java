@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.compat.megashowdown;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
+import com.cobblemon.mod.common.pokemon.properties.StringProperty;
 import com.github.yajatkaul.mega_showdown.block.MegaShowdownBlocks;
 import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.github.yajatkaul.mega_showdown.utils.GlowHandler;
@@ -16,16 +17,19 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class RaidDensMSDCompat {
-    public static void setupTera(PokemonEntity pokemonEntity, Pokemon pokemon) {
-        AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId()).apply(pokemon);
+    public static void setupTera(Pokemon pokemon) {
+        StringProperty property = AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId());
+        if (property.matches(pokemon)) return;
+        property.apply(pokemon);
         applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase(), false);
         pokemon.getPersistentData().putBoolean("is_tera", true);
     }
 
     public static void setupDmax(PokemonEntity pokemonEntity, Pokemon pokemon) {
-        boolean isGmax = pokemon.getGmaxFactor();
-        AspectPropertyType.INSTANCE.fromString("msd:dmax").apply(pokemon);
-        applyEffects(pokemon, "mega_showdown:dynamax", isGmax);
+        StringProperty property = AspectPropertyType.INSTANCE.fromString("msd:dmax");
+        if (property.matches(pokemon)) return;
+        property.apply(pokemon);
+        applyEffects(pokemon, "mega_showdown:dynamax", pokemon.getGmaxFactor());
         pokemon.getPersistentData().putBoolean("is_max", true);
         GlowHandler.applyDynamaxGlow(pokemonEntity);
     }
