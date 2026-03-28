@@ -1,0 +1,16 @@
+{
+    "pokemons": ["Kyogre"],
+    "showdown_form_change_id": "primal",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["reversion_state=primal"]
+        },
+        "revert": {
+            "aspects": ["reversion_state=standard"]
+        }
+    },
+    "effect": "mega_showdown:blue_orb"
+}

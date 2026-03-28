@@ -1,0 +1,13 @@
+{
+    "pokemons": ["Groudon"],
+    "showdown_form_change_id": "groudon",
+    "aspect_conditions": {
+        "apply": {
+            "aspect": {
+                "required_aspects": [["raid"]]
+            },
+            "aspects": ["reversion_state=standard"]
+        }
+    },
+    "effect": "mega_showdown:red_orb"
+}
