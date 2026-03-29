@@ -196,7 +196,6 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "battle.add('raidenergy', '%3$s', true); " +
                     "var boosts = {};" +
                     "boosts['%1$s'] = %2$d; " +
                     "for (let p of battle.sides[1].pokemon) { " +
@@ -218,7 +217,7 @@ public class ShowdownEvents {
                             "} " +
                         "} " +
                     "} ",
-                this.stat.getShowdownId(), this.stages, battle.getSide2().getActors()[0].getUuid()
+                this.stat.getShowdownId(), this.stages
             );
         }
     }
@@ -250,6 +249,7 @@ public class ShowdownEvents {
     public record RaidMapBoostShowdownEvent(Map<Stat, Integer> stats) implements ShowdownEvent {
         @Override
         public void send(PokemonBattle battle) {
+            new RaidEnergyShowdownEvent().send(battle);
             this.stats.forEach((stat, stages) -> new RaidBoostShowdownEvent(stat, stages).send(battle));
         }
 
@@ -476,12 +476,11 @@ public class ShowdownEvents {
                     ">eval " +
                         "var boosts = {};" +
                         "boosts['%1$s'] = %2$d; " +
-                        "battle.add('raidenergy', '%3$s'); " +
-                        "for (let p of battle.sides[%4$d].pokemon) { " +
+                        "for (let p of battle.sides[%3$d].pokemon) { " +
                             "if (!p) continue; " +
                             "battle.boost(boosts, p, null, '[from] Raid'); " +
                         "} ",
-                    this.stat.getShowdownId(), this.stages, battle.getSide2().getActors()[0].getUuid(), this.targetSide - 1
+                    this.stat.getShowdownId(), this.stages, this.targetSide - 1
                 );
             }
         }
@@ -490,6 +489,7 @@ public class ShowdownEvents {
     public record StatMapBoostShowdownEvent(Map<Stat, Integer> stats, int targetSide, boolean isSilent) implements ShowdownEvent {
         @Override
         public void send(PokemonBattle battle) {
+            new RaidEnergyShowdownEvent().send(battle);
             this.stats.forEach((stat, stages) -> new StatBoostShowdownEvent(stat, stages, this.targetSide, this.isSilent).send(battle));
         }
 
@@ -592,12 +592,11 @@ public class ShowdownEvents {
                 ">eval " +
                     "var boosts = {};" +
                     "boosts['%1$s'] = %2$d; " +
-                    "battle.add('raidenergy', '%3$s'); " +
                     "for (let p of battle.sides[0].pokemon) { " +
                         "if (!p) continue; " +
                         "battle.boost(boosts, p, null, '[from] Raid'); " +
                     "} ",
-                this.stat.getShowdownId(), this.stages, battle.getSide2().getActors()[0].getUuid()
+                this.stat.getShowdownId(), this.stages
             );
         }
     }
@@ -605,6 +604,7 @@ public class ShowdownEvents {
     public record PlayerMapBoostShowdownEvent(Map<Stat, Integer> stats) implements BroadcastingShowdownEvent {
         @Override
         public void send(PokemonBattle battle) {
+            new RaidEnergyShowdownEvent().send(battle);
             this.stats.forEach((stat, stages) -> new PlayerBoostShowdownEvent(stat, stages).send(battle));
         }
 
@@ -682,6 +682,13 @@ public class ShowdownEvents {
                     "battle.actions.runMove('%1$s', p, %2$d, null, null, true);",
                 this.move, this.target
             );
+        }
+    }
+
+    public static class RaidEnergyShowdownEvent implements ShowdownEvent {
+        @Override
+        public String build(PokemonBattle battle) {
+            return String.format(">eval battle.add('raidenergy', '%1$s');", battle.getSide2().getActors()[0].getUuid());
         }
     }
 }

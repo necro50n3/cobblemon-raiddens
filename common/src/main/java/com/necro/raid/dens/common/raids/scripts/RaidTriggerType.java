@@ -12,7 +12,9 @@ public enum RaidTriggerType {
     TURN,
     HP,
     FAINT,
-    TIMER;
+    TIMER,
+    DAMAGE,
+    JOIN;
 
     private static final Map<String, Function2<String, List<AbstractEvent>, RaidTrigger<?>>> PARSER = new HashMap<>();
 
@@ -29,5 +31,8 @@ public enum RaidTriggerType {
         PARSER.put("faint", (repeats, events) -> new FaintTrigger(Integer.parseInt(repeats), events));
         PARSER.put("after", (after, events) -> new TimerTrigger(Integer.parseInt(after), false, events));
         PARSER.put("repeat", (after, events) -> new TimerTrigger(Integer.parseInt(after), true, events));
+        PARSER.put("damage", (damage, events) -> new DamageTrigger(Float.parseFloat(damage), events));
+        PARSER.put("join", (joins, events) -> new JoinTrigger(Integer.parseInt(joins), false, events));
+        PARSER.put("join_repeat", (joins, events) -> new JoinTrigger(Integer.parseInt(joins), true, events));
     }
 }

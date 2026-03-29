@@ -35,6 +35,7 @@ import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
+import kotlin.Pair;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -197,9 +198,10 @@ public class RaidInstance {
         List<RaidFeature> effects = new ArrayList<>();
         if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.DYNAMAX);
         if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
-        new StartRaidShowdownEvent(this.battleState, effects).send(battle);
-        new ShowdownEvents.DoNothingShowdownEvent().send(battle);
+        this.sendEvent(new StartRaidShowdownEvent(this.battleState, effects), battle);
+        this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
         this.runScripts(RaidTriggerType.TURN, battle, () -> 0);
+        this.runScripts(RaidTriggerType.JOIN, battle, this.activePlayers::size);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
         List<Integer> entityIds = this.getEntityIds(this.battles);
@@ -268,7 +270,8 @@ public class RaidInstance {
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
         if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).crd_isRaidBattle()) this.addPlayerAndBattle(player, battle);
-        this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + damage);
+        this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + (Math.max(damage, 0F) / this.maxHealth));
+        this.runScripts(RaidTriggerType.DAMAGE, battle, () -> new Pair<>(this.getDamage(player), player.getUUID()));
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
@@ -392,7 +395,7 @@ public class RaidInstance {
             Iterator<ServerPlayer> iter = players.iterator();
             while (iter.hasNext()) {
                 ServerPlayer p = iter.next();
-                if (this.damageTracker.getOrDefault(p.getUUID(), 0F) / this.maxHealth < this.raidBoss.getRequiredDamage()) {
+                if (this.getDamage(p) < this.raidBoss.getRequiredDamage()) {
                     noItems.add(p);
                     iter.remove();
                 }
