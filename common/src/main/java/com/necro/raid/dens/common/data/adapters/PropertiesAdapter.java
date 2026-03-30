@@ -131,7 +131,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         if (!aspects.isEmpty()) properties.setAspects(aspects);
         if (!form.isBlank()) properties.setForm(form);
         if (gmax) properties.setGmaxFactor(true);
-        if (!customProperties.isEmpty()) properties.setCustomProperties(customProperties);
+        if (!customProperties.isEmpty()) properties.setCustomProperties(new ArrayList<>(customProperties));
         return properties;
     }));
 
