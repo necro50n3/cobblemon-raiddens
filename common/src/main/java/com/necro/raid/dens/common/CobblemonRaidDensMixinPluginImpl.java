@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.compat.ModCompat;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -16,7 +17,8 @@ public abstract class CobblemonRaidDensMixinPluginImpl implements IMixinConfigPl
     protected final Map<String, Supplier<Boolean>> MIXINS = Map.of(
         mixin("ai.RCTBattleAIMixin"), () -> this.isModLoaded(ModCompat.RCT_API.getModid()),
         mixin("msd.CobbleEventsMixin"), () -> this.isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid()),
-        mixin("showdown.ShowdownInterpreterMixin"), this::isCobblemon171,
+        mixin("msd.BattlePokemonStateMixin"), () -> this.isModAndNewerThan(ModCompat.MEGA_SHOWDOWN.getModid(), "1.7.2") || this.isModAndNewerThan(ModCompat.MEGA_SHOWDOWN.getModid(), "1.7.2+1.7.3+1.21.1"),
+        mixin("showdown.ShowdownInterpreterMixin"), () -> this.isModAndOlderThan(Cobblemon.MODID, "1.7.1") || this.isModAndOlderThan(Cobblemon.MODID, "1.7.1+1.21.1"),
         mixin("den.LevelChunkMixin"), () -> !this.isModLoaded("worldedit", "carpet"),
         mixin("den.LevelMixin"), () -> !this.isModLoaded("carpet")
     );
@@ -37,7 +39,9 @@ public abstract class CobblemonRaidDensMixinPluginImpl implements IMixinConfigPl
 
     protected abstract boolean isModLoaded(String... mods);
 
-    protected abstract boolean isCobblemon171();
+    protected abstract boolean isModAndNewerThan(String mod, String version);
+
+    protected abstract boolean isModAndOlderThan(String mod, String version);
 
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {}

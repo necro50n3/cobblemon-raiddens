@@ -31,7 +31,8 @@ public abstract class RaidDensMSDCompat {
         property.apply(pokemon);
         applyEffects(pokemon, "mega_showdown:dynamax", pokemon.getGmaxFactor());
         pokemon.getPersistentData().putBoolean("is_max", true);
-        GlowHandler.applyDynamaxGlow(pokemonEntity);
+        try { GlowHandler.applyDynamaxGlow(pokemonEntity); }
+        catch (NullPointerException ignored) {}
     }
 
     public static ItemStack getTeraShard(RaidType raidType) {

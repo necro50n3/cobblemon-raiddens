@@ -2,6 +2,8 @@ package com.necro.raid.dens.neoforge;
 
 import com.necro.raid.dens.common.CobblemonRaidDensMixinPluginImpl;
 import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
 public class CobblemonRaidDensNeoForgeMixinPlugin extends CobblemonRaidDensMixinPluginImpl {
     @Override
@@ -10,8 +12,15 @@ public class CobblemonRaidDensNeoForgeMixinPlugin extends CobblemonRaidDensMixin
     }
 
     @Override
-    protected boolean isCobblemon171() {
-        return CobblemonRaidDensNeoForge.isCobblemon171();
+    protected boolean isModAndNewerThan(String mod, String version) {
+        ModFileInfo info = LoadingModList.get().getModFileById(mod);
+        return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion(version)) >= 0;
+    }
+
+    @Override
+    protected boolean isModAndOlderThan(String mod, String version) {
+        ModFileInfo info = LoadingModList.get().getModFileById(mod);
+        return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion(version)) <= 0;
     }
 
     @Override

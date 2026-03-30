@@ -2,6 +2,8 @@ package com.necro.raid.dens.fabric;
 
 import com.necro.raid.dens.common.CobblemonRaidDensMixinPluginImpl;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
 
 public class CobblemonRaidDensFabricMixinPlugin extends CobblemonRaidDensMixinPluginImpl {
     @Override
@@ -10,8 +12,23 @@ public class CobblemonRaidDensFabricMixinPlugin extends CobblemonRaidDensMixinPl
     }
 
     @Override
-    protected boolean isCobblemon171() {
-        return CobblemonRaidDensFabric.isCobblemon171();
+    protected boolean isModAndNewerThan(String mod, String version) {
+        return FabricLoader.getInstance().getModContainer(mod)
+            .map(container -> {
+                try { return container.getMetadata().getVersion().compareTo(Version.parse(version)) >= 0; }
+                catch (VersionParsingException e) { throw new RuntimeException(e); }
+            })
+            .orElse(false);
+    }
+
+    @Override
+    protected boolean isModAndOlderThan(String mod, String version) {
+        return FabricLoader.getInstance().getModContainer(mod)
+            .map(container -> {
+                try { return container.getMetadata().getVersion().compareTo(Version.parse(version)) <= 0; }
+                catch (VersionParsingException e) { throw new RuntimeException(e); }
+            })
+            .orElse(false);
     }
 
     @Override

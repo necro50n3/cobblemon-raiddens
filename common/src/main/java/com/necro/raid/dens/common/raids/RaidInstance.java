@@ -477,6 +477,10 @@ public class RaidInstance {
         return this.raidState;
     }
 
+    public RaidBattleState getBattleState() {
+        return this.battleState;
+    }
+
     public boolean isFinished() {
         return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }

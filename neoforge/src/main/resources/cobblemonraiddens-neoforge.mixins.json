@@ -7,6 +7,7 @@
         "ai.RCTBattleAIMixin",
         "den.LevelChunkMixin",
         "den.LevelMixin",
+        "msd.BattlePokemonStateMixin",
         "msd.CobbleEventsMixin",
         "showdown.GraalShowdownUnbundlerMixin",
         "showdown.ShowdownInterpreterMixin"
