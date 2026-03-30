@@ -78,23 +78,25 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
-        if (!level.isClientSide()) {
-            PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player);
-            if (battle == null) return InteractionResultHolder.fail(itemStack);
-            BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
-            BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
-            if (battlePokemon == null || raidPokemon == null) return InteractionResultHolder.fail(itemStack);
-            else if (raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).crd_isRaidBoss()) {
-                return InteractionResultHolder.fail(itemStack);
-            }
-
-            boolean success = this.handleInteraction((ServerPlayer) player, battlePokemon, itemStack);
-            if (!success) return InteractionResultHolder.fail(itemStack);
-            itemStack.consume(1, player);
-            CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, itemStack);
-            return InteractionResultHolder.success(itemStack);
-        }
+        if (!level.isClientSide()) return this.cheer((ServerPlayer) player, itemStack);
         else return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+    }
+
+    public InteractionResultHolder<ItemStack> cheer(ServerPlayer player, ItemStack itemStack) {
+        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+        if (battle == null) return InteractionResultHolder.fail(itemStack);
+        BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+        BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
+        if (battlePokemon == null || raidPokemon == null) return InteractionResultHolder.fail(itemStack);
+        else if (raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).crd_isRaidBoss()) {
+            return InteractionResultHolder.fail(itemStack);
+        }
+
+        boolean success = this.handleInteraction(player, battlePokemon, itemStack);
+        if (!success) return InteractionResultHolder.fail(itemStack);
+        itemStack.consume(1, player);
+        CriteriaTriggers.CONSUME_ITEM.trigger(player, itemStack);
+        return InteractionResultHolder.success(itemStack);
     }
 
     @Override

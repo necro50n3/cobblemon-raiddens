@@ -35,6 +35,7 @@ dependencies {
     modCompileOnly "curse.maven:radical-cobblemon-trainers-api-1152792:7257752"
     modCompileOnly "dev.architectury:architectury:13.0.8"
     modCompileOnly "curse.maven:irisshaders-455508:6213635"
+    modCompileOnly "curse.maven:cobblemon-vocalized-1476578:7710117"
 
     modCompileOnly("mezz.jei:jei-1.21.1-common-api:19.27.0.340")
 

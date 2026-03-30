@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.network;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -27,4 +28,5 @@ public class RaidDenNetworkMessages {
     public static Runnable LEAVE_RAID;
     public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
     public static Consumer<Boolean> REWARD_RESPONSE;
+    public static Consumer<CheerBagItem.CheerType> USE_CHEER;
 }

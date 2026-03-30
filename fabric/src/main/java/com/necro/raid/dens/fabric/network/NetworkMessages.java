@@ -29,11 +29,13 @@ public class NetworkMessages {
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(UseCheerPacket.PACKET_TYPE, UseCheerPacket.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(RaidChallengePacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(LeaveRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(RequestResponsePacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(RewardResponsePacket.PACKET_TYPE, NetworkMessages::handle);
+        ServerPlayNetworking.registerGlobalReceiver(UseCheerPacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void registerS2CPackets() {
@@ -75,6 +77,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
+        RaidDenNetworkMessages.USE_CHEER = (cheerType ->
+            NetworkMessages.sendPacketToServer(new UseCheerPacket(cheerType)));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

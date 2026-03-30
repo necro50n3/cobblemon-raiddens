@@ -36,6 +36,7 @@ public class NetworkMessages {
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToServer(UseCheerPacket.PACKET_TYPE, UseCheerPacket.CODEC, NetworkMessages::handle);
     }
 
     public static void init() {
@@ -65,6 +66,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RequestResponsePacket(accept, player));
         RaidDenNetworkMessages.REWARD_RESPONSE = (catchPokemon) ->
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
+        RaidDenNetworkMessages.USE_CHEER = (cheerType ->
+            NetworkMessages.sendPacketToServer(new UseCheerPacket(cheerType)));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {
