@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = PartySendBinding.class, priority = 1100)
+@Mixin(value = PartySendBinding.class, priority = 900)
 public abstract class PartySendBindingMixin extends CobblemonBlockingKeyBinding {
     public PartySendBindingMixin(@NotNull String name, @NotNull InputConstants.Type type, int key, @NotNull String category) {
         super(name, type, key, category);
