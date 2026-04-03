@@ -181,9 +181,8 @@ public class CustomRaidRegistries {
             if (trigger == null) throw new JsonSyntaxException("Missing field \"trigger\"");
             Object scripts = script.get("scripts");
             if (scripts == null) throw new JsonSyntaxException("Missing field \"scripts\"");
-            if (scripts instanceof Map<?,?>) scripts = List.of(scripts);
-            if (!(scripts instanceof List<?> list)) throw new JsonSyntaxException("Invalid field \"scripts\"");
-            List<AbstractEvent> events = list.stream().map(SCRIPT_REGISTRY::decode).filter(Objects::nonNull).toList();
+            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(scripts);
+            if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
             RaidTrigger<?> raidTrigger = RaidTriggerType.decode(trigger, events);
             if (raidTrigger == null) throw new JsonSyntaxException("Failed to parse field \"trigger\"");
             return new RaidEvents.AddScriptRaidEvent(raidTrigger);
@@ -210,9 +209,7 @@ public class CustomRaidRegistries {
             float chance = Script.toFloat(script.get("chance"));
             Object scripts = script.get("scripts");
             if (scripts == null) throw new JsonSyntaxException("Missing field \"scripts\"");
-            if (scripts instanceof Map<?,?>) scripts = List.of(scripts);
-            if (!(scripts instanceof List<?> list)) throw new JsonSyntaxException("Invalid field \"scripts\"");
-            List<AbstractEvent> events = list.stream().map(SCRIPT_REGISTRY::decode).filter(Objects::nonNull).toList();
+            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(scripts);
             if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
             return new WithChanceEvent(chance, events);
         });

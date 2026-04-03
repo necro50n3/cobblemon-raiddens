@@ -5,7 +5,9 @@ import com.necro.raid.dens.common.raids.scripts.ScriptDeserializer;
 import com.necro.raid.dens.common.showdown.events.AbstractEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ScriptRegistry extends StringRegistry<ScriptDeserializer> {
@@ -27,5 +29,10 @@ public class ScriptRegistry extends StringRegistry<ScriptDeserializer> {
             return deserializer == null ? null : deserializer.decode(safeMap);
         }
         return null;
+    }
+
+    public List<AbstractEvent> decodeList(Object scripts) {
+        if (!(scripts instanceof List<?>)) scripts = List.of(scripts);
+        return ((List<?>) scripts).stream().map(this::decode).filter(Objects::nonNull).toList();
     }
 }

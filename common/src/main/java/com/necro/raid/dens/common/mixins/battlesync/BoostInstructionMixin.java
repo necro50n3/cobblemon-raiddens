@@ -41,9 +41,9 @@ public abstract class BoostInstructionMixin {
         if (battlePokemon == null || battlePokemon.getEntity() == null) {}
         else if (((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) {
             this.crd_syncStats(battle, raid);
-            if (!this.isBoost()) raid.runScripts(RaidTriggerType.UNBOOST, battle, () -> null);
+            if (!this.isBoost()) raid.runScripts(RaidTriggerType.UNBOOST, battle);
         }
-        else if (this.isBoost()) raid.runScripts(RaidTriggerType.BOOST, battle, () -> null);
+        else if (this.isBoost()) raid.runScripts(RaidTriggerType.BOOST, battle);
     }
 
     @Unique

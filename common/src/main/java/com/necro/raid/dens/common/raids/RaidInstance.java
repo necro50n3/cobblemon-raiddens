@@ -240,7 +240,7 @@ public class RaidInstance {
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle, () -> (Void) null);
+            if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle);
         }
     }
 
@@ -492,6 +492,10 @@ public class RaidInstance {
     @SuppressWarnings("unchecked")
     public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, @NotNull Supplier<T> predicate) {
         this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate.get()));
+    }
+
+    public void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle) {
+        this.runScripts(type, battle, () -> null);
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
