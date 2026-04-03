@@ -200,6 +200,7 @@ public class RaidInstance {
         if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
         this.sendEvent(new StartRaidShowdownEvent(this.battleState, effects), battle);
         this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
+        this.runScripts(RaidTriggerType.TURN, battle, () -> 0);
         this.runScripts(RaidTriggerType.JOIN, battle, this.battles::size);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
