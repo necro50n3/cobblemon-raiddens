@@ -1,10 +1,13 @@
 package com.necro.raid.dens.common.showdown.events;
 
 import com.cobblemon.mod.common.CobblemonNetwork;
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleMusicPacket;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
+import com.necro.raid.dens.common.raids.scripts.triggers.TurnTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -19,6 +22,10 @@ public class RaidEvents {
     public record AddScriptRaidEvent(RaidTrigger<?> trigger) implements RaidEvent {
         @Override
         public void run(RaidInstance raid, @Nullable ServerPlayer player) {
+            if (player != null && trigger instanceof TurnTrigger turnTrigger) {
+                PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+                if (battle != null) turnTrigger.setOffset(battle.getTurn());
+            }
             raid.addTrigger(this.trigger);
         }
     }
