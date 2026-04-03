@@ -54,6 +54,7 @@
     "error.cobblemonraiddens.players_in_dimension": "There are still players in that dimension.",
     "error.cobblemonraiddens.player_in_raid": "You cannot refresh a player that's in the middle of a raid.",
     "error.cobblemonraiddens.raid_boss_not_found": "Failed to build raid pouch due to missing raid boss.",
+    "error.cobblemonraiddens.raid_boss_spawn_fail": "Failed to create raid. Check logs for error.",
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",

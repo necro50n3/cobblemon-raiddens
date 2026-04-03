@@ -54,6 +54,7 @@
     "error.cobblemonraiddens.players_in_dimension": "Il y a encore des joueurs dans cette dimension.",
     "error.cobblemonraiddens.player_in_raid": "Vous ne pouvez pas actualiser un joueur en plein raid.",
 
+
     "feature.cobblemonraiddens.default": "Normal",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
