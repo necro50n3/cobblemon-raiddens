@@ -12,6 +12,8 @@ public enum RaidTriggerType {
     TURN,
     HP,
     FAINT,
+    BOOST,
+    UNBOOST,
     TIMER,
     DAMAGE,
     JOIN;
@@ -29,7 +31,9 @@ public enum RaidTriggerType {
         PARSER.put("turn", (turn, events) -> new TurnTrigger(Integer.parseInt(turn), false, events));
         PARSER.put("turn_repeat", (turn, events) -> new TurnTrigger(Integer.parseInt(turn), true, events));
         PARSER.put("hp", (hp, events) -> new HPTrigger(Float.parseFloat(hp), events));
-        PARSER.put("faint", (repeats, events) -> new FaintTrigger(Integer.parseInt(repeats), events));
+        PARSER.put("faint", (repeats, events) -> new RepeatTrigger(FAINT, Integer.parseInt(repeats), events));
+        PARSER.put("boost", (repeats, events) -> new RepeatTrigger(BOOST, Integer.parseInt(repeats), events));
+        PARSER.put("unboost", (repeats, events) -> new RepeatTrigger(UNBOOST, Integer.parseInt(repeats), events));
         PARSER.put("after", (after, events) -> new TimerTrigger(Integer.parseInt(after), false, events));
         PARSER.put("repeat", (after, events) -> new TimerTrigger(Integer.parseInt(after), true, events));
         PARSER.put("damage", (damage, events) -> new DamageTrigger(Float.parseFloat(damage), events));

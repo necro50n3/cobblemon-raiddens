@@ -5,11 +5,11 @@ import com.necro.raid.dens.common.showdown.events.AbstractEvent;
 
 import java.util.List;
 
-public class FaintTrigger extends RaidTrigger<Void> {
+public class RepeatTrigger extends RaidTrigger<Void> {
     private int repeats;
 
-    public FaintTrigger(int repeats, List<AbstractEvent> events) {
-        super(RaidTriggerType.FAINT, events);
+    public RepeatTrigger(RaidTriggerType type, int repeats, List<AbstractEvent> events) {
+        super(type, events);
         this.repeats = repeats;
     }
 

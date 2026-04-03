@@ -9,10 +9,12 @@ import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.interpreter.instructions.BoostInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,9 +38,16 @@ public abstract class BoostInstructionMixin {
         if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
         RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
         BattlePokemon battlePokemon = this.getPokemon();
-        if (battlePokemon == null || battlePokemon.getEntity() == null) return;
-        else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null) {}
+        else if (((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) {
+            this.crd_syncStats(battle, raid);
+            if (!this.isBoost()) raid.runScripts(RaidTriggerType.UNBOOST, battle, () -> null);
+        }
+        else if (this.isBoost()) raid.runScripts(RaidTriggerType.BOOST, battle, () -> null);
+    }
 
+    @Unique
+    private void crd_syncStats(PokemonBattle battle, RaidInstance raid) {
         Stat stat = Stats.Companion.getStat(this.getStatKey());
         battle.dispatch(() -> {
             int stages = this.getStages();
