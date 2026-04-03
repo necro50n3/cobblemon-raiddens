@@ -98,60 +98,51 @@ public class CustomRaidRegistries {
 
     private static void registerScripts() {
         SCRIPT_REGISTRY.register("shield", script -> {
-            boolean apply = (boolean) script.getOrDefault("apply", true);
+            boolean apply = SCRIPT_REGISTRY.parse(script, "apply", Boolean.class, true);
             return apply ? new ShowdownEvents.ShieldAddShowdownEvent() : new ShowdownEvents.ShieldRemoveShowdownEvent();
         });
         SCRIPT_REGISTRY.register("set_terrain", script -> {
-            String terrain = (String) script.get("terrain");
-            if (terrain == null) throw new JsonSyntaxException("Missing field \"terrain\"");
+            String terrain = SCRIPT_REGISTRY.parse(script, "terrain", String.class);
             return new ShowdownEvents.SetTerrainShowdownEvent(terrain, false);
         });
         SCRIPT_REGISTRY.register("set_weather", script -> {
-            String weather = (String) script.get("weather");
-            if (weather == null) throw new JsonSyntaxException("Missing field \"weather\"");
+            String weather = SCRIPT_REGISTRY.parse(script, "weather", String.class);
             return new ShowdownEvents.SetWeatherShowdownEvent(weather, false);
         });
         SCRIPT_REGISTRY.register("reset_stats", script -> {
-            String target = (String) script.get("target");
+            String target = SCRIPT_REGISTRY.parse(script, "target", String.class);
             if ("player".equals(target)) return new ShowdownEvents.ResetPlayerShowdownEvent();
             else if ("boss".equals(target)) return new ShowdownEvents.ResetBossShowdownEvent();
-            else throw new JsonSyntaxException("Missing or incorrect field \"target\"");
+            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
         });
         SCRIPT_REGISTRY.register("modify_catch_rate", script -> {
-            if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
-            float value = Script.toFloat(script.get("value"));
-            boolean applyToAll = (boolean) script.getOrDefault("apply_to_all", false);
-            String operation = (String) script.get("operation");
-            if (!Set.of("add", "multiply").contains(operation)) throw new JsonSyntaxException("Missing or incorrect field \"operation\"");
+            float value = SCRIPT_REGISTRY.transform(script, "value", Number.class, Script::toFloat);
+            boolean applyToAll = SCRIPT_REGISTRY.parse(script, "apply_to_all", Boolean.class, false);
+            String operation = SCRIPT_REGISTRY.parse(script, "operation", String.class);
+            if (!Set.of("add", "multiply").contains(operation)) throw new JsonSyntaxException("Field \"operation\" must be \"add\" or \"multiply\"");
             if (applyToAll) return new RaidEvents.ModifyCatchRateAllRaidEvent(value, operation);
             else return new RaidEvents.ModifyCatchRateRaidEvent(value, operation);
         });
         SCRIPT_REGISTRY.register("heal", script -> {
-            if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
-            float value = Script.toFloat(script.get("value"));
+            float value = SCRIPT_REGISTRY.transform(script, "value", Number.class, Script::toFloat);
             return new RaidEvents.HealRaidEvent(value);
         });
         SCRIPT_REGISTRY.register("reduce_timer", script -> {
-            if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
-            float value = Script.toFloat(script.get("value"));
+            float value = SCRIPT_REGISTRY.transform(script, "value", Number.class, Script::toFloat);
             return new RaidEvents.ReduceTimerRaidEvent(value);
         });
         SCRIPT_REGISTRY.register("timer", script -> {
-            if (!script.containsKey("value")) throw new JsonSyntaxException("Missing field \"value\"");
-            int value = Script.toInt(script.get("value"));
+            int value = SCRIPT_REGISTRY.transform(script, "value", Number.class, Script::toInt);
             return new RaidEvents.TimerRaidEvent(value);
         });
         SCRIPT_REGISTRY.register("use_move", script -> {
-            String move = (String) script.get("move");
-            if (move == null) throw new JsonSyntaxException("Missing field \"move\"");
-            if (!script.containsKey("target")) throw new JsonSyntaxException("Missing field \"target\"");
-            int target = Script.toInt(script.get("target"));
+            String move = SCRIPT_REGISTRY.parse(script, "move", String.class);
+            int target = SCRIPT_REGISTRY.transform(script, "target", Number.class, Script::toInt);
             return new ShowdownEvents.UseMoveShowdownEvent(move, target);
         });
         SCRIPT_REGISTRY.register("player_stats", script -> {
-            Object map = script.get("stats");
-            if (map == null) throw new JsonSyntaxException("Missing field \"stats\"");
-            Map<Stat, Integer> stats = ((Map<?, ?>) script.get("stats")).entrySet().stream()
+            Map<?, ?> map = SCRIPT_REGISTRY.parse(script, "stats", Map.class);
+            Map<Stat, Integer> stats = map.entrySet().stream()
                 .filter(e -> e.getKey() instanceof String string && STAT_MAP.containsKey(string))
                 .filter(e -> e.getValue() instanceof Number)
                 .collect(Collectors.toMap(e -> STAT_MAP.get((String) e.getKey()), e -> -Script.toInt(e.getValue())));
@@ -159,9 +150,8 @@ public class CustomRaidRegistries {
             return new ShowdownEvents.PlayerMapBoostShowdownEvent(stats);
         });
         SCRIPT_REGISTRY.register("boss_stats", script -> {
-            Object map = script.get("stats");
-            if (map == null) throw new JsonSyntaxException("Missing field \"stats\"");
-            Map<Stat, Integer> stats = ((Map<?, ?>) script.get("stats")).entrySet().stream()
+            Map<?, ?> map = SCRIPT_REGISTRY.parse(script, "stats", Map.class);
+            Map<Stat, Integer> stats = map.entrySet().stream()
                 .filter(e -> e.getKey() instanceof String string && STAT_MAP.containsKey(string))
                 .filter(e -> e.getValue() instanceof Number)
                 .collect(Collectors.toMap(e -> STAT_MAP.get((String) e.getKey()), e -> Script.toInt(e.getValue())));
@@ -169,48 +159,37 @@ public class CustomRaidRegistries {
             return new ShowdownEvents.RaidMapBoostShowdownEvent(stats);
         });
         SCRIPT_REGISTRY.register("forme_change", script -> {
-            String form = (String) script.get("form");
-            if (form == null) throw new JsonSyntaxException("Missing field \"form\"");
+            String form = SCRIPT_REGISTRY.parse(script, "form", String.class);
             return new ShowdownEvents.FormeChangeShowdownEvent(form);
         });
         SCRIPT_REGISTRY.register("mega_evolve", script -> new ShowdownEvents.MegaEvolveShowdownEvent());
         SCRIPT_REGISTRY.register("dynamax", script -> new ShowdownEvents.DynamaxShowdownEvent());
         SCRIPT_REGISTRY.register("terastallize", script -> new ShowdownEvents.TerastallizeShowdownEvent());
         SCRIPT_REGISTRY.register("add_script", script -> {
-            String trigger = (String) script.get("trigger");
-            if (trigger == null) throw new JsonSyntaxException("Missing field \"trigger\"");
-            Object scripts = script.get("scripts");
-            if (scripts == null) throw new JsonSyntaxException("Missing field \"scripts\"");
-            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(scripts);
-            if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
+            String trigger = SCRIPT_REGISTRY.parse(script, "trigger", String.class);
+            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(script.get("scripts"));
             RaidTrigger<?> raidTrigger = RaidTriggerType.decode(trigger, events);
             if (raidTrigger == null) throw new JsonSyntaxException("Failed to parse field \"trigger\"");
             return new RaidEvents.AddScriptRaidEvent(raidTrigger);
         });
         SCRIPT_REGISTRY.register("scale", script -> {
-            if (!script.containsKey("scale")) throw new JsonSyntaxException("Missing field \"scale\"");
-            float scale = Script.toFloat(script.get("scale"));
+            float scale = SCRIPT_REGISTRY.transform(script, "scale", Number.class, Script::toFloat);
             if (scale <= 0F) throw new JsonSyntaxException("Cannot have negative field \"scale\"");
-            float rate = script.containsKey("rate") ? Script.toFloat(script.get("rate")) : 1F / 20F;
+            float rate = SCRIPT_REGISTRY.transform(script, "rate", Number.class, Script::toFloat, 1F / 20F);
             if (rate <= 0F) throw new JsonSyntaxException("Cannot have negative field \"rate\"");
             return new RaidEvents.ScaleBossRaidEvent(scale, rate);
         });
         SCRIPT_REGISTRY.register("play_sound", script -> {
-            String soundId = (String) script.get("sound");
-            if (soundId == null) throw new JsonSyntaxException("Missing field \"sound\"");
+            String soundId = SCRIPT_REGISTRY.parse(script, "sound", String.class);
             ResourceLocation sound;
             try { sound = ResourceLocation.parse(soundId); }
             catch (Exception e) { throw new JsonSyntaxException("Failed to parse field \"sound\""); }
-            boolean isMusic = (Boolean) script.getOrDefault("is_music", true);
+            boolean isMusic = SCRIPT_REGISTRY.parse(script, "is_music", Boolean.class, true);
             return new RaidEvents.PlaySoundRaidEvent(sound, isMusic);
         });
         SCRIPT_REGISTRY.register("with_chance", script -> {
-            if (!script.containsKey("chance")) throw new JsonSyntaxException("Missing field \"chance\"");
-            float chance = Script.toFloat(script.get("chance"));
-            Object scripts = script.get("scripts");
-            if (scripts == null) throw new JsonSyntaxException("Missing field \"scripts\"");
-            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(scripts);
-            if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
+            float chance = SCRIPT_REGISTRY.transform(script, "chance", Number.class, Script::toFloat);
+            List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(script.get("scripts"));
             return new WithChanceEvent(chance, events);
         });
     }
