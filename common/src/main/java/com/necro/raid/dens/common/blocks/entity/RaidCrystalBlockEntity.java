@@ -251,9 +251,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return true;
     }
 
-    public void clearRaid() {
+    public void clearRaid(boolean wasWin) {
         this.clears++;
-        this.aspects = null;
+        if (wasWin) this.aspects = null;
         if (this.isAtMaxClears()) {
             RaidHelper.resetClearedRaids(this.getUuid());
             if (this.getLevel() != null) this.getLevel().setBlock(
@@ -275,7 +275,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         ServerLevel level = ModDimensions.getRaidDimension(this.getLevel().getServer());
         if (level == null) return;
 
-        if (this.shouldClear(RaidHelper.getRaidState(this.getUuid()))) this.clearRaid();
+        RaidState raidState = RaidHelper.getRaidState(this.getUuid());
+        if (this.shouldClear(raidState)) this.clearRaid(raidState == RaidState.SUCCESS);
 
         RaidRegionHelper.clearRegion(this.getUuid(), level);
 
