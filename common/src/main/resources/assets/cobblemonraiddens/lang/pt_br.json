@@ -46,15 +46,14 @@
     "cobblemonraiddens.status.shield.apply": "Energia começou a se reunir ao redor de %1$s!",
     "cobblemonraiddens.status.shield.cure": "%1$s sucumbiu ao ataque e quebrou sua postura!",
     "config.jade.plugin_cobblemonraiddens.raid_crystal": "Toca de Raid",
-
+    "dimension.cobblemonraiddens.raid_dimension": "???",
     "error.cobblemonraiddens.command_blacklist": "Você não pode usar esse comando em uma raid.",
     "error.cobblemonraiddens.dimension_exist": "Você já está hospedando outra raid. Se isso for um erro, use /crd refresh ou contate um admin.",
     "error.cobblemonraiddens.invalid_dimension": "Dimensão inválida.",
-
+    "error.cobblemonraiddens.missing_boss_for_tier": "Nenhum chefe de raid para este nível foi encontrado. Sorteando nível aleatório.",
     "error.cobblemonraiddens.players_in_dimension": "Ainda há jogadores nessa dimensão.",
     "error.cobblemonraiddens.player_in_raid": "Você não pode atualizar um jogador que está no meio de uma raid.",
-
-
+    "error.cobblemonraiddens.raid_boss_not_found": "Falha ao criar a bolsa de raid devido à ausência do chefe de raid.",
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -65,8 +64,9 @@
     "feature.cobblemonraiddens.primal": "Primal",
     "feature.cobblemonraiddens.tera": "Tera",
     "feature.cobblemonraiddens.stellar": "Estelar",
-
-
+    "item.cobblemonraiddens.catching_charm": "Amuleto de Captura",
+    "item.cobblemonraiddens.catching_charm.tooltip.1": "Segure em sua mão secundária para aumentar a",
+    "item.cobblemonraiddens.catching_charm.tooltip.2": "taxa de captura de um chefe de raid em %d%%",
     "item.cobblemonraiddens.cheer.tooltip": "Só pode ser usado em Batalhas de Raid",
     "item.cobblemonraiddens.cheer_attack": "Apoio de Ataque",
     "item.cobblemonraiddens.cheer_attack.tooltip": "Aumenta o Atk e Sp. Atk do seu grupo em 50%",
@@ -76,12 +76,12 @@
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restaura 50% do PS do seu grupo",
     "item.cobblemonraiddens.raid_pouch": "Bolsa de Raid",
     "item.cobblemonraiddens.raid_shard": "Fragmento de Raid",
-
+    "item.cobblemonraiddens.raid_shard.tooltip": "Conclua raids para ganhar energia de raid",
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
     "jade.cobblemonraiddens.player_count": "%s dentro",
     "jade.cobblemonraiddens.max_catches": "Máx capturável: %s",
     "jade.cobblemonraiddens.not_catchable": "Não Pode Ser Capturado",
-
+    "jade.cobblemonraiddens.catch_rate": "%d%% de Taxa de Captura",
     "key.cobblemonraiddens.accept": "Aceitar Atalho",
     "key.cobblemonraiddens.deny": "Recusar Atalho",
     "key.cobblemonraiddens.mouse": "Mostrar Mouse",
@@ -116,7 +116,7 @@
     "message.cobblemonraiddens.raid.no_host": "O anfitrião não pôde ser alcançado...",
     "message.cobblemonraiddens.raid.no_key": "Você não tem uma Chave da Toca de Raid!",
     "message.cobblemonraiddens.raid.no_unique_key": "Você precisa de um item especial para entrar nesta raid!",
-
+    "message.cobblemonraiddens.raid.not_enough_damage": "Você não causou dano suficiente!",
     "message.cobblemonraiddens.raid.not_participating": "Você não se registrou para a raid. Saia e entre novamente no lobby.",
     "message.cobblemonraiddens.raid.pending_removal": "Por favor, aguarde antes de hospedar outra raid.",
     "message.cobblemonraiddens.raid.player_cleared": "Você já concluiu esta raid.",
@@ -126,7 +126,7 @@
     "message.cobblemonraiddens.raid.request_time_out": "O pedido de entrada expirou.",
     "message.cobblemonraiddens.raid_shard.not_fully_charged": "Você não reuniu energia de Raid suficiente.",
     "message.cobblemonraiddens.reward.already_received_reward": "Você já reivindicou as recompensas.",
-
+    "message.cobblemonraiddens.reward.failed_catch_rate": "O Pokémon se libertou!",
     "message.cobblemonraiddens.reward.reward_item": "Você recebeu a recompensa!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Você precisa segurar uma Pokébola para reivindicar o Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Você recebeu o Pokémon!",
@@ -167,15 +167,15 @@
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_five": "Sinalizador de nível cinco",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_six": "Sinalizador de nível seis",
     "text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven": "Sinalizador de nível sete",
-
-
+    "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "Renderizar o efeito de sinalizador legado",
+    "text.autoconfig.cobblemonraiddens/client.option.show_particles": "Renderizar os efeitos de partículas do cristal de raid",
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",
     "text.autoconfig.cobblemonraiddens/client.option.enable_raid_logs": "Mostrar logs da Raid",
-
+    "text.autoconfig.cobblemonraiddens/client.option.enable_health_bars": "Mostrar Barras de Vida",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_x": "Popup da Raid X (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_popup_y": "Popup da Raid Y (%)",
     "text.autoconfig.cobblemonraiddens/client.option.raid_status_x": "Status da Raid X (%)",
-    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)"
-
-
+    "text.autoconfig.cobblemonraiddens/client.option.raid_status_y": "Status da Raid Y (%)",
+    "travelerstitles.cobblemonraiddens.raid_dimensions": "???",
+    "xei.cobblemonraiddens.raid_shard": "Conclua raids com isso em seu inventário para ganhar Energia de Raid lentamente. Assim que o fragmento de raid estiver cheio, clicar com o botão direito nele o transformará em um Cristal de Covil de Raid, que pode ser colocado no mundo."
 }
