@@ -6,7 +6,8 @@ public enum ModCompat {
     RCT_API("rctapi"),
     SIZE_VARIATIONS("cobblemonsizevariation"),
     IRIS("iris"),
-    VOCALIZED("cobblemon_vocalized");
+    VOCALIZED("cobblemon_vocalized"),
+    SHADOWED_HEARTS("shadowedhearts");
 
     private final String modid;
     private boolean loaded;

@@ -727,6 +727,51 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
+          "condition": "cobblemonraiddens:raid_pouch_condition",
+          "feature": "SHADOW"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:shadow_shards_function"
+            },
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 17.0,
+                "min": 15.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air",
+          "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:scents_function"
+            },
+            {
+              "add": false,
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
           "apply": true,
           "condition": "cobblemonraiddens:bonus_loot_condition"
         }

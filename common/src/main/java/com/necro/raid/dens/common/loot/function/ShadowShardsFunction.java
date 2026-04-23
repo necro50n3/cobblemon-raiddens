@@ -3,10 +3,9 @@ package com.necro.raid.dens.common.loot.function;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
+import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.data.raid.RaidTier;
-import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.loot.context.RaidLootContexts;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -17,33 +16,32 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TeraShardsFunction extends LootItemConditionalFunction {
-    public static final MapCodec<TeraShardsFunction> CODEC = RecordCodecBuilder.mapCodec((instance) -> commonFields(instance)
-        .apply(instance, TeraShardsFunction::new));
+public class ShadowShardsFunction extends LootItemConditionalFunction {
+    public static final MapCodec<ShadowShardsFunction> CODEC = RecordCodecBuilder.mapCodec((instance) -> commonFields(instance)
+        .apply(instance, ShadowShardsFunction::new));
 
-    protected TeraShardsFunction(List<LootItemCondition> list) {
+    protected ShadowShardsFunction(List<LootItemCondition> list) {
         super(list);
     }
 
     @Override
-    public @NotNull LootItemFunctionType<TeraShardsFunction> getType() {
-        return RaidLootFunctions.TERA_SHARDS_FUNCTION.value();
+    public @NotNull LootItemFunctionType<ShadowShardsFunction> getType() {
+        return RaidLootFunctions.SHADOW_SHARDS_FUNCTION.value();
     }
 
     @Override
     protected @NotNull ItemStack run(@NotNull ItemStack itemStack, @NotNull LootContext lootContext) {
-        if (!ModCompat.MEGA_SHOWDOWN.isLoaded()) return itemStack;
+        if (!ModCompat.SHADOWED_HEARTS.isLoaded()) return itemStack;
 
         ItemStack raidPouch = lootContext.getParamOrNull(RaidLootContexts.RAID_POUCH);
         if (raidPouch == null) return itemStack;
 
         RaidTier raidTier = raidPouch.get(ModComponents.TIER_COMPONENT.value());
-        RaidType raidType = raidPouch.get(ModComponents.TYPE_COMPONENT.value());
-        if (raidTier == null || raidType == null || raidType == RaidType.NONE) return itemStack;
-        return RaidDensMSDCompat.getTeraShard(raidType);
+        if (raidTier == null) return itemStack;
+        return RaidDensShadowedHeartsCompat.getShadowShard();
     }
 
-    public static LootItemConditionalFunction.Builder<?> apply() {
-        return simpleBuilder(TeraShardsFunction::new);
+    public static Builder<?> apply() {
+        return simpleBuilder(ShadowShardsFunction::new);
     }
 }

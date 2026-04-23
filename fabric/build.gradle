@@ -49,15 +49,25 @@ dependencies {
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+fabric"
     // modRuntimeOnly "lol.bai:badpackets:fabric-$rootProject.badpackets_version"
     modCompileOnly "mcp.mobius.waila:wthit:fabric-$rootProject.wthit_version"
+
+    modImplementation "curse.maven:cobbledollars-859232:6604561"
+    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
+
     modRuntimeOnly "io.wispforest:accessories-fabric:1.1.0-beta.52+1.21.1"
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7833505"
-    modImplementation "curse.maven:cobbledollars-859232:6604561"
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
-    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257754"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 
-    modCompileOnly("mezz.jei:jei-1.21.1-fabric-api:19.27.0.340")
-    modRuntimeOnly("mezz.jei:jei-1.21.1-fabric:19.27.0.340")
+    modRuntimeOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577271"
+    modRuntimeOnly "curse.maven:special-model-loader-782421:5744313"
+    modRuntimeOnly "curse.maven:forge-config-api-port-547434:7213608"
+    runtimeOnly "com.electronwill.night-config:core:3.8.4"
+    runtimeOnly "com.electronwill.night-config:toml:3.8.4"
+    runtimeOnly "de.javagl:obj:0.4.0"
+    runtimeOnly "org.xerial:sqlite-jdbc:3.53.0.0"
+
+    modCompileOnly "mezz.jei:jei-1.21.1-fabric-api:19.27.0.340"
+    modRuntimeOnly "mezz.jei:jei-1.21.1-fabric:19.27.0.340"
 
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:16.0.799"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:16.0.799"

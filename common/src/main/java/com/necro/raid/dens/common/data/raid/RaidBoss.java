@@ -25,6 +25,7 @@ import com.google.gson.annotations.SerializedName;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
+import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.adapters.*;
@@ -321,6 +322,7 @@ public class RaidBoss {
 
         if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
+        else if (this.isShadow()) RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
         pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
@@ -379,12 +381,13 @@ public class RaidBoss {
             }
         }
 
-        if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-        if (this.isGmax(pokemon)) pokemon.setGmaxFactor(true);
-        if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
-
         this.setMoveSet(properties, pokemon, false);
         for (Mark mark : this.getMarks()) pokemon.exchangeMark(mark, true);
+
+        if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
+        if (this.isGmax(pokemon)) pokemon.setGmaxFactor(true);
+        else if (this.isShadow()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
+        if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         return pokemon;
     }
@@ -730,6 +733,10 @@ public class RaidBoss {
 
     public boolean isGmax(Pokemon pokemon) {
         return this.isDynamax() && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon);
+    }
+
+    public boolean isShadow() {
+        return this.raidFeature == RaidFeature.SHADOW;
     }
 
     public RaidBoss copy() {

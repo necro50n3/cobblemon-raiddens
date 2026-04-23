@@ -30,9 +30,8 @@ public class GemTypeFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public @NotNull LootItemFunctionType<? extends LootItemConditionalFunction> getType() {
-        return (LootItemFunctionType<? extends LootItemConditionalFunction>) RaidLootFunctions.GEM_TYPE_FUNCTION.value();
+    public @NotNull LootItemFunctionType<GemTypeFunction> getType() {
+        return RaidLootFunctions.GEM_TYPE_FUNCTION.value();
     }
 
     @Override

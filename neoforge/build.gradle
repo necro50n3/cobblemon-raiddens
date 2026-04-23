@@ -53,6 +53,10 @@ dependencies {
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
     // modRuntimeOnly "lol.bai:badpackets:neo-$rootProject.badpackets_version"
     modCompileOnly "mcp.mobius.waila:wthit:neo-$rootProject.wthit_version"
+
+    modCompileOnly "curse.maven:cobbledollars-859232:6604564"
+    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
+
     modRuntimeOnly "io.wispforest:accessories-neoforge:1.1.0-beta.52+1.21.1"
     forgeRuntimeLibrary("blue.endless:jankson:1.2.2")
     forgeRuntimeLibrary("io.wispforest:endec:0.1.5.1")
@@ -60,12 +64,17 @@ dependencies {
     forgeRuntimeLibrary("io.wispforest.endec:jankson:0.1.3.1")
     forgeRuntimeLibrary("io.wispforest.endec:netty:0.1.2")
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7833504"
-    modCompileOnly "curse.maven:cobbledollars-859232:6604564"
-    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
     modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 
-    modCompileOnly("mezz.jei:jei-1.21.1-neoforge-api:19.27.0.340")
-    modRuntimeOnly("mezz.jei:jei-1.21.1-neoforge:19.27.0.340")
+    modRuntimeOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577017"
+    modRuntimeOnly "curse.maven:forge-config-api-port-547434:7213611"
+    runtimeOnly "com.electronwill.night-config:core:3.8.4"
+    runtimeOnly "com.electronwill.night-config:toml:3.8.4"
+    runtimeOnly "de.javagl:obj:0.4.0"
+    runtimeOnly "org.xerial:sqlite-jdbc:3.53.0.0"
+
+    modCompileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.27.0.340"
+    modRuntimeOnly "mezz.jei:jei-1.21.1-neoforge:19.27.0.340"
 
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:16.0.799"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:16.0.799"

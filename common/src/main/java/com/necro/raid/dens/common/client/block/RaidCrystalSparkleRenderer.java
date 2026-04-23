@@ -47,8 +47,11 @@ public class RaidCrystalSparkleRenderer {
     }
 
     private static Vector4f getParticleColor(RaidFeature feature, RaidType type) {
-        if (feature == RaidFeature.DYNAMAX) return new Vector4f(1.0F, 0F, 0F, 0.5F);
-        else if (feature == RaidFeature.TERA) return null;
-        else return type.getVectorColor();
+        return switch (feature) {
+            case DYNAMAX -> new Vector4f(1.0F, 0F, 0F, 0.5F);
+            case SHADOW -> new Vector4f(0.242F, 0F, 0.364F, 0.8F);
+            case TERA -> null;
+            default -> type.getVectorColor();
+        };
     }
 }

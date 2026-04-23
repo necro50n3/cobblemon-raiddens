@@ -8,16 +8,13 @@ public enum RaidFeature implements StringRepresentable {
     DEFAULT("default"),
     MEGA("mega"),
     TERA("tera"),
-    DYNAMAX("dynamax");
+    DYNAMAX("dynamax"),
+    SHADOW("shadow");
 
     private final String id;
 
     RaidFeature(String id) {
         this.id = id;
-    }
-
-    public String getLootTableId() {
-        return "raid/feature/" + this.id;
     }
 
     public String getTranslatable() {
