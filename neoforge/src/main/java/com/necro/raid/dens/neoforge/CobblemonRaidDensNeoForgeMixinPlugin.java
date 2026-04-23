@@ -14,12 +14,14 @@ public class CobblemonRaidDensNeoForgeMixinPlugin extends CobblemonRaidDensMixin
     @Override
     protected boolean isModAndNewerThan(String mod, String version) {
         ModFileInfo info = LoadingModList.get().getModFileById(mod);
+        if (info == null) return false;
         return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion(version)) >= 0;
     }
 
     @Override
     protected boolean isModAndOlderThan(String mod, String version) {
         ModFileInfo info = LoadingModList.get().getModFileById(mod);
+        if (info == null) return false;
         return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion(version)) <= 0;
     }
 
