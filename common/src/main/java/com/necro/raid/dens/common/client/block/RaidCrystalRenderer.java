@@ -86,14 +86,6 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
     }
 
     public static boolean checkConfig(RaidCrystalBlockEntity blockEntity) {
-        return switch (blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER)) {
-            case TIER_ONE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one;
-            case TIER_TWO -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two;
-            case TIER_THREE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three;
-            case TIER_FOUR -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four;
-            case TIER_FIVE -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five;
-            case TIER_SIX -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six;
-            case TIER_SEVEN -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven;
-        };
+        return blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getAlpha() > 0;
     }
 }

@@ -8,26 +8,33 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name="cobblemonraiddens/client")
 public class ClientConfig implements ConfigData {
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier One Raids")
-    public boolean show_beam_tier_one = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier One Raids")
+    public int beam_strength_tier_one = 32;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Two Raids")
-    public boolean show_beam_tier_two = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Two Raids")
+    public int beam_strength_tier_two = 64;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Three Raids")
-    public boolean show_beam_tier_three = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Three Raids")
+    public int beam_strength_tier_three = 96;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Four Raids")
-    public boolean show_beam_tier_four = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Four Raids")
+    public int beam_strength_tier_four = 128;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Five Raids")
-    public boolean show_beam_tier_five = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Five Raids")
+    public int beam_strength_tier_five = 160;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Six Raids")
-    public boolean show_beam_tier_six = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Six Raids")
+    public int beam_strength_tier_six = 192;
     @ConfigEntry.Category("beacon_beam")
-    @Comment("Show Beacon Beam for Tier Seven Raids")
-    public boolean show_beam_tier_seven = true;
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Seven Raids")
+    public int beam_strength_tier_seven = 224;
     @ConfigEntry.Category("beacon_beam")
     @Comment("Render the raid crystal particle effects")
     public boolean show_particles = true;

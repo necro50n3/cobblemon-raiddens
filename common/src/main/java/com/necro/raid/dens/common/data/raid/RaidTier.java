@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.CobblemonRaidDensClient;
 import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -20,19 +21,25 @@ public enum RaidTier implements StringRepresentable {
     TIER_SEVEN("tier_seven", 224);
 
     private final String id;
-    private final int alpha;
     private boolean isPresent;
 
     private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
 
     RaidTier(String id, int alpha) {
         this.id = id;
-        this.alpha = alpha;
         this.isPresent = false;
     }
 
     public int getAlpha() {
-        return this.alpha;
+        return switch (this) {
+            case TIER_ONE -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_one;
+            case TIER_TWO -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_two;
+            case TIER_THREE -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_three;
+            case TIER_FOUR -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_four;
+            case TIER_FIVE -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_five;
+            case TIER_SIX -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_six;
+            case TIER_SEVEN -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_seven;
+        };
     }
 
     public String getLootTableId() {

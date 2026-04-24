@@ -18,53 +18,53 @@ public class ClientConfigScreen {
         ConfigEntryBuilder entryBuilder = builder.entryBuilder();
 
         builder.getOrCreateCategory(Component.translatable("text.autoconfig.cobblemonraiddens/client.category.beacon_beam"))
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_one"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_one = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_one"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_one, 0, 255)
+                .setDefaultValue(32)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_one = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_two"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_two = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_two"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_two, 0, 255)
+                .setDefaultValue(64)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_two = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_three"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_three = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_three"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_three, 0, 255)
+                .setDefaultValue(96)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_three = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_four"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_four = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_four"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_four, 0, 255)
+                .setDefaultValue(128)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_four = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_five"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_five = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_five, 0, 255)
+                .setDefaultValue(160)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_five = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_six"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_six = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_six, 0, 255)
+                .setDefaultValue(192)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_six = value)
                 .build()
             )
-            .addEntry(entryBuilder.startBooleanToggle(
-                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.show_beam_tier_seven"),
-                    CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven)
-                .setDefaultValue(true)
-                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.show_beam_tier_seven = value)
+            .addEntry(entryBuilder.startIntSlider(
+                    Component.translatable("text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven"),
+                    CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_seven, 0, 255)
+                .setDefaultValue(224)
+                .setSaveConsumer(value -> CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_tier_seven = value)
                 .build()
             )
             .addEntry(entryBuilder.startBooleanToggle(
