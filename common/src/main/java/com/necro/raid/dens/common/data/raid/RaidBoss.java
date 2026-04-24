@@ -322,7 +322,7 @@ public class RaidBoss {
 
         if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
         else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
-        else if (this.isShadow()) RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
+        else if (this.isShadow() && ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
         pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
@@ -386,7 +386,7 @@ public class RaidBoss {
 
         if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
         if (this.isGmax(pokemon)) pokemon.setGmaxFactor(true);
-        else if (this.isShadow()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
+        else if (this.isShadow() && ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         return pokemon;
