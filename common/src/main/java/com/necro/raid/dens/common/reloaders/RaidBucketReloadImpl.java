@@ -1,14 +1,11 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Optional;
 
 public class RaidBucketReloadImpl extends AbstractReloadImpl {
     public RaidBucketReloadImpl() {
@@ -23,11 +20,9 @@ public class RaidBucketReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        Optional<RaidBucket> bucketOpt = RaidBucket.codec().decode(JsonOps.INSTANCE, object).result().map(Pair::getFirst);
-        bucketOpt.ifPresent(bucket -> {
-            bucket.setId(key);
-            RaidBucketRegistry.register(bucket);
-        });
+        RaidBucket bucket = RaidBucket.codec().decode(JsonOps.INSTANCE, object).getOrThrow().getFirst();
+        bucket.setId(key);
+        RaidBucketRegistry.register(bucket);
     }
 
     @Override
@@ -36,5 +31,7 @@ public class RaidBucketReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void postLoad() {}
+    protected void postLoad() {
+        CobblemonRaidDens.LOGGER.info("Registered {} raid buckets", RaidBucketRegistry.getAll().size());
+    }
 }
