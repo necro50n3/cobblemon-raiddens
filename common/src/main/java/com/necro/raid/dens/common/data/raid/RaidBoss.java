@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.data.raid;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.mark.Mark;
@@ -24,11 +23,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
-import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.adapters.*;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
@@ -55,7 +53,7 @@ public class RaidBoss {
     @SerializedName("raid_type")
     private RaidType raidType;
     @SerializedName("raid_feature")
-    private RaidFeature raidFeature;
+    private String raidFeature;
     @SerializedName("loot_table")
     private BossLootTable lootTable;
     private Double weight;
@@ -109,7 +107,7 @@ public class RaidBoss {
     private transient ResourceLocation id;
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
-                    RaidFeature raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
+                    String raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
                     Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Integer maxPlayers,
                     Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
@@ -220,7 +218,8 @@ public class RaidBoss {
 
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidTier);
 
-        if (this.raidFeature == null) this.raidFeature = RaidFeature.DEFAULT;
+        if (this.raidFeature == null) this.raidFeature = "default";
+        else this.raidFeature = this.raidFeature.toLowerCase();
         if (this.weight == null) this.weight = 20.0;
         if (this.den == null) this.den = List.of("#cobblemonraiddens:default");
         if (this.key == null) this.key = new UniqueKey();
@@ -252,18 +251,14 @@ public class RaidBoss {
 
     public void applyAspects() {
         Set<String> aspects = new HashSet<>(this.boss.getAspects());
-        aspects.add("raid");
-        this.boss.setAspects(aspects);
-
         List<CustomPokemonProperty> customProperties = new ArrayList<>(this.boss.getCustomProperties());
 
-        if (this.raidFeature == RaidFeature.MEGA && customProperties.stream().filter(SpeciesFeature.class::isInstance).noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("mega_evolution")))
-            customProperties.add(new StringSpeciesFeature("mega_evolution", "mega"));
-        if (this.raidFeature == RaidFeature.DYNAMAX && customProperties.stream().filter(SpeciesFeature.class::isInstance).noneMatch(prop -> ((SpeciesFeature) prop).getName().equals("dynamax_form")))
-            customProperties.add(new StringSpeciesFeature("dynamax_form", "none"));
+        aspects.add("raid");
         customProperties.add(new StringSpeciesFeature("aspect", "raid"));
         customProperties.add(new FlagSpeciesFeature("uncatchable", true));
+        CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyAspects(aspects, customProperties);
 
+        this.boss.setAspects(aspects);
         this.boss.setCustomProperties(customProperties);
         this.reward.setTeraType(this.raidType.getSerializedName());
     }
@@ -320,9 +315,7 @@ public class RaidBoss {
         pokemonEntity.setDrops(new DropTable());
         pokemonEntity.addTag("alphas.non_wild");
 
-        if (this.isTera() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
-        else if (this.isDynamax() && ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
-        else if (this.isShadow() && ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
+        CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToBoss(pokemon, pokemonEntity);
 
         ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
         pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
@@ -335,7 +328,7 @@ public class RaidBoss {
 
     private float calculateScale(PokemonEntity pokemon) {
         float height;
-        if (this.isGmax(pokemon.getPokemon())) height = pokemon.getExposedSpecies().getHeight();
+        if (new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon)) height = pokemon.getExposedSpecies().getHeight();
         else height = pokemon.getExposedSpecies().getForm(pokemon.getAspects()).getHeight();
 
         EntityDimensions dimension = pokemon.getExposedSpecies().getForm(pokemon.getAspects()).getHitbox();
@@ -384,9 +377,7 @@ public class RaidBoss {
         this.setMoveSet(properties, pokemon, false);
         for (Mark mark : this.getMarks()) pokemon.exchangeMark(mark, true);
 
-        if (this.isDynamax()) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-        if (this.isGmax(pokemon)) pokemon.setGmaxFactor(true);
-        else if (this.isShadow() && ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
+        CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         return pokemon;
@@ -433,7 +424,7 @@ public class RaidBoss {
         return this.raidType;
     }
 
-    public RaidFeature getFeature() {
+    public String getFeature() {
         return this.raidFeature;
     }
 
@@ -598,8 +589,8 @@ public class RaidBoss {
         this.raidTier = tier;
     }
 
-    public void setFeature(RaidFeature feature) {
-        this.raidFeature = feature;
+    public void setFeature(String feature) {
+        this.raidFeature = feature.toLowerCase();
     }
 
     public void setType(RaidType type) {
@@ -716,27 +707,6 @@ public class RaidBoss {
         this.densActual = new ArrayList<>();
         this.displaySpecies = null;
         this.displayAspects = null;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isMega() {
-        return this.raidFeature == RaidFeature.MEGA;
-    }
-
-    public boolean isTera() {
-        return this.raidFeature == RaidFeature.TERA;
-    }
-
-    public boolean isDynamax() {
-        return this.raidFeature == RaidFeature.DYNAMAX;
-    }
-
-    public boolean isGmax(Pokemon pokemon) {
-        return this.isDynamax() && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon);
-    }
-
-    public boolean isShadow() {
-        return this.raidFeature == RaidFeature.SHADOW;
     }
 
     public RaidBoss copy() {

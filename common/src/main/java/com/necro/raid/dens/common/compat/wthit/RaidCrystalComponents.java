@@ -73,11 +73,9 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         if (raidBoss == null || raidBoss.getDisplaySpecies() == null) return;
 
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
-        RaidFeature feature = raidBoss.getFeature();
-
 
         MutableComponent component = raidBoss.getDisplaySpecies().getTranslatedName();
-        component.append(" | ").append(Component.translatable(feature.getTranslatable()));
+        component.append(" | ").append(Component.translatable(RaidFeature.getTranslatable(raidBoss.getFeature())));
         component.append(" | ").append(tier.getStars());
         tooltip.addLine(component);
 

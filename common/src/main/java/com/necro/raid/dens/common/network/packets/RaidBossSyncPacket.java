@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.network.packets;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.client.ClientRaidRegistry;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.network.ClientPacket;
@@ -40,7 +39,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         buf.writeResourceLocation(boss.getId());
         buf.writeEnum(boss.getTier());
         buf.writeEnum(boss.getType());
-        buf.writeEnum(boss.getFeature());
+        buf.writeUtf(boss.getFeature());
         buf.writeFloat(boss.getShinyRate());
         buf.writeInt(boss.getMaxCatches());
         buf.writeFloat(boss.getCatchRate());
@@ -54,7 +53,7 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
         boss.setId(buf.readResourceLocation());
         boss.setTier(buf.readEnum(RaidTier.class));
         boss.setType(buf.readEnum(RaidType.class));
-        boss.setFeature(buf.readEnum(RaidFeature.class));
+        boss.setFeature(buf.readUtf());
         boss.setShinyRate(buf.readFloat());
         boss.setMaxCatches(buf.readInt());
         boss.setCatchRate(buf.readFloat());

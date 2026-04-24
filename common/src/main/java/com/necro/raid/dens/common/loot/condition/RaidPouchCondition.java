@@ -2,7 +2,6 @@ package com.necro.raid.dens.common.loot.condition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.loot.context.RaidLootContexts;
@@ -39,7 +38,7 @@ public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<Raid
             && this.feature().map(p -> p.matches(itemStack)).orElse(true);
     }
 
-    public static LootItemCondition.Builder matches(@Nullable RaidTier tier, @Nullable RaidType type, @Nullable RaidFeature feature) {
+    public static LootItemCondition.Builder matches(@Nullable RaidTier tier, @Nullable RaidType type, @Nullable String feature) {
         return () -> new RaidPouchCondition(
             tier == null ? Optional.empty() : Optional.of(RaidTierPredicate.ofTier(tier)),
             type == null ? Optional.empty() : Optional.of(RaidTypePredicate.ofType(type)),
@@ -47,7 +46,7 @@ public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<Raid
         );
     }
 
-    public static LootItemCondition.Builder matches(@Nullable RaidFeature feature) {
+    public static LootItemCondition.Builder matches(@Nullable String feature) {
         return matches(null, null, feature);
     }
 }

@@ -25,8 +25,13 @@ public class CustomRegistry<K, T> {
     }
 
     public void freeze() {
+        if (this.isFrozen()) return;
         this.frozen = true;
         this.registry.trim();
+    }
+
+    public boolean isFrozen() {
+        return this.frozen;
     }
 
     public T get(K key) {

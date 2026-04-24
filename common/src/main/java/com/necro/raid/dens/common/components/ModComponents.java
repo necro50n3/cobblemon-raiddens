@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.components;
 
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.Holder;
@@ -9,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModComponents {
     public static Holder<DataComponentType<RaidTier>> TIER_COMPONENT;
-    public static Holder<DataComponentType<RaidFeature>> FEATURE_COMPONENT;
+    public static Holder<DataComponentType<String>> FEATURE_COMPONENT;
     public static Holder<DataComponentType<RaidType>> TYPE_COMPONENT;
     public static Holder<DataComponentType<ResourceLocation>> BOSS_COMPONENT;
     public static Holder<DataComponentType<Boolean>> BONUS_LOOT_COMPONENT;

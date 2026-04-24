@@ -55,7 +55,7 @@ dependencies {
     modCompileOnly "mcp.mobius.waila:wthit:neo-$rootProject.wthit_version"
 
     modCompileOnly "curse.maven:cobbledollars-859232:6604564"
-    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7257753"
+    modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:7952419"
 
     modRuntimeOnly "io.wispforest:accessories-neoforge:1.1.0-beta.52+1.21.1"
     forgeRuntimeLibrary("blue.endless:jankson:1.2.2")

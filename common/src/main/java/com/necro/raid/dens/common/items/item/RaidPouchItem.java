@@ -42,7 +42,7 @@ public class RaidPouchItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
-        RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
+        String feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
         boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
@@ -74,9 +74,9 @@ public class RaidPouchItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, @NotNull TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
-        RaidFeature feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
+        String feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         if (tier == null || feature == null) return;
-        tooltip.add(Component.translatable(feature.getTranslatable()).append(" | ").append(tier.getStars()));
+        tooltip.add(Component.translatable(RaidFeature.getTranslatable(feature)).append(" | ").append(tier.getStars()));
     }
 
     private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {

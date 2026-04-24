@@ -3,7 +3,6 @@ package com.necro.raid.dens.fabric.components;
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.Holder;
@@ -17,7 +16,7 @@ import java.util.function.UnaryOperator;
 public class FabricComponents {
     public static void registerDataComponents() {
         ModComponents.TIER_COMPONENT = Holder.direct(registerComponent("raid_tier", builder -> builder.persistent(RaidTier.codec())));
-        ModComponents.FEATURE_COMPONENT = Holder.direct(registerComponent("raid_feature", builder -> builder.persistent(RaidFeature.codec())));
+        ModComponents.FEATURE_COMPONENT = Holder.direct(registerComponent("raid_feature", builder -> builder.persistent(Codec.STRING)));
         ModComponents.TYPE_COMPONENT = Holder.direct(registerComponent("raid_type", builder -> builder.persistent(RaidType.codec())));
         ModComponents.BOSS_COMPONENT = Holder.direct(registerComponent("raid_boss", builder -> builder.persistent(ResourceLocation.CODEC)));
         ModComponents.BONUS_LOOT_COMPONENT = Holder.direct(registerComponent("bonus_loot", builder -> builder.persistent(Codec.BOOL)));

@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.advancements;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import kotlin.Unit;
 import net.minecraft.advancements.CriterionTrigger;
@@ -25,7 +24,7 @@ public class RaidDenCriteriaTriggers {
         ((RaidTierTrigger) RAID_TIER.value()).trigger(player, tier);
     }
 
-    public static void triggerRaidFeature(ServerPlayer player, RaidFeature feature) {
+    public static void triggerRaidFeature(ServerPlayer player, String feature) {
         ((RaidFeatureTrigger) RAID_FEATURE.value()).trigger(player, feature);
     }
 

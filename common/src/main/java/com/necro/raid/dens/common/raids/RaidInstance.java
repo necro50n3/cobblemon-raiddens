@@ -196,9 +196,9 @@ public class RaidInstance {
         }
 
         this.battles.add(battle);
-        List<RaidFeature> effects = new ArrayList<>();
-        if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.DYNAMAX);
-        if (this.raidBoss.isTera()) effects.add(RaidFeature.TERA);
+        List<String> effects = new ArrayList<>();
+        if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.Base.DYNAMAX.getId());
+        if (this.raidBoss.getFeature().equalsIgnoreCase("tera")) effects.add(RaidFeature.Base.TERA.getId());
         this.sendEvent(new StartRaidShowdownEvent(this.battleState, effects), battle);
         this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
         this.runScripts(RaidTriggerType.JOIN, battle, this.battles::size);

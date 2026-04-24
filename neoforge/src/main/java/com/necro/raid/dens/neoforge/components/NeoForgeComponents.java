@@ -3,7 +3,6 @@ package com.necro.raid.dens.neoforge.components;
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.Holder;
@@ -20,7 +19,7 @@ public class NeoForgeComponents {
 
     public static void registerDataComponents() {
         ModComponents.TIER_COMPONENT = registerComponent("raid_tier", RaidTier.codec());
-        ModComponents.FEATURE_COMPONENT = registerComponent("raid_feature", RaidFeature.codec());
+        ModComponents.FEATURE_COMPONENT = registerComponent("raid_feature", Codec.STRING);
         ModComponents.TYPE_COMPONENT = registerComponent("raid_type", RaidType.codec());
         ModComponents.BOSS_COMPONENT = registerComponent("raid_boss", ResourceLocation.CODEC);
         ModComponents.BONUS_LOOT_COMPONENT = registerComponent("bonus_loot", Codec.BOOL);

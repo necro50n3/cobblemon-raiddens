@@ -10,7 +10,6 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import kotlin.Unit;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,7 +26,7 @@ public class RaidCrystalSparkleRenderer {
         wrapper.updateMatrix(matrix.last().pose());
         wrapper.updatePosition(blockEntity.getBlockPos().getBottomCenter());
         RaidBoss boss = blockEntity.getRaidBoss();
-        RaidFeature feature = boss == null ? RaidFeature.DEFAULT : boss.getFeature();
+        String feature = boss == null ? "DEFAULT" : boss.getFeature();
         RaidType type = blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE);
 
         new ParticleStorm(
@@ -46,11 +45,11 @@ public class RaidCrystalSparkleRenderer {
         ).spawn();
     }
 
-    private static Vector4f getParticleColor(RaidFeature feature, RaidType type) {
-        return switch (feature) {
-            case DYNAMAX -> new Vector4f(1.0F, 0F, 0F, 0.5F);
-            case SHADOW -> new Vector4f(0.242F, 0F, 0.364F, 0.8F);
-            case TERA -> null;
+    private static Vector4f getParticleColor(String feature, RaidType type) {
+        return switch (feature.toLowerCase()) {
+            case "dynamax" -> new Vector4f(1.0F, 0F, 0F, 0.5F);
+            case "shadow" -> new Vector4f(0.242F, 0F, 0.364F, 0.8F);
+            case "tera" -> null;
             default -> type.getVectorColor();
         };
     }

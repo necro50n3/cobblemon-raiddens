@@ -18,12 +18,12 @@ import java.util.*;
 public class RaidBucket {
     private final HashSet<RaidTier> includeTiers;
     private final HashSet<RaidType> includeTypes;
-    private final HashSet<RaidFeature> includeFeatures;
+    private final HashSet<String> includeFeatures;
     private Set<ResourceLocation> includeBosses;
 
     private final HashSet<RaidTier> excludeTiers;
     private final HashSet<RaidType> excludeTypes;
-    private final HashSet<RaidFeature> excludeFeatures;
+    private final HashSet<String> excludeFeatures;
     private Set<ResourceLocation> excludeBosses;
 
     private Set<ResourceKey<Biome>> biomes;
@@ -38,8 +38,8 @@ public class RaidBucket {
 
     private final boolean isAlwaysValid;
 
-    private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<RaidFeature> includeFeatures, HashSet<String> includeBosses,
-                       HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<RaidFeature> excludeFeatures, HashSet<String> excludeBosses,
+    private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<String> includeFeatures, HashSet<String> includeBosses,
+                       HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<String> excludeFeatures, HashSet<String> excludeBosses,
                        HashSet<String> biomes, double weight) {
         this.includeTiers = includeTiers;
         this.includeTypes = includeTypes;
@@ -164,7 +164,7 @@ public class RaidBucket {
 
             if (!includeFeatures.isEmpty()) {
                 BitSet featureSet = new BitSet();
-                for (RaidFeature feature : includeFeatures) featureSet.or(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
+                for (String feature : includeFeatures) featureSet.or(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
                 this.compiled.and(featureSet);
             }
 
@@ -179,7 +179,7 @@ public class RaidBucket {
 
             for (RaidTier tier : excludeTiers) this.compiled.andNot(RaidRegistry.RAIDS_BY_TIER.get(tier));
             for (RaidType type : excludeTypes) this.compiled.andNot(RaidRegistry.RAIDS_BY_TYPE.get(type));
-            for (RaidFeature feature : excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
+            for (String feature : excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
             for (ResourceLocation raidBoss : excludeBosses) {
                 Integer index = RaidRegistry.RAID_INDEX.get(raidBoss);
                 if (index != null) this.compiled.clear(index);
@@ -188,7 +188,7 @@ public class RaidBucket {
         return this.compiled;
     }
 
-    private record RaidBucketFilters(HashSet<RaidTier> tiers, HashSet<RaidType> types, HashSet<RaidFeature> features, HashSet<String> bosses) {
+    private record RaidBucketFilters(HashSet<RaidTier> tiers, HashSet<RaidType> types, HashSet<String> features, HashSet<String> bosses) {
         public RaidBucketFilters() {
             this(new HashSet<>(), new HashSet<>(), new HashSet<>(), new HashSet<>());
         }
@@ -199,7 +199,7 @@ public class RaidBucket {
                     .optionalFieldOf("tier", new HashSet<>()).forGetter(RaidBucketFilters::tiers),
                 RaidType.codec().listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("type", new HashSet<>()).forGetter(RaidBucketFilters::types),
-                RaidFeature.codec().listOf().xmap(HashSet::new, ArrayList::new)
+                Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("feature", new HashSet<>()).forGetter(RaidBucketFilters::features),
                 Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("boss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)

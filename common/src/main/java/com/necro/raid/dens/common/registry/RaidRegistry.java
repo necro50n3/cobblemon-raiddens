@@ -2,9 +2,9 @@ package com.necro.raid.dens.common.registry;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
+import com.necro.raid.dens.common.util.RegistryMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -15,7 +15,7 @@ import java.util.*;
 public class RaidRegistry {
     public static final Map<RaidTier, BitSet> RAIDS_BY_TIER = new EnumMap<>(RaidTier.class);
     public static final Map<RaidType, BitSet> RAIDS_BY_TYPE = new EnumMap<>(RaidType.class);
-    public static final Map<RaidFeature, BitSet> RAIDS_BY_FEATURE = new EnumMap<>(RaidFeature.class);
+    public static final RegistryMap<String, BitSet> RAIDS_BY_FEATURE = new RegistryMap<>(CustomRaidRegistries.FEATURE_REGISTRY);
     public static final List<ResourceLocation> RAID_LIST = new ArrayList<>();
     public static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
     public static final Map<ResourceLocation, Integer> RAID_INDEX = new HashMap<>();
@@ -111,7 +111,7 @@ public class RaidRegistry {
         return roll(random, cachedWeights, matches);
     }
 
-    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, List<RaidTier> tiers, List<RaidType> types, List<RaidFeature> features) {
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, List<RaidTier> tiers, List<RaidType> types, List<String> features) {
         if (tiers == null || tiers.isEmpty()) return null;
 
         boolean cacheable = (tiers.size() == 1 && (types == null || types.size() <= 1) && (features == null || features.isEmpty()));
@@ -136,7 +136,7 @@ public class RaidRegistry {
 
         if (features != null && !features.isEmpty()) {
             BitSet featureSet = new BitSet();
-            for (RaidFeature feature : features) {
+            for (String feature : features) {
                 BitSet set = RAIDS_BY_FEATURE.get(feature);
                 if (set != null) featureSet.or(set);
             }
@@ -146,11 +146,11 @@ public class RaidRegistry {
         return getRandomRaidBoss(random, level, result, cacheable ? key : null);
     }
 
-    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidTier tier, RaidType type, RaidFeature feature) {
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidTier tier, RaidType type, String feature) {
         return getRandomRaidBoss(random, level, List.of(tier), type == null ? null : List.of(type), feature == null ? null : List.of(feature));
     }
 
-    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidType type, RaidFeature feature) {
+    public static ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidType type, String feature) {
         return getRandomRaidBoss(random, level, RaidTier.getWeightedRandom(random, level), type, feature);
     }
 

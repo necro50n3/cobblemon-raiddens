@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.google.gson.JsonSyntaxException;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
+import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
@@ -29,6 +30,7 @@ public class CustomRaidRegistries {
     public static final StringRegistry<Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final StringRegistry<RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
     public static final ScriptRegistry SCRIPT_REGISTRY = new ScriptRegistry();
+    public static final StringRegistry<RaidFeature> FEATURE_REGISTRY = new StringRegistry<>("default");
 
     private static final Map<String, Stat> STAT_MAP = Map.of(
         "atk", Stats.ATTACK,
@@ -44,12 +46,14 @@ public class CustomRaidRegistries {
         AI_REGISTRY.freeze();
         REWARD_DIST_REGISTRY.freeze();
         SCRIPT_REGISTRY.freeze();
+        FEATURE_REGISTRY.freeze();
     }
 
     public static void registerDefaults() {
         registerAI();
         registerRewardDistributors();
         registerScripts();
+        registerFeatures();
     }
 
     private static void registerAI() {
@@ -192,5 +196,13 @@ public class CustomRaidRegistries {
             List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(script.get("scripts"));
             return new WithChanceEvent(chance, events);
         });
+    }
+
+    private static void registerFeatures() {
+        FEATURE_REGISTRY.register(RaidFeature.Base.DEFAULT.getId(), RaidFeature.Base.DEFAULT);
+        FEATURE_REGISTRY.register(RaidFeature.Base.MEGA.getId(), RaidFeature.Base.MEGA);
+        FEATURE_REGISTRY.register(RaidFeature.Base.TERA.getId(), RaidFeature.Base.TERA);
+        FEATURE_REGISTRY.register(RaidFeature.Base.DYNAMAX.getId(), RaidFeature.Base.DYNAMAX);
+        FEATURE_REGISTRY.register(RaidFeature.Base.SHADOW.getId(), RaidFeature.Base.SHADOW);
     }
 }

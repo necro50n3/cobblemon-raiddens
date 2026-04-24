@@ -18,7 +18,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ConsumeItemTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
@@ -175,7 +174,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
                 true, false, true
             )
             .parent(joinRaidDenAdvancement)
-            .addCriterion("completed_tera", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.TERA))
+            .addCriterion("completed_tera", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.TERA.getId()))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_tera");
 
         AdvancementHolder dynamaxRaidAchievement = Advancement.Builder.advancement()
@@ -188,7 +187,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
                 true, false, true
             )
             .parent(teraRaidAchievement)
-            .addCriterion("completed_dynamax", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.DYNAMAX))
+            .addCriterion("completed_dynamax", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.DYNAMAX.getId()))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_dynamax");
 
         Advancement.Builder.advancement()
@@ -201,7 +200,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
                 true, false, true
             )
             .parent(dynamaxRaidAchievement)
-            .addCriterion("completed_mega", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.MEGA))
+            .addCriterion("completed_mega", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.MEGA.getId()))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_mega");
 
         Advancement.Builder.advancement()
