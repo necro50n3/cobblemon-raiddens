@@ -3,7 +3,7 @@
   "criteria": {
     "completed_mega": {
       "conditions": {
-        "feature": "MEGA"
+        "feature": "mega"
       },
       "trigger": "cobblemonraiddens:completed_feature"
     }

@@ -3,7 +3,7 @@
   "criteria": {
     "completed_dynamax": {
       "conditions": {
-        "feature": "DYNAMAX"
+        "feature": "dynamax"
       },
       "trigger": "cobblemonraiddens:completed_feature"
     }

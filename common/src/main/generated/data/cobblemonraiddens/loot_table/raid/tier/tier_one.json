@@ -176,7 +176,7 @@
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "TERA"
+          "feature": "tera"
         }
       ],
       "entries": [
@@ -206,7 +206,7 @@
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "DYNAMAX"
+          "feature": "dynamax"
         }
       ],
       "entries": [
@@ -236,7 +236,7 @@
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "SHADOW"
+          "feature": "shadow"
         }
       ],
       "entries": [

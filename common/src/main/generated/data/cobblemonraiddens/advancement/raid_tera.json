@@ -3,7 +3,7 @@
   "criteria": {
     "completed_tera": {
       "conditions": {
-        "feature": "TERA"
+        "feature": "tera"
       },
       "trigger": "cobblemonraiddens:completed_feature"
     }
