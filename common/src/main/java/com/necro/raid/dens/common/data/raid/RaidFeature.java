@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 
@@ -15,10 +16,13 @@ import java.util.Set;
 public interface RaidFeature {
     String getId();
 
+    // Adds additional aspects/custom properties to the raid boss
     void applyAspects(Set<String> aspects, List<CustomPokemonProperty> customProperties);
 
+    // Adds custom behaviours to the raid boss
     void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity);
 
+    // Adds custom behaviours to the reward Pokemon
     void applyToReward(Pokemon pokemon);
 
     static String getTranslatable(String id) {
@@ -73,7 +77,7 @@ public interface RaidFeature {
 
             @Override
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {
-                RaidDensMSDCompat.setupTera(pokemon);
+                if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
             }
 
             @Override
@@ -95,7 +99,7 @@ public interface RaidFeature {
 
             @Override
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {
-                RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
+                if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
             }
 
             @Override
@@ -116,12 +120,12 @@ public interface RaidFeature {
 
             @Override
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {
-                RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
+                if (ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowBoss(pokemon, pokemonEntity);
             }
 
             @Override
             public void applyToReward(Pokemon pokemon) {
-                RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
+                if (ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
             }
         }
     }
