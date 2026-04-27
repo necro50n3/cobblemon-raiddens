@@ -1,9 +1,7 @@
 package com.necro.raid.dens.common.config;
 
-import com.cobblemon.mod.common.api.mark.Mark;
 import com.necro.raid.dens.common.data.raid.Script;
 
-import java.util.List;
 import java.util.Map;
 
 public interface TierConfig {
@@ -24,7 +22,7 @@ public interface TierConfig {
     int maxCatches();
     Map<String, Script> defaultScripts();
     String raidAI();
-    List<Mark> marks();
+    String[] marks();
     int lives();
     boolean playersShareLives();
     int energy();

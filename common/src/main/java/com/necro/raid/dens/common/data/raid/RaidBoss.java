@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.data.raid;
 import com.cobblemon.mod.common.CobblemonEntities;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.mark.Mark;
+import com.cobblemon.mod.common.api.mark.Marks;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.moves.MoveTemplate;
@@ -88,7 +89,7 @@ public class RaidBoss {
     private Map<String, Script> script;
     @SerializedName("raid_ai")
     private String raidAI;
-    private List<Mark> marks;
+    private List<String> marks;
     private Integer lives;
     @SerializedName("players_share_lives")
     private Boolean playersShareLives;
@@ -111,7 +112,7 @@ public class RaidBoss {
                     Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Integer maxPlayers,
                     Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
-                    String raidAI, List<Mark> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
+                    String raidAI, List<String> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
                     Float catchRate) {
         this.reward = reward;
         this.boss = boss;
@@ -238,7 +239,7 @@ public class RaidBoss {
         if (this.maxCatches == null) this.maxCatches = tierConfig.maxCatches();
         if (this.script == null) this.script = tierConfig.defaultScripts();
         if (this.raidAI == null) this.raidAI = tierConfig.raidAI();
-        if (this.marks == null) this.marks = tierConfig.marks();
+        if (this.marks == null) this.marks = new ArrayList<>(List.of(tierConfig.marks()));
         if (this.lives == null) this.lives = tierConfig.lives();
         if (this.playersShareLives == null) this.playersShareLives = tierConfig.playersShareLives();
         if (this.energy == null) this.energy = tierConfig.energy();
@@ -375,7 +376,7 @@ public class RaidBoss {
         }
 
         this.setMoveSet(properties, pokemon, false);
-        for (Mark mark : this.getMarks()) pokemon.exchangeMark(mark, true);
+        for (Mark mark : this.buildMarks()) pokemon.exchangeMark(mark, true);
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
@@ -508,8 +509,12 @@ public class RaidBoss {
         return this.raidAI;
     }
 
-    public List<Mark> getMarks() {
+    public List<String> getMarks() {
         return this.marks;
+    }
+
+    public List<Mark> buildMarks() {
+        return this.marks.stream().map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
     }
 
     public Integer getLives() {
@@ -677,7 +682,7 @@ public class RaidBoss {
         this.raidAI = raidAI;
     }
 
-    public void setMarks(List<Mark> marks) {
+    public void setMarks(List<String> marks) {
         this.marks = new ArrayList<>(marks);
     }
 

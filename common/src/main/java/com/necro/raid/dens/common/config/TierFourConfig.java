@@ -1,12 +1,9 @@
 package com.necro.raid.dens.common.config;
 
-import com.cobblemon.mod.common.api.mark.Mark;
-import com.cobblemon.mod.common.api.mark.Marks;
 import com.necro.raid.dens.common.data.raid.Script;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 
@@ -111,8 +108,8 @@ public class TierFourConfig implements ConfigData, TierConfig {
     public String raidAI() {
         return this.raid_ai;
     }
-    public List<Mark> marks() {
-        return Arrays.stream(this.marks).map(string -> Marks.getByIdentifier(ResourceLocation.parse(string))).filter(Objects::nonNull).toList();
+    public String[] marks() {
+        return this.marks;
     }
     public int lives() {
         return this.lives;
