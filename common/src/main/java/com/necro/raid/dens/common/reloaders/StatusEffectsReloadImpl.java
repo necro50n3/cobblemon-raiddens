@@ -1,8 +1,12 @@
 package com.necro.raid.dens.common.reloaders;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.battles.runner.graal.GraalShowdownService;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import kotlin.Unit;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.graalvm.polyglot.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -46,5 +50,14 @@ public class StatusEffectsReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void postLoad() {}
+    public void postLoad() {
+        Cobblemon.INSTANCE.getShowdownThread().queue(service -> {
+            if (!(service instanceof GraalShowdownService graal)) return Unit.INSTANCE;
+            Value receiver = graal.getContext().getBindings("js").getMember("receiveConditionData");
+            for (Map.Entry<String, String> entry : this.statuses.entrySet()) {
+                receiver.execute(entry.getKey(), entry.getValue());
+            }
+            return Unit.INSTANCE;
+        });
+    }
 }
