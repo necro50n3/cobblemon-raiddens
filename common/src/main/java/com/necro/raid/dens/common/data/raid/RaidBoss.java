@@ -716,9 +716,9 @@ public class RaidBoss {
 
     public RaidBoss copy() {
         PokemonProperties rewardCopy = this.reward.copy();
-        rewardCopy.setCustomProperties(List.copyOf(this.reward.getCustomProperties()));
+        rewardCopy.setCustomProperties(new ArrayList<>(this.reward.getCustomProperties()));
         PokemonProperties bossCopy = this.boss.copy();
-        bossCopy.setCustomProperties(List.copyOf(this.boss.getCustomProperties()));
+        bossCopy.setCustomProperties(new ArrayList<>(this.boss.getCustomProperties()));
 
         return new RaidBoss(
             rewardCopy,
