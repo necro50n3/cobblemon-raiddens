@@ -137,7 +137,7 @@ public class RaidRegistry {
         if (features != null && !features.isEmpty()) {
             BitSet featureSet = new BitSet();
             for (String feature : features) {
-                BitSet set = RAIDS_BY_FEATURE.get(feature);
+                BitSet set = RAIDS_BY_FEATURE.get(feature.toLowerCase());
                 if (set != null) featureSet.or(set);
             }
             result.and(featureSet);
