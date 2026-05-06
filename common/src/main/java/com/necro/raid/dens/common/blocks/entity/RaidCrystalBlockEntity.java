@@ -310,7 +310,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public int getPlayerCount() {
         RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
         if (raid == null) return 0;
-        return raid.getPlayers().size();
+        return raid.getPlayerCount();
     }
 
     public long getTicksUntilNextReset() {

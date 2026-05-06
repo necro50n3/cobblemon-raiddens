@@ -324,6 +324,10 @@ public class RaidInstance {
         return this.activePlayers;
     }
 
+    public int getPlayerCount() {
+        return this.playerMap.size();
+    }
+
     public List<PokemonBattle> getBattles() {
         return this.battles;
     }
