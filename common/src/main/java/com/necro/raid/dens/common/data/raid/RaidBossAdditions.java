@@ -81,6 +81,7 @@ public class RaidBossAdditions {
             getOptional(this.additions()::getScale).ifPresent(boss::setScale);
             getOptional(this.additions()::getForceDynamax).ifPresent(boss::setForceDynamax);
             getOptional(this.additions()::getMusic).ifPresent(boss::setMusic);
+            getOptional(this.additions()::getNoAi).ifPresent(boss::setNoAi);
 
             getOptional(this.additions()::getMaxPlayers).ifPresent(boss::setMaxPlayers);
             getOptional(this.additions()::getMaxClears).ifPresent(boss::setMaxClears);

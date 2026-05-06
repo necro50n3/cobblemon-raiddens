@@ -229,7 +229,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidBoss, e);
             return false;
         }
-        pokemonEntity.setNoAi(true);
+        if (raidBoss.getNoAi()) pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         pokemonEntity.setPersistenceRequired();
         ((IRaidAccessor) pokemonEntity).crd_setRaidId(this.getUuid());
