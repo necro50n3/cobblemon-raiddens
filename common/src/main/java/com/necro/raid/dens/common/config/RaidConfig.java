@@ -26,6 +26,8 @@ public class RaidConfig implements ConfigData {
     public RaidCycleMode cycle_mode = RaidCycleMode.ALL;
     @Comment("Whether failed raids count towards the max clears. Default: false")
     public boolean max_clears_include_fails = false;
+    @Comment("Whether players can retry failed raids")
+    public boolean retry_failed_raids = true;
     @Comment("Whether the reward Pokemon attributes (IVs/Shiny/etc.) are synced between all players or rolled individually. Default: true")
     public boolean sync_rewards = true;
     @Comment("Whether raid crystals can be broken. Default: true")
