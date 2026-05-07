@@ -240,6 +240,7 @@ public class RaidInstance {
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
+            else if (this.activePlayers.stream().allMatch(p -> p.level() != this.bossEntity.level())) this.stopRaid(false);
             if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle);
         }
     }
