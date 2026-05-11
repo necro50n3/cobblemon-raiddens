@@ -101,7 +101,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
         if (player.getServer() == null) return false;
-        else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
+        else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears() || (!blockEntity.isInProgress() && !blockEntity.isIdle())) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"), true);
             return false;
         }
