@@ -277,6 +277,7 @@ public class RaidBoss {
 
         Pokemon pokemon;
         if (aspects != null) {
+            CobblemonRaidDens.LOGGER.info("Setting aspects from cache");
             properties.setAspects(aspects);
             pokemon = properties.create();
             pokemon.setShiny(aspects.contains("shiny"));
@@ -288,6 +289,7 @@ public class RaidBoss {
             else if (aspects.contains("radiant-regular")) new StringSpeciesFeature("radiant", "regular").apply(pokemon);
         }
         else if (CobblemonRaidDens.CONFIG.sync_rewards && properties.getShiny() == null) {
+            CobblemonRaidDens.LOGGER.info("Aspects is null. Rolling for shiny");
             pokemon = new Pokemon();
             properties.apply(pokemon);
             pokemon.initialize();

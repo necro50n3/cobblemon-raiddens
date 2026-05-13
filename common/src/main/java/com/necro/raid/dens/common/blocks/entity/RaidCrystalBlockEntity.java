@@ -236,6 +236,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (CobblemonRaidDens.CONFIG.sync_rewards && this.aspects == null) {
             this.aspects = pokemonEntity.getAspects();
+            this.setChanged();
         }
 
         RaidInstance raid = new RaidInstance(pokemonEntity, playerId);
@@ -253,7 +254,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void clearRaid(boolean wasWin) {
         this.clears++;
-        if (wasWin) this.aspects = null;
+        if (wasWin) {
+            this.aspects = null;
+            this.setChanged();
+        }
         if (this.isAtMaxClears()) {
             RaidHelper.resetClearedRaids(this.getUuid());
             if (this.getLevel() != null) this.getLevel().setBlock(
