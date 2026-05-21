@@ -30,7 +30,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public class ModEvents {
     @SubscribeEvent
     public static void commonTick(ServerTickEvent.Post event) {
-        RaidHelper.commonTick();
+        RaidHelper.commonTick(event.getServer());
         RaidJoinHelper.serverTick();
         RaidEvents.ScaleBossRaidEvent.tick();
     }

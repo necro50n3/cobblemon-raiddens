@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.config;
 
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
+import com.necro.raid.dens.common.data.raid.RaidTimerMode;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -20,6 +21,8 @@ public class RaidConfig implements ConfigData {
     public Map<String, Integer> dimension_spawn_rate = new HashMap<>(Map.of(
         "minecraft:overworld", 256
     ));
+    @Comment("The timer system raid dens use for resets (Options: GAME_TIME, SYSTEM_TIME, GLOBAL_GAME_TIME, GLOBAL_SYSTEM_TIME). Default: GAME_TIME")
+    public RaidTimerMode reset_mode = RaidTimerMode.GAME_TIME;
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")
     public int reset_time = 7200;
     @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, BUCKET, ALL). Default: ALL")

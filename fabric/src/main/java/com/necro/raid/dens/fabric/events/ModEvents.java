@@ -40,7 +40,7 @@ public class ModEvents {
     }
 
     public static void commonTick(MinecraftServer server) {
-        RaidHelper.commonTick();
+        RaidHelper.commonTick(server);
         RaidJoinHelper.serverTick();
         RaidEvents.ScaleBossRaidEvent.tick();
     }

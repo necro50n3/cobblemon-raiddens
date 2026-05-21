@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.raids.helpers;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.data.raid.RaidResetContext;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.RequestHandler;
@@ -26,6 +27,7 @@ public class RaidHelper extends SavedData {
 
     private final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
     private final Map<UUID, RaidState> RAID_CLOSE_QUEUE = new HashMap<>();
+    private RaidResetContext GLOBAL_RESET = new RaidResetContext(0, 0, 0);
 
     public static void initRequest(ServerPlayer host, RaidCrystalBlockEntity blockEntity) {
         if (REQUEST_QUEUE.containsKey(host.getUUID())) return;
@@ -93,6 +95,15 @@ public class RaidHelper extends SavedData {
         return state;
     }
 
+    public static RaidResetContext getGlobalCycle() {
+        return INSTANCE.GLOBAL_RESET;
+    }
+
+    public static void setGlobalCycle(long gameTime) {
+        INSTANCE.GLOBAL_RESET = new RaidResetContext(gameTime, INSTANCE.GLOBAL_RESET.globalCycle() + 1);
+        INSTANCE.setDirty();
+    }
+
     public static void onServerClose(MinecraftServer server) {
         server.execute(RaidHelper::closeAllRaids);
     }
@@ -101,7 +112,19 @@ public class RaidHelper extends SavedData {
         REQUEST_QUEUE.forEach((uuid, handler) -> handler.getBlockEntity().closeRaid());
     }
 
-    public static void commonTick() {
+    public static void commonTick(MinecraftServer server) {
+        switch (CobblemonRaidDens.CONFIG.reset_mode) {
+            case GLOBAL_GAME_TIME -> {
+                long current = server.overworld().getGameTime();
+                if (current - INSTANCE.GLOBAL_RESET.gameTime() > CobblemonRaidDens.CONFIG.reset_time * 20L) setGlobalCycle(current);
+            }
+            case GLOBAL_SYSTEM_TIME -> {
+                long current = System.currentTimeMillis();
+                if (current - INSTANCE.GLOBAL_RESET.systemTime() > CobblemonRaidDens.CONFIG.reset_time * 1000L) setGlobalCycle(current);
+            }
+            default -> {}
+        }
+
         List<RaidInstance> raids = new ArrayList<>(ACTIVE_RAIDS.values());
         raids.forEach(RaidInstance::tick);
     }
@@ -155,6 +178,8 @@ public class RaidHelper extends SavedData {
             }
         }
 
+        data.GLOBAL_RESET = RaidResetContext.load(compoundTag.getCompound("global_reset"));
+
         return data;
     }
 
@@ -190,6 +215,8 @@ public class RaidHelper extends SavedData {
             rewardQueueTag.add(handler.serialize(provider));
         }
         compoundTag.put("reward_queue", rewardQueueTag);
+
+        compoundTag.put("global_reset", GLOBAL_RESET.save(new CompoundTag()));
 
         return compoundTag;
     }
