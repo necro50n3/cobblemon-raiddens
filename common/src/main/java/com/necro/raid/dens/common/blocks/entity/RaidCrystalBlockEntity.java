@@ -433,7 +433,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     @Override
     protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         compoundTag.putInt("raid_cleared", this.clears);
-        compoundTag.put("reset_context", this.lastReset.save(new CompoundTag()));
+        if (this.lastReset != null) compoundTag.put("reset_context", this.lastReset.save(new CompoundTag()));
 
         if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());

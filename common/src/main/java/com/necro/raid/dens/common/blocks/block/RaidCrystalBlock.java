@@ -202,7 +202,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     protected void onRemove(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState2, boolean bl) {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid();
-            RaidHelper.resetClearedRaids(blockEntity.getUuid());
+            if (blockState.getValue(IS_NATURAL)) RaidHelper.resetClearedRaids(blockEntity.getUuid());
             RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
             if (raid != null) raid.closeRaid(level.getServer(), true);
         }
