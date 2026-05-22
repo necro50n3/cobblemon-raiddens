@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.mixins.player;
 
 import com.mojang.authlib.GameProfile;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -97,9 +96,7 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
             compoundTag.putString("crd_level", this.crd_homeLevel.toString());
         }
 
-        CobblemonRaidDens.LOGGER.info("Saving player data");
         if (this.crd_homePos != null && this.crd_homeLevel != null && RaidUtils.isRaidDimension(this.level())) {
-            CobblemonRaidDens.LOGGER.info("Overriding player pos and dimension");
             compoundTag.put("Pos", this.newDoubleList(this.crd_homePos.x(), this.crd_homePos.y(), this.crd_homePos.z()));
             compoundTag.putString("Dimension", this.crd_homeLevel.toString());
         }

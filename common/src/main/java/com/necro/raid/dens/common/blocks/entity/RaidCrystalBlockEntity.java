@@ -472,8 +472,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         );
     }
 
-
-
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() { return this.cache; }
 }
