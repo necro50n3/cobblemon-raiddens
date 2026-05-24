@@ -17,6 +17,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.necro.raid.dens.common.util.IEVExtension;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
@@ -59,12 +60,12 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             stat -> stat.getIdentifier().getPath()
         );
 
+    @SuppressWarnings("ConstantConditions")
     private static final Codec<EVs> EV_CODEC = Codec.unboundedMap(STAT_CODEC, Codec.intRange(0, EVs.MAX_STAT_VALUE))
         .comapFlatMap(
             map -> {
-                if (map.values().stream().mapToInt(Integer::intValue).sum() > EVs.MAX_TOTAL_VALUE) return DataResult.error(() -> "EVs cannot exceed a total of " + EVs.MAX_TOTAL_VALUE);
                 EVs evs = Cobblemon.INSTANCE.getStatProvider().createEmptyEVs();
-                map.forEach(evs::set);
+                map.forEach((stat, value) -> ((IEVExtension) (Object) evs).crd_forceSet(stat, value));
                 return DataResult.success(evs);
             },
             evs -> {

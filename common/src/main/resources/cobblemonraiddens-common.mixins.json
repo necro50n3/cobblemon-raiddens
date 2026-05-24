@@ -34,6 +34,7 @@
         "raid.BattleActorMixin",
         "raid.BattleRegistryMixin",
         "raid.CommandsMixin",
+        "raid.EVsMixin",
         "raid.PokemonBattleMixin",
         "raid.PokemonEntityMixin",
         "raid.PokemonMixin",
