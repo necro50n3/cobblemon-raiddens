@@ -19,7 +19,8 @@ public class RaidRegistry {
     public static final List<ResourceLocation> RAID_LIST = new ArrayList<>();
     public static final Map<ResourceLocation, RaidBoss> RAID_LOOKUP = new HashMap<>();
     public static final Map<ResourceLocation, Integer> RAID_INDEX = new HashMap<>();
-    public static Map<ResourceLocation, Set<ResourceLocation>> RAID_TAGS = new HashMap<>();
+    public static final Map<ResourceLocation, Set<ResourceLocation>> RAID_TAGS = new HashMap<>();
+    public static final Map<ResourceLocation, Set<ResourceLocation>> TAG_REVERSE_LOOKUP = new HashMap<>();
 
     public static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
     public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
@@ -62,7 +63,16 @@ public class RaidRegistry {
     }
 
     public static void setTags(Map<ResourceLocation, Set<ResourceLocation>> tags) {
-        RAID_TAGS = tags;
+        tags.forEach(RaidRegistry::addTags);
+    }
+
+    public static void addTags(ResourceLocation tag, Set<ResourceLocation> bosses) {
+        RAID_TAGS.computeIfAbsent(tag, set -> new HashSet<>()).addAll(bosses);
+        bosses.forEach(boss -> TAG_REVERSE_LOOKUP.computeIfAbsent(boss, set -> new HashSet<>()).add(tag));
+    }
+
+    public static Set<ResourceLocation> getTagsOfBoss(ResourceLocation boss) {
+        return new HashSet<>(TAG_REVERSE_LOOKUP.getOrDefault(boss, Set.of()));
     }
 
     public static boolean isTag(ResourceLocation tag, ResourceLocation boss) {

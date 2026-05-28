@@ -26,6 +26,8 @@ public class RaidBossAdditions {
     private String suffix;
     @SerializedName("force_apply")
     private Boolean forceApply;
+    @SerializedName("extend_tags")
+    private Boolean extendTags;
 
     public void applyDefaults() {
         if (this.additions == null) throw new JsonSyntaxException("Missing required field: \"additions\"");
@@ -37,6 +39,7 @@ public class RaidBossAdditions {
         if (this.suffix == null) this.suffix = "";
         if (!this.replace && !this.suffix.startsWith("_")) this.suffix = "_" + this.suffix;
         if (this.forceApply == null) this.forceApply = false;
+        if (this.extendTags == null) this.extendTags = !this.replace;
     }
 
     public void apply(List<ResourceLocation> registry) {
@@ -108,6 +111,7 @@ public class RaidBossAdditions {
             if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
                 RaidRegistry.register(boss);
+                if (this.extendTags()) RaidRegistry.addTags(boss.getId(), RaidRegistry.getTagsOfBoss(id));
             }
         }
     }
@@ -138,6 +142,10 @@ public class RaidBossAdditions {
 
     public boolean forceApply() {
         return this.forceApply;
+    }
+
+    public boolean extendTags() {
+        return this.extendTags;
     }
 
     private static <T> Optional<T> getOptional(Supplier<T> supplier) {
