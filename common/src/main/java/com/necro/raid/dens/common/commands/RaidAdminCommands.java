@@ -6,6 +6,7 @@ import com.cobblemon.mod.common.util.PermissionUtilsKt;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
@@ -30,6 +31,7 @@ public class RaidAdminCommands {
     private static final Permission RESET_CLEARS = new RaidDenPermission("command.resetclears", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
     private static final Permission REFRESH = new RaidDenPermission("command.refreshother", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
     private static final Permission FORCE_CLEAR = new RaidDenPermission("command.forceclear", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
+    private static final Permission CYCLE_RAIDS = new RaidDenPermission("command.cycleraids", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("crd")
@@ -74,6 +76,11 @@ public class RaidAdminCommands {
                     .requires(CommandSourceStack::isPlayer)
                     .executes(context -> forceClear(context.getSource().getPlayer())),
                 FORCE_CLEAR, true
+            ))
+            .then(PermissionUtilsKt.permission(
+                Commands.literal("cycleraids")
+                    .executes(RaidAdminCommands::cycleRaids),
+                CYCLE_RAIDS, true
             ))
         );
     }
@@ -151,5 +158,17 @@ public class RaidAdminCommands {
         if (raid == null) return 0;
         raid.stopRaid(true);
         return 1;
+    }
+
+    private static int cycleRaids(CommandContext<CommandSourceStack> context) {
+        if (CobblemonRaidDens.CONFIG.reset_mode.isGlobal()) {
+            RaidHelper.setGlobalCycle(context.getSource().getServer().overworld().getGameTime());
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.cycle_raids"));
+            return 1;
+        }
+        else {
+            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.reset_mode_not_global"));
+            return 0;
+        }
     }
 }

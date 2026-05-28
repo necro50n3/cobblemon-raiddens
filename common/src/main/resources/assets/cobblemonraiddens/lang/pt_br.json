@@ -55,6 +55,7 @@
     "error.cobblemonraiddens.player_in_raid": "Você não pode atualizar um jogador que está no meio de uma raid.",
     "error.cobblemonraiddens.raid_boss_not_found": "Falha ao criar a bolsa de raid devido à ausência do chefe de raid.",
     "error.cobblemonraiddens.raid_boss_spawn_fail": "Falha ao criar raid. Verifique as logs para identificar o erro.",
+
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -96,6 +97,7 @@
     "key.cobblemonraiddens.short.left_mouse": "MOUSE ESQ",
     "key.cobblemonraiddens.short.middle_mouse": "MOUSE MEIO",
     "key.cobblemonraiddens.short.right_mouse": "MOUSE DIR",
+
     "message.cobblemonraiddens.command.refresh_player": "%s foi atualizado.",
     "message.cobblemonraiddens.command.reset_clears": "Conclusões redefinidas com sucesso.",
     "message.cobblemonraiddens.command.remove_dimension": "A dimensão da raid foi removida.",

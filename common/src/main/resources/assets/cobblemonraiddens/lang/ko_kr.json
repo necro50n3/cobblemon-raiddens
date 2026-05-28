@@ -55,6 +55,7 @@
   "error.cobblemonraiddens.player_in_raid": "레이드 도중인 플레이어는 새로고침할 수 없습니다.",
   "error.cobblemonraiddens.raid_boss_not_found": "레이드 보스가 없어 레이드 파우치를 생성하지 못했습니다.",
 
+
   "feature.cobblemonraiddens.default": "일반",
   "feature.cobblemonraiddens.dynamax": "다이맥스",
   "feature.cobblemonraiddens.gigantamax": "거다이맥스",
@@ -96,6 +97,7 @@
   "key.cobblemonraiddens.short.left_mouse": "좌클릭",
   "key.cobblemonraiddens.short.middle_mouse": "휠클릭",
   "key.cobblemonraiddens.short.right_mouse": "우클릭",
+
   "message.cobblemonraiddens.command.refresh_player": "%s(이)가 새로고침되었습니다.",
   "message.cobblemonraiddens.command.reset_clears": "클리어 기록을 성공적으로 초기화했습니다.",
   "message.cobblemonraiddens.command.remove_dimension": "레이드 차원이 제거되었습니다.",

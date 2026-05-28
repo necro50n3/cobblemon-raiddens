@@ -55,6 +55,7 @@
     "error.cobblemonraiddens.player_in_raid": "Vous ne pouvez pas actualiser un joueur en plein raid.",
 
 
+
     "feature.cobblemonraiddens.default": "Normal",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -95,6 +96,7 @@
     "key.cobblemonraiddens.short.left_mouse": "CSG",
     "key.cobblemonraiddens.short.middle_mouse": "CSM",
     "key.cobblemonraiddens.short.right_mouse": "CSD",
+
     "message.cobblemonraiddens.raid.boss_spawn_failed": "Le boss de raid ou l’antre de raid n’a pas pu apparaître.",
     "message.cobblemonraiddens.command.refresh_player": "%s a été actualisé.",
     "message.cobblemonraiddens.command.reset_clears": "Réinitialisation des victoires réussie.",
