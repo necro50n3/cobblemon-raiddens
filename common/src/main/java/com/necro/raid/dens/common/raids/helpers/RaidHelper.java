@@ -20,6 +20,7 @@ import java.util.*;
 
 public class RaidHelper extends SavedData {
     public static RaidHelper INSTANCE;
+    private static final RaidResetContext INITIAL_GLOBAL_RESET = new RaidResetContext(0, 0, 0);
 
     public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
     public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
@@ -96,7 +97,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static RaidResetContext getGlobalCycle() {
-        return INSTANCE.GLOBAL_RESET;
+        return INSTANCE == null ? INITIAL_GLOBAL_RESET : INSTANCE.GLOBAL_RESET;
     }
 
     public static void setGlobalCycle(long gameTime) {
