@@ -8,7 +8,9 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleMusicPacket;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TurnTrigger;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -117,5 +119,34 @@ public class RaidEvents {
 
         @Override
         public void run(RaidInstance raid, @Nullable ServerPlayer player) {}
+    }
+
+    public record RunCommandRaidEvent(String target, String command) implements BroadcastingRaidEvent {
+        @Override
+        public void broadcast(RaidInstance raid, Collection<ServerPlayer> players) {
+            if (players.isEmpty()) return;
+            MinecraftServer server = ((ServerPlayer) players.toArray()[0]).getServer();
+            if (server == null) return;
+            if ("player".equalsIgnoreCase(this.target) || "players".equalsIgnoreCase(this.target)) {
+                for (ServerPlayer player : players) {
+                    this.runCommand(server, raid, this.command.replace("%PLAYER%", player.getName().getString()));
+                }
+            }
+            else this.runCommand(server, raid, this.command);
+        }
+
+        @Override
+        public void run(RaidInstance raid, @Nullable ServerPlayer player) {}
+
+        private void runCommand(MinecraftServer server, RaidInstance raid, String command) {
+            server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command
+                .replace("%POS%", this.getPos(raid.getBossEntity().blockPosition()))
+                .replace("%BOSS%", raid.getBossEntity().getStringUUID())
+            );
+        }
+
+        private String getPos(BlockPos blockPos) {
+            return blockPos.getX() + " " + blockPos.getY() + " " + blockPos.getZ();
+        }
     }
 }
