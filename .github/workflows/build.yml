@@ -21,7 +21,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-    - name: Make gradlew executable
+    - name: Make gradlew Executable
       run: chmod +x ./gradlew
     
     - name: Build Fabric
@@ -29,3 +29,12 @@ jobs:
 
     - name: Build Neoforge
       run: ./gradlew neoforge:build
+    
+    - name: Prepare Upload Artifact
+      run: mkdir -p ./artifact/fabric && mkdir -p ./artifact/neoforge && mv ./fabric/build/libs/* ./artifact/fabric && mv ./neoforge/build/libs/* ./artifact/neoforge
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        name: build-output
+        path: ./artifact
