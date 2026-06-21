@@ -139,6 +139,7 @@ public class RaidEvents {
         public void run(RaidInstance raid, @Nullable ServerPlayer player) {}
 
         private void runCommand(MinecraftServer server, RaidInstance raid, String command) {
+            command = command.startsWith("/") ? command.substring(1) : command;
             server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command
                 .replace("%POS%", this.getPos(raid.getBossEntity().blockPosition()))
                 .replace("%BOSS%", raid.getBossEntity().getStringUUID())
