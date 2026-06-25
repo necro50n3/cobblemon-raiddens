@@ -1,9 +1,13 @@
 package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector4f;
+
+import java.util.Arrays;
+import java.util.List;
 
 public enum RaidType implements StringRepresentable {
     NONE("none", 4079166),
@@ -69,6 +73,12 @@ public enum RaidType implements StringRepresentable {
     @Override
     public @NotNull String getSerializedName() {
         return this.id;
+    }
+
+    public static RaidType getRandom(RandomSource random) {
+        List<RaidType> types = Arrays.stream(RaidType.values()).filter(RaidType::isPresent).toList();
+        if (types.isEmpty()) return NONE;
+        return types.get(random.nextInt(types.size()));
     }
 
     public static RaidType fromString(String name) {
