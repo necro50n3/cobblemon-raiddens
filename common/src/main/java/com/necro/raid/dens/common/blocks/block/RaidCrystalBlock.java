@@ -216,7 +216,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         ItemStack itemStack = context.getItemInHand();
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
-        if (data == null) return blockState;
+        if (data == null) {
+            // ensure raid tier is random if it can't be cycled.
+            if (!blockState.getValue(CYCLE_MODE).canCycleTier()) {
+                Level level = context.getLevel();
+                blockState = blockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
+                return blockState;
+            }
+            return blockState;
+        }
         CompoundTag tag = data.copyTag();
 
         RaidBoss boss = RaidRegistry.getRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")));
