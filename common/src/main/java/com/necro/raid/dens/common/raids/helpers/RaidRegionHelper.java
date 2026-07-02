@@ -1,9 +1,12 @@
 package com.necro.raid.dens.common.raids.helpers;
 
+import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.dimension.RaidAllocation;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,22 +16,34 @@ import java.util.stream.IntStream;
 
 public class RaidRegionHelper {
     private static final int SPACING = 2000;
-    private static final int RAID_CAP = 10000;
 
     private static final Map<UUID, Integer> INDEX_MAP = new HashMap<>();
     private static final Map<Integer, RaidRegion> REGION_MAP = new HashMap<>();
 
-    public static RaidRegion createRegion(UUID raid, ResourceLocation structure) {
-        OptionalInt optionalIndex = IntStream.range(0, RAID_CAP)
-            .filter(i -> !REGION_MAP.containsKey(i))
-            .findFirst();
-        if (optionalIndex.isEmpty()) return null;
+    public static RaidRegion createRegion(UUID raid, ResourceLocation structure, RandomSource random) {
+        int index = CobblemonRaidDens.CONFIG.raid_allocation == RaidAllocation.SPIRAL ? getNextIndex() : getRandomIndex(random);
+        if (index == -1) return null;
 
-        int index = optionalIndex.getAsInt();
         RaidRegion region = new RaidRegion(coordFromIndex(index), structure);
         INDEX_MAP.put(raid, index);
         REGION_MAP.put(index, region);
         return region;
+    }
+
+    private static int getNextIndex() {
+        OptionalInt optionalIndex = IntStream.range(0, CobblemonRaidDens.CONFIG.raid_cap)
+            .filter(i -> !REGION_MAP.containsKey(i))
+            .findFirst();
+        if (optionalIndex.isEmpty()) return -1;
+        return optionalIndex.getAsInt();
+    }
+
+    private static int getRandomIndex(RandomSource random) {
+        int[] indices = IntStream.range(0, CobblemonRaidDens.CONFIG.raid_cap)
+            .filter(i -> !REGION_MAP.containsKey(i))
+            .toArray();
+        if (indices.length == 0) return -1;
+        return indices[random.nextInt(Math.min(indices.length, 9))];
     }
 
     public static RaidRegion getRegion(UUID raid) {

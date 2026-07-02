@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.data.dimension.RaidAllocation;
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTimerMode;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -41,4 +42,8 @@ public class RaidConfig implements ConfigData {
     public int max_players_for_support = 4;
     @Comment("The amount of raid energy required to convert a raid shard. Default: 100")
     public int required_energy = 100;
+    @Comment("How many raids can occur simultaneously. Determines raid coordinate allocation. Default: 10000")
+    public int raid_cap = 10000;
+    @Comment("How raid coordinate allocation is determined (Options: SPIRAL, RANDOM). Default: SPIRAL")
+    public RaidAllocation raid_allocation = RaidAllocation.SPIRAL;
 }

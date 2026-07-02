@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -150,8 +151,9 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         if (player.getServer() == null) return false;
 
-        ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(player.level().getRandom());
-        RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure);
+        RandomSource random = player.level().getRandom();
+        ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(random);
+        RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure, random);
         if (region == null || !blockEntity.spawnRaidBoss(player.getUUID())) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
