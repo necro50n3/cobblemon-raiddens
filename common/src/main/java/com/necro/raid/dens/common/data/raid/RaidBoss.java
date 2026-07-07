@@ -14,6 +14,7 @@ import com.cobblemon.mod.common.api.pokemon.feature.*;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
+import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
@@ -387,6 +388,16 @@ public class RaidBoss {
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
+
+        if (!CobblemonRaidDens.CONFIG.use_natural_ivs) {
+            IVs ivs = pokemon.getIvs();
+            IVs randomIVs = IVs.createRandomIVs(0);
+            pokemon.setIvs$common(randomIVs);
+            ivs.forEach(entry -> {
+                if (entry.getValue() != IVs.MAX_VALUE) return;
+                randomIVs.setHyperTrainedIV(entry.getKey(), entry.getValue());
+            });
+        }
 
         return pokemon;
     }

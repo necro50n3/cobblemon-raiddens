@@ -46,4 +46,6 @@ public class RaidConfig implements ConfigData {
     public int raid_cap = 10000;
     @Comment("How raid coordinate allocation is determined (Options: SPIRAL, RANDOM). Default: SPIRAL")
     public RaidAllocation raid_allocation = RaidAllocation.SPIRAL;
+    @Comment("Whether IVs from raids affect the Pokemon's natural IVs or hyper trained IVs. Default: true")
+    public boolean use_natural_ivs = true;
 }
