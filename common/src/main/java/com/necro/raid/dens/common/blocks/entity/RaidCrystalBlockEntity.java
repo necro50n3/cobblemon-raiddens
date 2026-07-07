@@ -210,7 +210,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         return this.raidBoss == null ? this.generateRandom(level, blockState, cycleMode) : this.raidBoss;
     }
 
-    public boolean spawnRaidBoss(UUID playerId) {
+    public boolean spawnRaidBoss(UUID playerId, double scaleModifier) {
         if (this.getLevel() == null) return false;
         RaidBoss raidBoss = this.getRaidBoss();
         RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
@@ -229,6 +229,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidBoss, e);
             return false;
         }
+        pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleModifier));
         if (raidBoss.getNoAi()) pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         pokemonEntity.setPersistenceRequired();

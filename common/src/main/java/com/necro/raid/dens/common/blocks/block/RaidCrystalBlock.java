@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -154,7 +155,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         RandomSource random = player.level().getRandom();
         ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(random);
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure, random);
-        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID())) {
+        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID(), RaidDenRegistry.getScaleModifier(structure))) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
         }
