@@ -269,7 +269,7 @@ public class RaidBoss {
 
         this.boss.setAspects(aspects);
         this.boss.setCustomProperties(customProperties);
-        this.reward.setTeraType(this.raidType.getSerializedName());
+        if (this.reward.getTeraType() == null) this.reward.setTeraType(this.raidType.getSerializedName());
     }
 
     public PokemonEntity getBossEntity(ServerLevel level, Set<String> aspects) {

@@ -35,6 +35,10 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         return Optional.ofNullable(properties.getEvs());
     }
 
+    private static Optional<String> teraTypeAdapter(PokemonProperties properties) {
+        return Optional.ofNullable(properties.getTeraType());
+    }
+
     private static Stat statMap(String id) {
         return switch (id) {
             case "hp" -> Stats.HP;
@@ -109,6 +113,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .forGetter(PokemonProperties::getAspects),
         Codec.STRING.fieldOf("form").orElse("").forGetter(PokemonProperties::getForm),
         Codec.BOOL.fieldOf("gmax").orElse(false).forGetter(PokemonProperties::getGmaxFactor),
+        Codec.STRING.optionalFieldOf("tera_type").forGetter(PropertiesAdapter::teraTypeAdapter),
         FEATURE_CODEC.listOf()
             .xmap(
                 list -> list.stream().map(feature -> (CustomPokemonProperty) feature).toList(),
@@ -117,7 +122,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .fieldOf("custom_properties")
             .orElse(new ArrayList<>())
             .forGetter(PokemonProperties::getCustomProperties)
-    ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, gmax, customProperties) -> {
+    ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, gmax, tera, customProperties) -> {
         PokemonProperties properties = PokemonProperties.Companion.parse("");
         if (!species.isBlank()) properties.setSpecies(species);
         try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
@@ -132,6 +137,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         if (!aspects.isEmpty()) properties.setAspects(aspects);
         if (!form.isBlank()) properties.setForm(form);
         if (gmax) properties.setGmaxFactor(true);
+        tera.ifPresent(properties::setTeraType);
         if (!customProperties.isEmpty()) properties.setCustomProperties(new ArrayList<>(customProperties));
         return properties;
     }));
