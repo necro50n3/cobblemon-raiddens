@@ -269,13 +269,13 @@ public class RaidBoss {
 
         this.boss.setAspects(aspects);
         this.boss.setCustomProperties(customProperties);
-        if (this.reward.getTeraType() == null) this.reward.setTeraType(this.raidType.getSerializedName());
     }
 
     public PokemonEntity getBossEntity(ServerLevel level, Set<String> aspects) {
         PokemonProperties properties = this.getBossProperties().copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
+        if (properties.getTeraType() == null) properties.setTeraType(this.getType().getSerializedName());
         properties.setMinPerfectIVs(6);
 
         Pokemon pokemon;
@@ -360,6 +360,7 @@ public class RaidBoss {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getMinPerfectIVs() == null) properties.setMinPerfectIVs(tierConfig.ivs());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
+        if (properties.getTeraType() == null) properties.setTeraType(this.getType().getSerializedName());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
