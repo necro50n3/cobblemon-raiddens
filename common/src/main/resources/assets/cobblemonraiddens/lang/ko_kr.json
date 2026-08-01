@@ -100,6 +100,7 @@
 
   "message.cobblemonraiddens.command.refresh_player": "%s(이)가 새로고침되었습니다.",
   "message.cobblemonraiddens.command.reset_clears": "클리어 기록을 성공적으로 초기화했습니다.",
+
   "message.cobblemonraiddens.command.remove_dimension": "레이드 차원이 제거되었습니다.",
   "message.cobblemonraiddens.raid.accepted_request": "요청이 수락되었습니다.",
   "message.cobblemonraiddens.raid.already_hosting": "이미 다른 레이드를 호스팅하고 있습니다.",

@@ -97,14 +97,15 @@
     "key.cobblemonraiddens.short.middle_mouse": "CSM",
     "key.cobblemonraiddens.short.right_mouse": "CSD",
 
-    "message.cobblemonraiddens.raid.boss_spawn_failed": "Le boss de raid ou l’antre de raid n’a pas pu apparaître.",
     "message.cobblemonraiddens.command.refresh_player": "%s a été actualisé.",
     "message.cobblemonraiddens.command.reset_clears": "Réinitialisation des victoires réussie.",
+
     "message.cobblemonraiddens.command.remove_dimension": "La dimension du raid a été supprimée.",
     "message.cobblemonraiddens.raid.accepted_request": "Votre demande a été acceptée.",
     "message.cobblemonraiddens.raid.already_hosting": "Vous hébergez déjà un autre raid.",
     "message.cobblemonraiddens.raid.already_in_queue": "Vous êtes déjà en attente pour rejoindre un raid.",
     "message.cobblemonraiddens.raid.already_participating": "Vous participez déjà à un autre raid.",
+    "message.cobblemonraiddens.raid.boss_spawn_failed": "Le boss de raid ou l’antre de raid n’a pas pu apparaître.",
     "message.cobblemonraiddens.raid.confirm_accept_request": "Vous avez accepté la demande de participation.",
     "message.cobblemonraiddens.raid.confirm_deny_request": "Vous avez refusé la demande de participation.",
     "message.cobblemonraiddens.raid.fainted_lead": "Votre %s est déjà K.O. !",

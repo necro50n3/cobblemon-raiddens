@@ -100,6 +100,7 @@
     "message.cobblemonraiddens.command.cycle_raids": "All raids have been successfully cycled.",
     "message.cobblemonraiddens.command.refresh_player": "%s has been refreshed.",
     "message.cobblemonraiddens.command.reset_clears": "Successfully reset clears.",
+    "message.cobblemonraiddens.command.reset_clears_not_found": "Could not find raid crystal at that location.",
     "message.cobblemonraiddens.command.remove_dimension": "The raid dimension has been removed.",
     "message.cobblemonraiddens.raid.accepted_request": "Your request has been accepted.",
     "message.cobblemonraiddens.raid.already_hosting": "You are already hosting another raid.",

@@ -129,13 +129,14 @@ public class RaidAdminCommands {
             raidCrystal.resetClears();
             return 1;
         }
-        else return 0;
+        else {
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.reset_clears_not_found"));
+            return 0;
+        }
     }
 
     private static int resetClearsForAll(CommandContext<CommandSourceStack> context, BlockPos blockPos) {
-        ServerPlayer player = context.getSource().getPlayer();
-        if (player == null) return 0;
-        ServerLevel dimension = player.serverLevel();
+        ServerLevel dimension = context.getSource().getLevel();
         return resetClearsForAll(context, blockPos, dimension);
     }
 
@@ -149,7 +150,10 @@ public class RaidAdminCommands {
             dimension.setBlock(blockPos, blockState.setValue(RaidCrystalBlock.ACTIVE, true), 2);
             return 1;
         }
-        else return 0;
+        else {
+            context.getSource().sendSystemMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.command.reset_clears_not_found"));
+            return 0;
+        }
     }
 
     private static int forceClear(ServerPlayer player) {
