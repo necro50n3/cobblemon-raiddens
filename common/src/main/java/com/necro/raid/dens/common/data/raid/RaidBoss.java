@@ -14,6 +14,7 @@ import com.cobblemon.mod.common.api.pokemon.feature.*;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Gender;
+import com.cobblemon.mod.common.pokemon.IVs;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.cobblemon.mod.common.pokemon.abilities.HiddenAbility;
@@ -66,6 +67,8 @@ public class RaidBoss {
     @SerializedName("force_dynamax")
     private Boolean forceDynamax;
     private ResourceLocation music;
+    @SerializedName("no_ai")
+    private Boolean noAi;
 
     @SerializedName("max_players")
     private Integer maxPlayers;
@@ -109,7 +112,7 @@ public class RaidBoss {
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     String raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
-                    Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Integer maxPlayers,
+                    Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Boolean noAi, Integer maxPlayers,
                     Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
                     String raidAI, List<String> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
@@ -127,6 +130,7 @@ public class RaidBoss {
         this.scale = scale;
         this.forceDynamax = forceDynamax;
         this.music = music;
+        this.noAi = noAi;
 
         this.maxPlayers = maxPlayers;
         this.maxClears = maxClears;
@@ -168,6 +172,7 @@ public class RaidBoss {
         this.scale = null;
         this.forceDynamax = null;
         this.music = null;
+        this.noAi = null;
 
         this.maxPlayers = null;
         this.maxClears = null;
@@ -211,11 +216,13 @@ public class RaidBoss {
         this.displayAspects = aspects;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public void applyDefaults() {
         if (this.reward == null) throw new JsonSyntaxException("Missing required field: \"pokemon\"");
         if (this.reward.getSpecies() == null || this.reward.getSpecies().isBlank()) throw new JsonSyntaxException("Missing required field: \"pokemon.species\"");
         if (this.raidTier == null) throw new JsonSyntaxException("Missing required field: \"raid_tier\"");
         if (this.raidType == null) throw new JsonSyntaxException("Missing required field: \"raid_type\"");
+        if (this.reward.getEvs() != null && this.reward.getEvs().total() > 0) ((IEVExtension) (Object) this.reward.getEvs()).crd_validate();
 
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidTier);
 
@@ -226,6 +233,7 @@ public class RaidBoss {
         if (this.key == null) this.key = new UniqueKey();
         if (this.forceDynamax == null) this.forceDynamax = false;
         if (this.music == null) this.music = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "battle.raid." + this.raidTier.getSerializedName());
+        if (this.noAi == null) this.noAi = true;
 
         if (this.maxPlayers == null) this.maxPlayers = tierConfig.maxPlayers();
         if (this.maxClears == null) this.maxClears = tierConfig.maxClears();
@@ -261,13 +269,13 @@ public class RaidBoss {
 
         this.boss.setAspects(aspects);
         this.boss.setCustomProperties(customProperties);
-        this.reward.setTeraType(this.raidType.getSerializedName());
     }
 
     public PokemonEntity getBossEntity(ServerLevel level, Set<String> aspects) {
         PokemonProperties properties = this.getBossProperties().copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
+        if (properties.getTeraType() == null) properties.setTeraType(this.getType().getSerializedName());
         properties.setMinPerfectIVs(6);
 
         Pokemon pokemon;
@@ -352,6 +360,7 @@ public class RaidBoss {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getMinPerfectIVs() == null) properties.setMinPerfectIVs(tierConfig.ivs());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.rewardLevel());
+        if (properties.getTeraType() == null) properties.setTeraType(this.getType().getSerializedName());
 
         Pokemon pokemon = new Pokemon();
         properties.apply(pokemon);
@@ -380,6 +389,16 @@ public class RaidBoss {
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
+
+        if (!CobblemonRaidDens.CONFIG.use_natural_ivs) {
+            IVs ivs = pokemon.getIvs();
+            IVs randomIVs = IVs.createRandomIVs(0);
+            pokemon.setIvs$common(randomIVs);
+            ivs.forEach(entry -> {
+                if (entry.getValue() != IVs.MAX_VALUE) return;
+                randomIVs.setHyperTrainedIV(entry.getKey(), entry.getValue());
+            });
+        }
 
         return pokemon;
     }
@@ -459,6 +478,10 @@ public class RaidBoss {
 
     public ResourceLocation getMusic() {
         return this.music;
+    }
+
+    public Boolean getNoAi() {
+        return this.noAi;
     }
 
     public Integer getMaxPlayers() {
@@ -634,6 +657,10 @@ public class RaidBoss {
         this.music = music;
     }
 
+    public void setNoAi(Boolean noAi) {
+        this.noAi = noAi;
+    }
+
     public void setMaxPlayers(Integer maxPlayers) {
         this.maxPlayers = maxPlayers;
     }
@@ -716,9 +743,9 @@ public class RaidBoss {
 
     public RaidBoss copy() {
         PokemonProperties rewardCopy = this.reward.copy();
-        rewardCopy.setCustomProperties(List.copyOf(this.reward.getCustomProperties()));
+        rewardCopy.setCustomProperties(new ArrayList<>(this.reward.getCustomProperties()));
         PokemonProperties bossCopy = this.boss.copy();
-        bossCopy.setCustomProperties(List.copyOf(this.boss.getCustomProperties()));
+        bossCopy.setCustomProperties(new ArrayList<>(this.boss.getCustomProperties()));
 
         return new RaidBoss(
             rewardCopy,
@@ -734,6 +761,7 @@ public class RaidBoss {
             this.scale,
             this.forceDynamax,
             this.music,
+            this.noAi,
             this.maxPlayers,
             this.maxClears,
             this.haRate,

@@ -147,24 +147,33 @@ public class RaidBucket {
             this.resolveRaidBosses();
             this.compiled = new BitSet();
 
-            boolean noIncludes = includeTiers.isEmpty() && includeTypes.isEmpty() && includeFeatures.isEmpty() && includeBosses.isEmpty();
-            if (noIncludes) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
+            boolean hasIncludes = !this.includeTiers.isEmpty() || !this.includeTypes.isEmpty() || !this.includeFeatures.isEmpty();
+            if (hasIncludes) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
 
-            if (!includeTiers.isEmpty()) {
+            if (!this.includeTiers.isEmpty()) {
                 BitSet tierSet = new BitSet();
-                for (RaidTier tier : includeTiers) tierSet.or(RaidRegistry.RAIDS_BY_TIER.get(tier));
+                for (RaidTier tier : this.includeTiers) {
+                    BitSet set = RaidRegistry.RAIDS_BY_TIER.get(tier);
+                    if (set != null) tierSet.or(set);
+                }
                 this.compiled.and(tierSet);
             }
 
-            if (!includeTypes.isEmpty()) {
+            if (!this.includeTypes.isEmpty()) {
                 BitSet typeSet = new BitSet();
-                for (RaidType type : includeTypes) typeSet.or(RaidRegistry.RAIDS_BY_TYPE.get(type));
+                for (RaidType type : this.includeTypes) {
+                    BitSet set = RaidRegistry.RAIDS_BY_TYPE.get(type);
+                    if (set != null) typeSet.or(set);
+                }
                 this.compiled.and(typeSet);
             }
 
-            if (!includeFeatures.isEmpty()) {
+            if (!this.includeFeatures.isEmpty()) {
                 BitSet featureSet = new BitSet();
-                for (String feature : includeFeatures) featureSet.or(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
+                for (String feature : this.includeFeatures) {
+                    BitSet set = RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase());
+                    if (set != null) featureSet.or(set);
+                }
                 this.compiled.and(featureSet);
             }
 
@@ -177,10 +186,10 @@ public class RaidBucket {
                 this.compiled.or(bossSet);
             }
 
-            for (RaidTier tier : excludeTiers) this.compiled.andNot(RaidRegistry.RAIDS_BY_TIER.get(tier));
-            for (RaidType type : excludeTypes) this.compiled.andNot(RaidRegistry.RAIDS_BY_TYPE.get(type));
-            for (String feature : excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature));
-            for (ResourceLocation raidBoss : excludeBosses) {
+            for (RaidTier tier : this.excludeTiers) this.compiled.andNot(RaidRegistry.RAIDS_BY_TIER.get(tier));
+            for (RaidType type : this.excludeTypes) this.compiled.andNot(RaidRegistry.RAIDS_BY_TYPE.get(type));
+            for (String feature : this.excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase()));
+            for (ResourceLocation raidBoss : this.excludeBosses) {
                 Integer index = RaidRegistry.RAID_INDEX.get(raidBoss);
                 if (index != null) this.compiled.clear(index);
             }

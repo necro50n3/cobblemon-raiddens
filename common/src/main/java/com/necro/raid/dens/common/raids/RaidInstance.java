@@ -240,6 +240,7 @@ public class RaidInstance {
         if (this.raidState != RaidState.NOT_STARTED) {
             if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
             if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
+            else if (this.activePlayers.stream().allMatch(p -> p.level() != this.bossEntity.level())) this.stopRaid(false);
             if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle);
         }
     }
@@ -322,6 +323,10 @@ public class RaidInstance {
 
     public List<ServerPlayer> getPlayers() {
         return this.activePlayers;
+    }
+
+    public int getPlayerCount() {
+        return this.playerMap.size();
     }
 
     public List<PokemonBattle> getBattles() {
@@ -585,7 +590,7 @@ public class RaidInstance {
     }
 
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
-        if (this.raidState == RaidState.SUCCESS && this.isInDen) RaidHelper.clearRaid(this.raid, this.activePlayers);
+        if (this.shouldClearRaid() && this.isInDen) RaidHelper.clearRaid(this.raid, this.activePlayers);
         if (!this.bossEntity.isRemoved()) {
             ((ServerLevel) this.bossEntity.level()).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
             this.bossEntity.discard();
@@ -601,6 +606,11 @@ public class RaidInstance {
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
         if (this.host != null) RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
+    }
+
+    private boolean shouldClearRaid() {
+        if (this.raidState == RaidState.SUCCESS) return true;
+        else return this.raidState == RaidState.FAILED && !CobblemonRaidDens.CONFIG.retry_failed_raids;
     }
 
     private Component bossBarText(PokemonEntity entity, RaidBoss raidBoss) {

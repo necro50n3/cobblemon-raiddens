@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -101,7 +103,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean startOrJoinRaid(Player player, BlockState blockState, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
         if (player.getServer() == null) return false;
-        else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears()) {
+        else if (!blockEntity.isActive(blockState) || blockEntity.isAtMaxClears() || (!blockEntity.isInProgress() && !blockEntity.isIdle())) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.is_not_active"), true);
             return false;
         }
@@ -150,9 +152,10 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
         if (player.getServer() == null) return false;
 
-        ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(player.level().getRandom());
-        RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure);
-        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID())) {
+        RandomSource random = player.level().getRandom();
+        ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(random);
+        RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure, random);
+        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID(), RaidDenRegistry.getScaleModifier(structure))) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
         }
@@ -202,7 +205,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     protected void onRemove(@NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState2, boolean bl) {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid();
-            RaidHelper.resetClearedRaids(blockEntity.getUuid());
+            if (blockState.getValue(IS_NATURAL)) RaidHelper.resetClearedRaids(blockEntity.getUuid());
             RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
             if (raid != null) raid.closeRaid(level.getServer(), true);
         }
@@ -216,7 +219,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         ItemStack itemStack = context.getItemInHand();
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
-        if (data == null) return blockState;
+        if (data == null) {
+            Level level = context.getLevel();
+            RaidCycleMode cycleMode = blockState.getValue(CYCLE_MODE);
+            // ensure raid tier is random if it can't be cycled.
+            if (!cycleMode.canCycleTier()) blockState = blockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
+            // ensure raid type is random if it can't be cycled.
+            if (!cycleMode.canCycleType()) blockState = blockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
+            return blockState;
+        }
         CompoundTag tag = data.copyTag();
 
         RaidBoss boss = RaidRegistry.getRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")));

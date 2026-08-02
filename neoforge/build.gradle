@@ -66,12 +66,12 @@ dependencies {
     modImplementation "curse.maven:cobblemon-mega-showdown-1189523:7833504"
     modRuntimeOnly "dev.architectury:architectury-neoforge:13.0.8"
 
-    modRuntimeOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577017"
-    modRuntimeOnly "curse.maven:forge-config-api-port-547434:7213611"
-    runtimeOnly "com.electronwill.night-config:core:3.8.4"
-    runtimeOnly "com.electronwill.night-config:toml:3.8.4"
-    runtimeOnly "de.javagl:obj:0.4.0"
-    runtimeOnly "org.xerial:sqlite-jdbc:3.53.0.0"
+//    modRuntimeOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577017"
+//    modRuntimeOnly "curse.maven:forge-config-api-port-547434:7213611"
+//    runtimeOnly "com.electronwill.night-config:core:3.8.4"
+//    runtimeOnly "com.electronwill.night-config:toml:3.8.4"
+//    runtimeOnly "de.javagl:obj:0.4.0"
+//    runtimeOnly "org.xerial:sqlite-jdbc:3.53.0.0"
 
     modCompileOnly "mezz.jei:jei-1.21.1-neoforge-api:19.27.0.340"
     modRuntimeOnly "mezz.jei:jei-1.21.1-neoforge:19.27.0.340"

@@ -52,5 +52,6 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
         RaidRegistry.registerAll();
         RaidTier.updateRandom();
+        RaidRegistry.TAG_REVERSE_LOOKUP.clear();
     }
 }

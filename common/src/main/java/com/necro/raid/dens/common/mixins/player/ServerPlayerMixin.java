@@ -71,8 +71,10 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
     @Override
     public void crd_returnHome() {
         ServerLevel level = this.crd_getHomeLevel();
-        RaidUtils.teleportPlayerSafe((ServerPlayer) (Object) this, level, this.crd_getHomePos(), this.getYHeadRot(), this.getXRot());
-        this.crd_clearHome();
+        if (level.getServer().isRunning()) {
+            RaidUtils.teleportPlayerSafe((ServerPlayer) (Object) this, level, this.crd_getHomePos(), this.getYHeadRot(), this.getXRot());
+            this.crd_clearHome();
+        }
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)

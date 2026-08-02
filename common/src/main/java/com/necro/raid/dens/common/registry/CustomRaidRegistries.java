@@ -196,6 +196,11 @@ public class CustomRaidRegistries {
             List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(script.get("scripts"));
             return new WithChanceEvent(chance, events);
         });
+        SCRIPT_REGISTRY.register("run_command", script -> {
+            String target = SCRIPT_REGISTRY.parse(script, "target", String.class, "");
+            String command = SCRIPT_REGISTRY.parse(script, "command", String.class);
+            return new RaidEvents.RunCommandRaidEvent(target, command);
+        });
     }
 
     private static void registerFeatures() {

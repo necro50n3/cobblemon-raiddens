@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.data.dimension.RaidAllocation;
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
+import com.necro.raid.dens.common.data.raid.RaidTimerMode;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
@@ -20,12 +22,16 @@ public class RaidConfig implements ConfigData {
     public Map<String, Integer> dimension_spawn_rate = new HashMap<>(Map.of(
         "minecraft:overworld", 256
     ));
+    @Comment("The timer system raid dens use for resets (Options: GAME_TIME, SYSTEM_TIME, GLOBAL_GAME_TIME, GLOBAL_SYSTEM_TIME). Default: GAME_TIME")
+    public RaidTimerMode reset_mode = RaidTimerMode.GAME_TIME;
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")
     public int reset_time = 7200;
     @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, BUCKET, ALL). Default: ALL")
     public RaidCycleMode cycle_mode = RaidCycleMode.ALL;
     @Comment("Whether failed raids count towards the max clears. Default: false")
     public boolean max_clears_include_fails = false;
+    @Comment("Whether players can retry failed raids")
+    public boolean retry_failed_raids = true;
     @Comment("Whether the reward Pokemon attributes (IVs/Shiny/etc.) are synced between all players or rolled individually. Default: true")
     public boolean sync_rewards = true;
     @Comment("Whether raid crystals can be broken. Default: true")
@@ -36,4 +42,10 @@ public class RaidConfig implements ConfigData {
     public int max_players_for_support = 4;
     @Comment("The amount of raid energy required to convert a raid shard. Default: 100")
     public int required_energy = 100;
+    @Comment("How many raids can occur simultaneously. Determines raid coordinate allocation. Default: 10000")
+    public int raid_cap = 10000;
+    @Comment("How raid coordinate allocation is determined (Options: SPIRAL, RANDOM). Default: SPIRAL")
+    public RaidAllocation raid_allocation = RaidAllocation.SPIRAL;
+    @Comment("Whether IVs from raids affect the Pokemon's natural IVs or hyper trained IVs. Default: true")
+    public boolean use_natural_ivs = true;
 }

@@ -22,7 +22,7 @@ public class TurnTrigger extends RaidTrigger<Integer> {
     @Override
     protected boolean check(Integer predicate) {
         if (predicate <= this.lastTurn) return false;
-        boolean result = (predicate - this.offset) % this.turn == 0;
+        boolean result = this.turn == 0 || (predicate - this.offset) % this.turn == 0;
         if (result) this.lastTurn = predicate;
         return result;
     }

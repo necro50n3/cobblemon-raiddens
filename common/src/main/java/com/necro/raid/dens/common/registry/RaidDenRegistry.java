@@ -49,6 +49,11 @@ public class RaidDenRegistry {
         return TEMPLATES.get(structure).bossPos;
     }
 
+    public static double getScaleModifier(ResourceLocation structure) {
+        if (!TEMPLATES.containsKey(structure)) return 1.0;
+        return TEMPLATES.get(structure).scaleMod;
+    }
+
     public static void clear() {
         TEMPLATES.clear();
     }
@@ -57,11 +62,15 @@ public class RaidDenRegistry {
         private final Vec3 offset;
         private final Vec3 playerPos;
         private final Vec3 bossPos;
+        private final double scaleMod;
 
         private RaidStructureData(CompoundTag tag) {
             this.offset = new Vec3(tag.getDouble("offset_x"), tag.getDouble("offset_y"), tag.getDouble("offset_z"));
             this.playerPos = new Vec3(tag.getDouble("player_x"), tag.getDouble("player_y"), tag.getDouble("player_z"));
             this.bossPos = new Vec3(tag.getDouble("boss_x"), tag.getDouble("boss_y"), tag.getDouble("boss_z"));
+
+            double scale = Math.max(tag.getDouble("scale_modifier"), 0.0);
+            this.scaleMod = scale == 0.0 ? 1.0 : scale;
         }
     }
 }

@@ -25,6 +25,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.*;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class RaidRegion {
     private static final int RADIUS = 128;
 
@@ -81,7 +84,8 @@ public class RaidRegion {
         for (int cx = chunkMinX; cx <= chunkMaxX; cx++) {
             for (int cz = chunkMinZ; cz <= chunkMaxZ; cz++) {
                 LevelChunk chunk = level.getChunk(cx, cz);
-                chunk.getBlockEntities().keySet().forEach(chunk::removeBlockEntity);
+                Set<BlockPos> blockEntityPos = new HashSet<>(chunk.getBlockEntities().keySet());
+                blockEntityPos.forEach(chunk::removeBlockEntity);
 
                 LevelChunkSection[] sections = chunk.getSections();
                 for (int i = 0; i < sections.length; i++) {
