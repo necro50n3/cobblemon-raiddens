@@ -1,7 +1,6 @@
 package com.necro.raid.dens.common.reloaders;
 
 import  com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.mixins.tags.TagEntryMixin;
@@ -50,12 +49,10 @@ public class RaidTagReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        Optional<TagFile> tagOpt = TagFile.CODEC.decode(JsonOps.INSTANCE, object).result().map(Pair::getFirst);
-        tagOpt.ifPresent(tag -> {
-            TagFile existing = this.files.get(key);
-            if (existing == null || tag.replace()) this.files.put(key, tag);
-            else this.files.put(key, this.mergeTags(existing, tag));
-        });
+        TagFile tag = TagFile.CODEC.decode(JsonOps.INSTANCE, object).getOrThrow().getFirst();
+        TagFile existing = this.files.get(key);
+        if (existing == null || tag.replace()) this.files.put(key, tag);
+        else this.files.put(key, this.mergeTags(existing, tag));
     }
 
     @Override
