@@ -48,7 +48,6 @@ public class RaidAdminCommands {
                                 .executes(RaidAdminCommands::resetClearsForPlayerAndPos)
                             )
                         )
-                        .requires(CommandSourceStack::isPlayer)
                         .executes(context -> resetClearsForAll(
                             context, BlockPosArgument.getBlockPos(context, "pos")
                         ))
