@@ -1,0 +1,40 @@
+name: Build Mod
+
+on: [push, pull_request]
+  
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v7.0.0
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5.3.0
+      with:
+        java-version: '21'
+        distribution: 'corretto'
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+    - name: Make gradlew Executable
+      run: chmod +x ./gradlew
+    
+    - name: Build Fabric
+      run: ./gradlew fabric:build
+
+    - name: Build Neoforge
+      run: ./gradlew neoforge:build
+    
+    - name: Prepare Upload Artifact
+      run: mkdir -p ./artifact/fabric && mkdir -p ./artifact/neoforge && mv ./fabric/build/libs/* ./artifact/fabric && mv ./neoforge/build/libs/* ./artifact/neoforge
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        name: build-output
+        path: ./artifact
