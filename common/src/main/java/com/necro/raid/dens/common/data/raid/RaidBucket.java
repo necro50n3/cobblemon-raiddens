@@ -148,7 +148,8 @@ public class RaidBucket {
             this.compiled = new BitSet();
 
             boolean hasIncludes = !this.includeTiers.isEmpty() || !this.includeTypes.isEmpty() || !this.includeFeatures.isEmpty();
-            if (hasIncludes) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
+            boolean hasAnyIncludes = hasIncludes || !this.includeBosses.isEmpty();
+            if (hasIncludes || !hasAnyIncludes) this.compiled.set(0, RaidRegistry.RAID_LIST.size());
 
             if (!this.includeTiers.isEmpty()) {
                 BitSet tierSet = new BitSet();
