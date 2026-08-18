@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -420,9 +421,12 @@ public class RaidInstance {
         Pokemon cachedReward;
         if (CobblemonRaidDens.CONFIG.sync_rewards) {
             cachedReward = this.raidBoss.getRewardPokemon(null);
+            Pokemon backupReward = this.raidBoss.getRewardPokemon(null);
+            PokemonProperties cachedProperties = this.raidBoss.getBossProperties();
+
             cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
-            cachedReward.setGender(this.bossEntity.getPokemon().getGender());
-            cachedReward.setNature(this.bossEntity.getPokemon().getNature());
+            cachedReward.setGender((cachedProperties.getGender() == null ? this.bossEntity.getPokemon() : backupReward).getGender());
+            cachedReward.setNature((cachedProperties.getNature() == null ? this.bossEntity.getPokemon() : backupReward).getNature());
             StringSpeciesFeature radiant = new StringSpeciesFeature("radiant", "radiant");
             if (radiant.matches(this.bossEntity.getPokemon())) radiant.apply(cachedReward);
         } else {
