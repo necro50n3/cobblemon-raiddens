@@ -17,7 +17,7 @@ public class ShowdownEvents {
             return String.format(
                 ">eval " +
                     "battle.add('cheer', 'cheer_attack', '%1$s'); " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "p.addVolatile('cheerattack'); " +
                     "} ",
@@ -31,7 +31,7 @@ public class ShowdownEvents {
             return String.format(
                 ">eval " +
                     "battle.add('cheer', 'cheer_defense', '%1$s'); " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "p.addVolatile('cheerdefense'); " +
                     "} ",
@@ -45,7 +45,7 @@ public class ShowdownEvents {
             return String.format(
                 ">eval " +
                     "battle.add('cheer', 'cheer_heal', '%1$s'); " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "p.heal(Math.floor(p.maxhp * 0.5)); " +
                         "p.cureStatus(); " +
@@ -60,7 +60,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[%1$d].pokemon) { " +
+                    "for (let p of battle.sides[%1$d].active) { " +
                         "if (!p) continue; " +
                         "for (let boost in p.boosts) { " +
                             "p.boosts[boost] = 0; " +
@@ -87,7 +87,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[%1$d].pokemon) { " +
+                    "for (let p of battle.sides[%1$d].active) { " +
                         "if (!p) continue; " +
                         "for (let i in p.boosts) { " +
                             "if (p.boosts[i] >= 0) continue; " +
@@ -130,7 +130,7 @@ public class ShowdownEvents {
                 return String.format(
                     ">eval " +
                         "const status = battle.dex.conditions.get('%1$s'); " +
-                        "for (let p of battle.sides[%2$d].pokemon) { " +
+                        "for (let p of battle.sides[%2$d].active) { " +
                             "if (!p || !status || !p.volatiles[status.id]) continue; " +
                             "delete p.volatiles[status.id]; " +
                         "} ",
@@ -139,7 +139,7 @@ public class ShowdownEvents {
             else {
                 return String.format(
                     ">eval " +
-                        "for (let p of battle.sides[%1$d].pokemon) { " +
+                        "for (let p of battle.sides[%1$d].active) { " +
                             "if (!p) continue; " +
                             "if (p.status !== 'shield') p.clearStatus(); " +
                         "}",
@@ -159,7 +159,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return ">eval " +
                 "const status = battle.dex.conditions.get('dragoncheer'); " +
-                "for (let p of battle.sides[0].pokemon) { " +
+                "for (let p of battle.sides[0].active) { " +
                     "if (!p) continue; " +
                     "else if (p.volatiles['focusenergy']) continue; " +
                     "else if (status && !p.volatiles[status.id]) { " +
@@ -175,7 +175,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[%1$d].pokemon) { " +
+                    "for (let p of battle.sides[%1$d].active) { " +
                     "if (!p) continue; " +
                     "for (let i in p.boosts) { " +
                     "if (p.boosts[i] === 0) continue; " +
@@ -189,7 +189,7 @@ public class ShowdownEvents {
 
     public record PlayerJoinShowdownEvent(String player) implements ShowdownEvent {
         public String build(PokemonBattle battle) {
-            return String.format(">eval battle.add('playerjoin', battle.sides[1].pokemon[0], '%1$s');", this.player);
+            return String.format(">eval battle.add('playerjoin', battle.sides[1].active[0], '%1$s');", this.player);
         }
     }
 
@@ -199,7 +199,7 @@ public class ShowdownEvents {
                 ">eval " +
                     "var boosts = {};" +
                     "boosts['%1$s'] = %2$d; " +
-                    "for (let p of battle.sides[1].pokemon) { " +
+                    "for (let p of battle.sides[1].active) { " +
                         "if (!p) continue; " +
                         "var boost = battle.runEvent('ChangeBoost', p, p, {name: 'Raid Energy'}, {...boosts}); " +
                         "boost = p.getCappedBoost(boost); " +
@@ -226,7 +226,7 @@ public class ShowdownEvents {
     public static class RaidCureShowdownEvent implements ShowdownEvent {
         public String build(PokemonBattle battle) {
             return ">eval " +
-                "for (let p of battle.sides[0].pokemon) { " +
+                "for (let p of battle.sides[0].active) { " +
                     "if (!p) continue; " +
                     "p.cureStatus(); " +
                 "}";
@@ -238,7 +238,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "battle.heal(Math.floor(p.maxhp * %1$f), p); " +
                     "} ",
@@ -264,7 +264,7 @@ public class ShowdownEvents {
             return String.format(
                 ">eval " +
                     "battle.add('raidenergy', '%1$s', true); " +
-                    "for (let p of battle.sides[1].pokemon) { " +
+                    "for (let p of battle.sides[1].active) { " +
                         "if (!p) continue; " +
                         "for (let i in p.boosts) { " +
                             "if (p.boosts[i] >= 0) continue; " +
@@ -282,7 +282,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[%3$d].pokemon) { " +
+                    "for (let p of battle.sides[%3$d].active) { " +
                         "if (!p) continue; " +
                         "p.boosts['%1$s'] = %2$d; " +
                     "} ",
@@ -295,7 +295,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "const pokemon = battle.sides[1].pokemon[0]; " +
+                    "const pokemon = battle.sides[1].active[0]; " +
                     "const pseudoWeather = battle.dex.conditions.get('%1$s'); " +
                     "battle.field.pseudoWeather[pseudoWeather.id] = { " +
                         "id: pseudoWeather.id, " +
@@ -315,7 +315,7 @@ public class ShowdownEvents {
                 ">eval " +
                     "const condition = battle.dex.conditions.get('%1$s'); " +
                     "const side = battle.sides[%2$d]; " +
-                    "const pokemon = side.pokemon[0]; " +
+                    "const pokemon = side.active[0]; " +
                     "if (condition && !side.sideConditions[condition.id]) { " +
                         "side.sideConditions[condition.id] = { " +
                             "id: condition.id, " +
@@ -341,7 +341,7 @@ public class ShowdownEvents {
                 return String.format(
                     ">eval " +
                         "const status = battle.dex.conditions.get('%1$s'); " +
-                        "for (let p of battle.sides[%2$d].pokemon) { " +
+                        "for (let p of battle.sides[%2$d].active) { " +
                             "if (!status || status.id === 'typechange') continue; " +
                             "if (p.volatiles[status.id]) { " +
                                 "if (status.onRestart) battle.singleEvent('Restart', status, p.volatiles[status.id], p, null, null); " +
@@ -356,7 +356,7 @@ public class ShowdownEvents {
                 return String.format(
                     ">eval " +
                         "const status = battle.dex.conditions.get('%1$s'); " +
-                        "for (let p of battle.sides[%2$d].pokemon) { " +
+                        "for (let p of battle.sides[%2$d].active) { " +
                             "if (status && p.status !== 'shield') {" +
                                 "if (p.status === status.id) continue; " +
                                 "battle.runEvent('SetStatus', p, null, null, status); " +
@@ -382,7 +382,7 @@ public class ShowdownEvents {
             if (this.isSilent) {
                 return String.format(
                     ">eval " +
-                        "const pokemon = battle.sides[1].pokemon[0]; " +
+                        "const pokemon = battle.sides[1].active[0]; " +
                         "const terrain = battle.dex.conditions.get('%1$s'); " +
                         "battle.field.terrain = terrain.id; " +
                         "battle.field.terrainState = { " +
@@ -397,7 +397,7 @@ public class ShowdownEvents {
             else {
                 return String.format(
                     ">eval " +
-                        "const pokemon = battle.sides[1].pokemon[0]; " +
+                        "const pokemon = battle.sides[1].active[0]; " +
                         "battle.field.setTerrain('%s', pokemon); ",
                     this.terrain
                 );
@@ -420,7 +420,7 @@ public class ShowdownEvents {
             else {
                 return String.format(
                     ">eval " +
-                        "const pokemon = battle.sides[1].pokemon[0]; " +
+                        "const pokemon = battle.sides[1].active[0]; " +
                         "battle.field.setWeather('%s', pokemon);",
                     this.weather
                 );
@@ -431,7 +431,7 @@ public class ShowdownEvents {
     public static class ShieldAddShowdownEvent implements ShowdownEvent {
         public String build(PokemonBattle battle) {
             return ">eval " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "p.clearStatus(); " +
                     "p.trySetStatus('shield', p); " +
@@ -443,7 +443,7 @@ public class ShowdownEvents {
     public static class ShieldRemoveShowdownEvent implements ShowdownEvent {
         public String build(PokemonBattle battle) {
             return ">eval " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue;" +
                     "p.cureStatus(); " +
                     "battle.add('shieldremove', p);" +
@@ -458,7 +458,7 @@ public class ShowdownEvents {
                     ">eval " +
                         "var boosts = {};" +
                         "boosts['%1$s'] = %2$d; " +
-                        "for (let p of battle.sides[%3$d].pokemon) { " +
+                        "for (let p of battle.sides[%3$d].active) { " +
                             "if (!p) continue; " +
                             "var boost = battle.runEvent('ChangeBoost', p, p, {name: 'Raid Energy'}, {...boosts}); " +
                             "boost = p.getCappedBoost(boost); " +
@@ -477,7 +477,7 @@ public class ShowdownEvents {
                     ">eval " +
                         "var boosts = {};" +
                         "boosts['%1$s'] = %2$d; " +
-                        "for (let p of battle.sides[%3$d].pokemon) { " +
+                        "for (let p of battle.sides[%3$d].active) { " +
                             "if (!p) continue; " +
                             "battle.boost(boosts, p, null, '[from] Raid'); " +
                         "} ",
@@ -540,7 +540,7 @@ public class ShowdownEvents {
             }
 
             return ">eval " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "p.addVolatile('dynamax'); " +
                 "} ";
@@ -552,7 +552,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "for (let p of battle.sides[1].pokemon) { " +
+                    "for (let p of battle.sides[1].active) { " +
                         "if (!p) continue; " +
                         "p.formeChange('%1s', null, true); " +
                     "} ",
@@ -579,7 +579,7 @@ public class ShowdownEvents {
         @Override
         public String build(PokemonBattle battle) {
             return ">eval " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "if (p.species.baseSpecies === 'Zygarde') p.canMegaEvo = 'Zygarde-Mega'; " +
                     "battle.actions.runMegaEvo(p); " +
@@ -593,7 +593,7 @@ public class ShowdownEvents {
                 ">eval " +
                     "var boosts = {};" +
                     "boosts['%1$s'] = %2$d; " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "battle.boost(boosts, p, null, '[from] Raid'); " +
                     "} ",
@@ -629,7 +629,7 @@ public class ShowdownEvents {
             }
 
             return ">eval " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "battle.actions.terastallize(p); " +
                 "} ";
@@ -642,7 +642,7 @@ public class ShowdownEvents {
                 ">eval " +
                     "var boosts = {};" +
                     "boosts['%2$s'] = %3$d; " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "else if (['gearup', 'magneticflux'].includes('%1$s')) { " +
                             "if (!p.hasAbility('plus') && !p.hasAbility('minus')) continue; " +
@@ -659,7 +659,7 @@ public class ShowdownEvents {
             return String.format(
                 ">eval " +
                     "battle.add('raidenergy', '%1$s'); " +
-                    "for (let p of battle.sides[0].pokemon) { " +
+                    "for (let p of battle.sides[0].active) { " +
                         "if (!p) continue; " +
                         "for (let i in p.boosts) { " +
                             "if (p.boosts[i] <= 0) continue; " +
@@ -678,7 +678,7 @@ public class ShowdownEvents {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
-                    "let p = battle.sides[1].pokemon[0]; " +
+                    "let p = battle.sides[1].active[0]; " +
                     "p.side.lastSelectedMove = battle.toID('%1$s'); " +
                     "battle.actions.runMove('%1$s', p, %2$d, null, null, true);",
                 this.move, this.target

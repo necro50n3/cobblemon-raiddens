@@ -86,8 +86,8 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
                     "battle.field.terrain = terrain.id; " +
                     "battle.field.terrainState = { " +
                         "id: terrain.id, " +
-                        "source: battle.sides[1].pokemon[0], " +
-                        "sourceSlot: battle.sides[1].pokemon[0].getSlot(), " +
+                        "source: battle.sides[1].active[0], " +
+                        "sourceSlot: battle.sides[1].active[0].getSlot(), " +
                         "duration: terrain.duration " +
                     "}; " +
                 "} ",
@@ -101,8 +101,8 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
                 "if (pseudoWeather && !battle.field.pseudoWeather[pseudoWeather.id]) { " +
                     "battle.field.pseudoWeather[pseudoWeather.id] = { " +
                         "id: pseudoWeather.id, " +
-                        "source: battle.sides[1].pokemon[0], " +
-                        "sourceSlot: battle.sides[1].pokemon[0].getSlot(), " +
+                        "source: battle.sides[1].active[0], " +
+                        "sourceSlot: battle.sides[1].active[0].getSlot(), " +
                         "duration: pseudoWeather.duration " +
                     "}; " +
                 "} ",
@@ -130,8 +130,8 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
                     "side.sideConditions[condition.id] = { " +
                         "id: condition.id, " +
                         "target: side, " +
-                        "source: side.pokemon[0], " +
-                        "sourceSlot: side.pokemon[0].getSlot(), " +
+                        "source: side.active[0], " +
+                        "sourceSlot: side.active[0].getSlot(), " +
                         "duration: condition.duration, " +
                     "}; " +
                     "battle.effectState.layers = 1; " +
@@ -142,7 +142,7 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
         private void addVolatile(VolatileStatus status) {
             this.string += String.format(
                 "const status = battle.dex.conditions.get('%1$s'); " +
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "if (status) p.volatiles[status.id] = { id: status.id, name: status.name, target: p }; " +
                 "} ",
@@ -152,7 +152,7 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
 
         private void setBoost(Stat stat, int stages) {
             this.string += String.format(
-                "for (let p of battle.sides[1].pokemon) { " +
+                "for (let p of battle.sides[1].active) { " +
                     "if (!p) continue; " +
                     "p.boosts['%1$s'] = %2$d; " +
                 "} ",
