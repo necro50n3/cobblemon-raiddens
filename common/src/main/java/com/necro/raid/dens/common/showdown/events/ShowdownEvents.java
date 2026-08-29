@@ -56,7 +56,7 @@ public class ShowdownEvents {
         }
     }
 
-    public record ClearBoostShowdownEvent(int targetSide) implements ShowdownEvent {
+    public record ClearBoostShowdownEvent(int targetSide, boolean isSilent) implements ShowdownEvent {
         public String build(PokemonBattle battle) {
             return String.format(
                 ">eval " +
@@ -65,6 +65,7 @@ public class ShowdownEvents {
                         "for (let boost in p.boosts) { " +
                             "p.boosts[boost] = 0; " +
                         "} " +
+                        (isSilent ? "" : "battle.add('-clearboost', p); ") +
                     "} ",
                 this.targetSide - 1
             );

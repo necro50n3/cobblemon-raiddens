@@ -201,6 +201,12 @@ public class CustomRaidRegistries {
             String command = SCRIPT_REGISTRY.parse(script, "command", String.class);
             return new RaidEvents.RunCommandRaidEvent(target, command);
         });
+        SCRIPT_REGISTRY.register("clear_all_stats", script -> {
+            String target = SCRIPT_REGISTRY.parse(script, "target", String.class);
+            if ("player".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(1, false);
+            else if ("boss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
+            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
+        });
     }
 
     private static void registerFeatures() {
