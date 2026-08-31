@@ -63,7 +63,7 @@ public class RaidPokemon {
     public Optional<ShowdownEvent> clearBoosts() {
         if (this.boosts.isEmpty()) return Optional.empty();
         this.boosts.clear();
-        return Optional.of(new ShowdownEvents.ClearBoostShowdownEvent(2));
+        return Optional.of(new ShowdownEvents.ClearBoostShowdownEvent(2, true));
     }
 
     public Optional<ShowdownEvent> clearNegativeBoosts() {
