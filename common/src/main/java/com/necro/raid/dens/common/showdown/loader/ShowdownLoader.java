@@ -25,11 +25,11 @@ public abstract class ShowdownLoader {
             Files.createDirectories(showdown_sim);
             Files.createDirectories(showdown_data);
 
-            yoink("/assets/cobblemonraiddens/showdown/conditions.js", showdown_data.resolve("conditions.js"));
-            yoink("/assets/cobblemonraiddens/showdown/index.js", showdown.resolve("index.js"));
+            yoink("assets/cobblemonraiddens/showdown/conditions.js", showdown_data.resolve("conditions.js"));
+            yoink("assets/cobblemonraiddens/showdown/index.js", showdown.resolve("index.js"));
 
             if (!Files.exists(showdown_mod_data.resolve("conditions.js"))) {
-                yoink("/assets/cobblemonraiddens/showdown/mods/conditions.js", showdown_mod_data.resolve("conditions.js"));
+                yoink("assets/cobblemonraiddens/showdown/mods/conditions.js", showdown_mod_data.resolve("conditions.js"));
             }
         } catch (IOException e) {
             CobblemonRaidDens.LOGGER.error("Failed to load showdown files: {}", e.getMessage());
@@ -37,7 +37,7 @@ public abstract class ShowdownLoader {
     }
 
     private void yoink(String resourcePath, Path targetPath) throws IOException {
-        try (InputStream inputStream = getClass().getResourceAsStream(resourcePath)) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
             if (inputStream == null) return;
             Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
