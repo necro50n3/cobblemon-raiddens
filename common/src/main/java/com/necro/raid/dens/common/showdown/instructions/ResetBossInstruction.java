@@ -3,9 +3,10 @@ package com.necro.raid.dens.common.showdown.instructions;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleContext;
 import com.cobblemon.mod.common.api.battles.interpreter.BattleMessage;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.InterpreterInstruction;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Unit;
@@ -32,18 +33,17 @@ public class ResetBossInstruction implements InterpreterInstruction {
         battle.dispatchGo(() -> {
             battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
 
-            BattleContext.Type boostBucket = BattleContext.Type.BOOST;
-            BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
-
             raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.clearNegativeBoosts());
             raid.updateBattleContext(battle, b -> {
                 b.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));
                 BattlePokemon pokemon = b.getSide2().getActivePokemon().getFirst().getBattlePokemon();
                 if (pokemon == null) return;
-                pokemon.getContextManager().add(context);
+                pokemon.getContextManager().clear(BattleContext.Type.UNBOOST);
+                if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.updateBattleUI(battle);
             });
 
-            this.pokemon.getContextManager().add(context);
+            this.pokemon.getContextManager().clear(BattleContext.Type.UNBOOST);
+            if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.updateBattleUI(battle);
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return Unit.INSTANCE;
         });

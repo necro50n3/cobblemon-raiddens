@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.compat.megashowdown;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
@@ -95,5 +96,14 @@ public abstract class RaidDensMSDCompat {
             Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
             method.invoke(instance, pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), null);
         }
+    }
+
+    public static void updateBattleUI(PokemonBattle battle) {
+        try {
+            Class<?> clazz = Class.forName("com.github.yajatkaul.mega_showdown.battle.messaging.BattlePacketManager");
+            Method method = clazz.getMethod("update", PokemonBattle.class);
+            method.invoke(null, battle);
+        }
+        catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
     }
 }

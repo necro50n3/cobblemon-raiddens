@@ -8,12 +8,13 @@ import com.cobblemon.mod.common.api.moves.animations.ActionEffectContext;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffectTimeline;
 import com.cobblemon.mod.common.api.moves.animations.ActionEffects;
 import com.cobblemon.mod.common.api.moves.animations.UsersProvider;
-import com.cobblemon.mod.common.battles.ShowdownInterpreter;
 import com.cobblemon.mod.common.battles.dispatch.ActionEffectInstruction;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -99,10 +100,8 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
         battle.dispatch(() -> {
             battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.player", origin.getName()));
 
-            BattleContext.Type boostBucket = BattleContext.Type.UNBOOST;
-            BattleContext context = ShowdownInterpreter.INSTANCE.getContextFromAction(this.message, boostBucket, battle);
-
-            this.pokemon.getContextManager().add(context);
+            this.pokemon.getContextManager().clear(BattleContext.Type.BOOST);
+            if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.updateBattleUI(battle);
             battle.getMinorBattleActions().put(this.pokemon.getUuid(), this.message);
             return new UntilDispatch(() -> !this.holds.contains("effects"));
         });
