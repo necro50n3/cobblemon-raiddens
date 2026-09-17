@@ -9,4 +9,5 @@ public class RaidLootFunctions {
     public static Holder<LootItemFunctionType<GemTypeFunction>> GEM_TYPE_FUNCTION;
     public static Holder<LootItemFunctionType<ShadowShardsFunction>> SHADOW_SHARDS_FUNCTION;
     public static Holder<LootItemFunctionType<ScentsFunction>> SCENTS_FUNCTION;
+    public static Holder<LootItemFunctionType<TMTypeFunction>> TM_TYPE_FUNCTION;
 }

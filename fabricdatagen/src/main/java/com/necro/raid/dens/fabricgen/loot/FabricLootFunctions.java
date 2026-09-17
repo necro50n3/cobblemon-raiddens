@@ -21,5 +21,6 @@ public class FabricLootFunctions {
         RaidLootFunctions.GEM_TYPE_FUNCTION = register("gem_type_function", GemTypeFunction.CODEC);
         RaidLootFunctions.SHADOW_SHARDS_FUNCTION = register("shadow_shards_function", ShadowShardsFunction.CODEC);
         RaidLootFunctions.SCENTS_FUNCTION = register("scents_function", ScentsFunction.CODEC);
+        RaidLootFunctions.TM_TYPE_FUNCTION = register("tm_type_function", TMTypeFunction.CODEC);
     }
 }

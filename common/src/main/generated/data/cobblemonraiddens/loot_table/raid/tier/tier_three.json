@@ -418,6 +418,16 @@
           ],
           "name": "cobblemonraiddens:cheer_heal",
           "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air",
+          "weight": 5
         }
       ],
       "rolls": {
@@ -589,6 +599,15 @@
             }
           ],
           "name": "cobblemon:exp_candy_m"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air"
         },
         {
           "type": "minecraft:item",

@@ -680,6 +680,25 @@
     },
     {
       "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 3.0,
+        "min": 2.0
+      }
+    },
+    {
+      "bonus_rolls": 0.0,
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
@@ -882,6 +901,15 @@
             }
           ],
           "name": "cobblemon:ability_patch"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air"
         },
         {
           "type": "minecraft:item",

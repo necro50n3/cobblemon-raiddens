@@ -655,6 +655,16 @@
             }
           ],
           "name": "cobblemon:slow_candy"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air",
+          "weight": 5
         }
       ],
       "rolls": {
@@ -662,6 +672,21 @@
         "max": 6.0,
         "min": 4.0
       }
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air"
+        }
+      ],
+      "rolls": 1.0
     },
     {
       "bonus_rolls": 0.0,
@@ -826,6 +851,15 @@
             }
           ],
           "name": "cobblemon:exp_candy_l"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "cobblemonraiddens:tm_type_function"
+            }
+          ],
+          "name": "minecraft:air"
         },
         {
           "type": "minecraft:item",
