@@ -17,8 +17,7 @@ public abstract class CobblemonRaidDensMixinPluginImpl implements IMixinConfigPl
     protected final Map<String, Supplier<Boolean>> MIXINS = Map.of(
         mixin("ai.RCTBattleAIMixin"), () -> this.isModLoaded(ModCompat.RCT_API.getModid()),
         mixin("msd.CobbleEventsMixin"), () -> this.isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid()),
-        mixin("msd.BattlePokemonStateMixin"), () -> this.isModAndNewerThan(ModCompat.MEGA_SHOWDOWN.getModid(), "1.7.2") || this.isModAndNewerThan(ModCompat.MEGA_SHOWDOWN.getModid(), "1.7.2+1.7.3+1.21.1"),
-        mixin("showdown.ShowdownInterpreterMixin"), () -> this.isModAndOlderThan(Cobblemon.MODID, "1.7.1") || this.isModAndOlderThan(Cobblemon.MODID, "1.7.1+1.21.1"),
+        mixin("msd.BattlePokemonStateMixin"), () -> this.isModLoaded(ModCompat.MEGA_SHOWDOWN.getModid()),
         mixin("den.LevelChunkMixin"), () -> !this.isModLoaded("worldedit", "carpet"),
         mixin("den.LevelMixin"), () -> !this.isModLoaded("carpet")
     );

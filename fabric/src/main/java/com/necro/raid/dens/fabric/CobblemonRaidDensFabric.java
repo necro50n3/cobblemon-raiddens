@@ -50,8 +50,6 @@ public class CobblemonRaidDensFabric implements ModInitializer {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
 
-        if (!isCobblemon171()) RaidDensShowdownRegistry.registerInstructions();
-
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
         FabricComponents.registerDataComponents();
@@ -93,15 +91,5 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidSupportReloadListener());
 
         NetworkMessages.init();
-    }
-
-    static boolean isCobblemon171() {
-        return FabricLoader.getInstance().getModContainer(Cobblemon.MODID)
-            .map(cobblemon -> {
-                    try { return cobblemon.getMetadata().getVersion().compareTo(Version.parse("1.7.1")) <= 0; }
-                    catch (VersionParsingException e) { throw new RuntimeException(e); }
-                }
-            )
-            .orElse(false);
     }
 }

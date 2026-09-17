@@ -9,8 +9,7 @@
         "den.LevelMixin",
         "msd.BattlePokemonStateMixin",
         "msd.CobbleEventsMixin",
-        "showdown.GraalShowdownUnbundlerMixin",
-        "showdown.ShowdownInterpreterMixin"
+        "showdown.GraalShowdownUnbundlerMixin"
     ],
     "injectors": {
         "defaultRequire": 1

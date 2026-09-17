@@ -21,6 +21,7 @@ import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.raids.scripts.RaidScriptDecoder;
+import com.necro.raid.dens.common.showdown.RaidDensShowdownRegistry;
 import com.necro.raid.dens.common.statistics.RaidStatistics;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
@@ -57,6 +58,7 @@ public class CobblemonRaidDens {
         initRegistries();
         registerCobblemonEvents();
         RaidEvents.registerEvents();
+        RaidDensShowdownRegistry.registerInstructions();
     }
 
     private static void initConfig() {

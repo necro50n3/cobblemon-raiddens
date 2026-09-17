@@ -5,15 +5,14 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
 import com.cobblemon.mod.common.pokemon.properties.StringProperty;
+import com.github.yajatkaul.mega_showdown.api.codec.Effect;
+import com.github.yajatkaul.mega_showdown.battle.messaging.BattlePacketManager;
 import com.github.yajatkaul.mega_showdown.block.MegaShowdownBlocks;
 import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.github.yajatkaul.mega_showdown.utils.GlowHandler;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.world.item.ItemStack;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -65,46 +64,11 @@ public abstract class RaidDensMSDCompat {
         return MegaShowdownBlocks.MAX_MUSHROOM.get().asItem().getDefaultInstance();
     }
 
-    // Reflection to maintain compatibility with older versions
-    // To be removed in Cobblemon 1.8 update
     private static void applyEffects(Pokemon pokemon, String effectId, boolean isGmax) {
-        try {
-            Class<?> effect = getEffectClass();
-            Method getEffect = effect.getMethod("getEffect", String.class);
-            Object effectInstance = getEffect.invoke( null, effectId);
-            runApplyEffects(effect, effectInstance, pokemon, isGmax);
-        }
-        catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            CobblemonRaidDens.LOGGER.error("Error applying MSD Effect:", e);
-        }
-    }
-
-    private static Class<?> getEffectClass() throws ClassNotFoundException {
-        try {
-            return Class.forName("com.github.yajatkaul.mega_showdown.api.codec.Effect");
-        }
-        catch (ClassNotFoundException e) {
-            return Class.forName("com.github.yajatkaul.mega_showdown.codec.Effect");
-        }
-    }
-
-    private static void runApplyEffects(Class<?> clazz, Object instance, Pokemon pokemon, boolean isGmax) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        try {
-            Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, Optional.class, PokemonEntity.class);
-            method.invoke(instance, pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), Optional.empty(), null);
-        }
-        catch (NoSuchMethodException e) {
-            Method method = clazz.getMethod("applyEffects", Pokemon.class, List.class, PokemonEntity.class);
-            method.invoke(instance, pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), null);
-        }
+        Effect.getEffect(effectId).applyEffects(pokemon, isGmax ? List.of("dynamax_form=gmax") : List.of(), Optional.empty(), null);
     }
 
     public static void updateBattleUI(PokemonBattle battle) {
-        try {
-            Class<?> clazz = Class.forName("com.github.yajatkaul.mega_showdown.battle.messaging.BattlePacketManager");
-            Method method = clazz.getMethod("update", PokemonBattle.class);
-            method.invoke(null, battle);
-        }
-        catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {}
+        BattlePacketManager.update(battle);
     }
 }

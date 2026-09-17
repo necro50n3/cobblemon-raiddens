@@ -36,8 +36,6 @@ public class CobblemonRaidDensNeoForge {
             mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
         }
 
-        if (!isCobblemon171()) RaidDensShowdownRegistry.registerInstructions();
-
         NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
         NeoForgeBlockEntities.BLOCK_ENTITIES.register(modBus);
@@ -65,10 +63,5 @@ public class CobblemonRaidDensNeoForge {
         NeoForge.EVENT_BUS.addListener(CommandsRegistrationEvent::registerCommands);
 
         NetworkMessages.init();
-    }
-
-    static boolean isCobblemon171() {
-        ModFileInfo info = LoadingModList.get().getModFileById(Cobblemon.MODID);
-        return info.getMods().getFirst().getVersion().compareTo(new DefaultArtifactVersion("1.7.1+1.21.1")) <= 0;
     }
 }
