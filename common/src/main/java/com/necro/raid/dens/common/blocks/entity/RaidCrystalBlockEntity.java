@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.blocks.entity;
 
+import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
@@ -22,9 +23,6 @@ import com.necro.raid.dens.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -67,7 +65,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private RaidResetContext lastReset;
     private boolean isOpen;
-    private Set<String> aspects;
+    private RaidSyncContext raidSync;
     private Consumer<ServerPlayer> aspectSync;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -224,7 +222,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         region.placeStructure(level);
 
         PokemonEntity pokemonEntity;
-        try { pokemonEntity = raidBoss.getBossEntity(level, this.aspects); }
+        try { pokemonEntity = raidBoss.getBossEntity(level, this.raidSync); }
         catch (Exception e) {
             CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidBoss, e);
             return false;
@@ -235,8 +233,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         pokemonEntity.setPersistenceRequired();
         ((IRaidAccessor) pokemonEntity).crd_setRaidId(this.getUuid());
 
-        if (CobblemonRaidDens.CONFIG.sync_rewards && this.aspects == null) {
-            this.aspects = pokemonEntity.getAspects();
+        if (CobblemonRaidDens.CONFIG.sync_rewards && this.raidSync == null) {
+            this.raidSync = new RaidSyncContext(
+                pokemonEntity.getAspects(),
+                pokemonEntity.getPokemon().getMoveSet().getMoves().stream().map(Move::getName).toList()
+            );
             this.setChanged();
         }
 
@@ -256,7 +257,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void clearRaid(boolean wasWin) {
         this.clears++;
         if (wasWin) {
-            this.aspects = null;
+            this.raidSync = null;
             this.setChanged();
         }
         if (this.isAtMaxClears()) {
@@ -344,7 +345,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.inactiveTicks = 0;
         this.lastReset = new RaidResetContext(gameTime);
         this.raidBoss = raidBoss;
-        this.aspects = null;
+        this.raidSync = null;
         this.setChanged();
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
@@ -422,13 +423,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("is_open")) this.isOpen = true;
-        if (compoundTag.contains("aspects")) {
-            Set<String> aspects = new HashSet<>();
-            for (Tag tag : compoundTag.getList("aspects", Tag.TAG_STRING)) {
-                aspects.add(tag.getAsString());
-            }
-            this.aspects = aspects;
-        }
+        if (compoundTag.contains("raid_sync")) this.raidSync = RaidSyncContext.load(compoundTag.getCompound("raid_sync"));
     }
 
     @Override
@@ -440,11 +435,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
-        if (this.aspects != null) {
-            ListTag tag = new ListTag();
-            this.aspects.forEach(aspect -> tag.add(StringTag.valueOf(aspect)));
-            compoundTag.put("aspects", tag);
-        }
+        if (this.raidSync != null) compoundTag.put("raid_sync", this.raidSync.save(new CompoundTag()));
     }
 
     @Override

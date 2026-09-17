@@ -1,0 +1,7 @@
+{
+    "type": "cobblemon:default",
+    "slot1": ["level_up_primary", "level_up_secondary", "level_up_any"],
+    "slot2": ["level_up_secondary", "level_up_any"],
+    "slot3": ["level_up_coverage", "level_up_any"],
+    "slot4": ["tm_coverage", "offensive_tm", "level_up_coverage", "level_up_any"]
+}

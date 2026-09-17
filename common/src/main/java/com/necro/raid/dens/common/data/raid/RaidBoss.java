@@ -1,13 +1,11 @@
 package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.CobblemonEntities;
+import com.cobblemon.mod.common.CobblemonMovesetBuilders;
 import com.cobblemon.mod.common.api.drop.DropTable;
 import com.cobblemon.mod.common.api.mark.Mark;
 import com.cobblemon.mod.common.api.mark.Marks;
-import com.cobblemon.mod.common.api.moves.Move;
-import com.cobblemon.mod.common.api.moves.MoveSet;
-import com.cobblemon.mod.common.api.moves.MoveTemplate;
-import com.cobblemon.mod.common.api.moves.Moves;
+import com.cobblemon.mod.common.api.moves.*;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.api.pokemon.feature.*;
@@ -28,6 +26,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.adapters.*;
+import com.necro.raid.dens.common.raids.moves.RaidMovesetBuilder;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
@@ -271,7 +270,7 @@ public class RaidBoss {
         this.boss.setCustomProperties(customProperties);
     }
 
-    public PokemonEntity getBossEntity(ServerLevel level, Set<String> aspects) {
+    public PokemonEntity getBossEntity(ServerLevel level, RaidSyncContext raidSync) {
         PokemonProperties properties = this.getBossProperties().copy();
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.getTier());
         if (properties.getLevel() == null) properties.setLevel(tierConfig.bossLevel());
@@ -279,6 +278,7 @@ public class RaidBoss {
         properties.setMinPerfectIVs(6);
 
         Pokemon pokemon;
+        Set<String> aspects = raidSync == null ? null : raidSync.aspects();
         if (aspects != null) {
             properties.setAspects(aspects);
             pokemon = properties.create();
@@ -302,6 +302,8 @@ public class RaidBoss {
             pokemon = properties.create();
         }
         if (aspects == null && !CobblemonRaidDens.CONFIG.sync_rewards) new StringSpeciesFeature("radiant", "regular").apply(pokemon);
+
+        if (raidSync != null) properties.setMoves(raidSync.moves());
 
         if (properties.getAbility() == null && level.getRandom().nextDouble() < this.getHaRate()) {
             pokemon.getForm().getAbilities().getMapping().values().forEach(
@@ -404,24 +406,39 @@ public class RaidBoss {
     }
 
     private void setMoveSet(PokemonProperties properties, Pokemon pokemon, boolean isRaidBoss) {
-        List<String> moves = properties.getMoves();
-        if (moves != null) {
-            MoveSet moveSet = pokemon.getMoveSet();
-            moveSet.clear();
-            List<MoveTemplate> moveTemplates = moves.stream().map(Moves::getByName).toList();
-            moveSet.doWithoutEmitting(() -> {
-                for (int i = 0; i < moves.size(); i++) {
-                    MoveTemplate mt = moveTemplates.get(i);
-                    moveSet.setMove(i, mt.create());
-                    Move move = moveSet.get(i);
-                    assert move != null;
-                    if (isRaidBoss) move.setCurrentPp(99);
-                    else move.update();
-                }
-                return Unit.INSTANCE;
-            });
-            moveSet.update();
+        List<String> tempMoves = properties.getMoves();
+        List<MoveTemplate> moves;
+        Map<String, List<String>> builder = ((IProperties) properties).crd_getMovesetBuilder();
+        MoveSet moveSet = pokemon.getMoveSet();
+        if (tempMoves != null) {
+            moves = tempMoves.stream().map(Moves::getByName).toList();
         }
+        else if (builder != null) {
+            moves = RaidMovesetBuilder.fromMap(builder).build(pokemon.getForm(), pokemon.getLevel()).getMoveTemplates();
+        }
+        else {
+            String builderId = switch (this.raidTier) {
+                case TIER_THREE, TIER_FOUR -> "raid_2";
+                case TIER_FIVE, TIER_SIX, TIER_SEVEN -> "raid_3";
+                default -> "raid_1";
+            };
+            MovesetBuilder raidMovesetBuilder = CobblemonMovesetBuilders.INSTANCE.getMovesetBuilders().get(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, builderId));
+            moves = raidMovesetBuilder.build(pokemon.getForm(), pokemon.getLevel()).getMoveTemplates();
+        }
+
+        moveSet.clear();
+        moveSet.doWithoutEmitting(() -> {
+            for (int i = 0; i < moves.size(); i++) {
+                MoveTemplate mt = moves.get(i);
+                moveSet.setMove(i, mt.create());
+                Move move = moveSet.get(i);
+                assert move != null;
+                if (isRaidBoss) move.setCurrentPp(99);
+                else move.update();
+            }
+            return Unit.INSTANCE;
+        });
+        moveSet.update();
     }
 
     public ResourceLocation getId() {

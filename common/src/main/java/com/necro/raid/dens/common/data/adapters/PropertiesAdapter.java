@@ -16,12 +16,15 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.Keyable;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.util.IEVExtension;
+import com.necro.raid.dens.common.util.IProperties;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
 
@@ -37,6 +40,10 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
 
     private static Optional<String> teraTypeAdapter(PokemonProperties properties) {
         return Optional.ofNullable(properties.getTeraType());
+    }
+
+    private static Optional<Map<String, List<String>>> movesetBuilderAdapter(PokemonProperties properties) {
+        return Optional.ofNullable(((IProperties) properties).crd_getMovesetBuilder());
     }
 
     private static Stat statMap(String id) {
@@ -104,6 +111,12 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         Codec.STRING.fieldOf("nature").orElse("").forGetter(PokemonProperties::getNature),
         Codec.INT.fieldOf("level").orElse(-1).forGetter(PokemonProperties::getLevel),
         Codec.STRING.listOf().fieldOf("moves").orElse(new ArrayList<>()).forGetter(PokemonProperties::getMoves),
+        Codec.simpleMap(
+            Codec.STRING,
+            Codec.either(Codec.STRING, Codec.STRING.listOf()).xmap(
+                either -> either.map(List::of, s -> s), Either::right
+            ), Keyable.forStrings(() -> Stream.of("slot1", "slot2", "slot3", "slot4"))
+        ).codec().optionalFieldOf("moveset_builder").forGetter(PropertiesAdapter::movesetBuilderAdapter),
         Codec.INT.fieldOf("min_perfect_ivs").orElse(-1).forGetter(PokemonProperties::getMinPerfectIVs),
         EV_CODEC.optionalFieldOf("evs").forGetter(PropertiesAdapter::evsAdapter),
         Codec.STRING.fieldOf("held_item").orElse("").forGetter(PokemonProperties::getHeldItem),
@@ -122,7 +135,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .fieldOf("custom_properties")
             .orElse(new ArrayList<>())
             .forGetter(PokemonProperties::getCustomProperties)
-    ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, gmax, tera, customProperties) -> {
+    ).apply(inst, (species, gender, ability, nature, level, moves, movesetBuilder, minIvs, evs, heldItem, aspects, form, gmax, tera, customProperties) -> {
         PokemonProperties properties = PokemonProperties.Companion.parse("");
         if (!species.isBlank()) properties.setSpecies(species);
         try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
@@ -131,6 +144,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         if (!nature.isBlank()) properties.setNature(nature);
         if (level > 0) properties.setLevel(level);
         if (!moves.isEmpty()) properties.setMoves(moves);
+        movesetBuilder.ifPresent(builder -> ((IProperties) properties).crd_setMovesetBuilder(builder));
         if (minIvs >= 0) properties.setMinPerfectIVs(minIvs);
         evs.ifPresent(properties::setEvs);
         if (!heldItem.isBlank()) properties.setHeldItem(heldItem);
@@ -152,6 +166,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         properties.setHeldItem(extra.getHeldItem() == null ? base.getHeldItem() : extra.getHeldItem());
         properties.setLevel(extra.getLevel() == null ? base.getLevel() : extra.getLevel());
         properties.setMoves(extra.getMoves() == null ? base.getMoves() : extra.getMoves());
+        ((IProperties) properties).crd_setMovesetBuilder(((IProperties) extra).crd_getMovesetBuilder() == null ? ((IProperties) base).crd_getMovesetBuilder() : ((IProperties) extra).crd_getMovesetBuilder());
         properties.setMinPerfectIVs(extra.getMinPerfectIVs() == null ? base.getMinPerfectIVs() : extra.getMinPerfectIVs());
         properties.setNature(extra.getNature() == null ? base.getNature() : extra.getNature());
         properties.setSpecies(extra.getSpecies() == null ? base.getSpecies() : extra.getSpecies());

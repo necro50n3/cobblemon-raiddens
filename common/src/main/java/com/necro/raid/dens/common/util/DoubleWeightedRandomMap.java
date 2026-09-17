@@ -25,4 +25,10 @@ public class DoubleWeightedRandomMap<T> {
         double r = random.nextDouble() * this.totalWeight;
         return Optional.ofNullable(this.map.ceilingEntry(r).getValue());
     }
+
+    public Optional<T> getRandom(double random) {
+        if (this.map.isEmpty() || this.totalWeight <= 0) return Optional.empty();
+        double r = random * this.totalWeight;
+        return Optional.ofNullable(this.map.ceilingEntry(r).getValue());
+    }
 }

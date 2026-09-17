@@ -1,0 +1,7 @@
+{
+    "type": "cobblemon:default",
+    "slot1": ["move_primary", "move_any"],
+    "slot2": ["move_secondary", "move_any"],
+    "slot3": ["move_coverage", "move_any"],
+    "slot4": ["tm_coverage", "offensive_tm", "move_any"]
+}

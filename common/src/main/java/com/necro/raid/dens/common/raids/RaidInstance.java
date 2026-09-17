@@ -3,6 +3,8 @@ package com.necro.raid.dens.common.raids;
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
+import com.cobblemon.mod.common.api.moves.Move;
+import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
@@ -34,6 +36,7 @@ import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
+import com.necro.raid.dens.common.util.IProperties;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IRaidBattle;
 import kotlin.Pair;
@@ -421,12 +424,24 @@ public class RaidInstance {
         Pokemon cachedReward;
         if (CobblemonRaidDens.CONFIG.sync_rewards) {
             cachedReward = this.raidBoss.getRewardPokemon(null);
-            Pokemon backupReward = this.raidBoss.getRewardPokemon(null);
-            PokemonProperties cachedProperties = this.raidBoss.getBossProperties();
+            PokemonProperties bossProperties = this.raidBoss.getBoss();
 
             cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
-            cachedReward.setGender((cachedProperties.getGender() == null ? this.bossEntity.getPokemon() : backupReward).getGender());
-            cachedReward.setNature((cachedProperties.getNature() == null ? this.bossEntity.getPokemon() : backupReward).getNature());
+            cachedReward.setGender((bossProperties.getGender() == null ? this.bossEntity.getPokemon() : cachedReward).getGender());
+            cachedReward.setNature((bossProperties.getNature() == null ? this.bossEntity.getPokemon() : cachedReward).getNature());
+
+            if (bossProperties.getMoves() == null && ((IProperties) bossProperties).crd_getMovesetBuilder() == null) {
+                List<Move> bossMoves = this.bossEntity.getPokemon().getMoveSet().getMoves();
+                MoveSet moveSet = cachedReward.getMoveSet();
+                for (int i = 0; i < bossMoves.size(); i++) {
+                    Move move = bossMoves.get(i).copy();
+                    move.setCurrentPp(move.getMaxPp());
+                    move.update();
+                    moveSet.setMove(i, move);
+                    moveSet.update();
+                }
+            }
+
             StringSpeciesFeature radiant = new StringSpeciesFeature("radiant", "radiant");
             if (radiant.matches(this.bossEntity.getPokemon())) radiant.apply(cachedReward);
         } else {
