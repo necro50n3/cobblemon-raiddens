@@ -1,9 +1,7 @@
 package com.necro.raid.dens.neoforge;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
-import com.necro.raid.dens.common.showdown.RaidDensShowdownRegistry;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
@@ -21,14 +19,11 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.LoadingModList;
-import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
 import net.neoforged.neoforge.common.NeoForge;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
-@SuppressWarnings("unused")
 @Mod(CobblemonRaidDens.MOD_ID)
 public class CobblemonRaidDensNeoForge {
+    @SuppressWarnings("unused")
     public CobblemonRaidDensNeoForge(IEventBus modBus, ModContainer container) {
         CobblemonRaidDens.init();
 

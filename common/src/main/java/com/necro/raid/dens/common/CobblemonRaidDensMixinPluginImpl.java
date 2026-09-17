@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.compat.ModCompat;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;

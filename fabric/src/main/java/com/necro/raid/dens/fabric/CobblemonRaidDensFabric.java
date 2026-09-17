@@ -1,6 +1,5 @@
 package com.necro.raid.dens.fabric;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.commands.RaidAdminCommands;
 import com.necro.raid.dens.common.commands.RaidDenCommands;
@@ -10,7 +9,6 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.showdown.RaidDensShowdownRegistry;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -37,8 +35,6 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.Version;
-import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
