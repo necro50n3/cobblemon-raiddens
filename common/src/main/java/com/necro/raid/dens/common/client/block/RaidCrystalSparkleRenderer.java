@@ -17,6 +17,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector4f;
 
+import java.util.Locale;
+
 public class RaidCrystalSparkleRenderer {
     public static void sparkle(RaidCrystalBlockEntity blockEntity) {
         BedrockParticleOptions effect = BedrockParticleOptionsRepository.INSTANCE.getEffect(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_den_sparkle"));
@@ -46,7 +48,7 @@ public class RaidCrystalSparkleRenderer {
     }
 
     private static Vector4f getParticleColor(String feature, RaidType type) {
-        return switch (feature.toLowerCase()) {
+        return switch (feature.toLowerCase(Locale.ROOT)) {
             case "dynamax" -> new Vector4f(1.0F, 0F, 0F, 0.5F);
             case "shadow" -> new Vector4f(0.242F, 0F, 0.364F, 0.8F);
             case "tera" -> null;

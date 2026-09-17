@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+
 @Mixin(FieldStartInstruction.class)
 public abstract class FieldStartInstructionMixin {
     @Shadow(remap = false)
@@ -39,7 +41,7 @@ public abstract class FieldStartInstructionMixin {
 
         int idx = effect.getRawData().lastIndexOf(" ");
         String effectType = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
-        BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase());
+        BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase(Locale.ROOT));
 
         BattlePokemon source = this.getMessage().battlePokemonFromOptional(battle, "of");
 

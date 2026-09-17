@@ -37,10 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class RaidUtils {
     private static final Set<String> POKEMON_BLACKLIST = new HashSet<>();
@@ -51,7 +48,7 @@ public class RaidUtils {
     private static int MAX_COMMAND_SPLIT;
 
     public static boolean isPokemonBlacklisted(Pokemon pokemon) {
-        return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName().toLowerCase());
+        return POKEMON_BLACKLIST.contains(pokemon.getSpecies().getName().toLowerCase(Locale.ROOT));
     }
 
     public static boolean isAbilityBlacklisted(Ability ability) {

@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+
 @Mixin(FieldEndInstruction.class)
 public abstract class FieldEndInstructionMixin {
     @Shadow(remap = false)
@@ -38,7 +40,7 @@ public abstract class FieldEndInstructionMixin {
 
         int idx = effect.getRawData().lastIndexOf(" ");
         String effectType = idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length());
-        BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase());
+        BattleContext.Type type = BattleContext.Type.valueOf(effectType.toUpperCase(Locale.ROOT));
 
         battle.dispatch(() -> {
             if (RaidConditions.TERRAIN.contains(field)) raid.updateBattleState(battle, RaidBattleState::removeTerrain);

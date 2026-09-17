@@ -16,6 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Locale;
+
 public record RaidHealInstruction(BattleActor actor, BattleMessage publicMessage, BattleMessage privateMessage) implements InterpreterInstruction {
     @Override
     public void invoke(@NotNull PokemonBattle battle) {
@@ -42,7 +44,7 @@ public record RaidHealInstruction(BattleActor actor, BattleMessage publicMessage
                 else if (this.privateMessage.hasOptionalArgument("wisher")) {
                     String name = this.privateMessage.optionalArgument("wisher");
                     assert name != null;
-                    String showdownId = name.toLowerCase().replace(ShowdownIdentifiable.Companion.getREGEX$common().getPattern(), "");
+                    String showdownId = name.toLowerCase(Locale.ROOT).replace(ShowdownIdentifiable.Companion.getREGEX$common().getPattern(), "");
                     BattlePokemon wisher = this.actor.getPokemonList().stream().filter(pokemon -> pokemon.getEffectedPokemon().showdownId().equals(showdownId)).findFirst().orElse(null);
                     lang = LocalizationUtilsKt.battleLang("heal.wish", wisher != null ? wisher.getName() : this.actor.nameOwned(name));
                 }

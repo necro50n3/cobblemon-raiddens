@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+
 @Mixin(SideEndInstruction.class)
 public abstract class SideEndInstructionMixin {
     @Shadow(remap = false)
@@ -39,7 +41,7 @@ public abstract class SideEndInstructionMixin {
         Effect effect = this.getMessage().effectAt(1);
         if (effect == null) return;
         int idx = effect.getRawData().lastIndexOf(" ");
-        String sideCondition = (idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length())).toLowerCase();
+        String sideCondition = (idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length())).toLowerCase(Locale.ROOT);
 
         BattleContext.Type type;
         if (RaidConditions.SCREENS.contains(sideCondition)) type = BattleContext.Type.SCREEN;

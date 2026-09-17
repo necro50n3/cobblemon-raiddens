@@ -38,17 +38,19 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 public class RaidDenCommands {
     private static final Permission DENS = new RaidDenPermission("command.dens", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
 
     public static final SuggestionProvider<CommandSourceStack> RAID_BOSSES = (context, builder) -> {
-        String remaining = builder.getRemaining().toLowerCase();
+        String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
         for (ResourceLocation id : RaidRegistry.getAll()) {
-            if (id.toString().toLowerCase().startsWith(remaining)) {
+            if (id.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
-            else if (id.getNamespace().equals("cobblemonraiddens") && id.getPath().toLowerCase().startsWith(remaining)) {
+            else if (id.getNamespace().equals("cobblemonraiddens") && id.getPath().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
         }
@@ -56,10 +58,10 @@ public class RaidDenCommands {
     };
 
     public static final SuggestionProvider<CommandSourceStack> RAID_BUCKETS = (context, builder) -> {
-        String remaining = builder.getRemaining().toLowerCase();
+        String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
         for (ResourceLocation id : RaidBucketRegistry.getAll()) {
-            if (id.toString().toLowerCase().startsWith(remaining)) {
+            if (id.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
         }
@@ -67,10 +69,10 @@ public class RaidDenCommands {
     };
 
     public static final SuggestionProvider<CommandSourceStack> RAID_TIERS = (context, builder) -> {
-        String remaining = builder.getRemaining().toLowerCase();
+        String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
         for (RaidTier tier : RaidTier.values()) {
-            if (tier.toString().toLowerCase().startsWith(remaining)) {
+            if (tier.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(tier.name());
             }
         }
@@ -78,10 +80,10 @@ public class RaidDenCommands {
     };
 
     public static final SuggestionProvider<CommandSourceStack> CYCLE_MODE = (context, builder) -> {
-        String remaining = builder.getRemaining().toLowerCase();
+        String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
         for (RaidCycleMode cycleMode : RaidCycleMode.values()) {
-            if (cycleMode.toString().toLowerCase().startsWith(remaining)) {
+            if (cycleMode.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(cycleMode.name());
             }
         }
@@ -135,7 +137,7 @@ public class RaidDenCommands {
                                     context,
                                     BlockPosArgument.getBlockPos(context, "position"),
                                     context.getSource().getLevel(),
-                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                     null, true
                                 ))
                                 .then(Commands.argument("cycle_mode", StringArgumentType.word())
@@ -144,7 +146,7 @@ public class RaidDenCommands {
                                         context,
                                         BlockPosArgument.getBlockPos(context, "position"),
                                         context.getSource().getLevel(),
-                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                         RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
                                         true
                                     ))
@@ -153,7 +155,7 @@ public class RaidDenCommands {
                                             context,
                                             BlockPosArgument.getBlockPos(context, "position"),
                                             context.getSource().getLevel(),
-                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                             RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
                                             BoolArgumentType.getBool(context, "can_reset")
                                         ))
@@ -259,7 +261,7 @@ public class RaidDenCommands {
                                         context,
                                         BlockPosArgument.getBlockPos(context, "position"),
                                         DimensionArgument.getDimension(context, "dimension"),
-                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                         null, true
                                     ))
                                     .then(Commands.argument("cycle_mode", StringArgumentType.word())
@@ -268,7 +270,7 @@ public class RaidDenCommands {
                                             context,
                                             BlockPosArgument.getBlockPos(context, "position"),
                                             DimensionArgument.getDimension(context, "dimension"),
-                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                             RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
                                             true
                                         ))
@@ -277,7 +279,7 @@ public class RaidDenCommands {
                                                 context,
                                                 BlockPosArgument.getBlockPos(context, "position"),
                                                 DimensionArgument.getDimension(context, "dimension"),
-                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                                 RaidCycleMode.fromString(StringArgumentType.getString(context, "cycle_mode")),
                                                 BoolArgumentType.getBool(context, "can_reset")
                                             ))

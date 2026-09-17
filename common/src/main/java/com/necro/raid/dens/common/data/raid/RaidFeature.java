@@ -11,6 +11,7 @@ import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public interface RaidFeature {
@@ -26,7 +27,7 @@ public interface RaidFeature {
     void applyToReward(Pokemon pokemon);
 
     static String getTranslatable(String id) {
-        return "feature.cobblemonraiddens." + id.toLowerCase();
+        return "feature.cobblemonraiddens." + id.toLowerCase(Locale.ROOT);
     }
 
     enum Base implements RaidFeature {

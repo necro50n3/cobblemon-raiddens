@@ -30,6 +30,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Locale;
+
 public class RaidSpawnCommands {
     private static final Permission SPAWN_BOSS = new RaidDenPermission("command.spawnboss", PermissionLevel.CHEAT_COMMANDS_AND_COMMAND_BLOCKS);
 
@@ -89,7 +91,7 @@ public class RaidSpawnCommands {
                                         context,
                                         Vec3Argument.getVec3(context, "pos"),
                                         DimensionArgument.getDimension(context, "dimension"),
-                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                         true, true, false
                                     ))
                                     .then(Commands.argument("noAI", BoolArgumentType.bool())
@@ -97,7 +99,7 @@ public class RaidSpawnCommands {
                                             context,
                                             Vec3Argument.getVec3(context, "pos"),
                                             DimensionArgument.getDimension(context, "dimension"),
-                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                             BoolArgumentType.getBool(context, "noAI"), true, false
                                         ))
                                         .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
@@ -105,7 +107,7 @@ public class RaidSpawnCommands {
                                                 context,
                                                 Vec3Argument.getVec3(context, "pos"),
                                                 DimensionArgument.getDimension(context, "dimension"),
-                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                                 BoolArgumentType.getBool(context, "noAI"),
                                                 BoolArgumentType.getBool(context, "isInvulnerable"), false
                                             ))
@@ -114,7 +116,7 @@ public class RaidSpawnCommands {
                                                     context,
                                                     Vec3Argument.getVec3(context, "pos"),
                                                     DimensionArgument.getDimension(context, "dimension"),
-                                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                                     BoolArgumentType.getBool(context, "noAI"),
                                                     BoolArgumentType.getBool(context, "isInvulnerable"),
                                                     BoolArgumentType.getBool(context, "isPersistent")
@@ -246,21 +248,21 @@ public class RaidSpawnCommands {
                                 .executes(context -> spawnBossFromTier(
                                     context,
                                     Vec3Argument.getVec3(context, "pos"),
-                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                    RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                     true, true, false
                                 ))
                                 .then(Commands.argument("noAI", BoolArgumentType.bool())
                                     .executes(context -> spawnBossFromTier(
                                         context,
                                         Vec3Argument.getVec3(context, "pos"),
-                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                        RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                         BoolArgumentType.getBool(context, "noAI"), true, false
                                     ))
                                     .then(Commands.argument("isInvulnerable", BoolArgumentType.bool())
                                         .executes(context -> spawnBossFromTier(
                                             context,
                                             Vec3Argument.getVec3(context, "pos"),
-                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                            RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                             BoolArgumentType.getBool(context, "noAI"),
                                             BoolArgumentType.getBool(context, "isInvulnerable"), false
                                         ))
@@ -268,7 +270,7 @@ public class RaidSpawnCommands {
                                             .executes(context -> spawnBossFromTier(
                                                 context,
                                                 Vec3Argument.getVec3(context, "pos"),
-                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase()),
+                                                RaidTier.fromString(StringArgumentType.getString(context, "tier").toUpperCase(Locale.ROOT)),
                                                 BoolArgumentType.getBool(context, "noAI"),
                                                 BoolArgumentType.getBool(context, "isInvulnerable"),
                                                 BoolArgumentType.getBool(context, "isPersistent")

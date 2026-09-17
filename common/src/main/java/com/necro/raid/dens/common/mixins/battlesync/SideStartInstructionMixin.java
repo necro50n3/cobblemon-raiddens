@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+
 @Mixin(SideStartInstruction.class)
 public abstract class SideStartInstructionMixin {
     @Shadow(remap = false)
@@ -40,12 +42,12 @@ public abstract class SideStartInstructionMixin {
         Effect effect = this.getMessage().effectAt(1);
         if (effect == null) return;
         int idx = effect.getRawData().lastIndexOf(" ");
-        String sideCondition = (idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length())).toLowerCase();
+        String sideCondition = (idx == -1 ? effect.getRawData() : effect.getRawData().substring(idx + " ".length())).toLowerCase(Locale.ROOT);
 
         BattleContext.Type type;
-        if (RaidConditions.SCREENS.contains(sideCondition.toLowerCase())) type = BattleContext.Type.SCREEN;
-        else if (RaidConditions.HAZARDS.contains(sideCondition.toLowerCase())) type = BattleContext.Type.HAZARD;
-        else if (RaidConditions.TAILWIND.contains(sideCondition.toLowerCase())) type = BattleContext.Type.TAILWIND;
+        if (RaidConditions.SCREENS.contains(sideCondition.toLowerCase(Locale.ROOT))) type = BattleContext.Type.SCREEN;
+        else if (RaidConditions.HAZARDS.contains(sideCondition.toLowerCase(Locale.ROOT))) type = BattleContext.Type.HAZARD;
+        else if (RaidConditions.TAILWIND.contains(sideCondition.toLowerCase(Locale.ROOT))) type = BattleContext.Type.TAILWIND;
         else return;
 
         battle.dispatch(() -> {

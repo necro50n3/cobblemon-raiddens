@@ -9,6 +9,7 @@ import com.cobblemon.mod.common.pokemon.status.VolatileStatus;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class ShowdownEvents {
@@ -568,7 +569,7 @@ public class ShowdownEvents {
                 if (part.matches("[-_ ]")) {
                     result.append(part);
                 } else if (!part.isEmpty()) {
-                    result.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1).toLowerCase());
+                    result.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1).toLowerCase(Locale.ROOT));
                 }
             }
             return result.toString();

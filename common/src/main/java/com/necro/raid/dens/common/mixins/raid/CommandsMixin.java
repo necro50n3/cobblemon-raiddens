@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Locale;
+
 @Mixin(Commands.class)
 public class CommandsMixin {
     @Inject(method = "performCommand", at = @At("HEAD"), cancellable = true)
@@ -19,7 +21,7 @@ public class CommandsMixin {
         ServerPlayer player = parseResults.getContext().getSource().getPlayer();
         if (player == null || !RaidUtils.isRaidDimension(player.level()) || CobblemonRaidDens.BLACKLIST_CONFIG.commands.length == 0) return;
 
-        String[] parts = cmd.toLowerCase().split(" ");
+        String[] parts = cmd.toLowerCase(Locale.ROOT).split(" ");
         StringBuilder prefix = new StringBuilder();
         for (int i = 0; i < Math.min(parts.length, RaidUtils.getMaxCommandSplit()); i++) {
             if (i > 0) prefix.append(" ");

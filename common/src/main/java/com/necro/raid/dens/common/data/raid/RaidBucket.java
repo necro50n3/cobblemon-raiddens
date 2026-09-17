@@ -172,7 +172,7 @@ public class RaidBucket {
             if (!this.includeFeatures.isEmpty()) {
                 BitSet featureSet = new BitSet();
                 for (String feature : this.includeFeatures) {
-                    BitSet set = RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase());
+                    BitSet set = RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase(Locale.ROOT));
                     if (set != null) featureSet.or(set);
                 }
                 this.compiled.and(featureSet);
@@ -189,7 +189,7 @@ public class RaidBucket {
 
             for (RaidTier tier : this.excludeTiers) this.compiled.andNot(RaidRegistry.RAIDS_BY_TIER.get(tier));
             for (RaidType type : this.excludeTypes) this.compiled.andNot(RaidRegistry.RAIDS_BY_TYPE.get(type));
-            for (String feature : this.excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase()));
+            for (String feature : this.excludeFeatures) this.compiled.andNot(RaidRegistry.RAIDS_BY_FEATURE.get(feature.toLowerCase(Locale.ROOT)));
             for (ResourceLocation raidBoss : this.excludeBosses) {
                 Integer index = RaidRegistry.RAID_INDEX.get(raidBoss);
                 if (index != null) this.compiled.clear(index);

@@ -227,7 +227,7 @@ public class RaidBoss {
         TierConfig tierConfig = CobblemonRaidDens.TIER_CONFIG.get(this.raidTier);
 
         if (this.raidFeature == null) this.raidFeature = "default";
-        else this.raidFeature = this.raidFeature.toLowerCase();
+        else this.raidFeature = this.raidFeature.toLowerCase(Locale.ROOT);
         if (this.weight == null) this.weight = 20.0;
         if (this.den == null) this.den = List.of("#cobblemonraiddens:default");
         if (this.key == null) this.key = new UniqueKey();
@@ -618,7 +618,7 @@ public class RaidBoss {
     }
 
     public void setFeature(String feature) {
-        this.raidFeature = feature.toLowerCase();
+        this.raidFeature = feature.toLowerCase(Locale.ROOT);
     }
 
     public void setType(RaidType type) {

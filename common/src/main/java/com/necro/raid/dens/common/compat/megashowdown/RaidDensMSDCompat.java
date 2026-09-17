@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public abstract class RaidDensMSDCompat {
@@ -22,7 +23,7 @@ public abstract class RaidDensMSDCompat {
         StringProperty property = AspectPropertyType.INSTANCE.fromString("msd:tera_" + pokemon.getTeraType().showdownId());
         if (property.matches(pokemon)) return;
         property.apply(pokemon);
-        applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase(), false);
+        applyEffects(pokemon, "mega_showdown:tera_init_" + pokemon.getTeraType().showdownId().toLowerCase(Locale.ROOT), false);
         pokemon.getPersistentData().putBoolean("is_tera", true);
     }
 

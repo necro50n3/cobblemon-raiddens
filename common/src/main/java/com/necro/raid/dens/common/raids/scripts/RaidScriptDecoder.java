@@ -6,6 +6,7 @@ import com.necro.raid.dens.common.showdown.events.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class RaidScriptDecoder {
@@ -77,7 +78,7 @@ public class RaidScriptDecoder {
         });
         registerDecoder("USE_MOVE", args -> {
             if (args.length != 4) return null;
-            String move = args[2].toLowerCase();
+            String move = args[2].toLowerCase(Locale.ROOT);
             int target = parseInt(args[3]);
             return new ShowdownEvents.UseMoveShowdownEvent(move, target);
         });
