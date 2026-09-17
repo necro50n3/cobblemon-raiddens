@@ -619,7 +619,7 @@ public class RaidInstance {
         this.timerEvent.removeAllPlayers();
 
         RaidRegion region = RaidRegionHelper.getRegion(this.raid);
-        if (region != null) region.removeRegionTicket(ModDimensions.getRaidDimension(server));
+        if (region != null) server.execute(() -> region.removeRegionTicket(ModDimensions.getRaidDimension(server)));
 
         if (this.isInDen) RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.raidState, ModDimensions.getRaidDimension(server));
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
