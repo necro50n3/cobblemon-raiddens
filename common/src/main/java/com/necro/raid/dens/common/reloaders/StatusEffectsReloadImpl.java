@@ -3,6 +3,7 @@ package com.necro.raid.dens.common.reloaders;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -46,5 +47,7 @@ public class StatusEffectsReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void postLoad() {}
+    protected void postLoad() {
+        throw new NotImplementedException();
+    }
 }

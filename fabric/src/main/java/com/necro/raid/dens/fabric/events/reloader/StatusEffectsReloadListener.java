@@ -2,13 +2,13 @@ package com.necro.raid.dens.fabric.events.reloader;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.battles.runner.graal.GraalShowdownService;
-import com.cobblemon.mod.relocations.graalvm.polyglot.Value;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.reloaders.StatusEffectsReloadImpl;
 import kotlin.Unit;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.graalvm.polyglot.Value;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

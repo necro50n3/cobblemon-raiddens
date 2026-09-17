@@ -1,0 +1,17 @@
+[versions]
+# Graal
+graal = "22.3.0"
+icu4j = "71.1"
+regex = "22.3.0"
+truffle = "22.3.0"
+
+[libraries]
+# Graal
+graal-core = { group = "org.graalvm.js", name = "js", version.ref = "graal" }
+graal-sdk = { group = "org.graalvm.sdk", name = "graal-sdk", version.ref = "graal" }
+graal-regex = { group = "org.graalvm.regex", name = "regex", version.ref = "graal"}
+graal-truffle = { group = "org.graalvm.truffle", name = "truffle-api", version.ref = "graal" }
+icu4j = { group = "com.ibm.icu", name = "icu4j", version.ref = "icu4j" }
+
+[bundles]
+graal = [ "graal-core", "graal-sdk", "graal-regex", "graal-truffle", "icu4j" ]
