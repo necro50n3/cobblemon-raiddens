@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.data.raid;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.SpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
@@ -24,7 +25,7 @@ public interface RaidFeature {
     void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity);
 
     // Adds custom behaviours to the reward Pokemon
-    void applyToReward(Pokemon pokemon);
+    void applyToReward(PokemonProperties properties, Pokemon pokemon);
 
     static String getTranslatable(String id) {
         return "feature.cobblemonraiddens." + id.toLowerCase(Locale.ROOT);
@@ -44,7 +45,7 @@ public interface RaidFeature {
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {}
 
             @Override
-            public void applyToReward(Pokemon pokemon) {}
+            public void applyToReward(PokemonProperties properties, Pokemon pokemon) {}
         },
 
         MEGA{
@@ -64,7 +65,7 @@ public interface RaidFeature {
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {}
 
             @Override
-            public void applyToReward(Pokemon pokemon) {}
+            public void applyToReward(PokemonProperties properties, Pokemon pokemon) {}
         },
 
         TERA{
@@ -82,7 +83,7 @@ public interface RaidFeature {
             }
 
             @Override
-            public void applyToReward(Pokemon pokemon) {}
+            public void applyToReward(PokemonProperties properties, Pokemon pokemon) {}
         },
 
         DYNAMAX{
@@ -104,9 +105,9 @@ public interface RaidFeature {
             }
 
             @Override
-            public void applyToReward(Pokemon pokemon) {
-                pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
-                if (new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon)) pokemon.setGmaxFactor(true);
+            public void applyToReward(PokemonProperties properties, Pokemon pokemon) {
+                if (properties.getDmaxLevel() == null) pokemon.setDmaxLevel(Cobblemon.config.getMaxDynamaxLevel());
+                if (!Boolean.FALSE.equals(properties.getGmaxFactor()) && new StringSpeciesFeature("dynamax_form", "gmax").matches(pokemon)) pokemon.setGmaxFactor(true);
             }
         },
 
@@ -125,7 +126,7 @@ public interface RaidFeature {
             }
 
             @Override
-            public void applyToReward(Pokemon pokemon) {
+            public void applyToReward(PokemonProperties properties, Pokemon pokemon) {
                 if (ModCompat.SHADOWED_HEARTS.isLoaded()) RaidDensShadowedHeartsCompat.setShadowReward(pokemon);
             }
         }

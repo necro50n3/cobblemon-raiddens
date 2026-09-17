@@ -389,7 +389,7 @@ public class RaidBoss {
         this.setMoveSet(properties, pokemon, false);
         for (Mark mark : this.buildMarks()) pokemon.exchangeMark(mark, true);
 
-        CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(pokemon);
+        CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(properties, pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);
 
         if (!CobblemonRaidDens.CONFIG.use_natural_ivs) {

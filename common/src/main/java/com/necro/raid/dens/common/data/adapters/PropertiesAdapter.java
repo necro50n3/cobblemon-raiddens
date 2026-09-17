@@ -24,22 +24,19 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.cobblemon.mod.common.util.MiscUtilsKt.cobblemonResource;
 
 public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, JsonDeserializer<PokemonProperties> {
+    private static <T> Optional<T> optionalAdapter(PokemonProperties properties, Function<PokemonProperties, T> getter) {
+        return Optional.ofNullable(getter.apply(properties));
+    }
+
     private static String genderAdapter(PokemonProperties properties) {
         Gender gender = properties.getGender();
         return gender == null ? "" : gender.getSerializedName();
-    }
-
-    private static Optional<EVs> evsAdapter(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getEvs());
-    }
-
-    private static Optional<String> teraTypeAdapter(PokemonProperties properties) {
-        return Optional.ofNullable(properties.getTeraType());
     }
 
     private static Optional<Map<String, List<String>>> movesetBuilderAdapter(PokemonProperties properties) {
@@ -113,20 +110,20 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         Codec.STRING.listOf().fieldOf("moves").orElse(new ArrayList<>()).forGetter(PokemonProperties::getMoves),
         Codec.simpleMap(
             Codec.STRING,
-            Codec.either(Codec.STRING, Codec.STRING.listOf()).xmap(
-                either -> either.map(List::of, s -> s), Either::right
-            ), Keyable.forStrings(() -> Stream.of("slot1", "slot2", "slot3", "slot4"))
+            Codec.either(Codec.STRING, Codec.STRING.listOf()).xmap(either -> either.map(List::of, s -> s), Either::right),
+            Keyable.forStrings(() -> Stream.of("slot1", "slot2", "slot3", "slot4"))
         ).codec().optionalFieldOf("moveset_builder").forGetter(PropertiesAdapter::movesetBuilderAdapter),
         Codec.INT.fieldOf("min_perfect_ivs").orElse(-1).forGetter(PokemonProperties::getMinPerfectIVs),
-        EV_CODEC.optionalFieldOf("evs").forGetter(PropertiesAdapter::evsAdapter),
+        EV_CODEC.optionalFieldOf("evs").forGetter(properties -> optionalAdapter(properties, PokemonProperties::getEvs)),
         Codec.STRING.fieldOf("held_item").orElse("").forGetter(PokemonProperties::getHeldItem),
         Codec.STRING.listOf()
             .xmap(list -> (Set<String>) new HashSet<>(list), ArrayList::new)
             .fieldOf("aspects").orElse(new HashSet<>())
             .forGetter(PokemonProperties::getAspects),
         Codec.STRING.fieldOf("form").orElse("").forGetter(PokemonProperties::getForm),
+        Codec.INT.fieldOf("dmax_level").orElse(-1).forGetter(PokemonProperties::getDmaxLevel),
         Codec.BOOL.fieldOf("gmax").orElse(false).forGetter(PokemonProperties::getGmaxFactor),
-        Codec.STRING.optionalFieldOf("tera_type").forGetter(PropertiesAdapter::teraTypeAdapter),
+        Codec.STRING.optionalFieldOf("tera_type").forGetter(properties -> optionalAdapter(properties, PokemonProperties::getTeraType)),
         FEATURE_CODEC.listOf()
             .xmap(
                 list -> list.stream().map(feature -> (CustomPokemonProperty) feature).toList(),
@@ -135,7 +132,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .fieldOf("custom_properties")
             .orElse(new ArrayList<>())
             .forGetter(PokemonProperties::getCustomProperties)
-    ).apply(inst, (species, gender, ability, nature, level, moves, movesetBuilder, minIvs, evs, heldItem, aspects, form, gmax, tera, customProperties) -> {
+    ).apply(inst, (species, gender, ability, nature, level, moves, movesetBuilder, minIvs, evs, heldItem, aspects, form, dmaxLevel, gmax, tera, customProperties) -> {
         PokemonProperties properties = PokemonProperties.Companion.parse("");
         if (!species.isBlank()) properties.setSpecies(species);
         try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
@@ -150,6 +147,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         if (!heldItem.isBlank()) properties.setHeldItem(heldItem);
         if (!aspects.isEmpty()) properties.setAspects(aspects);
         if (!form.isBlank()) properties.setForm(form);
+        if (dmaxLevel >= 0) properties.setDmaxLevel(dmaxLevel);
         if (gmax) properties.setGmaxFactor(true);
         tera.ifPresent(properties::setTeraType);
         if (!customProperties.isEmpty()) properties.setCustomProperties(new ArrayList<>(customProperties));
@@ -159,6 +157,7 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
     public static PokemonProperties apply(PokemonProperties base, PokemonProperties extra) {
         PokemonProperties properties = new PokemonProperties();
         properties.setAbility(extra.getAbility() == null ? base.getAbility() : extra.getAbility());
+        properties.setDmaxLevel(extra.getDmaxLevel() == null ? base.getDmaxLevel() : extra.getDmaxLevel());
         properties.setEvs(extra.getEvs() == null ? base.getEvs() : extra.getEvs());
         properties.setForm(extra.getForm() == null ? base.getForm() : extra.getForm());
         properties.setGender(extra.getGender() == null ? base.getGender() : extra.getGender());
