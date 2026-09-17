@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "pancham",
+        "moves": [
+            "crunch",
+            "vitalthrow",
+            "slash",
+            "lowsweep"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "FIGHTING",
+    "weight": 20.0
+}

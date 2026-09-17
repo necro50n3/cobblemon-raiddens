@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "snom",
+        "moves": [
+            "powdersnow",
+            "strugglebug"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "zangoose",
+        "moves": [
+            "xscissor",
+            "falseswipe",
+            "crushclaw",
+            "revenge"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

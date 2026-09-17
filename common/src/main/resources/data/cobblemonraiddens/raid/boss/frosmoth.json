@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "frosmoth",
+        "moves": [
+            "blizzard",
+            "bugbuzz",
+            "aurorabeam",
+            "infestation"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

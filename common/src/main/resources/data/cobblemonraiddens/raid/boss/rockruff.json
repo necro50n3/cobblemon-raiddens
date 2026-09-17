@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rockruff",
+        "moves": [
+            "bite",
+            "rockthrow",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ROCK",
+    "weight": 20.0
+}

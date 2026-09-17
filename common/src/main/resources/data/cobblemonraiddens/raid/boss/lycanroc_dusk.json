@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "lycanroc",
+        "moves": [
+            "stoneedge",
+            "crunch",
+            "suckerpunch",
+            "accelerock"
+        ],
+        "custom_properties": [
+            {
+                "name": "wolf_form",
+                "value": "dusk"
+            }
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK",
+    "weight": 20.0
+}

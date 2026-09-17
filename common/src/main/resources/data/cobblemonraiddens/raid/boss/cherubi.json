@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "cherubi",
+        "moves": [
+            "magicalleaf",
+            "leafage",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}

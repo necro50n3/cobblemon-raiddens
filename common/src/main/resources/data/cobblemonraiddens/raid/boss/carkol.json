@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "carkol",
+        "moves": [
+            "incinerate",
+            "ancientpower",
+            "tackle",
+            "rapidspin"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "ROCK",
+    "weight": 20.0
+}

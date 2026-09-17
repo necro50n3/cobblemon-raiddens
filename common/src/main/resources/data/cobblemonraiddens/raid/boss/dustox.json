@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "dustox",
+        "moves": [
+            "bugbuzz",
+            "silverwind",
+            "psybeam",
+            "venoshock"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

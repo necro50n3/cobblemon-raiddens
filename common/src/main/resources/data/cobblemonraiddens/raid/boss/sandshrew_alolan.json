@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "sandshrew",
+        "moves": [
+            "metalclaw",
+            "rapidspin",
+            "furycutter",
+            "rollout"
+        ],
+        "custom_properties": [
+            {
+                "name": "alolan",
+                "value": true
+            }
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

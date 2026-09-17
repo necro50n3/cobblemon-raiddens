@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "cobblemonraiddens:avalugg_hisuian",
+            "required": false
+        }
+    ]
+}

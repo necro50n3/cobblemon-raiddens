@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "lokix",
+        "moves": [
+            "firstimpression",
+            "suckerpunch",
+            "throatchop",
+            "feint"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

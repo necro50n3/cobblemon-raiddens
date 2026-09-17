@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "sandslash",
+        "moves": [
+            "scratch",
+            "furyswipes",
+            "slash",
+            "powdersnow"
+        ],
+        "custom_properties": [
+            {
+                "name": "alolan",
+                "value": true
+            }
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ICE",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "skuntank",
+        "moves": [
+            "belch",
+            "nightslash",
+            "suckerpunch",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "POISON",
+    "weight": 20.0
+}

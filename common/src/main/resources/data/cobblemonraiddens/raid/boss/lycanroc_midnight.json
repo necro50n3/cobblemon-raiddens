@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "lycanroc",
+        "moves": [
+            "stoneedge",
+            "crunch",
+            "rockslide",
+            "reversal"
+        ],
+        "custom_properties": [
+            {
+                "name": "wolf_form",
+                "value": "midnight"
+            }
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "ROCK",
+    "weight": 20.0
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "kingambit",
+        "moves": [
+            "ironhead",
+            "retaliate",
+            "nightslash",
+            "slash"
+        ]
+    },
+    "raid_tier": "TIER_FIVE",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

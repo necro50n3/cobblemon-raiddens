@@ -1,0 +1,12 @@
+{
+    "pokemon": {
+        "species": "delcatty",
+        "moves": [
+            "doubleslap",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

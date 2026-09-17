@@ -1,0 +1,17 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "#cobblemonraiddens:lycanroc_dusk",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:lycanroc_midday",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:lycanroc_midnight",
+            "required": false
+        }
+    ]
+}

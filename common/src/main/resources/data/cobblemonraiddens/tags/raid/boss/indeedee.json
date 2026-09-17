@@ -1,0 +1,13 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "#cobblemonraiddens:indeedee_female",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:indeedee_male",
+            "required": false
+        }
+    ]
+}

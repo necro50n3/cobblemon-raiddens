@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "rolycoly",
+        "moves": [
+            "smackdown",
+            "rapidspin",
+            "tackle"
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "ROCK",
+    "weight": 20.0
+}

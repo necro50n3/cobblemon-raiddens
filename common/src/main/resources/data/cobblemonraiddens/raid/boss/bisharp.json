@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "bisharp",
+        "moves": [
+            "nightslash",
+            "slash",
+            "assurance",
+            "feintattack"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "DARK",
+    "weight": 20.0
+}

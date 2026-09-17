@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "audino",
+        "moves": [
+            "hypervoice",
+            "takedown",
+            "secretpower",
+            "zenheadbutt"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

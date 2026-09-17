@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "skitty",
+        "moves": [
+            "doubleslap",
+            "disarmingvoice",
+            "tackle",
+            "fakeout"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "NORMAL",
+    "weight": 20.0
+}

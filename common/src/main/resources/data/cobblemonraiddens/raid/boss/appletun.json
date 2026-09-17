@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "appletun",
+        "moves": [
+            "energyball",
+            "dragonpulse",
+            "bodyslam",
+            "appleacid"
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GRASS",
+    "weight": 20.0
+}
