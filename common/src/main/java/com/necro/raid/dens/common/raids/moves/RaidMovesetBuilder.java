@@ -87,7 +87,8 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         "meteorassault",
         "prismaticlaser",
         "roaroftime",
-        "rockwrecker"
+        "rockwrecker",
+        "lastresort"
     );
 
     static final Set<String> DEBUFF_MOVES = Set.of(

@@ -16,6 +16,10 @@ public class RCTBattleAIImpl {
         "explosion",
         "selfdestruct",
         "mistyexplosion",
+        "memento",
+        "finalgambit",
+        "healingwish",
+        "lunardance",
         "transform",
         "perishsong"
     );

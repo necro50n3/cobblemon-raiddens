@@ -1,39 +1,56 @@
 {
     name: 'raidboss',
+    onTryMove(source, target, move) {
+        switch (move.id) {
+            case 'explosion':
+            case 'mistyexplosion':
+            case 'selfdestruct':
+            case 'memento':
+            case 'finalgambit':
+            case 'healingwish':
+            case 'lunardance':
+            case 'transform':
+            case 'perishsong':
+                this.add('-fail', source);
+                return false;
+            default:
+                return true;
+        }
+    },
     onDamage(damage, target, source, effect) {
         try {
             const name = effect.fullname === 'tox' ? 'psn' : effect.fullname;
             this.add('split', 'p2');
             switch (effect.id) {
-            case 'strugglerecoil':
-                this.add('-raiddamage', target, damage, '[from] Recoil');
-                this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] Recoil');
-                break;
-            case 'partiallytrapped':
-                this.add('-raiddamage', target, damage, '[from] ' + this.effectState.sourceEffect.fullname, '[partiallytrapped]');
-                this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] Recoil');
-                break;
-            case 'powder':
-                this.add('-raiddamage', target, damage, '[silent]');
-                this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[silent]');
-                break;
-            case 'confused':
-            case 'confusion':
-                this.add('-raiddamage', target, damage, '[from] confusion');
-                this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] confusion');
-                break;
-            default:
-                if (effect.effectType === 'Move' || !name) {
-                    this.add('-raiddamage', target, damage);
-                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100));
-                } else if (source && (source !== target || effect.effectType === 'Ability')) {
-                    this.add('-raiddamage', target, damage, '[from] ' + name, '[of] ' + source);
-                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] ' + name, '[of] ' + source);
-                } else {
-                    this.add('-raiddamage', target, damage, '[from] ' + name);
-                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] ' + name);
-                }
-                break;
+                case 'strugglerecoil':
+                    this.add('-raiddamage', target, damage, '[from] Recoil');
+                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] Recoil');
+                    break;
+                case 'partiallytrapped':
+                    this.add('-raiddamage', target, damage, '[from] ' + this.effectState.sourceEffect.fullname, '[partiallytrapped]');
+                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] Recoil');
+                    break;
+                case 'powder':
+                    this.add('-raiddamage', target, damage, '[silent]');
+                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[silent]');
+                    break;
+                case 'confused':
+                case 'confusion':
+                    this.add('-raiddamage', target, damage, '[from] confusion');
+                    this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] confusion');
+                    break;
+                default:
+                    if (effect.effectType === 'Move' || !name) {
+                        this.add('-raiddamage', target, damage);
+                        this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100));
+                    } else if (source && (source !== target || effect.effectType === 'Ability')) {
+                        this.add('-raiddamage', target, damage, '[from] ' + name, '[of] ' + source);
+                        this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] ' + name, '[of] ' + source);
+                    } else {
+                        this.add('-raiddamage', target, damage, '[from] ' + name);
+                        this.add('-raiddamage', target, Math.floor(damage / target.maxhp * 100), '[from] ' + name);
+                    }
+                    break;
             }
 
             if (effect.recoil) {
