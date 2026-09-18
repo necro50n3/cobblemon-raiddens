@@ -15,15 +15,24 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 
 public class RaidEvents {
+    // Raid Generation
+    public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
+    public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
+    public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_LOAD = new SimpleObservable<>();
+    public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SAVE = new SimpleObservable<>();
+
+    // Raid Battling
+    public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
     public static final SimpleObservable<RaidBattleStartEvent> RAID_BATTLE_START = new SimpleObservable<>();
     public static final SimpleObservable<RaidEndEvent> RAID_END = new SimpleObservable<>();
-    public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
-    public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
+
+    // Raid Rewards
     public static final SimpleObservable<ModifyCatchRateEvent> MODIFY_CATCH_RATE = new SimpleObservable<>();
+    public static final SimpleObservable<ModifyShinyRateEvent> MODIFY_SHINY_RATE = new SimpleObservable<>();
+    public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
     public static final SimpleObservable<RaidRewardPostEvent> RAID_REWARD_POST = new SimpleObservable<>();
 
-    public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
-    public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
+    // Misc
     public static final ResultCancelableObservable<OpenPouchEvent> OPEN_POUCH = new ResultCancelableObservable<>();
     public static final ResultCancelableObservable<UseRaidShardEvent> USE_RAID_SHARD = new ResultCancelableObservable<>();
 

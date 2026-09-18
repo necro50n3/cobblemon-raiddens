@@ -13,6 +13,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.raid.Script;
+import com.necro.raid.dens.common.events.ModifyShinyRateEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -153,7 +154,10 @@ public class CobblemonRaidDens {
     private static void setRaidShinyRate(ShinyChanceCalculationEvent event) {
         event.addModificationFunction((chance, player, pokemon) -> {
             Float shinyRate = ((IShinyRate) pokemon).crd_getRaidShinyRate();
-            return shinyRate == null || shinyRate < 0 ? chance : shinyRate;
+            float finalChance = shinyRate == null || shinyRate < 0 ? chance : shinyRate;
+            ModifyShinyRateEvent e = new ModifyShinyRateEvent(player, pokemon, finalChance);
+            RaidEvents.MODIFY_SHINY_RATE.emit(e);
+            return e.shinyRate();
         });
     }
 

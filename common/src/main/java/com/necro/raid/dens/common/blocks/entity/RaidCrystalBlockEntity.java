@@ -424,6 +424,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("is_open")) this.isOpen = true;
         if (compoundTag.contains("raid_sync")) this.raidSync = RaidSyncContext.load(compoundTag.getCompound("raid_sync"));
+
+        Level level = this.getLevel();
+        if (level instanceof ServerLevel serverLevel) {
+            RaidEvents.RAID_DEN_LOAD.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), this.getRaidBoss()));
+        }
     }
 
     @Override
@@ -436,6 +441,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
         if (this.raidSync != null) compoundTag.put("raid_sync", this.raidSync.save(new CompoundTag()));
+
+        Level level = this.getLevel();
+        if (level instanceof ServerLevel serverLevel) {
+            RaidEvents.RAID_DEN_SAVE.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), this.getRaidBoss()));
+        }
     }
 
     @Override
