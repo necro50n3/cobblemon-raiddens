@@ -3,6 +3,8 @@ package com.necro.raid.dens.common.events;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.reactive.SimpleObservable;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsCompat;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.items.ModItems;
@@ -18,6 +20,7 @@ public class RaidEvents {
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
     public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
     public static final SimpleObservable<ModifyCatchRateEvent> MODIFY_CATCH_RATE = new SimpleObservable<>();
+    public static final SimpleObservable<RaidRewardPostEvent> RAID_REWARD_POST = new SimpleObservable<>();
 
     public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
     public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
@@ -56,6 +59,12 @@ public class RaidEvents {
             );
 
             return Unit.INSTANCE;
+        });
+
+        RaidEvents.RAID_REWARD_POST.subscribe(Priority.LOWEST, event -> {
+            if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
+            else if (event.raidBoss().getCurrency() <= 0) return;
+            RaidDensCobbleDollarsCompat.addCurrency(event.player(), event.raidBoss().getCurrency());
         });
     }
 }

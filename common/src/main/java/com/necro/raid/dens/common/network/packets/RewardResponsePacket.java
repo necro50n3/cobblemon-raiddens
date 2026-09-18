@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.events.RaidRewardPostEvent;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.rewards.RewardHandler;
@@ -45,7 +47,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
         if (handler.givePokemonToPlayer(player)) {
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.giveCurrency(player);
+            RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(handler.raidBoss(), player));
         }
     }
 
@@ -53,7 +55,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
         if (handler.giveItemToPlayer(player, false)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.giveCurrency(player);
+            RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(handler.raidBoss(), player));
         }
     }
 }
