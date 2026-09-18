@@ -35,24 +35,28 @@ import java.util.UUID;
 
 public class RewardHandler {
     private final ResourceLocation raidBossId;
+    private final CompoundTag serializedPokemonReward;
+
     private RaidBoss raidBoss;
     private final UUID playerUUID;
-    private final @Nullable Pokemon pokemonReward;
+    private @Nullable Pokemon pokemonReward;
     private final float catchRate;
 
     public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
         this.raidBossId = raidBoss.getId();
+        this.serializedPokemonReward = null;
         this.raidBoss = raidBoss;
         this.playerUUID = playerUUID;
         this.pokemonReward = pokemonReward;
         this.catchRate = catchRate;
     }
 
-    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
+    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable CompoundTag pokemonReward, float catchRate) {
         this.raidBossId = raidBossId;
+        this.serializedPokemonReward = pokemonReward;
         this.raidBoss = null;
         this.playerUUID = playerUUID;
-        this.pokemonReward = pokemonReward;
+        this.pokemonReward = null;
         this.catchRate = catchRate;
     }
 
@@ -66,6 +70,9 @@ public class RewardHandler {
 
     public boolean givePokemonToPlayer(ServerPlayer player) {
         if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
+        if (this.pokemonReward == null && this.serializedPokemonReward != null) {
+            this.pokemonReward = new Pokemon().loadFromNBT(player.registryAccess(), this.serializedPokemonReward);
+        }
 
         boolean success = true;
         if (this.pokemonReward != null) {
@@ -146,21 +153,22 @@ public class RewardHandler {
         CompoundTag tag = new CompoundTag();
         tag.putString("raid_boss", this.raidBossId.toString());
         tag.putUUID("player", this.playerUUID);
-        if (this.pokemonReward != null) {
+        if (this.serializedPokemonReward != null) {
+            tag.put("pokemon_reward", this.serializedPokemonReward);
+        }
+        else if (this.pokemonReward != null) {
             tag.put("pokemon_reward", this.pokemonReward.saveToNBT((RegistryAccess) provider, new CompoundTag()));
         }
         tag.putFloat("catch_rate", this.catchRate);
         return tag;
     }
 
+    @SuppressWarnings("unused")
     public static RewardHandler deserialize(CompoundTag tag, HolderLookup.Provider provider) {
         ResourceLocation raidBossId = ResourceLocation.parse(tag.getString("raid_boss"));
         UUID playerUUID = tag.getUUID("player");
-        Pokemon pokemonReward = null;
-        if (tag.contains("pokemon_reward")) {
-            pokemonReward = new Pokemon();
-            pokemonReward.loadFromNBT((net.minecraft.core.RegistryAccess) provider, tag.getCompound("cached_reward"));
-        }
+        CompoundTag pokemonReward = null;
+        if (tag.contains("pokemon_reward")) pokemonReward = tag.getCompound("cached_reward");
         float catchRate = tag.getFloat("catch_rate");
         return new RewardHandler(raidBossId, playerUUID, pokemonReward, catchRate);
     }
