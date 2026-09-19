@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class RaidMovesetBuilder implements MovesetBuilder {
@@ -27,8 +26,12 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         this.slot4 = slot4;
     }
 
-    public static RaidMovesetBuilder fromMap(Map<String, List<String>> builder) {
-        return new RaidMovesetBuilder(builder.get("slot1"), builder.get("slot2"), builder.get("slot3"), builder.get("slot4"));
+    public static RaidMovesetBuilder fromList(List<List<String>> builder) {
+        List<String> slot1 = !builder.isEmpty() ? builder.getFirst() : List.of("none");
+        List<String> slot2 = builder.size() >= 2 ? builder.get(1) : List.of("none");
+        List<String> slot3 = builder.size() >= 3 ? builder.get(2) : List.of("none");
+        List<String> slot4 = builder.size() >= 4 ? builder.get(3) : List.of("none");
+        return new RaidMovesetBuilder(slot1, slot2, slot3, slot4);
     }
 
     @Override
@@ -88,7 +91,8 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         "prismaticlaser",
         "roaroftime",
         "rockwrecker",
-        "lastresort"
+        "lastresort",
+        "poltergeist"
     );
 
     static final Set<String> DEBUFF_MOVES = Set.of(
@@ -98,6 +102,8 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         "leafstorm",
         "makeitrain",
         "overheat",
-        "psychoboost"
+        "psychoboost",
+        "futuresight",
+        "doomdesire"
     );
 }

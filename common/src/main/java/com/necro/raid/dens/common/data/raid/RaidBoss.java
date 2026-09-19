@@ -408,13 +408,13 @@ public class RaidBoss {
     private void setMoveSet(PokemonProperties properties, Pokemon pokemon, boolean isRaidBoss) {
         List<String> tempMoves = properties.getMoves();
         List<MoveTemplate> moves;
-        Map<String, List<String>> builder = ((IProperties) properties).crd_getMovesetBuilder();
+        List<List<String>> builder = ((IProperties) properties).crd_getMovesetBuilder();
         MoveSet moveSet = pokemon.getMoveSet();
         if (tempMoves != null) {
             moves = tempMoves.stream().map(Moves::getByName).toList();
         }
         else if (builder != null) {
-            moves = RaidMovesetBuilder.fromMap(builder).build(pokemon.getForm(), pokemon.getLevel()).getMoveTemplates();
+            moves = RaidMovesetBuilder.fromList(builder).build(pokemon.getForm(), pokemon.getLevel()).getMoveTemplates();
         }
         else {
             String builderId = switch (this.raidTier) {
