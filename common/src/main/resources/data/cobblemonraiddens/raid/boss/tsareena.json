@@ -3,9 +3,9 @@
         "species": "tsareena",
         "moves": [
             "stomp",
-            "magicalleaf",
             "doubleslap",
-            "razorleaf"
+            "razorleaf",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

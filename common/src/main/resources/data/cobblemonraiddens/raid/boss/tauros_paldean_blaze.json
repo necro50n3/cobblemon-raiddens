@@ -5,7 +5,7 @@
             "ragingbull",
             "zenheadbutt",
             "headbutt",
-            "flamecharge"
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

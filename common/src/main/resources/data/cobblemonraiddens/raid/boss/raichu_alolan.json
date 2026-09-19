@@ -4,8 +4,8 @@
         "moves": [
             "thunderbolt",
             "slam",
-            "thundershock",
-            "thunder"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["move_secondary", "tm_coverage", "move_any"]
         ],
         "custom_properties": [
             {

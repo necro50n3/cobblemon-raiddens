@@ -4,8 +4,8 @@
         "moves": [
             "shelltrap",
             "flamethrower",
-            "bodyslam",
-            "dragonpulse"
+            "dragonpulse",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

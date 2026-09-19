@@ -3,9 +3,9 @@
         "species": "palafin",
         "moves": [
             "wavecrash",
-            "jetpunch",
             "acrobatics",
-            "doublehit"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "boss": {

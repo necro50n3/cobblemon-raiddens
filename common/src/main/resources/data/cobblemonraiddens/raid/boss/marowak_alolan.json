@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "marowak",
         "moves": [
-            "bonerush",
             "stompingtantrum",
             "hex",
-            "flamewheel"
+            "flamewheel",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

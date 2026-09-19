@@ -3,9 +3,9 @@
         "species": "tatsugiri",
         "moves": [
             "muddywater",
-            "waterpulse",
-            "watergun",
-            "dragonpulse"
+            "dragonpulse",
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

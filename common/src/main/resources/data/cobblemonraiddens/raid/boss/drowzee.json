@@ -4,8 +4,8 @@
         "moves": [
             "wakeupslap",
             "zenheadbutt",
-            "psybeam",
-            "headbutt"
+            "headbutt",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

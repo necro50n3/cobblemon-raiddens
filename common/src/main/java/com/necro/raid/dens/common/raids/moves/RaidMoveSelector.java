@@ -131,11 +131,11 @@ public interface RaidMoveSelector extends MoveSelector {
     }
 
     private static double getMoveWeight(MoveTemplate move, FormData form) {
-        if (RaidMovesetBuilder.RECHARGE_MOVES.contains(move.getName())) return 0d;
+        if (RaidMovesetBuilder.NEVER_MOVES.contains(move.getName())) return 0d;
 
         double base = move.getPower() * move.getAccuracy();
         double multiplier = form.getSignatureMoves().contains(move) ? MovesetBuilder.Companion.getSignatureMoveWeightMultiplier() : 1d;
-        if (RaidMovesetBuilder.DEBUFF_MOVES.contains(move.getName())) multiplier *= 0.5d;
+        if (RaidMovesetBuilder.BAD_MOVES.contains(move.getName())) multiplier *= 0.5d;
         return base * multiplier;
     }
 

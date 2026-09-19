@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "blissey",
         "moves": [
-            "lastresort",
             "eggbomb",
             "doubleedge",
-            "takedown"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

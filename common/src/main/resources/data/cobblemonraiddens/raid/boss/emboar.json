@@ -4,8 +4,8 @@
         "moves": [
             "flareblitz",
             "headsmash",
-            "flamethrower",
-            "assurance"
+            "assurance",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

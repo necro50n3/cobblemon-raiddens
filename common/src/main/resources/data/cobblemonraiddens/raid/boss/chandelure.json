@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "chandelure",
         "moves": [
-            "ember",
-            "firespin",
             "smog",
-            "shadowball"
+            "shadowball",
+            ["move_secondary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

@@ -4,8 +4,8 @@
         "moves": [
             "ragingbull",
             "zenheadbutt",
-            "headbutt",
-            "assurance"
+            "assurance",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

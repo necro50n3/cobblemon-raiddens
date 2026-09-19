@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "mienshao",
         "moves": [
-            "aurasphere",
             "jumpkick",
             "drainpunch",
-            "uturn"
+            "uturn",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

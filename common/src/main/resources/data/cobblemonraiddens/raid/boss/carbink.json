@@ -3,9 +3,9 @@
         "species": "carbink",
         "moves": [
             "powergem",
-            "rockslide",
             "ancientpower",
-            "smackdown"
+            ["move_secondary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

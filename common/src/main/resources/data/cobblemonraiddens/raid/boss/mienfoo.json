@@ -4,8 +4,8 @@
         "moves": [
             "drainpunch",
             "uturn",
-            "forcepalm",
-            "doubleslap"
+            "doubleslap",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

@@ -3,9 +3,9 @@
         "species": "togekiss",
         "moves": [
             "triattack",
-            "ancientpower",
             "aurasphere",
-            "fairywind"
+            ["move_primary", "move_any"],
+            ["move_secondary", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

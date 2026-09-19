@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "bronzong",
         "moves": [
-            "feintattack",
             "tackle",
             "payback",
-            "extrasensory"
+            "extrasensory",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

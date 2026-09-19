@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "starmie",
         "moves": [
-            "tackle",
-            "watergun",
             "hydropump",
-            "surf"
+            "surf",
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

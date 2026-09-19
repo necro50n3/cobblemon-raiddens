@@ -5,7 +5,7 @@
             "hyperdrill",
             "drillrun",
             "rollout",
-            "pursuit"
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

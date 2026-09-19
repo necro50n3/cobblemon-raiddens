@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "ninetales",
         "moves": [
-            "ember",
             "flamethrower",
             "quickattack",
-            "extrasensory"
+            "extrasensory",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

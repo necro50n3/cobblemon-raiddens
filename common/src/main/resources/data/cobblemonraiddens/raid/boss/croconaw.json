@@ -3,9 +3,9 @@
         "species": "croconaw",
         "moves": [
             "slash",
-            "chipaway",
             "crunch",
-            "icefang"
+            "icefang",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

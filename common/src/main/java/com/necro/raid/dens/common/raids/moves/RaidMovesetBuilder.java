@@ -80,7 +80,7 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         }
     }
 
-    static final Set<String> RECHARGE_MOVES = Set.of(
+    static final Set<String> NEVER_MOVES = Set.of(
         "blastburn",
         "eternabeam",
         "frenzyplant",
@@ -92,10 +92,13 @@ public class RaidMovesetBuilder implements MovesetBuilder {
         "roaroftime",
         "rockwrecker",
         "lastresort",
-        "poltergeist"
+        "poltergeist",
+        "skydrop",
+        "dreameater",
+        "snore"
     );
 
-    static final Set<String> DEBUFF_MOVES = Set.of(
+    static final Set<String> BAD_MOVES = Set.of(
         "superpower",
         "dracometeor",
         "fleurcannon",

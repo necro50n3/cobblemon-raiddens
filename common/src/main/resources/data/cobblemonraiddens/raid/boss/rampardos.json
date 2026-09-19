@@ -3,9 +3,9 @@
         "species": "rampardos",
         "moves": [
             "zenheadbutt",
-            "ancientpower",
             "slam",
-            "chipaway"
+            ["move_primary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

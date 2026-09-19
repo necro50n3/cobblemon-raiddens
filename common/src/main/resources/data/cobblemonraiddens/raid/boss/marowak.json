@@ -5,7 +5,7 @@
             "bonerush",
             "stompingtantrum",
             "rage",
-            "retaliate"
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

@@ -3,9 +3,9 @@
         "species": "growlithe",
         "moves": [
             "crunch",
-            "flameburst",
             "retaliate",
-            "firefang"
+            "firefang",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

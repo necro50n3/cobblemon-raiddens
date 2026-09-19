@@ -4,8 +4,8 @@
         "moves": [
             "suckerpunch",
             "furyattack",
-            "pluck",
-            "razorleaf"
+            "razorleaf",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

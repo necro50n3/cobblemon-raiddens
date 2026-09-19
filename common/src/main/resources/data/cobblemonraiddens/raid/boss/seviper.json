@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "seviper",
         "moves": [
-            "belch",
             "crunch",
             "poisonjab",
-            "venoshock"
+            "venoshock",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

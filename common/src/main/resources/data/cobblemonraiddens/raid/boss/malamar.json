@@ -4,8 +4,8 @@
         "moves": [
             "foulplay",
             "psychocut",
-            "nightslash",
-            "slash"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

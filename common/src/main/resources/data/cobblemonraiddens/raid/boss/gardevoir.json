@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "gardevoir",
         "moves": [
-            "futuresight",
-            "dreameater",
             "moonblast",
-            "psychic"
+            "psychic",
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

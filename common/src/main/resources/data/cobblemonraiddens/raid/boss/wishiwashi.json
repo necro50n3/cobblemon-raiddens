@@ -4,8 +4,8 @@
         "moves": [
             "hydropump",
             "doubleedge",
-            "aquatail",
-            "brine"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "boss": {

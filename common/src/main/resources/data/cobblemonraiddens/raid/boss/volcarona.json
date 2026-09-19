@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "volcarona",
         "moves": [
-            "fireblast",
             "hurricane",
             "silverwind",
-            "heatwave"
+            "heatwave",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

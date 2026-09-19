@@ -4,8 +4,8 @@
         "moves": [
             "suckerpunch",
             "crunch",
-            "assurance",
-            "hyperfang"
+            "hyperfang",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

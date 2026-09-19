@@ -3,9 +3,9 @@
         "species": "roserade",
         "moves": [
             "poisonsting",
-            "absorb",
-            "megadrain",
-            "petaldance"
+            "gigadrain",
+            "petaldance",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

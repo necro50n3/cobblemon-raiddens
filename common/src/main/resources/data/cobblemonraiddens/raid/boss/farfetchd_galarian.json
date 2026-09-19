@@ -3,9 +3,9 @@
         "species": "farfetchd",
         "moves": [
             "knockoff",
-            "brutalswing",
             "rocksmash",
-            "furycutter"
+            "furycutter",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

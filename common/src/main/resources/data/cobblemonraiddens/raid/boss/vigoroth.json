@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "vigoroth",
         "moves": [
-            "focuspunch",
             "chipaway",
             "throatchop",
-            "slash"
+            "slash",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

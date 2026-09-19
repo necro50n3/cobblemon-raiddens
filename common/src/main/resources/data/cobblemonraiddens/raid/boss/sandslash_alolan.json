@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "sandslash",
         "moves": [
-            "scratch",
-            "furyswipes",
             "slash",
-            "powdersnow"
+            "powdersnow",
+            ["move_secondary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

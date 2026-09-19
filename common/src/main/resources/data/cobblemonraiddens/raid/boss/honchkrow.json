@@ -4,8 +4,8 @@
         "moves": [
             "foulplay",
             "wingattack",
-            "pursuit",
-            "astonish"
+            "astonish",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

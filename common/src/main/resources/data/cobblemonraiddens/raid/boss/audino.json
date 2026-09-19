@@ -3,9 +3,9 @@
         "species": "audino",
         "moves": [
             "hypervoice",
-            "takedown",
             "secretpower",
-            "zenheadbutt"
+            "zenheadbutt",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

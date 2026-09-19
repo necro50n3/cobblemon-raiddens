@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "samurott",
         "moves": [
-            "megahorn",
             "ceaselessedge",
             "aquatail",
-            "slash"
+            "slash",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

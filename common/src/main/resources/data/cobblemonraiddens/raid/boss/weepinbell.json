@@ -5,7 +5,7 @@
             "knockoff",
             "acid",
             "vinewhip",
-            "wrap"
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

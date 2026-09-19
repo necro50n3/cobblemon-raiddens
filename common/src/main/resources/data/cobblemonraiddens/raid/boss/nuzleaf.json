@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "nuzleaf",
         "moves": [
-            "feintattack",
             "payback",
             "razorwind",
-            "megadrain"
+            "megadrain",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

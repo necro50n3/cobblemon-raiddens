@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "vanilluxe",
         "moves": [
-            "blizzard",
             "icebeam",
             "uproar",
-            "mirrorshot"
+            "mirrorshot",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",

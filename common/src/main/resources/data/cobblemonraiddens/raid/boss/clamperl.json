@@ -4,7 +4,8 @@
         "moves": [
             "watergun",
             "clamp",
-            "whirlpool"
+            "whirlpool",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

@@ -5,7 +5,7 @@
             "heavyslam",
             "muddywater",
             "dragonpulse",
-            "waterpulse"
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

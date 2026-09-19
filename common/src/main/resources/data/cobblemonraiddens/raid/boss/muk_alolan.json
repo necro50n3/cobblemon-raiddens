@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "muk",
         "moves": [
-            "gunkshot",
             "crunch",
             "knockoff",
-            "poisonfang"
+            "poisonfang",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

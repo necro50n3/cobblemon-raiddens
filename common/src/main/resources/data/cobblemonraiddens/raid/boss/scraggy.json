@@ -3,9 +3,9 @@
         "species": "scraggy",
         "moves": [
             "brickbreak",
-            "chipaway",
             "facade",
-            "feintattack"
+            "feintattack",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

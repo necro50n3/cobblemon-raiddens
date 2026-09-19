@@ -3,9 +3,9 @@
         "species": "stufful",
         "moves": [
             "hammerarm",
-            "takedown",
             "strength",
-            "brutalswing"
+            "brutalswing",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_THREE",

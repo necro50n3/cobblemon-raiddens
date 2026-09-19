@@ -4,8 +4,8 @@
         "moves": [
             "shadowball",
             "knockoff",
-            "shadowsneak",
-            "scratch"
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

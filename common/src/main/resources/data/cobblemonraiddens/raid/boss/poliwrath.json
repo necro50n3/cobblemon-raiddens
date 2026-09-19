@@ -3,9 +3,9 @@
         "species": "poliwrath",
         "moves": [
             "doubleslap",
-            "bodyslam",
-            "bubblebeam",
-            "submission"
+            "submission",
+            ["move_primary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

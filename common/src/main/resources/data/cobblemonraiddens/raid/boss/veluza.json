@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "veluza",
         "moves": [
-            "liquidation",
             "psychocut",
             "nightslash",
-            "aquacutter"
+            "aquacutter",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

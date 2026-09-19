@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "muk",
         "moves": [
-            "gunkshot",
             "sludgewave",
             "sludgebomb",
-            "mudshot"
+            "mudshot",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

@@ -4,8 +4,8 @@
         "moves": [
             "freezedry",
             "avalanche",
-            "pluck",
-            "ancientpower"
+            "ancientpower",
+            ["move_primary", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

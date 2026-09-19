@@ -3,9 +3,9 @@
         "species": "linoone",
         "moves": [
             "takedown",
-            "furyswipes",
             "headbutt",
-            "snarl"
+            "snarl",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "weavile",
         "moves": [
-            "furyswipes",
             "icywind",
             "metalclaw",
-            "feintattack"
+            ["move_primary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "ursaring",
         "moves": [
-            "snore",
             "playrough",
             "slash",
-            "feintattack"
+            "feintattack",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

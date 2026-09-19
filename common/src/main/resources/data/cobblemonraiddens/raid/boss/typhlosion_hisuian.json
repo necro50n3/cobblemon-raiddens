@@ -2,10 +2,10 @@
     "pokemon": {
         "species": "typhlosion",
         "moves": [
-            "overheat",
             "burnup",
-            "rollout",
-            "infernalparade"
+            "infernalparade",
+            ["tm_coverage", "offensive_tm", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ],
         "custom_properties": [
             {

@@ -4,8 +4,8 @@
         "moves": [
             "discharge",
             "powergem",
-            "takedown",
-            "firepunch"
+            "firepunch",
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FOUR",

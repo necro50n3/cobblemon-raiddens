@@ -3,9 +3,9 @@
         "species": "flygon",
         "moves": [
             "boomburst",
-            "dragonrush",
-            "uproar",
-            "earthquake"
+            "earthquake",
+            ["move_secondary", "move_any"],
+            ["tm_coverage", "offensive_tm", "move_any"]
         ]
     },
     "raid_tier": "TIER_FIVE",
