@@ -13,6 +13,10 @@
             case 'perishsong':
                 this.add('-fail', source);
                 return false;
+            case 'curse':
+                if (!source.hasType('Ghost')) return true;
+                this.add('-fail', source);
+                return false;
             default:
                 return true;
         }

@@ -31,6 +31,7 @@ public class BlacklistConfig implements ConfigData {
         "horndrill",
         "imprison",
         "instruct",
+        "metronome",
         "naturesmadness",
         "painsplit",
         "perishsong",
