@@ -1,7 +1,12 @@
+[![Modrinth](https://img.shields.io/modrinth/dt/GebWh45l?style=for-the-badge&logo=modrinth&label=Modrinth)](https://modrinth.com/mod/GebWh45l)
+[![CurseForge Downloads](https://img.shields.io/curseforge/dt/1349231?style=for-the-badge&logo=curseforge&label=Curseforge)](https://www.curseforge.com/minecraft/mc-mods/cobblemonraiddens)
+[![Discord](https://img.shields.io/discord/1355016729679499284?style=for-the-badge&logo=discord&label=Discord)](https://discord.gg/6jBar3y6nt)
+[![GitHub](https://img.shields.io/badge/GitHub-565656?style=for-the-badge&logo=github)](https://github.com/necro50n3/cobblemon-raiddens)
+
 # Cobblemon Raid Dens
 Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY raid Pokemon in an epic battle just like in the main series.
 
-![Raid Crystal](https://i.imgur.com/cM3615S.png)
+![Raid Crystal](https://i.imgur.com/vkJYS5d.png)
 
 ## Features
 - Raid crystals are generated in the overworld ranging from Tier 1 to Tier 7.
@@ -38,6 +43,7 @@ Pokemon's raid dens have finally made their way to Cobblemon! Face the MIGHTY ra
 - CobbleDollars: Raids give a configurable amount of currency!
 - RCT API: Enables the RCT AI config for Raid Bosses!
 - Jade / WTHIT: See raid details, including the raid boss!
+- [And More!](https://github.com/necro50n3/cobblemon-raiddens/wiki/Compatibilities)
 ![Jade Compat](https://i.imgur.com/Zw6mWA2.png)
 
 ### For more information, visit the [Wiki!](https://github.com/necro50n3/cobblemon-raiddens/wiki)

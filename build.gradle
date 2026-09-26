@@ -41,8 +41,8 @@ subprojects {
                 includeGroup("software.bernie.geckolib")
             }
         }
-        maven { url 'https://maven.wispforest.io/releases' }
-        maven { url 'https://maven.su5ed.dev/releases' }
+        maven { url = "https://maven.wispforest.io/releases" }
+        maven { url = "https://maven.su5ed.dev/releases" }
         maven {
             url "https://maven2.bai.lol"
             content {
@@ -50,7 +50,7 @@ subprojects {
                 includeGroup "mcp.mobius.waila"
             }
         }
-        maven { url "https://maven.blamejared.com/" }
+        maven { url = "https://maven.blamejared.com/" }
         maven {
             name = "Terraformers"
             url = "https://maven.terraformersmc.com/"

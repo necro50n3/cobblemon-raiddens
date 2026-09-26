@@ -1,6 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
 license = "MIT License"
+issueTrackerURL = "https://github.com/necro50n3/cobblemon-raiddens/issues"
 
 [[mods]]
 modId = "${archives_name}"
@@ -8,6 +9,7 @@ version = "${version}"
 displayName = "${display_name}"
 authors = "NecroSo1"
 description = "${description}"
+displayURL = "https://github.com/necro50n3/cobblemon-raiddens"
 
 [[dependencies.cobblemonraiddens]]
 modId = "minecraft"
