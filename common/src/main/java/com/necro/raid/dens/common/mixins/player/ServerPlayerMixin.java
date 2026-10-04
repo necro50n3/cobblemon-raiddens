@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.mixins.player;
 
 import com.mojang.authlib.GameProfile;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -79,6 +80,7 @@ public abstract class ServerPlayerMixin extends Player implements IRaidTeleporte
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void hurtInject(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
+        if (!CobblemonRaidDens.CONFIG.player_invulnerability) return;
         if (!RaidUtils.isRaidDimension(this.level())) return;
         if (damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
         cir.setReturnValue(false);

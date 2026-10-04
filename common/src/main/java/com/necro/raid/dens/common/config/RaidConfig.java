@@ -48,4 +48,11 @@ public class RaidConfig implements ConfigData {
     public RaidAllocation raid_allocation = RaidAllocation.SPIRAL;
     @Comment("Whether IVs from raids affect the Pokemon's natural IVs or hyper trained IVs. Default: true")
     public boolean use_natural_ivs = true;
+    @Comment(
+        """
+        Whether players are invulnerable to damage in the raid dimension.
+        WARNING: Player deaths in the raid dimension is not directly supported. Disable at your own risk.
+        """
+    )
+    public boolean player_invulnerability = true;
 }
