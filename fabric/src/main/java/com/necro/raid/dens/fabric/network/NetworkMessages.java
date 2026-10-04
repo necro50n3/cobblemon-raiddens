@@ -15,6 +15,8 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class NetworkMessages {
     public static void registerPayload() {
+        PayloadTypeRegistry.playS2C().register(RaidBossSyncSinglePacket.PACKET_TYPE, RaidBossSyncSinglePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RaidBossSyncRemovePacket.PACKET_TYPE, RaidBossSyncRemovePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidBossSyncPacket.PACKET_TYPE, RaidBossSyncPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(ConfigSyncPacket.PACKET_TYPE, ConfigSyncPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC);
@@ -39,6 +41,8 @@ public class NetworkMessages {
     }
 
     public static void registerS2CPackets() {
+        ClientPlayNetworking.registerGlobalReceiver(RaidBossSyncSinglePacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RaidBossSyncRemovePacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidBossSyncPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(JoinRaidPacket.PACKET_TYPE, NetworkMessages::handle);
@@ -51,8 +55,12 @@ public class NetworkMessages {
     }
 
     public static void init() {
+        RaidDenNetworkMessages.SYNC_BOSS = (server, boss) ->
+            NetworkMessages.sendPacketToAll(server, new RaidBossSyncSinglePacket(boss));
+        RaidDenNetworkMessages.REMOVE_SYNCED_BOSS = (server, boss) ->
+            NetworkMessages.sendPacketToAll(server, new RaidBossSyncRemovePacket(boss));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.getCache()));
         RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->

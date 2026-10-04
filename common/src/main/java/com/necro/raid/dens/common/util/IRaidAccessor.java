@@ -10,6 +10,7 @@ public interface IRaidAccessor {
     UUID crd_getRaidId();
     void crd_setRaidId(UUID raidId);
     RaidBoss crd_getRaidBoss();
+    ResourceLocation crd_getRaidBossId();
     void crd_setRaidBoss(ResourceLocation raidBoss);
     boolean crd_isRaidBoss();
     void crd_flagForRemoval();

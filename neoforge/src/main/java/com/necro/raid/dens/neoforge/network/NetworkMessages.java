@@ -22,6 +22,8 @@ public class NetworkMessages {
     public static void register(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar payloadRegistrar = event.registrar(CobblemonRaidDens.MOD_ID).versioned("1.0.0").optional();
 
+        payloadRegistrar.playToClient(RaidBossSyncSinglePacket.PACKET_TYPE, RaidBossSyncSinglePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RaidBossSyncRemovePacket.PACKET_TYPE, RaidBossSyncRemovePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidBossSyncPacket.PACKET_TYPE, RaidBossSyncPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(ConfigSyncPacket.PACKET_TYPE, ConfigSyncPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(JoinRaidPacket.PACKET_TYPE, JoinRaidPacket.CODEC, NetworkMessages::handle);
@@ -40,8 +42,12 @@ public class NetworkMessages {
     }
 
     public static void init() {
+        RaidDenNetworkMessages.SYNC_BOSS = (server, boss) ->
+            NetworkMessages.sendPacketToAll(new RaidBossSyncSinglePacket(boss));
+        RaidDenNetworkMessages.REMOVE_SYNCED_BOSS = (server, boss) ->
+            NetworkMessages.sendPacketToAll(new RaidBossSyncRemovePacket(boss));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.RAID_LOOKUP.values()));
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.getCache()));
         RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->

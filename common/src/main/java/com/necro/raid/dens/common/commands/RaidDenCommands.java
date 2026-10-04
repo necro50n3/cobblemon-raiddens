@@ -17,7 +17,6 @@ import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
@@ -200,21 +199,21 @@ public class RaidDenCommands {
 
     private static void setCrystal(Level level, BlockPos blockPos, BlockState blockState, boolean canReset,
                                    RaidCycleMode cycleMode, ResourceLocation location, @Nullable ResourceLocation bucket) {
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(location);
+        RaidRegistry.requestRaidBoss(location, boss -> {
+            level.setBlock(blockPos, blockState
+                .setValue(RaidCrystalBlock.ACTIVE, true)
+                .setValue(RaidCrystalBlock.CAN_RESET, canReset)
+                .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
+                .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
+                .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier()), 2);
 
-        level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.CAN_RESET, canReset)
-            .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
-            .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
-            .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier()), 2);
+            if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
+                raidCrystal.setRaidBoss(location, level.getGameTime());
+                if (bucket != null) raidCrystal.setRaidBucket(bucket);
+            }
 
-        if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
-            raidCrystal.setRaidBoss(location, level.getGameTime());
-            if (bucket != null) raidCrystal.setRaidBucket(bucket);
-        }
-
-        RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, raidBoss));
+            RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
+        }, level.getServer());
     }
 
     private static int createRaidDenFromExisting(Level level, RaidCrystalBlockEntity blockEntity, BlockPos blockPos, ResourceLocation location, RaidCycleMode cycleMode, boolean canReset) {

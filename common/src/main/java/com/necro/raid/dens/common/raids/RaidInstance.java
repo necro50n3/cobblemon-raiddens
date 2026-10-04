@@ -33,6 +33,7 @@ import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -93,9 +94,12 @@ public class RaidInstance {
         this.bossEntity = entity;
         this.host = host;
         this.raid = ((IRaidAccessor) entity).crd_getRaidId();
-        this.raidBoss = ((IRaidAccessor) entity).crd_getRaidBoss();
+        RaidBoss raidBoss;
+        raidBoss = ((IRaidAccessor) entity).crd_getRaidBoss();
+        if (raidBoss == null) raidBoss = RaidRegistry.requestRaidBoss(((IRaidAccessor) entity).crd_getRaidBossId()).join().orElseThrow();
+        this.raidBoss = raidBoss;
         this.bossEvent = new ServerBossEvent(
-            this.bossBarText(entity, raidBoss),
+            this.bossBarText(entity, this.raidBoss),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
         this.timerEvent = new ServerBossEvent(
@@ -130,7 +134,7 @@ public class RaidInstance {
         this.triggers = new EnumMap<>(RaidTriggerType.class);
         this.triggerAddQueue = new ArrayList<>();
 
-        raidBoss.getScript().forEach((key, scripts) -> {
+        this.raidBoss.getScript().forEach((key, scripts) -> {
             List<AbstractEvent> functions;
             try {
                 functions = scripts.stream()

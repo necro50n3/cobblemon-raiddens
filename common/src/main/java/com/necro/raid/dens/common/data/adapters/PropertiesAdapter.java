@@ -41,6 +41,10 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         return Optional.ofNullable(((IProperties) properties).crd_getMovesetBuilder());
     }
 
+    private static <T> T valueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
+    }
+
     private static Stat statMap(String id) {
         return switch (id) {
             case "hp" -> Stats.HP;
@@ -100,23 +104,23 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
         }));
 
     private static final Codec<PokemonProperties> CODEC = RecordCodecBuilder.create(inst -> inst.group(
-        Codec.STRING.fieldOf("species").orElse("").forGetter(PokemonProperties::getSpecies),
+        Codec.STRING.fieldOf("species").orElse("").forGetter(properties -> valueOrDefault(properties.getSpecies(), "")),
         Codec.STRING.fieldOf("gender").orElse("").forGetter(PropertiesAdapter::genderAdapter),
-        Codec.STRING.fieldOf("ability").orElse("").forGetter(PokemonProperties::getAbility),
-        Codec.STRING.fieldOf("nature").orElse("").forGetter(PokemonProperties::getNature),
-        Codec.INT.fieldOf("level").orElse(-1).forGetter(PokemonProperties::getLevel),
+        Codec.STRING.fieldOf("ability").orElse("").forGetter(properties -> valueOrDefault(properties.getAbility(), "")),
+        Codec.STRING.fieldOf("nature").orElse("").forGetter(properties -> valueOrDefault(properties.getNature(), "")),
+        Codec.INT.fieldOf("level").orElse(-1).forGetter(properties -> valueOrDefault(properties.getLevel(), -1)),
         Codec.either(Codec.STRING, Codec.STRING.listOf()).xmap(either -> either.map(List::of, s -> s), Either::right)
             .listOf().optionalFieldOf("moves").forGetter(PropertiesAdapter::moveAdapter),
-        Codec.INT.fieldOf("min_perfect_ivs").orElse(-1).forGetter(PokemonProperties::getMinPerfectIVs),
+        Codec.INT.fieldOf("min_perfect_ivs").orElse(-1).forGetter(properties -> valueOrDefault(properties.getMinPerfectIVs(), -1)),
         EV_CODEC.optionalFieldOf("evs").forGetter(properties -> optionalAdapter(properties, PokemonProperties::getEvs)),
-        Codec.STRING.fieldOf("held_item").orElse("").forGetter(PokemonProperties::getHeldItem),
+        Codec.STRING.fieldOf("held_item").orElse("").forGetter(properties -> valueOrDefault(properties.getHeldItem(), "")),
         Codec.STRING.listOf()
             .xmap(list -> (Set<String>) new HashSet<>(list), ArrayList::new)
             .fieldOf("aspects").orElse(new HashSet<>())
-            .forGetter(PokemonProperties::getAspects),
-        Codec.STRING.fieldOf("form").orElse("").forGetter(PokemonProperties::getForm),
-        Codec.INT.fieldOf("dmax_level").orElse(-1).forGetter(PokemonProperties::getDmaxLevel),
-        Codec.BOOL.fieldOf("gmax").orElse(false).forGetter(PokemonProperties::getGmaxFactor),
+            .forGetter(properties -> valueOrDefault(properties.getAspects(), new HashSet<>())),
+        Codec.STRING.fieldOf("form").orElse("").forGetter(properties -> valueOrDefault(properties.getForm(), "")),
+        Codec.INT.fieldOf("dmax_level").orElse(-1).forGetter(properties -> valueOrDefault(properties.getDmaxLevel(), -1)),
+        Codec.BOOL.fieldOf("gmax").orElse(false).forGetter(properties -> valueOrDefault(properties.getGmaxFactor(), false)),
         Codec.STRING.optionalFieldOf("tera_type").forGetter(properties -> optionalAdapter(properties, PokemonProperties::getTeraType)),
         FEATURE_CODEC.listOf()
             .xmap(

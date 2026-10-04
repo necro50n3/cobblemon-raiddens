@@ -129,7 +129,7 @@ public class RaidBucket {
         for (String entry : this.includeBossesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) result.addAll(RaidRegistry.getTagEntries(id));
-            else if (RaidRegistry.getRaidBoss(id) != null) result.add(id);
+            else if (RaidRegistry.exists(id)) result.add(id);
         }
         this.includeBosses = result;
 
@@ -137,7 +137,7 @@ public class RaidBucket {
         for (String entry : this.excludeBossesInner) {
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) result2.addAll(RaidRegistry.getTagEntries(id));
-            else if (RaidRegistry.getRaidBoss(id) != null) result2.add(id);
+            else if (RaidRegistry.exists(id)) result2.add(id);
         }
         this.excludeBosses = result2;
     }

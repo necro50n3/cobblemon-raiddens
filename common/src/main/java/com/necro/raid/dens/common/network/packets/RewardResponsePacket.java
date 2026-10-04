@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidRewardPostEvent;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -13,6 +14,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public record RewardResponsePacket(boolean catchPokemon) implements CustomPacketPayload, ServerPacket {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "reward_response");
@@ -45,17 +48,19 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
     }
 
     private void getPokemon(RewardHandler handler, ServerPlayer player) {
-        if (handler.givePokemonToPlayer(player)) {
+        handler.givePokemonToPlayer(player).whenCompleteAsync((result, error) -> {
+            if (error != null || !result) return;
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(handler.raidBoss(), player));
-        }
+            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+        });
     }
 
     private void getItems(RewardHandler handler, ServerPlayer player) {
-        if (handler.giveItemToPlayer(player, false)) {
+        handler.giveItemToPlayer(player, false).whenCompleteAsync((result, error) -> {
+            if (error != null || !result) return;
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(handler.raidBoss(), player));
-        }
+            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+        });
     }
 }

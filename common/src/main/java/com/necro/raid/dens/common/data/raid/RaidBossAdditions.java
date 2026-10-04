@@ -52,7 +52,7 @@ public class RaidBossAdditions {
             for (String target : this.include()) {
                 ResourceLocation id = ResourceLocation.parse(target.startsWith("#") ? target.substring(1) : target);
                 if (target.startsWith("#")) targets.addAll(RaidRegistry.getTagEntries(id));
-                else if (RaidRegistry.getRaidBoss(id) != null) targets.add(id);
+                else if (RaidRegistry.exists(id)) targets.add(id);
             }
         }
 
@@ -60,12 +60,12 @@ public class RaidBossAdditions {
         for (String exclude : this.exclude()) {
             ResourceLocation id = ResourceLocation.parse(exclude.startsWith("#") ? exclude.substring(1) : exclude);
             if (exclude.startsWith("#")) excluded.addAll(RaidRegistry.getTagEntries(id));
-            else if (RaidRegistry.getRaidBoss(id) != null) excluded.add(id);
+            else if (RaidRegistry.exists(id)) excluded.add(id);
         }
 
         for (ResourceLocation loc : targets) {
             if (excluded.contains(loc)) continue;
-            RaidBoss temp = RaidRegistry.getRaidBoss(loc);
+            RaidBoss temp = RaidRegistry.getLoading(loc);
             if (temp == null) continue;
             ResourceLocation id = temp.getId();
             if (!this.replace() && !this.forceApply() && RaidRegistry.isTag(BLACKLIST, id)) continue;
