@@ -44,9 +44,10 @@ public class RaidPouchItem extends Item {
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
         String feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
-        RaidBoss boss = RaidRegistry.getRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value()));
-        boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
         if (tier == null || feature == null || raidType == null) return InteractionResultHolder.fail(itemStack);
+        RaidBoss boss = RaidRegistry.requestRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value())).join().orElse(null);
+        if (boss == null) return InteractionResultHolder.fail(itemStack);
+        boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
 
         if (!level.isClientSide) {
             List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, (ServerLevel) level, player, applyBonus);

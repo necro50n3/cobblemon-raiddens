@@ -2,7 +2,10 @@ package com.necro.raid.dens.common.network;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -13,6 +16,8 @@ import java.util.function.Consumer;
 
 public class RaidDenNetworkMessages {
     // S2C Packets
+    public static BiConsumer<MinecraftServer, RaidBoss> SYNC_BOSS;
+    public static BiConsumer<MinecraftServer, ResourceLocation> REMOVE_SYNCED_BOSS;
     public static Consumer<ServerPlayer> SYNC_REGISTRY;
     public static Consumer<ServerPlayer> SYNC_CONFIG;
     public static BiConsumer<ServerPlayer, Boolean> JOIN_RAID;

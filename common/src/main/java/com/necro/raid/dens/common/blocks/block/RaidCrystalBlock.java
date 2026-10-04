@@ -150,7 +150,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
-        if (player.getServer() == null) return false;
+        if (player.getServer() == null || blockEntity.getRaidBoss() == null) return false;
 
         RandomSource random = player.level().getRandom();
         ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(random);
@@ -185,6 +185,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
         RaidBoss boss = blockEntity.getRaidBoss();
+        if (boss == null) return false;
         UniqueKey key = boss.getKey();
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
@@ -218,9 +219,9 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = blockState.setValue(IS_NATURAL, false);
 
         ItemStack itemStack = context.getItemInHand();
+        Level level = context.getLevel();
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
-            Level level = context.getLevel();
             RaidCycleMode cycleMode = blockState.getValue(CYCLE_MODE);
             // ensure raid tier is random if it can't be cycled.
             if (!cycleMode.canCycleTier()) blockState = blockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
@@ -230,12 +231,14 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
         CompoundTag tag = data.copyTag();
 
-        RaidBoss boss = RaidRegistry.getRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")));
-        if (boss != null) {
-            blockState = blockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
+        RaidRegistry.requestRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")), boss -> {
+            if (!(level.getBlockEntity(context.getClickedPos()) instanceof RaidCrystalBlockEntity)) return;
+            BlockState delayedBlockState = level.getBlockState(context.getClickedPos());
+            delayedBlockState = delayedBlockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
             int clears = tag.getInt("raid_cleared");
-            if (clears >= boss.getMaxClears()) blockState = blockState.setValue(ACTIVE, false);
-        }
+            if (clears >= boss.getMaxClears()) delayedBlockState = delayedBlockState.setValue(ACTIVE, false);
+            level.setBlock(context.getClickedPos(), delayedBlockState, Block.UPDATE_ALL);
+        }, level.getServer());
 
         return blockState;
     }

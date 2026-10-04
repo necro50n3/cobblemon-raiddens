@@ -41,6 +41,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class RaidBoss {
@@ -798,6 +799,17 @@ public class RaidBoss {
             this.requiredDamage,
             this.catchRate
         );
+    }
+
+    public byte[] encode() {
+        return GSON.toJson(this).getBytes(StandardCharsets.UTF_8);
+    }
+
+    public static RaidBoss decode(ResourceLocation id, byte[] bytes) {
+        RaidBoss boss = GSON.fromJson(new String(bytes, StandardCharsets.UTF_8), RaidBoss.class);
+        boss.setId(id);
+        boss.createDisplayAspects();
+        return boss;
     }
 
     static {

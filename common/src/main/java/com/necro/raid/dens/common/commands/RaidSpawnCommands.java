@@ -11,7 +11,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.raids.RaidInstance;
@@ -156,27 +155,29 @@ public class RaidSpawnCommands {
         register(dispatcher);
     }
 
-    private static int spawnBoss(CommandContext<CommandSourceStack> context, Vec3 vec3, ServerLevel dimension, ResourceLocation boss, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
+    private static int spawnBoss(CommandContext<CommandSourceStack> context, Vec3 vec3, ServerLevel dimension, ResourceLocation location, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
         if (RaidUtils.isRaidDimension(dimension)) return 0;
-        if (boss == null) boss = RaidRegistry.getRandomRaidBoss(dimension.getRandom(), dimension);
-        RaidBoss raidBoss = RaidRegistry.getRaidBoss(boss);
-        if (raidBoss == null) return 0;
+        if (location == null) location = RaidRegistry.getRandomRaidBoss(dimension.getRandom(), dimension);
+        if (!RaidRegistry.exists(location)) return 0;
 
-        PokemonEntity pokemonEntity = raidBoss.getBossEntity(dimension, null);
-        if (noAI) pokemonEntity.setNoAi(true);
-        if (isInvulnerable) pokemonEntity.setInvulnerable(true);
-        if (isPersistent) pokemonEntity.setPersistenceRequired();
+        RaidRegistry.requestRaidBoss(location, boss -> {
+            PokemonEntity pokemonEntity = boss.getBossEntity(dimension, null);
+            if (noAI) pokemonEntity.setNoAi(true);
+            if (isInvulnerable) pokemonEntity.setInvulnerable(true);
+            if (isPersistent) pokemonEntity.setPersistenceRequired();
 
-        ((IRaidAccessor) pokemonEntity).crd_setRaidId(pokemonEntity.getUUID());
-        RaidInstance raid = new RaidInstance(pokemonEntity, null, false);
-        if (raid.failedToStart()) {
-            context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.raid_boss_spawn_fail"));
-            return 0;
-        }
-        RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getUUID(), raid);
+            ((IRaidAccessor) pokemonEntity).crd_setRaidId(pokemonEntity.getUUID());
+            RaidInstance raid = new RaidInstance(pokemonEntity, null, false);
+            if (raid.failedToStart()) {
+                context.getSource().sendFailure(Component.translatable("error.cobblemonraiddens.raid_boss_spawn_fail"));
+                return;
+            }
+            RaidHelper.ACTIVE_RAIDS.put(pokemonEntity.getUUID(), raid);
 
-        pokemonEntity.moveTo(vec3);
-        dimension.addFreshEntity(pokemonEntity);
+            pokemonEntity.moveTo(vec3);
+            dimension.addFreshEntity(pokemonEntity);
+        }, dimension.getServer());
+
         return 1;
     }
 

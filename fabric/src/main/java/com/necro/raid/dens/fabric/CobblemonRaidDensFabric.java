@@ -8,7 +8,6 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -40,11 +39,11 @@ import net.minecraft.server.packs.PackType;
 public class CobblemonRaidDensFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        CobblemonRaidDens.init();
-
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
         }
+
+        CobblemonRaidDens.init();
 
         NetworkMessages.registerPayload();
         FabricBlocks.registerModBlocks();
@@ -60,9 +59,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         FabricCriteriaTriggers.registerCriteriaTriggers();
         RaidDenTab.registerItemGroups();
 
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> CustomRaidRegistries.freeze());
-        ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidHelper);
-        ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::initRaidBosses);
+        ServerLifecycleEvents.SERVER_STARTING.register(ModEvents::onServerStarting);
+        ServerLifecycleEvents.SERVER_STARTED.register(ModEvents::onServerStarted);
         ServerLifecycleEvents.SERVER_STOPPING.register(ModEvents::onServerClose);
         ServerPlayConnectionEvents.JOIN.register(ModEvents::onPlayerJoin);
         ServerPlayConnectionEvents.DISCONNECT.register(ModEvents::onPlayerDisconnect);

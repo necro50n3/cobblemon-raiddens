@@ -4,7 +4,9 @@ import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -14,6 +16,17 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 @SuppressWarnings("unused")
 public class ModEvents {
+    public static void commonTick(MinecraftServer server) {
+        RaidHelper.commonTick(server);
+        RaidJoinHelper.serverTick();
+        RaidEvents.ScaleBossRaidEvent.tick();
+        RaidRegistry.tick();
+    }
+
+    public static void clientTick(Minecraft client) {
+        RaidDenGuiManager.tick();
+    }
+
     public static void onPlayerJoin(ServerGamePacketListenerImpl listener, PacketSender sender, MinecraftServer server) {
         ServerPlayer player = listener.getPlayer();
         RaidDenNetworkMessages.SYNC_CONFIG.accept(player);
@@ -30,26 +43,19 @@ public class ModEvents {
         server.execute(() -> RaidJoinHelper.onPlayerDisconnect(player));
     }
 
-    public static void initRaidHelper(MinecraftServer server) {
+    public static void onServerStarting(MinecraftServer server) {
+        CustomRaidRegistries.freeze();
+    }
+
+    public static void onServerStarted(MinecraftServer server) {
         RaidHelper.initHelper(server);
+        RaidRegistry.init(server);
+        RaidBucketRegistry.init(server);
     }
 
     public static void onServerClose(MinecraftServer server) {
         RaidJoinHelper.onServerClose();
         RaidHelper.onServerClose(server);
-    }
-
-    public static void commonTick(MinecraftServer server) {
-        RaidHelper.commonTick(server);
-        RaidJoinHelper.serverTick();
-        RaidEvents.ScaleBossRaidEvent.tick();
-    }
-
-    public static void clientTick(Minecraft client) {
-        RaidDenGuiManager.tick();
-    }
-
-    public static void initRaidBosses(MinecraftServer server) {
-        RaidBucketRegistry.init(server);
+        RaidRegistry.close();
     }
 }

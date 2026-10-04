@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
@@ -33,6 +34,7 @@ public class ModEvents {
         RaidHelper.commonTick(event.getServer());
         RaidJoinHelper.serverTick();
         RaidEvents.ScaleBossRaidEvent.tick();
+        RaidRegistry.tick();
     }
 
     @SubscribeEvent
@@ -62,6 +64,7 @@ public class ModEvents {
     public static void onServerStarted(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
         RaidHelper.initHelper(server);
+        RaidRegistry.init(server);
         RaidBucketRegistry.init(server);
     }
 
@@ -69,6 +72,7 @@ public class ModEvents {
     public static void onServerClose(ServerStoppingEvent event) {
         RaidJoinHelper.onServerClose();
         RaidHelper.onServerClose(event.getServer());
+        RaidRegistry.close();
     }
 
     @SubscribeEvent

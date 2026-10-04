@@ -20,6 +20,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -30,6 +31,9 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class RewardHandler {
     private final ResourceLocation raidBossId;
@@ -59,42 +63,44 @@ public class RewardHandler {
     }
 
     public void sendRewardMessage(ServerPlayer player) {
-        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        if (this.raidBoss.getDisplaySpecies() == null) this.raidBoss.createDisplayAspects();
-        String speciesName = ((TranslatableContents) this.raidBoss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
-        RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.catchRate, speciesName);
-        RaidHelper.REWARD_QUEUE.put(player.getUUID(), this);
+        this.raidBoss(boss -> {
+            if (boss.getDisplaySpecies() == null) boss.createDisplayAspects();
+            String speciesName = ((TranslatableContents) boss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
+            RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.catchRate, speciesName);
+            RaidHelper.REWARD_QUEUE.put(player.getUUID(), this);
+        }, player.getServer());
     }
 
-    public boolean givePokemonToPlayer(ServerPlayer player) {
-        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        if (this.pokemonReward == null && this.serializedPokemonReward != null) {
-            this.pokemonReward = new Pokemon().loadFromNBT(player.registryAccess(), this.serializedPokemonReward);
-        }
-
-        boolean success = true;
-        if (this.pokemonReward != null) {
-            if (!(player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
-                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
-                return false;
+    public CompletableFuture<Boolean> givePokemonToPlayer(ServerPlayer player) {
+        return this.raidBoss(boss -> {
+            if (this.pokemonReward == null && this.serializedPokemonReward != null) {
+                this.pokemonReward = new Pokemon().loadFromNBT(player.registryAccess(), this.serializedPokemonReward);
             }
-            success = this.checkCatchingCharm(player);
-            if (success) {
-                this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
-                if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
 
-                PlayerExtensionsKt.party(player).add(this.pokemonReward);
-                player.getMainHandItem().consume(1, player);
-                RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
-                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
-                player.playNotifySound(SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Cobblemon.MODID, "poke_ball.capture_succeeded")), SoundSource.PLAYERS, 1F,1F);
-            }
-            else {
-                player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.failed_catch_rate"), true);
-            }
-        }
+            boolean success = true;
+            if (this.pokemonReward != null) {
+                if (!(player.getMainHandItem().getItem() instanceof PokeBallItem pokeBallItem)) {
+                    player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_not_pokeball"), true);
+                    return false;
+                }
+                success = this.checkCatchingCharm(player);
+                if (success) {
+                    this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
+                    if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
 
-        return this.giveItemToPlayer(player, !success);
+                    PlayerExtensionsKt.party(player).add(this.pokemonReward);
+                    player.getMainHandItem().consume(1, player);
+                    RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
+                    player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
+                    player.playNotifySound(SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(Cobblemon.MODID, "poke_ball.capture_succeeded")), SoundSource.PLAYERS, 1F,1F);
+                }
+                else {
+                    player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.failed_catch_rate"), true);
+                }
+            }
+
+            return this.giveItemToPlayer(player, !success).join();
+        }, player.getServer());
     }
 
     private boolean checkCatchingCharm(ServerPlayer player) {
@@ -110,32 +116,32 @@ public class RewardHandler {
         return player.getRandom().nextFloat() < catchRate;
     }
 
-    public boolean giveItemToPlayer(ServerPlayer player, boolean applyBonus) {
-        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        ItemStack raidPouch = this.buildRaidPouch(applyBonus);
-        if (raidPouch == null) {
-            player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.raid_boss_not_found"), true);
-            return true;
-        }
+    public CompletableFuture<Boolean> giveItemToPlayer(ServerPlayer player, boolean applyBonus) {
+        return this.raidBoss(boss -> {
+            ItemStack raidPouch = this.buildRaidPouch(boss, applyBonus);
+            if (raidPouch == null) {
+                player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.raid_boss_not_found"), true);
+                return true;
+            }
 
-        if (!player.getInventory().add(raidPouch)) {
-            ItemEntity itemEntity = player.drop(raidPouch, false);
-            if (itemEntity == null) return true;
-            itemEntity.setNoPickUpDelay();
-            itemEntity.setTarget(player.getUUID());
-        }
-        return true;
+            if (!player.getInventory().add(raidPouch)) {
+                ItemEntity itemEntity = player.drop(raidPouch, false);
+                if (itemEntity == null) return true;
+                itemEntity.setNoPickUpDelay();
+                itemEntity.setTarget(player.getUUID());
+            }
+            return true;
+        }, player.getServer());
     }
 
-    private ItemStack buildRaidPouch(boolean applyBonus) {
-        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        if (this.raidBoss == null) return null;
+    private ItemStack buildRaidPouch(RaidBoss boss, boolean applyBonus) {
+        if (boss == null) return null;
 
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
-        item.set(ModComponents.TIER_COMPONENT.value(), this.raidBoss.getTier());
-        item.set(ModComponents.FEATURE_COMPONENT.value(), this.raidBoss.getFeature());
-        item.set(ModComponents.TYPE_COMPONENT.value(), this.raidBoss.getType());
-        if (this.raidBoss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), this.raidBoss.getId());
+        item.set(ModComponents.TIER_COMPONENT.value(), boss.getTier());
+        item.set(ModComponents.FEATURE_COMPONENT.value(), boss.getFeature());
+        item.set(ModComponents.TYPE_COMPONENT.value(), boss.getType());
+        if (boss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), boss.getId());
         item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
         return item;
     }
@@ -164,8 +170,25 @@ public class RewardHandler {
         return new RewardHandler(raidBossId, playerUUID, pokemonReward, catchRate);
     }
 
-    public RaidBoss raidBoss() {
-        if (this.raidBoss == null) this.raidBoss = RaidRegistry.getRaidBoss(this.raidBossId);
-        return this.raidBoss;
+    public <T> CompletableFuture<T> raidBoss(Function<RaidBoss, T> function, MinecraftServer server) {
+        if (this.raidBoss != null) return CompletableFuture.completedFuture(function.apply(this.raidBoss));
+
+        return RaidRegistry.requestRaidBoss(this.raidBossId).thenApplyAsync(boss -> {
+            if (boss.isEmpty()) return null;
+            this.raidBoss = boss.get();
+            return function.apply(boss.get());
+        }, server);
+    }
+
+    public void raidBoss(Consumer<RaidBoss> consumer, MinecraftServer server) {
+        if (this.raidBoss != null) {
+            consumer.accept(this.raidBoss);
+            return;
+        }
+
+        RaidRegistry.requestRaidBoss(this.raidBossId, boss -> {
+            this.raidBoss = boss;
+            consumer.accept(boss);
+        }, server);
     }
 }

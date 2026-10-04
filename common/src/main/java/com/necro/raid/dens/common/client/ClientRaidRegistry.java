@@ -9,8 +9,12 @@ import java.util.Map;
 public class ClientRaidRegistry {
     private static final Map<ResourceLocation, RaidBoss> CLIENT_RAID_LOOKUP = new HashMap<>();
 
-    public static void register(RaidBoss raidBoss) {
-        CLIENT_RAID_LOOKUP.put(raidBoss.getId(), raidBoss);
+    public static void register(RaidBoss boss) {
+        CLIENT_RAID_LOOKUP.put(boss.getId(), boss);
+    }
+
+    public static void remove(ResourceLocation boss) {
+        CLIENT_RAID_LOOKUP.remove(boss);
     }
 
     public static RaidBoss getRaidBoss(ResourceLocation location) {

@@ -25,11 +25,11 @@ import net.neoforged.neoforge.common.NeoForge;
 public class CobblemonRaidDensNeoForge {
     @SuppressWarnings("unused")
     public CobblemonRaidDensNeoForge(IEventBus modBus, ModContainer container) {
-        CobblemonRaidDens.init();
-
         for (ModCompat mod : ModCompat.values()) {
             mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
         }
+
+        CobblemonRaidDens.init();
 
         NeoForgeBlocks.registerModBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
