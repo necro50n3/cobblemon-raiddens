@@ -133,6 +133,20 @@ public class RaidDenCommands {
         return builder;
     }
 
+    private static <T extends ArgumentBuilder<CommandSourceStack, T>> T addBucketOptions(T builder, SpawnAction action) {
+        builder
+            .executes(context -> action.execute(context, RaidCycleMode.BUCKET, true))
+            .then(Commands.argument("can_reset", BoolArgumentType.bool())
+                .executes(context -> action.execute(
+                    context,
+                    RaidCycleMode.BUCKET,
+                    BoolArgumentType.getBool(context, "can_reset")
+                ))
+            );
+
+        return builder;
+    }
+
     private static <T extends ArgumentBuilder<CommandSourceStack, T>> T addSpawnOptions(T builder, boolean hasDimensionArg) {
         builder
             .executes(context -> createRaidDen(
@@ -168,13 +182,12 @@ public class RaidDenCommands {
                 ))
             )
             .then(Commands.literal("bucket")
-                .then(addBossOptions(Commands.argument("bucket", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BUCKETS),
-                    (context, cycleMode, canReset) -> createRaidDen(
+                .then(addBucketOptions(Commands.argument("bucket", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BUCKETS),
+                    (context, cycleMode, canReset) -> createRaidDenWithBucket(
                         context,
                         BlockPosArgument.getBlockPos(context, "position"),
                         hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : context.getSource().getLevel(),
                         ResourceLocationArgument.getId(context, "bucket"),
-                        cycleMode,
                         canReset
                     )
                 ))
