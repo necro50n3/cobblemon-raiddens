@@ -132,22 +132,24 @@ public class PropertiesAdapter implements JsonSerializer<PokemonProperties>, Jso
             .forGetter(PokemonProperties::getCustomProperties)
     ).apply(inst, (species, gender, ability, nature, level, moves, minIvs, evs, heldItem, aspects, form, dmaxLevel, gmax, tera, customProperties) -> {
         PokemonProperties properties = PokemonProperties.Companion.parse("");
-        if (!species.isBlank()) properties.setSpecies(species);
+        if (!ability.isBlank()) properties.setAbility(ability);
+        if (dmaxLevel >= 0) properties.setDmaxLevel(dmaxLevel);
+        evs.ifPresent(properties::setEvs);
+        if (!form.isBlank()) properties.setForm(form);
         try { if (!gender.isBlank()) properties.setGender(Gender.valueOf(gender)); }
         catch (IllegalArgumentException ignored) {}
-        if (!ability.isBlank()) properties.setAbility(ability);
-        if (!nature.isBlank()) properties.setNature(nature);
+        if (gmax) properties.setGmaxFactor(true);
+        if (!heldItem.isBlank()) properties.setHeldItem(heldItem);
         if (level > 0) properties.setLevel(level);
         moves.ifPresent(builder -> ((IProperties) properties).crd_setMovesetBuilder(builder));
-        if (minIvs >= 0) properties.setMinPerfectIVs(minIvs);
-        evs.ifPresent(properties::setEvs);
-        if (!heldItem.isBlank()) properties.setHeldItem(heldItem);
-        if (!aspects.isEmpty()) properties.setAspects(aspects);
-        if (!form.isBlank()) properties.setForm(form);
-        if (dmaxLevel >= 0) properties.setDmaxLevel(dmaxLevel);
-        if (gmax) properties.setGmaxFactor(true);
+        if (minIvs >= 0) properties.setMinPerfectIVs(Math.clamp(minIvs, 0, 6));
+        if (!nature.isBlank()) properties.setNature(nature);
+        if (!species.isBlank()) properties.setSpecies(species);
         tera.ifPresent(properties::setTeraType);
+
+        if (!aspects.isEmpty()) properties.setAspects(aspects);
         if (!customProperties.isEmpty()) properties.setCustomProperties(new ArrayList<>(customProperties));
+
         return properties;
     }));
 
