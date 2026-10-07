@@ -439,7 +439,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {
-                if (!((serverLevel.getBlockEntity(this.getBlockPos())) instanceof RaidCrystalBlockEntity)) return;
+                if (this.isRemoved()) return;
                 RaidEvents.RAID_DEN_LOAD.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
             };
             if (this.getRaidBoss() == null) RaidRegistry.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
@@ -460,7 +460,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {
-                if (!((serverLevel.getBlockEntity(this.getBlockPos())) instanceof RaidCrystalBlockEntity)) return;
+                if (this.isRemoved()) return;
                 RaidEvents.RAID_DEN_SAVE.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
             };
             if (this.getRaidBoss() == null) RaidRegistry.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
