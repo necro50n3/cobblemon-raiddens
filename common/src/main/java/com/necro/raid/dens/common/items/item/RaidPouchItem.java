@@ -43,33 +43,50 @@ public class RaidPouchItem extends Item {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
         String feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
-        RaidType raidType = itemStack.get(ModComponents.TYPE_COMPONENT.value());
-        if (tier == null || feature == null || raidType == null) return InteractionResultHolder.fail(itemStack);
-        RaidBoss boss = RaidRegistry.requestRaidBoss(itemStack.get(ModComponents.BOSS_COMPONENT.value())).join().orElse(null);
-        if (boss == null) return InteractionResultHolder.fail(itemStack);
+        RaidType type = itemStack.get(ModComponents.TYPE_COMPONENT.value());
+        ResourceLocation bossId = itemStack.get(ModComponents.BOSS_COMPONENT.value());
+        if (tier == null || feature == null || type == null || bossId == null) return InteractionResultHolder.fail(itemStack);
+        if (level.isClientSide) return InteractionResultHolder.sidedSuccess(itemStack, true);
+
+        ItemStack snapshot = itemStack.copyWithCount(1);
         boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
+        player.getCooldowns().addCooldown(this, 2);
 
-        if (!level.isClientSide) {
-            List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, (ServerLevel) level, player, applyBonus);
-            if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent((ServerPlayer) player, itemStack, rewards))) {
-                return InteractionResultHolder.fail(itemStack);
-            }
-
-            for (ItemStack item : rewards) {
-                if (!player.getInventory().add(item)) {
-                    ItemEntity itemEntity = player.drop(item, false);
-                    if (itemEntity == null) continue;
-                    itemEntity.setNoPickUpDelay();
-                    itemEntity.setTarget(player.getUUID());
-                }
-            }
-
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-            player.awardStat(Stats.ITEM_USED.get(this));
-            itemStack.consume(1, player);
-        }
+        RaidRegistry.requestRaidBoss(
+            bossId,
+            boss -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, boss, tier, applyBonus),
+            (id, error) -> this.onFailed((ServerPlayer) player),
+            player.getServer()
+        );
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+    }
+
+    private void openPouch(ServerLevel level, ServerPlayer player, InteractionHand hand, ItemStack snapshot, RaidBoss boss, RaidTier tier, boolean applyBonus) {
+        player.getCooldowns().removeCooldown(this);
+        if (player.isRemoved() || !player.isAlive()) return;
+
+        ItemStack itemStack = player.getItemInHand(hand);
+        if (itemStack.isEmpty() || !ItemStack.isSameItemSameComponents(itemStack, snapshot)) return;
+        List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, level, player, applyBonus);
+        if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent(player, itemStack, rewards))) return;
+
+        for (ItemStack item : rewards) {
+            if (!player.getInventory().add(item)) {
+                ItemEntity itemEntity = player.drop(item, false);
+                if (itemEntity == null) continue;
+                itemEntity.setNoPickUpDelay();
+                itemEntity.setTarget(player.getUUID());
+            }
+        }
+
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        player.awardStat(Stats.ITEM_USED.get(this));
+        itemStack.consume(1, player);
+    }
+
+    private void onFailed(ServerPlayer player) {
+        player.getCooldowns().removeCooldown(this);
     }
 
     @Override
