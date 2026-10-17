@@ -1,7 +1,9 @@
 package com.necro.raid.dens.common;
 
 import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.battles.model.BattleEndResult;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.ActorType;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.drops.LootDroppedEvent;
 import com.cobblemon.mod.common.api.events.entity.SpawnEvent;
@@ -11,6 +13,7 @@ import com.cobblemon.mod.common.api.pokemon.status.Statuses;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
+import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.config.*;
 import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.events.ModifyShinyRateEvent;
@@ -110,13 +113,6 @@ public class CobblemonRaidDens {
             raidFailEvent(event.getPlayer().getEntity(), event.getBattle(), true);
             return Unit.INSTANCE;
         });
-        CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
-            BattlePokemon battlePokemon = event.getWinners().getFirst().getActivePokemon().getFirst().getBattlePokemon();
-            if (battlePokemon == null || battlePokemon.getEntity() == null) return Unit.INSTANCE;
-            else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return Unit.INSTANCE;
-            raidFailEvent(null, event.getBattle(), false);
-            return Unit.INSTANCE;
-        });
         CobblemonEvents.LOOT_DROPPED.subscribe(Priority.HIGHEST, event -> {
             cancelLootDrops(event);
             return Unit.INSTANCE;
@@ -133,6 +129,24 @@ public class CobblemonRaidDens {
             sendHealthBarPacket(event);
             return Unit.INSTANCE;
         });
+
+        if (ModCompat.COBBLEMON.isNewerThanOrEqual("1.8.2")) {
+            CobblemonEvents.BATTLE_ENDED.subscribe(Priority.NORMAL, event -> {
+                if (!((IRaidBattle) event.getBattle()).crd_isRaidBattle()) return Unit.INSTANCE;
+                if (event.getResult() == BattleEndResult.VICTORY && event.getBattle().getWinners().stream().anyMatch(actor -> actor.getType() == ActorType.PLAYER)) return Unit.INSTANCE;
+                raidFailEvent(null, event.getBattle(), false);
+                return Unit.INSTANCE;
+            });
+        }
+        else {
+            CobblemonEvents.BATTLE_VICTORY.subscribe(Priority.NORMAL, event -> {
+                BattlePokemon battlePokemon = event.getWinners().getFirst().getActivePokemon().getFirst().getBattlePokemon();
+                if (battlePokemon == null || battlePokemon.getEntity() == null) return Unit.INSTANCE;
+                else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return Unit.INSTANCE;
+                raidFailEvent(null, event.getBattle(), false);
+                return Unit.INSTANCE;
+            });
+        }
     }
 
     private static void raidFailEvent(@Nullable ServerPlayer player, PokemonBattle battle, boolean ignoreLives) {

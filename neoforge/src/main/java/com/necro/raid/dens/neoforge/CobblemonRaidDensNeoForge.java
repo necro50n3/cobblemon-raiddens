@@ -20,13 +20,18 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
 @Mod(CobblemonRaidDens.MOD_ID)
 public class CobblemonRaidDensNeoForge {
     @SuppressWarnings("unused")
     public CobblemonRaidDensNeoForge(IEventBus modBus, ModContainer container) {
+        ModCompat.setComparator((actual, compare) -> new DefaultArtifactVersion(actual).compareTo(new DefaultArtifactVersion(compare)));
         for (ModCompat mod : ModCompat.values()) {
-            mod.setLoaded(ModList.get().isLoaded(mod.getModid()));
+            ModList.get().getModContainerById(mod.getModid()).ifPresent(modContainer -> {
+                mod.setLoaded(true);
+                mod.setVersion(modContainer.getModInfo().getVersion().toString());
+            });
         }
 
         CobblemonRaidDens.init();

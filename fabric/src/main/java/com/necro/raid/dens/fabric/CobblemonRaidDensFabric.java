@@ -34,13 +34,22 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
     @Override
     public void onInitialize() {
+        ModCompat.setComparator((actual, compare) -> {
+            try { return Version.parse(actual).compareTo(Version.parse(compare)); }
+            catch (VersionParsingException e) { throw new RuntimeException(e); }
+        });
         for (ModCompat mod : ModCompat.values()) {
-            mod.setLoaded(FabricLoader.getInstance().isModLoaded(mod.getModid()));
+            FabricLoader.getInstance().getModContainer(mod.getModid()).ifPresent(modContainer -> {
+                mod.setLoaded(true);
+                mod.setVersion(modContainer.getMetadata().getVersion().getFriendlyString());
+            });
         }
 
         CobblemonRaidDens.init();
