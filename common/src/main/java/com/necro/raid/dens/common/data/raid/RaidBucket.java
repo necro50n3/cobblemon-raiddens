@@ -142,7 +142,7 @@ public class RaidBucket {
         this.excludeBosses = result2;
     }
 
-    private BitSet getCompiled() {
+    public BitSet getCompiled() {
         if (this.compiled == null) {
             this.resolveRaidBosses();
             this.compiled = new BitSet();

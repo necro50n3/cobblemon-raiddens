@@ -25,6 +25,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.raids.moves.RaidMovesetBuilder;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
@@ -44,7 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class RaidBoss {
+public class RaidBoss implements RaidSession {
     public static final Gson GSON;
 
     @SerializedName("pokemon")
@@ -329,7 +330,7 @@ public class RaidBoss {
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToBoss(pokemon, pokemonEntity);
 
-        ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
+        ((IRaidAccessor) pokemonEntity).crd_setRaidSession(this.id);
         pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
 
         pokemonEntity.refreshDimensions();
@@ -757,6 +758,10 @@ public class RaidBoss {
         this.densActual = new ArrayList<>();
         this.displaySpecies = null;
         this.displayAspects = null;
+    }
+
+    public boolean isAdventure() {
+        return false;
     }
 
     public RaidBoss copy() {

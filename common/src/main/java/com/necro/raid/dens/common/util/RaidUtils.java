@@ -15,6 +15,7 @@ import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
@@ -111,13 +112,14 @@ public class RaidUtils {
         ServerLevel level = ModDimensions.getRaidDimension(player.getServer());
         if (level == null) return;
 
-        RaidInstance instance = RaidHelper.ACTIVE_RAIDS.get(raid);
+        AbstractRaidSession instance = RaidHelper.ACTIVE_RAIDS.get(raid);
         if (instance == null) {
             leaveRaidFallback(player);
             return;
         }
         else if (instance.getRaidState() != RaidState.NOT_STARTED && BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player) != null) {
-            instance.removePlayer((ServerPlayer) player);
+            RaidInstance activeRaid = instance.getActive();
+            if (activeRaid != null) activeRaid.removePlayer((ServerPlayer) player);
             return;
         }
 
@@ -127,11 +129,16 @@ public class RaidUtils {
         int items = level.getEntitiesOfClass(ItemEntity.class, region.bound(), item -> item.getOwner() != null).size();
         if (items > 0 && isRaidDimension(player.level())) return;
 
-        instance.removePlayer((ServerPlayer) player);
+        RaidInstance activeRaid = instance.getActive();
+        if (activeRaid != null) {
+            activeRaid.removePlayer((ServerPlayer) player);
+        }
         instance.closeRaid(player.getServer());
 
-        PokemonEntity entity = instance.getBossEntity();
-        if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
+        if (activeRaid != null) {
+            PokemonEntity entity = activeRaid.getBossEntity();
+            if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
+        }
     }
 
     private static void leaveRaidFallback(Player player) {

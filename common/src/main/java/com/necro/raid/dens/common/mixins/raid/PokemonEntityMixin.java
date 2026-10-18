@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
@@ -74,18 +74,18 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     }
 
     @Override
-    public RaidBoss crd_getRaidBoss() {
-        return RaidRegistry.getRaidBoss(this.crd_raidBoss);
+    public RaidSession crd_getRaidSession() {
+        return RaidRegistry.getRaidSession(this.crd_raidBoss);
     }
 
     @Override
-    public ResourceLocation crd_getRaidBossId() {
+    public ResourceLocation crd_getRaidSessionId() {
         return this.crd_raidBoss;
     }
 
     @Override
-    public void crd_setRaidBoss(ResourceLocation raidBoss) {
-        this.crd_raidBoss = raidBoss;
+    public void crd_setRaidSession(ResourceLocation raid) {
+        this.crd_raidBoss = raid;
         RaidRegistry.requestRaidBoss(this.crd_raidBoss);
     }
 
@@ -167,7 +167,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Inject(method = "load", at = @At("RETURN"))
     private void loadInject(CompoundTag nbt, CallbackInfo ci) {
         if (nbt.contains("raid_id")) this.crd_raidId = UUID.fromString(nbt.getString("raid_id"));
-        if (nbt.contains("raid_boss")) this.crd_setRaidBoss(ResourceLocation.parse(nbt.getString("raid_boss")));
+        if (nbt.contains("raid_boss")) this.crd_setRaidSession(ResourceLocation.parse(nbt.getString("raid_boss")));
         this.crd_flagRemove = nbt.contains("raid_flag_remove");
         if (nbt.contains("raid_state")) this.crd_raidState = nbt.getInt("raid_state") == 1 ? RaidState.SUCCESS : RaidState.FAILED;
 

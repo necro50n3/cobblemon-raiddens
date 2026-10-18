@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.raids.helpers;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.data.raid.RaidResetContext;
-import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.rewards.RewardHandler;
@@ -22,7 +22,7 @@ public class RaidHelper extends SavedData {
     public static RaidHelper INSTANCE;
     private static final RaidResetContext INITIAL_GLOBAL_RESET = new RaidResetContext(0, 0, 0);
 
-    public static final Map<UUID, RaidInstance> ACTIVE_RAIDS = new HashMap<>();
+    public static final Map<UUID, AbstractRaidSession> ACTIVE_RAIDS = new HashMap<>();
     public static final Map<UUID, RequestHandler> REQUEST_QUEUE = new HashMap<>();
     public static final Map<UUID, RewardHandler> REWARD_QUEUE = new HashMap<>();
 
@@ -56,7 +56,7 @@ public class RaidHelper extends SavedData {
     }
 
     public static void closeRaid(UUID raid, RaidState raidState, ServerLevel level) {
-        RaidInstance instance = ACTIVE_RAIDS.remove(raid);
+        AbstractRaidSession instance = ACTIVE_RAIDS.remove(raid);
         if (instance == null) return;
 
         if (raidState == RaidState.CANCELLED) RaidRegionHelper.clearRegion(raid, level);
@@ -126,8 +126,8 @@ public class RaidHelper extends SavedData {
             default -> {}
         }
 
-        List<RaidInstance> raids = new ArrayList<>(ACTIVE_RAIDS.values());
-        raids.forEach(RaidInstance::tick);
+        List<AbstractRaidSession> raids = new ArrayList<>(ACTIVE_RAIDS.values());
+        raids.forEach(AbstractRaidSession::tick);
     }
 
     public static RaidHelper create() {

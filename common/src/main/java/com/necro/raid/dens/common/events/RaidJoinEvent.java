@@ -1,19 +1,19 @@
 package com.necro.raid.dens.common.events;
 
 import com.cobblemon.mod.common.api.events.Cancelable;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.RaidSession;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 public class RaidJoinEvent extends Cancelable {
     private final ServerPlayer player;
     private final boolean isHost;
-    private final RaidBoss raidBoss;
+    private final RaidSession raid;
 
-    public RaidJoinEvent(@NotNull ServerPlayer player, boolean isHost, @NotNull RaidBoss raidBoss) {
+    public RaidJoinEvent(@NotNull ServerPlayer player, boolean isHost, @NotNull RaidSession raid) {
         this.player = player;
         this.isHost = isHost;
-        this.raidBoss = raidBoss;
+        this.raid = raid;
     }
 
     public ServerPlayer getPlayer() {
@@ -24,7 +24,7 @@ public class RaidJoinEvent extends Cancelable {
         return this.isHost;
     }
 
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
+    public RaidSession getRaid() {
+        return this.raid;
     }
 }

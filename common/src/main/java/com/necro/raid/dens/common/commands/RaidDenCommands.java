@@ -221,7 +221,7 @@ public class RaidDenCommands {
                 .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier()), 2);
 
             if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
-                raidCrystal.setRaidBoss(location, level.getGameTime());
+                raidCrystal.setRaidSession(location, level.getGameTime());
                 if (bucket != null) raidCrystal.setRaidBucket(bucket);
             }
 

@@ -11,10 +11,16 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class RaidDenNetworkMessages {
+    @FunctionalInterface
+    public interface BossChoiceSender {
+        void send(ServerPlayer player, UUID raidId, ResourceLocation option1, ResourceLocation option2);
+    }
+
     // S2C Packets
     public static BiConsumer<MinecraftServer, RaidBoss> SYNC_BOSS;
     public static BiConsumer<MinecraftServer, ResourceLocation> REMOVE_SYNCED_BOSS;
@@ -27,6 +33,7 @@ public class RaidDenNetworkMessages {
     public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
     public static TriConsumer<ServerPlayer, List<Integer>, Boolean> RAID_HEALTH_BAR;
     public static TriConsumer<ServerPlayer, List<Integer>, List<Float>> RAID_HEALTH_UPDATE;
+    public static BossChoiceSender CHOOSE_RAID_BOSS;
 
     // C2S Packets
     public static BiConsumer<PokemonEntity, Pokemon> RAID_CHALLENGE;
@@ -34,4 +41,5 @@ public class RaidDenNetworkMessages {
     public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
     public static Consumer<Boolean> REWARD_RESPONSE;
     public static Consumer<CheerBagItem.CheerType> USE_CHEER;
+    public static BiConsumer<UUID, ResourceLocation> CHOOSE_RAID_BOSS_RESPONSE;
 }

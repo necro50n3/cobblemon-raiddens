@@ -11,10 +11,11 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidBuilder;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
@@ -75,15 +76,16 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             return;
         }
 
-        RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
+        RaidSession session = ((IRaidAccessor) entity).crd_getRaidSession();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
-        if (raid == null) return;
-        else if (raid.hasFailed(player)) {
+        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        RaidInstance active = raid == null ? null : raid.getActive();
+        if (active == null) return;
+        else if (active.hasFailed(player)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
-        else if (boss.getMaxPlayers() != -1 && raid.getBattles().size() >= boss.getMaxPlayers()) {
+        else if (session.getMaxPlayers() != -1 && active.getBattles().size() >= session.getMaxPlayers()) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
@@ -98,8 +100,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))), true);
             return;
         }
-        else if (RaidUtils.isHeldItemBlacklisted(pokemon.getHeldItem$common())) {
-            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_held_item", pokemon.getHeldItem$common().getDisplayName())), true);
+        else if (RaidUtils.isHeldItemBlacklisted(pokemon.heldItem())) {
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_held_item", pokemon.heldItem().getDisplayName())), true);
             return;
         }
         else if (pokemon.isFainted()) {
@@ -110,12 +112,12 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss)
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, active.getRaidBoss())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     if (!raid.isPlayerIn(player)) raid.addPlayer(player);
-                    raid.addBattle(battle);
-                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
+                    active.addBattle(battle);
+                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, active.getRaidBoss(), battle));
 
                     if (pokemonEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
                         this.setTransformTarget(pokemonEntity, pokemon);

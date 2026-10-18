@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.registry;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
@@ -105,6 +106,22 @@ public class RaidRegistry {
         return current.getAll();
     }
 
+    public static CompletableFuture<Optional<? extends RaidSession>> requestRaidSession(ResourceLocation location) {
+        if (CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(location)) return CompletableFuture.completedFuture(Optional.of(CustomRaidRegistries.ADVENTURE_REGISTRY.get(location)));
+        return requestRaidBoss(location).thenApply(opt -> opt);
+    }
+
+    public static void requestRaidSession(ResourceLocation location, Consumer<RaidSession> consumer, MinecraftServer server) {
+        requestRaidSession(location, consumer, (id, error) -> {}, server);
+    }
+
+    public static void requestRaidSession(ResourceLocation location, Consumer<RaidSession> consumer, BiConsumer<ResourceLocation, Throwable> errorConsumer, MinecraftServer server) {
+        requestRaidSession(location).whenCompleteAsync((session, error) -> {
+            if (error != null || session.isEmpty()) errorConsumer.accept(location, error);
+            else consumer.accept(session.get());
+        }, server);
+    }
+
     public static CompletableFuture<Optional<RaidBoss>> requestRaidBoss(ResourceLocation location) {
         if (location == null || RaidRegistry.isClosed()) return CompletableFuture.completedFuture(Optional.empty());
         RegistryCache<ResourceLocation, RaidBoss> current = CACHE;
@@ -118,15 +135,13 @@ public class RaidRegistry {
 
     public static void requestRaidBoss(ResourceLocation location, Consumer<RaidBoss> consumer, BiConsumer<ResourceLocation, Throwable> errorConsumer, MinecraftServer server) {
         requestRaidBoss(location).whenCompleteAsync((boss, error) -> {
-            if (error != null || boss.isEmpty()) {
-                errorConsumer.accept(location, error);
-                return;
-            }
-            consumer.accept(boss.get());
+            if (error != null || boss.isEmpty()) errorConsumer.accept(location, error);
+            else consumer.accept(boss.get());
         }, server);
     }
 
-    public static @Nullable RaidBoss getRaidBoss(ResourceLocation location) {
+    public static @Nullable RaidSession getRaidSession(ResourceLocation location) {
+        if (CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(location)) return CustomRaidRegistries.ADVENTURE_REGISTRY.get(location);
         if (location == null) return null;
         RegistryCache<ResourceLocation, RaidBoss> current = CACHE;
         if (current == null) return PENDING.get().get(location);

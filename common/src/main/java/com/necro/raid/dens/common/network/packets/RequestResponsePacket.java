@@ -57,7 +57,7 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
             return;
         }
 
-        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, false, blockEntity.getRaidBoss()));
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, false, blockEntity.getRaidSession()));
         if (!success) return;
 
         RaidRegion region = RaidRegionHelper.getRegion(blockEntity.getUuid());

@@ -26,7 +26,7 @@ public class RaidStatistics {
             return Unit.INSTANCE;
         });
 
-        RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
+        RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
             event.player().awardStat(RAIDS_COMPLETED);
 

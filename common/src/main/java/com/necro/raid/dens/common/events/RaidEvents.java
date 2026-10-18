@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class RaidEvents {
     // Raid Generation
-    public static final SimpleObservable<SetRaidBossEvent> SET_RAID_BOSS = new SimpleObservable<>();
+    public static final SimpleObservable<SetRaidEvent> SET_RAID = new SimpleObservable<>();
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_LOAD = new SimpleObservable<>();
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SAVE = new SimpleObservable<>();
@@ -24,6 +24,7 @@ public class RaidEvents {
     // Raid Battling
     public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
     public static final SimpleObservable<RaidBattleStartEvent> RAID_BATTLE_START = new SimpleObservable<>();
+    public static final SimpleObservable<RaidBattleEndEvent> RAID_BATTLE_END = new SimpleObservable<>();
     public static final SimpleObservable<RaidEndEvent> RAID_END = new SimpleObservable<>();
 
     // Raid Rewards
@@ -42,12 +43,12 @@ public class RaidEvents {
             return Unit.INSTANCE;
         });
 
-        RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
+        RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return;
             new RewardHandler(event.raidBoss(), event.player().getUUID(), event.pokemon(), event.catchRate()).sendRewardMessage(event.player());
         });
 
-        RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
+        RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
 
             Inventory inventory = event.player().getInventory();

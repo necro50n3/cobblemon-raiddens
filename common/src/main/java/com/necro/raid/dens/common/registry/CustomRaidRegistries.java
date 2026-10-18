@@ -10,6 +10,8 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.Script;
+import com.necro.raid.dens.common.raids.adventure.RaidNode;
+import com.necro.raid.dens.common.raids.adventure.RecoverNode;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
@@ -30,6 +32,8 @@ public class CustomRaidRegistries {
     public static final StringRegistry<Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final StringRegistry<RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
     public static final ScriptRegistry SCRIPT_REGISTRY = new ScriptRegistry();
+    public static final NodeRegistry NODE_REGISTRY = new NodeRegistry();
+    public static final AdventureRegistry ADVENTURE_REGISTRY = new AdventureRegistry();
     public static final StringRegistry<RaidFeature> FEATURE_REGISTRY = new StringRegistry<>("default");
 
     private static final Map<String, Stat> STAT_MAP = Map.of(
@@ -46,6 +50,8 @@ public class CustomRaidRegistries {
         AI_REGISTRY.freeze();
         REWARD_DIST_REGISTRY.freeze();
         SCRIPT_REGISTRY.freeze();
+        NODE_REGISTRY.freeze();
+        ADVENTURE_REGISTRY.freeze();
         FEATURE_REGISTRY.freeze();
     }
 
@@ -53,6 +59,7 @@ public class CustomRaidRegistries {
         registerAI();
         registerRewardDistributors();
         registerScripts();
+        registerNodes();
         registerFeatures();
     }
 
@@ -207,6 +214,14 @@ public class CustomRaidRegistries {
             else if ("boss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
             else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
         });
+    }
+
+    private static void registerNodes() {
+        NODE_REGISTRY.register("raid", node -> {
+            List<String> bosses = NODE_REGISTRY.parseList(node, "bosses", String.class);
+            return new RaidNode(bosses);
+        });
+        NODE_REGISTRY.register("recover", node -> new RecoverNode());
     }
 
     private static void registerFeatures() {

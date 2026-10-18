@@ -5,7 +5,7 @@ import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.events.SetRaidBossEvent;
+import com.necro.raid.dens.common.events.SetRaidEvent;
 import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
@@ -71,19 +71,19 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return false;
-        raidCrystal.setRaidBoss(location, level.getLevel().getGameTime());
+        raidCrystal.setRaidSession(location, level.getLevel().getGameTime());
         raidCrystal.setRaidBucket(bucket);
 
-        RaidRegistry.requestRaidBoss(location, boss -> {
-            SetRaidBossEvent event = new SetRaidBossEvent(boss);
-            RaidEvents.SET_RAID_BOSS.emit(event);
-            boss = event.getRaidBoss();
-            if (boss == null) {
+        RaidRegistry.requestRaidSession(location, session -> {
+            SetRaidEvent event = new SetRaidEvent(session);
+            RaidEvents.SET_RAID.emit(event);
+            session = event.getRaid();
+            if (session == null) {
                 this.handleError(level, blockPos, null);
                 return;
             }
 
-            RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, boss));
+            RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, session));
         }, (id, error) -> handleError(level, blockPos, id), level.getServer());
 
         return true;

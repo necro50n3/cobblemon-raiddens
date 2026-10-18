@@ -27,7 +27,7 @@ public class RaidBuilder {
                 !p.getEffectedPokemon().isFainted()
                 && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
                 && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
-                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().getHeldItem$common())
+                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().heldItem())
             ).toList();
         if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, boss.getRaidPartySize()));
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);

@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.dimensions;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -38,16 +39,20 @@ public class ModDimensions {
     public static void onDimensionChange(ServerPlayer player, ServerLevel from, ServerLevel to) {
         boolean leavingDimension = RaidUtils.isRaidDimension(from);
         RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(player);
-        RaidInstance raid = participant == null ? null : RaidHelper.ACTIVE_RAIDS.get(participant.raid());
+        AbstractRaidSession raid = participant == null ? null : RaidHelper.ACTIVE_RAIDS.get(participant.raid());
         if (raid == null) {
             if (leavingDimension) RaidDenNetworkMessages.JOIN_RAID.accept(player, false);
             return;
         }
 
         if (leavingDimension) {
-            raid.removeFromBossEvent(player);
+            RaidInstance activeRaid = raid.getActive();
+            if (activeRaid != null) activeRaid.removeFromBossEvent(player);
             RaidUtils.leaveRaid(player);
         }
-        else if (RaidUtils.isRaidDimension(to)) raid.addToBossEvent(player);
+        else if (RaidUtils.isRaidDimension(to)) {
+            RaidInstance activeRaid = raid.getActive();
+            if (activeRaid != null) activeRaid.addToBossEvent(player);
+        }
     }
 }

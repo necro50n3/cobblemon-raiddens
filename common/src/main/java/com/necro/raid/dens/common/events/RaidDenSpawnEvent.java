@@ -1,6 +1,6 @@
 package com.necro.raid.dens.common.events;
 
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.RaidSession;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class RaidDenSpawnEvent {
     private final ServerLevel level;
     private final BlockPos blockPos;
-    private final RaidBoss raidBoss;
+    private final RaidSession raid;
 
-    public RaidDenSpawnEvent(@NotNull ServerLevel level, @NotNull BlockPos blockPos, @NotNull RaidBoss raidBoss) {
+    public RaidDenSpawnEvent(@NotNull ServerLevel level, @NotNull BlockPos blockPos, @NotNull RaidSession raid) {
         this.level = level;
         this.blockPos = blockPos;
-        this.raidBoss = raidBoss;
+        this.raid = raid;
     }
 
     public ServerLevel getLevel() {
@@ -24,7 +24,7 @@ public class RaidDenSpawnEvent {
         return this.blockPos;
     }
 
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
+    public RaidSession getRaid() {
+        return this.raid;
     }
 }

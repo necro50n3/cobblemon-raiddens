@@ -49,6 +49,10 @@ public class RaidRegion {
         return this.bound;
     }
 
+    public ResourceLocation structure() {
+        return this.structure;
+    }
+
     public BlockPos getOffset() {
         return BlockPos.containing(RaidDenRegistry.getOffset(this.structure).add(this.centre.getBottomCenter()));
     }
@@ -126,6 +130,11 @@ public class RaidRegion {
 
         level.setBlock(this.centre(), ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState(), 2);
 
+        ChunkPos chunkPos = new ChunkPos(this.centre());
+        level.getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
+    }
+
+    public void addRegionTicket(ServerLevel level) {
         ChunkPos chunkPos = new ChunkPos(this.centre());
         level.getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);
     }

@@ -2,16 +2,17 @@ package com.necro.raid.dens.common.blocks.block;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -60,6 +61,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     public static final BooleanProperty CAN_RESET = BooleanProperty.create("can_reset");
     public static final EnumProperty<RaidCycleMode> CYCLE_MODE = EnumProperty.create("cycle_mode", RaidCycleMode.class);
     public static final BooleanProperty IS_NATURAL = BooleanProperty.create("is_natural");
+    public static final BooleanProperty IS_ADVENTURE = BooleanProperty.create("is_adventure");
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.9375, 1);
 
@@ -72,6 +74,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(CAN_RESET, true)
             .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
             .setValue(IS_NATURAL, true)
+            .setValue(IS_ADVENTURE, false)
         );
     }
 
@@ -89,11 +92,11 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return ItemInteractionResult.FAIL;
-        if (raidCrystal.getRaidBoss() == null) return ItemInteractionResult.FAIL;
+        if (raidCrystal.getRaidSession() == null) return ItemInteractionResult.FAIL;
         else if (RaidRegionHelper.getRegion(raidCrystal.getUuid()) != null && raidCrystal.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         else if (raidCrystal.isOpen()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        if (raidCrystal.getRaidBoss().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (raidCrystal.getRaidSession().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         else if (!this.handleKey(player, raidCrystal, itemStack)) return ItemInteractionResult.FAIL;
 
         boolean success = this.startOrJoinRaid(player, blockState, raidCrystal, itemStack);
@@ -129,11 +132,15 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return false;
         }
+        else if (blockEntity.hasStartedAdventure()) {
+            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.adventure_started"), true);
+            return false;
+        }
         return this.requestJoinRaid(player, blockEntity, key);
     }
 
     private boolean requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
         if (raid == null) return false;
         MinecraftServer server = player.getServer();
         if (server == null) return false;
@@ -150,17 +157,17 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean startRaid(Player player, RaidCrystalBlockEntity blockEntity) {
-        if (player.getServer() == null || blockEntity.getRaidBoss() == null) return false;
+        if (player.getServer() == null || blockEntity.getRaidSession() == null) return false;
 
         RandomSource random = player.level().getRandom();
-        ResourceLocation structure = blockEntity.getRaidBoss().getRandomDen(random);
+        ResourceLocation structure = blockEntity.getRaidSession().getRandomDen(random);
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure, random);
-        if (region == null || !blockEntity.spawnRaidBoss(player.getUUID(), RaidDenRegistry.getScaleModifier(structure))) {
+        if (region == null || !blockEntity.spawnRaid(player.getUUID(), region)) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
         }
 
-        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidBoss()));
+        boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, true, blockEntity.getRaidSession()));
         if (!success) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
             return false;
@@ -169,11 +176,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), true, true)) return false;
         RaidHelper.initRequest((ServerPlayer) player, blockEntity);
 
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
         raid.addPlayer((ServerPlayer) player);
         RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);
         blockEntity.syncAspects((ServerPlayer) player);
-        player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", raid.getBossEntity().getDisplayName())), true);
+        RaidInstance activeRaid = raid.getActive();
+        if (activeRaid != null) player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", activeRaid.getBossEntity().getDisplayName())), true);
         return true;
     }
 
@@ -184,18 +192,18 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
-        RaidBoss boss = blockEntity.getRaidBoss();
-        if (boss == null) return false;
-        UniqueKey key = boss.getKey();
+        RaidSession session = blockEntity.getRaidSession();
+        if (session == null) return false;
+        UniqueKey key = session.getKey();
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {
                 player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1])), true);
                 return false;
             }
-            else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
+            else if (!CobblemonRaidDens.TIER_CONFIG.get(session.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
         }
-        else if (CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
+        else if (CobblemonRaidDens.TIER_CONFIG.get(session.getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_key"), true);
             return false;
         }
@@ -207,7 +215,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid();
             if (blockState.getValue(IS_NATURAL)) RaidHelper.resetClearedRaids(blockEntity.getUuid());
-            RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+            AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
             if (raid != null) raid.closeRaid(level.getServer(), true);
         }
         super.onRemove(blockState, level, blockPos, blockState2, bl);
@@ -272,6 +280,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         builder.add(CAN_RESET);
         builder.add(CYCLE_MODE);
         builder.add(IS_NATURAL);
+        builder.add(IS_ADVENTURE);
     }
 
     @Override

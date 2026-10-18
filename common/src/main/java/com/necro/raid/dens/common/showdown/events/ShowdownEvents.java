@@ -167,7 +167,7 @@ public class ShowdownEvents {
                         "p.volatiles[status.id] = { id: status.id, name: status.name, target: p }; " +
                     "} " +
                     "battle.effectState.hasDragonType = p.hasType('Dragon'); " +
-                    "battle.add('-start', p, 'move: Dragon Cheer'); " +
+                    "battle.add('-run', p, 'move: Dragon Cheer'); " +
                 "} ";
         }
     }
