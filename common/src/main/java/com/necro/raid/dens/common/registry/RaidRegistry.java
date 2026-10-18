@@ -117,13 +117,13 @@ public class RaidRegistry {
     }
 
     public static void requestRaidBoss(ResourceLocation location, Consumer<RaidBoss> consumer, BiConsumer<ResourceLocation, Throwable> errorConsumer, MinecraftServer server) {
-        requestRaidBoss(location).whenCompleteAsync((boss, error) -> {
-            if (error != null || boss.isEmpty()) {
-                errorConsumer.accept(location, error);
-                return;
-            }
-            consumer.accept(boss.get());
-        }, server);
+        CompletableFuture<Optional<RaidBoss>> future = requestRaidBoss(location);
+        BiConsumer<Optional<RaidBoss>, Throwable> handler = (boss, error) -> {
+            if (error != null || boss.isEmpty()) errorConsumer.accept(location, error);
+            else consumer.accept(boss.get());
+        };
+        if (server != null) future.whenCompleteAsync(handler, server);
+        else future.whenComplete(handler);
     }
 
     public static @Nullable RaidBoss getRaidBoss(ResourceLocation location) {
