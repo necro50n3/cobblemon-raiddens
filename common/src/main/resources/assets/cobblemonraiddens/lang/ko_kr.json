@@ -103,6 +103,7 @@
 
   "message.cobblemonraiddens.command.remove_dimension": "레이드 차원이 제거되었습니다.",
   "message.cobblemonraiddens.raid.accepted_request": "요청이 수락되었습니다.",
+
   "message.cobblemonraiddens.raid.already_hosting": "이미 다른 레이드를 호스팅하고 있습니다.",
   "message.cobblemonraiddens.raid.already_in_queue": "이미 레이드 참가 대기 중입니다.",
   "message.cobblemonraiddens.raid.already_participating": "이미 다른 레이드에 참가 중입니다.",

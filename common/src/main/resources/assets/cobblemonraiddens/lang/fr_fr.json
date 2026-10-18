@@ -102,6 +102,7 @@
 
     "message.cobblemonraiddens.command.remove_dimension": "La dimension du raid a été supprimée.",
     "message.cobblemonraiddens.raid.accepted_request": "Votre demande a été acceptée.",
+
     "message.cobblemonraiddens.raid.already_hosting": "Vous hébergez déjà un autre raid.",
     "message.cobblemonraiddens.raid.already_in_queue": "Vous êtes déjà en attente pour rejoindre un raid.",
     "message.cobblemonraiddens.raid.already_participating": "Vous participez déjà à un autre raid.",

@@ -41,7 +41,7 @@ public class RaidRegistry {
 
     public static final Map<String, float[]> WEIGHTS_CACHE = new HashMap<>();
     public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
-    private static double[] WEIGHTS_BY_INDEX = new double[0];
+    public static double[] WEIGHTS_BY_INDEX = new double[0];
     private static RaidTier[] TIER_BY_INDEX = new RaidTier[0];
     private static RaidType[] TYPE_BY_INDEX = new RaidType[0];
 

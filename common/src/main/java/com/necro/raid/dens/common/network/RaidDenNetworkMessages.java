@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
+import com.necro.raid.dens.common.util.QuadConsumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,11 +17,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class RaidDenNetworkMessages {
-    @FunctionalInterface
-    public interface BossChoiceSender {
-        void send(ServerPlayer player, UUID raidId, ResourceLocation option1, ResourceLocation option2);
-    }
-
     // S2C Packets
     public static BiConsumer<MinecraftServer, RaidBoss> SYNC_BOSS;
     public static BiConsumer<MinecraftServer, ResourceLocation> REMOVE_SYNCED_BOSS;
@@ -33,7 +29,7 @@ public class RaidDenNetworkMessages {
     public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
     public static TriConsumer<ServerPlayer, List<Integer>, Boolean> RAID_HEALTH_BAR;
     public static TriConsumer<ServerPlayer, List<Integer>, List<Float>> RAID_HEALTH_UPDATE;
-    public static BossChoiceSender CHOOSE_RAID_BOSS;
+    public static QuadConsumer<ServerPlayer, UUID, ResourceLocation, ResourceLocation> CHOOSE_RAID_BOSS;
 
     // C2S Packets
     public static BiConsumer<PokemonEntity, Pokemon> RAID_CHALLENGE;

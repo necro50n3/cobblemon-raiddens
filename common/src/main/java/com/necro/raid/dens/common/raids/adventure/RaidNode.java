@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -99,26 +98,21 @@ public class RaidNode implements AdventureNode {
 
         if (resolved.size() == 1) this.startRaid(resolved.getFirst(), adventure, server);
         else {
-            DoubleWeightedRandomMap<ResourceLocation> map = new DoubleWeightedRandomMap<>();
+            DoubleWeightedRandomMap<ResourceLocation> map = new DoubleWeightedRandomMap<>(false);
             for (ResourceLocation id : resolved) {
-                RaidSession b = RaidRegistry.getRaidSession(id);
-                double w = (b != null && b.getWeight() != null && b.getWeight() > 0) ? b.getWeight() : 1.0;
-                map.add(id, w);
+                Integer index = RaidRegistry.RAID_INDEX.get(id);
+                if (index == null) continue;
+                double weight = RaidRegistry.WEIGHTS_BY_INDEX[index];
+                map.add(id, weight);
             }
             RandomSource random = server.overworld().getRandom();
-            this.option1 = map.getRandom(random).orElse(resolved.getFirst());
-
-            DoubleWeightedRandomMap<ResourceLocation> map2 = new DoubleWeightedRandomMap<>();
-            for (ResourceLocation id : resolved) {
-                if (!id.equals(this.option1)) {
-                    RaidSession b = RaidRegistry.getRaidSession(id);
-                    double w = (b != null && b.getWeight() != null && b.getWeight() > 0) ? b.getWeight() : 1.0;
-                    map2.add(id, w);
-                }
-            }
-            this.option2 = map2.getRandom(random).orElse(
+            this.option1 = map.getRandom(random).orElseGet(resolved::getFirst);
+            this.option2 = map.getRandom(random).orElseGet(() ->
                 resolved.stream().filter(id -> !id.equals(this.option1)).findFirst().orElse(this.option1)
             );
+
+            RaidRegistry.requestRaidBoss(this.option1);
+            RaidRegistry.requestRaidBoss(this.option2);
 
             ServerPlayer selectingPlayer = adventure.getSelectingPlayer(server);
             if (selectingPlayer == null) {
@@ -130,9 +124,7 @@ public class RaidNode implements AdventureNode {
             this.waitingForChoice = true;
             this.choiceMade = false;
 
-            if (RaidDenNetworkMessages.CHOOSE_RAID_BOSS != null) {
-                RaidDenNetworkMessages.CHOOSE_RAID_BOSS.send(selectingPlayer, adventure.getRaid(), this.option1, this.option2);
-            }
+            RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2);
 
             adventure.schedule(() -> {
                 if (this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, server);
