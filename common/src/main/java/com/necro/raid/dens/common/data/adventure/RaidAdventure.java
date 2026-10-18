@@ -1,8 +1,14 @@
 package com.necro.raid.dens.common.data.adventure;
 
 import com.cobblemon.mod.common.pokemon.Species;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.adapters.NodeAdapter;
+import com.necro.raid.dens.common.data.adapters.NodeListAdapter;
+import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
@@ -14,22 +20,12 @@ import net.minecraft.util.RandomSource;
 import java.util.List;
 import java.util.Set;
 
-public class RaidAdventure implements RaidSession {
-    private final List<AdventureNode> nodes;
-    private final RaidBoss boss;
-
-    public RaidAdventure(List<AdventureNode> nodes, RaidBoss boss) {
-        this.nodes = nodes;
-        this.boss = boss;
-    }
-
-    public List<AdventureNode> nodes() {
-        return this.nodes;
-    }
-
-    public RaidBoss boss() {
-        return this.boss;
-    }
+public record RaidAdventure(List<AdventureNode> nodes, RaidBoss boss) implements RaidSession {
+    public static final Gson GSON = new GsonBuilder()
+        .registerTypeAdapter(AdventureNode.class, NodeAdapter.INSTANCE)
+        .registerTypeAdapter(new TypeToken<List<AdventureNode>>(){}.getType(), NodeListAdapter.INSTANCE)
+        .registerTypeAdapter(RaidBoss.class, RaidBossAdapter.INSTANCE)
+        .create();
 
     @Override
     public void createDisplayAspects() {

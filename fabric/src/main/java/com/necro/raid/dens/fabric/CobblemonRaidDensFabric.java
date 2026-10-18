@@ -90,6 +90,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTemplateReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidTagReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new BossAdditionsReloadListener());
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidAdventureReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new StatusEffectsReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidSupportReloadListener());
 

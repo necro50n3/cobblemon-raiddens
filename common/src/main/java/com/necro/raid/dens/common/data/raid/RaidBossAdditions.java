@@ -154,7 +154,7 @@ public class RaidBossAdditions {
 
     static {
         GSON = new GsonBuilder()
-            .registerTypeAdapter(RaidBoss.class, new RaidBossAdapter())
+            .registerTypeAdapter(RaidBoss.class, RaidBossAdapter.INSTANCE)
             .create();
     }
 }

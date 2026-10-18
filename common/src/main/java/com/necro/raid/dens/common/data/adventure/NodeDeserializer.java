@@ -7,5 +7,5 @@ import java.util.Map;
 
 @FunctionalInterface
 public interface NodeDeserializer {
-    AdventureNode decode(Map<String,Object> script) throws ClassCastException, JsonSyntaxException;
+    AdventureNode decode(Map<String,Object> node) throws ClassCastException, JsonSyntaxException;
 }

@@ -1,11 +1,18 @@
 package com.necro.raid.dens.common.raids.adventure;
 
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import com.necro.raid.dens.common.raids.RaidAdventureInstance;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.lang.reflect.Type;
+
 public class RecoverNode implements AdventureNode {
+    public static final String ID = "recover";
+
     private transient boolean completed = false;
 
     @Override
@@ -19,5 +26,12 @@ public class RecoverNode implements AdventureNode {
     @Override
     public boolean isCompleted() {
         return this.completed;
+    }
+
+    @Override
+    public JsonElement serialize(AdventureNode src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", ID);
+        return object;
     }
 }

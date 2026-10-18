@@ -103,6 +103,7 @@ public class ModEvents {
         event.addListener(new RaidTemplateReloadListener());
         event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
+        event.addListener(new RaidAdventureReloadListener());
         event.addListener(new StatusEffectsReloadListener());
         event.addListener(new RaidSupportReloadListener());
     }

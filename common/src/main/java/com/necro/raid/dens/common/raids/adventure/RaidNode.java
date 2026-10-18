@@ -1,6 +1,10 @@
 package com.necro.raid.dens.common.raids.adventure;
 
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
@@ -24,9 +28,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class RaidNode implements AdventureNode {
+    public static final String ID = "raid";
+
     private final List<String> references;
     private transient @Nullable RaidInstance activeRaid = null;
     private transient boolean waitingForChoice = false;
@@ -185,5 +192,15 @@ public class RaidNode implements AdventureNode {
     @Override
     public boolean isCompleted() {
         return this.activeRaid != null && this.activeRaid.isFinished();
+    }
+
+    @Override
+    public JsonElement serialize(AdventureNode src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject object = new JsonObject();
+        object.addProperty("type", ID);
+        JsonArray bosses = new JsonArray();
+        for (String reference : this.references) bosses.add(reference);
+        object.add("bosses", bosses);
+        return object;
     }
 }

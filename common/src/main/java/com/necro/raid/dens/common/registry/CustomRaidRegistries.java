@@ -217,11 +217,11 @@ public class CustomRaidRegistries {
     }
 
     private static void registerNodes() {
-        NODE_REGISTRY.register("raid", node -> {
+        NODE_REGISTRY.register(RaidNode.ID, node -> {
             List<String> bosses = NODE_REGISTRY.parseList(node, "bosses", String.class);
             return new RaidNode(bosses);
         });
-        NODE_REGISTRY.register("recover", node -> new RecoverNode());
+        NODE_REGISTRY.register(RecoverNode.ID, node -> new RecoverNode());
     }
 
     private static void registerFeatures() {
