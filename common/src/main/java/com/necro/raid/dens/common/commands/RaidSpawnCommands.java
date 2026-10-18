@@ -90,7 +90,7 @@ public class RaidSpawnCommands {
             .executes(context -> spawnBoss(
                 context,
                 Vec3Argument.getVec3(context, "pos"),
-                hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : null,
+                hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : context.getSource().getLevel(),
                 ResourceLocationArgument.getId(context, "boss"),
                 true,
                 true,
@@ -101,7 +101,7 @@ public class RaidSpawnCommands {
                     (context, noAI, isInvulnerable, isPersistent) -> spawnBoss(
                         context,
                         Vec3Argument.getVec3(context, "pos"),
-                        hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : null,
+                        hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : context.getSource().getLevel(),
                         ResourceLocationArgument.getId(context, "boss"),
                         noAI,
                         isInvulnerable,
