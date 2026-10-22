@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
@@ -18,39 +19,44 @@ import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import com.necro.raid.dens.common.util.IRaidAccessor;
-import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class RaidNode implements AdventureNode {
     public static final String ID = "raid";
 
     private final List<String> references;
-    private transient @Nullable RaidInstance activeRaid = null;
-    private transient boolean waitingForChoice = false;
-    private transient boolean choiceMade = false;
-    private transient @Nullable ResourceLocation option1 = null;
-    private transient @Nullable ResourceLocation option2 = null;
-    private transient @Nullable UUID choosingPlayerUuid = null;
+    private transient @Nullable RaidInstance activeRaid;
+    private transient boolean waitingForChoice;
+    private transient boolean choiceMade;
+    private transient @Nullable ResourceLocation option1;
+    private transient @Nullable ResourceLocation option2;
+    private transient @Nullable UUID choosingPlayerUuid;
+    private boolean isFinished;
 
     public RaidNode(Collection<String> references) {
         this.references = new ArrayList<>(references);
+        this.activeRaid = null;
+        this.waitingForChoice = false;
+        this.choiceMade = false;
+        this.option1 = null;
+        this.option2 = null;
+        this.choosingPlayerUuid = null;
+        this.isFinished = false;
     }
 
     public List<String> getReferences() {
         return this.references;
-    }
-
-    public @Nullable RaidInstance getActiveRaid() {
-        return this.activeRaid;
     }
 
     public boolean isWaitingForChoice() {
@@ -94,7 +100,10 @@ public class RaidNode implements AdventureNode {
     @Override
     public void run(RaidAdventureInstance adventure, MinecraftServer server) {
         List<ResourceLocation> resolved = this.resolveBosses();
-        if (resolved.isEmpty()) return;
+        if (resolved.isEmpty()) {
+            this.isFinished = true;
+            return;
+        }
 
         if (resolved.size() == 1) this.startRaid(resolved.getFirst(), adventure, server);
         else {
@@ -111,8 +120,8 @@ public class RaidNode implements AdventureNode {
                 resolved.stream().filter(id -> !id.equals(this.option1)).findFirst().orElse(this.option1)
             );
 
-            RaidRegistry.requestRaidBoss(this.option1);
-            RaidRegistry.requestRaidBoss(this.option2);
+            CompletableFuture<Optional<RaidBoss>> option1 = RaidRegistry.requestRaidBoss(this.option1);
+            CompletableFuture<Optional<RaidBoss>> option2 = RaidRegistry.requestRaidBoss(this.option2);
 
             ServerPlayer selectingPlayer = adventure.getSelectingPlayer(server);
             if (selectingPlayer == null) {
@@ -124,7 +133,9 @@ public class RaidNode implements AdventureNode {
             this.waitingForChoice = true;
             this.choiceMade = false;
 
-            RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2);
+            option1.thenAcceptBoth(option2, (boss1, boss2) ->
+                RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2)
+            );
 
             adventure.schedule(() -> {
                 if (this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, server);
@@ -140,7 +151,6 @@ public class RaidNode implements AdventureNode {
     }
 
     public void selectBoss(ResourceLocation selected, RaidAdventureInstance adventure, MinecraftServer server) {
-        if (this.choiceMade) return;
         this.choiceMade = true;
         this.waitingForChoice = false;
         this.startRaid(selected, adventure, server);
@@ -148,16 +158,25 @@ public class RaidNode implements AdventureNode {
 
     public void startRaid(ResourceLocation bossId, RaidAdventureInstance adventure, MinecraftServer server) {
         RaidRegistry.requestRaidBoss(bossId, boss -> {
-            ServerLevel level = ModDimensions.getRaidDimension(server);
+            Vec3 vec3;
+            ServerLevel level;
             RaidRegion region = RaidRegionHelper.getRegion(adventure.getRaid());
-            if (region != null) region.addRegionTicket(level);
+            if (region != null) {
+                vec3 = region.getBossPos();
+                level = ModDimensions.getRaidDimension(server);
+                region.addRegionTicket(level);
+            }
+            else {
+                vec3 = adventure.startPos();
+                level = adventure.startDimension();
+            }
 
             PokemonEntity pokemonEntity = boss.getBossEntity(level, null);
             double scaleMod = region != null ? RaidDenRegistry.getScaleModifier(region.structure()) : 1.0;
             pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleMod));
-            if (boss.getNoAi()) pokemonEntity.setNoAi(true);
-            pokemonEntity.setInvulnerable(true);
-            pokemonEntity.setPersistenceRequired();
+            if (boss.getNoAi() && adventure.noAI()) pokemonEntity.setNoAi(true);
+            pokemonEntity.setInvulnerable(adventure.isInvulnerable());
+            if (adventure.isPersistent()) pokemonEntity.setPersistenceRequired();
             ((IRaidAccessor) pokemonEntity).crd_setRaidId(adventure.getRaid());
 
             this.activeRaid = new RaidInstance(pokemonEntity, adventure.getHost(), adventure.isInDen());
@@ -169,12 +188,11 @@ public class RaidNode implements AdventureNode {
             }
 
             if (region != null) pokemonEntity.moveTo(region.getBossPos());
-            else if (adventure.startPos() != null) pokemonEntity.moveTo(adventure.startPos().getBottomCenter());
+            else if (vec3 != null) pokemonEntity.moveTo(vec3);
             level.addFreshEntity(pokemonEntity);
 
             for (ServerPlayer player : adventure.getPlayers()) {
                 this.activeRaid.addPlayer(player);
-                if (region != null) RaidUtils.teleportPlayerToRaid(player, server, region);
                 this.activeRaid.addToBossEvent(player);
                 player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", pokemonEntity.getDisplayName())), true);
             }
@@ -183,7 +201,7 @@ public class RaidNode implements AdventureNode {
 
     @Override
     public boolean isCompleted() {
-        return this.activeRaid != null && this.activeRaid.isFinished();
+        return this.isFinished || (this.activeRaid != null && this.activeRaid.isFinished());
     }
 
     @Override

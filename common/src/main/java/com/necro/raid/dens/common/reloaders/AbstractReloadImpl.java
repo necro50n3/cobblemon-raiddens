@@ -34,7 +34,7 @@ public abstract class AbstractReloadImpl {
 
         manager.listResources(this.path, path -> path.toString().endsWith(this.suffix())).forEach((id, resource) -> {
             try (InputStream input = resource.open()) {
-                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace(this.idRemove, "").replace(this.suffix(), ""));
+                ResourceLocation key = this.createKey(id);
                 if (this.type == DataType.JSON) this.loadJson(input, key);
                 else if (this.type == DataType.NBT) this.loadNbt(input, key);
             } catch (Exception e) {
@@ -43,6 +43,10 @@ public abstract class AbstractReloadImpl {
         });
 
         this.postLoad();
+    }
+
+    protected ResourceLocation createKey(ResourceLocation id) {
+        return ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().replace(this.idRemove, "").replace(this.suffix(), ""));
     }
 
     protected String suffix() {

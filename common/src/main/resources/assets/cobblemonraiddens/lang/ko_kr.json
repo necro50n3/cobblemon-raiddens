@@ -56,6 +56,7 @@
   "error.cobblemonraiddens.raid_boss_not_found": "레이드 보스가 없어 레이드 파우치를 생성하지 못했습니다.",
 
 
+
   "feature.cobblemonraiddens.default": "일반",
   "feature.cobblemonraiddens.dynamax": "다이맥스",
   "feature.cobblemonraiddens.gigantamax": "거다이맥스",
@@ -136,6 +137,7 @@
   "message.cobblemonraiddens.reward.reward_item": "보상을 받았습니다!",
   "message.cobblemonraiddens.reward.reward_not_pokeball": "포켓몬을 받으려면 몬스터볼을 손에 들어야 합니다.",
   "message.cobblemonraiddens.reward.reward_pokemon": "포켓몬을 받았습니다!",
+
   "screen.cobblemonraiddens.raid.title": "레이드 진행 중",
   "screen.cobblemonraiddens.raid.title.1": "레이드",
   "screen.cobblemonraiddens.raid.title.2": "진행 중",

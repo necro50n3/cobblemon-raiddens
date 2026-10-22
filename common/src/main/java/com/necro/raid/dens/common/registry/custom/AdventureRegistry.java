@@ -20,8 +20,7 @@ public class AdventureRegistry extends CustomRegistry<ResourceLocation, RaidAdve
         this.weightedMap.add(id, entry.getWeight());
     }
 
-    public @Nullable RaidAdventure getRandom(RandomSource random) {
-        ResourceLocation adventure = this.weightedMap.getRandom(random).orElse(null);
-        return adventure != null ? this.get(adventure) : null;
+    public @Nullable ResourceLocation getRandom(RandomSource random) {
+        return this.weightedMap.getRandom(random).orElse(null);
     }
 }

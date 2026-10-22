@@ -8,30 +8,27 @@ import java.util.Optional;
 
 @SuppressWarnings("unused")
 public class CustomRegistry<K, T> {
-    private final Object2ObjectOpenHashMap<K, T> registry;
-    private boolean frozen;
+    protected final Object2ObjectOpenHashMap<K, T> registry;
     private final K defaultKey;
 
     public CustomRegistry(K defaultKey) {
         this.registry = new Object2ObjectOpenHashMap<>();
-        this.frozen = false;
         this.defaultKey = defaultKey;
     }
 
     public void register(K id, T entry) {
-        if (this.frozen) throw new IllegalStateException("Attempted to add to registry after initialization.");
-        else if (id == null) throw new IllegalArgumentException("Attempted to register a null key");
+        if (id == null) throw new IllegalArgumentException("Attempted to register a null key");
         this.registry.put(id, entry);
     }
 
-    public void freeze() {
-        if (this.isFrozen()) return;
-        this.frozen = true;
-        this.registry.trim();
+    public void freeze() {}
+
+    public void clear() {
+        this.registry.clear();
     }
 
     public boolean isFrozen() {
-        return this.frozen;
+        return false;
     }
 
     public T get(K key) {

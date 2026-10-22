@@ -14,18 +14,32 @@ import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.data.raid.UniqueKey;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
+import com.necro.raid.dens.common.raids.adventure.BossNode;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public record RaidAdventure(List<AdventureNode> nodes, RaidBoss boss) implements RaidSession {
+public class RaidAdventure implements RaidSession {
     public static final Gson GSON = new GsonBuilder()
         .registerTypeAdapter(AdventureNode.class, NodeAdapter.INSTANCE)
         .registerTypeAdapter(new TypeToken<List<AdventureNode>>(){}.getType(), NodeListAdapter.INSTANCE)
         .registerTypeAdapter(RaidBoss.class, RaidBossAdapter.INSTANCE)
         .create();
+
+    private List<AdventureNode> nodes;
+    private RaidBoss boss;
+    private transient boolean isAdventure;
+
+    public List<AdventureNode> nodes() {
+        return this.nodes;
+    }
+
+    public RaidBoss boss() {
+        return this.boss;
+    }
 
     @Override
     public void createDisplayAspects() {
@@ -46,7 +60,10 @@ public record RaidAdventure(List<AdventureNode> nodes, RaidBoss boss) implements
     public void applyDefaults() {
         if (this.nodes == null) throw new JsonSyntaxException("Missing required field: \"nodes\"");
         if (this.boss == null) throw new JsonSyntaxException("Missing required field: \"boss\"");
+        this.nodes = new ArrayList<>(this.nodes);
+        this.nodes.add(new BossNode());
         this.boss.applyDefaults();
+        this.isAdventure = true;
     }
 
     @Override
@@ -129,7 +146,13 @@ public record RaidAdventure(List<AdventureNode> nodes, RaidBoss boss) implements
         return this.boss.getRandomDen(random);
     }
 
+    @Override
     public boolean isAdventure() {
-        return true;
+        return this.isAdventure;
+    }
+
+    @Override
+    public void setIsAdventure(boolean isAdventure) {
+        this.isAdventure = isAdventure;
     }
 }

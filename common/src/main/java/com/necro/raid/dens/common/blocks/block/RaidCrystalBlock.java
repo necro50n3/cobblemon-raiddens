@@ -180,6 +180,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         raid.addPlayer((ServerPlayer) player);
         RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);
         blockEntity.syncAspects((ServerPlayer) player);
+        raid.start(player.getServer());
         RaidInstance activeRaid = raid.getActive();
         if (activeRaid != null) player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", activeRaid.getBossEntity().getDisplayName())), true);
         return true;

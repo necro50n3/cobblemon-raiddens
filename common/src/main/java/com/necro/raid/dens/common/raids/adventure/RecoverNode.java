@@ -29,6 +29,11 @@ public class RecoverNode implements AdventureNode {
     }
 
     @Override
+    public void onPlayerJoin(ServerPlayer player, RaidAdventureInstance adventure) {
+        PlayerExtensionsKt.party(player).heal();
+    }
+
+    @Override
     public JsonElement serialize(AdventureNode src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject object = new JsonObject();
         object.addProperty("type", ID);

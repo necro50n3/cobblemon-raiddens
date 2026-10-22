@@ -56,6 +56,7 @@
     "error.cobblemonraiddens.raid_boss_not_found": "Falha ao criar a bolsa de invasão devido à ausência do chefe de invasão.",
     "error.cobblemonraiddens.raid_boss_spawn_fail": "Não foi possível criar uma invasão. Verifique os registros para ver o erro.",
     "error.cobblemonraiddens.reset_mode_not_global": "Modo de Redefinição deve ser um modo global.",
+
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -136,6 +137,7 @@
     "message.cobblemonraiddens.reward.reward_item": "Você recebeu a recompensa!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Você precisa segurar uma Pokébola para reivindicar o Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Você recebeu o Pokémon!",
+
     "screen.cobblemonraiddens.raid.title": "Invasão em Andamento",
     "screen.cobblemonraiddens.raid.title.1": "Invasão em",
     "screen.cobblemonraiddens.raid.title.2": "Andamento",

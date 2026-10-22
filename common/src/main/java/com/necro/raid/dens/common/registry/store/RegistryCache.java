@@ -132,11 +132,11 @@ public final class RegistryCache<K, V> implements AutoCloseable {
         invalidateAll();
     }
 
-    private synchronized long currentEpoch() {
+    public synchronized long currentEpoch() {
         return this.epoch;
     }
 
-    private synchronized boolean putIfCurrent(K id, V value, long expectedEpoch) {
+    public synchronized boolean putIfCurrent(K id, V value, long expectedEpoch) {
         if (this.epoch != expectedEpoch) return false;
         this.cache.put(id, value);
         return true;

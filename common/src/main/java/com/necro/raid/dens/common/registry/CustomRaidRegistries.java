@@ -10,8 +10,7 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.Script;
-import com.necro.raid.dens.common.raids.adventure.RaidNode;
-import com.necro.raid.dens.common.raids.adventure.RecoverNode;
+import com.necro.raid.dens.common.raids.adventure.*;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
@@ -51,7 +50,6 @@ public class CustomRaidRegistries {
         REWARD_DIST_REGISTRY.freeze();
         SCRIPT_REGISTRY.freeze();
         NODE_REGISTRY.freeze();
-        ADVENTURE_REGISTRY.freeze();
         FEATURE_REGISTRY.freeze();
     }
 

@@ -1,8 +1,9 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
+import com.necro.raid.dens.common.client.gui.screens.RaidAdventureOverlay;
 import com.necro.raid.dens.common.network.ClientPacket;
-import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,8 +34,6 @@ public record ChooseRaidBossPacket(UUID raidId, ResourceLocation option1, Resour
 
     @Override
     public void handleClient() {
-        if (RaidDenNetworkMessages.CHOOSE_RAID_BOSS_RESPONSE != null) {
-            RaidDenNetworkMessages.CHOOSE_RAID_BOSS_RESPONSE.accept(this.raidId, this.option1);
-        }
+        RaidDenGuiManager.PRIORITY_QUEUE.add(new RaidAdventureOverlay(this.raidId, this.option1, this.option2));
     }
 }

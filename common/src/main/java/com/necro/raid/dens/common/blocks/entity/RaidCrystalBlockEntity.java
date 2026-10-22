@@ -98,8 +98,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
 
         if (this.raidSession != null && RaidRegistry.exists(this.raidSession) && level.getGameTime() % 400 == 0) RaidRegistry.requestRaidBoss(this.raidSession);
-        if (this.canGenerateBoss(blockState) && (this.raidSession == null || !RaidRegistry.exists(this.raidSession))) {
-            if (this.isAdventure(blockState)) {}
+        if (this.canGenerateBoss(blockState) && (this.raidSession == null || !this.exists())) {
+            if (this.isAdventure(blockState)) this.generateRaidAdventure(level, blockPos, blockState);
             else this.generateRaidBoss(level, blockPos, blockState);
         }
 
@@ -122,6 +122,10 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         else if (this.lastReset.shouldReset(gameTime)) {
             this.generateRaidBoss(level, blockPos, blockState);
         }
+    }
+
+    private boolean exists() {
+        return RaidRegistry.exists(this.raidSession) || CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(this.raidSession);
     }
 
     private void clientTick(BlockState blockState) {
@@ -167,9 +171,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public void generateRaidAdventure(Level level, BlockPos blockPos, BlockState blockState) {
         if (this.isGenerating) return;
-        RaidAdventure adventure = CustomRaidRegistries.ADVENTURE_REGISTRY.getRandom(level.getRandom());
+        ResourceLocation location = CustomRaidRegistries.ADVENTURE_REGISTRY.getRandom(level.getRandom());
+        if (location == null) return;
+        RaidAdventure adventure = CustomRaidRegistries.ADVENTURE_REGISTRY.get(location);
         if (adventure == null) return;
 
+        RaidRegistry.addToCache(adventure.getId(), adventure.boss());
         this.generateRaid(adventure, level, blockPos, blockState);
     }
 

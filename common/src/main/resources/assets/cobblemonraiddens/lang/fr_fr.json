@@ -56,6 +56,7 @@
 
 
 
+
     "feature.cobblemonraiddens.default": "Normal",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -135,6 +136,7 @@
     "message.cobblemonraiddens.reward.reward_item": "Vous avez reçu la récompense !",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Vous devez tenir une Poké Ball pour récupérer le Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Vous avez reçu le Pokémon !",
+
     "screen.cobblemonraiddens.raid.title": "Raid en cours",
     "screen.cobblemonraiddens.raid.title.1": "Raid",
     "screen.cobblemonraiddens.raid.title.2": "en cours",

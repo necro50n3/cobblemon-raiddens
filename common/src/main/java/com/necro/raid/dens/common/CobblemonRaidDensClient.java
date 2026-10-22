@@ -19,6 +19,7 @@ public class CobblemonRaidDensClient {
         if (ModCompat.VOCALIZED.isLoaded()) RaidDensVocalizedCompat.init();
 
         PlatformEvents.CLIENT_PLAYER_LOGOUT.subscribe(Priority.NORMAL, event -> {
+            RaidDenGuiManager.PRIORITY_QUEUE.clear();
             RaidDenGuiManager.OVERLAY_QUEUE.clear();
             RaidDenGuiManager.RAID_OVERLAY = null;
         });

@@ -540,6 +540,9 @@ public class RaidInstance extends AbstractRaidSession {
         return this;
     }
 
+    @Override
+    public void start(MinecraftServer server) {}
+
     public List<PokemonBattle> getBattles() {
         return this.battles;
     }

@@ -2,6 +2,7 @@ package com.necro.raid.dens.common.registry;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.adventure.RaidAdventure;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
@@ -106,8 +107,18 @@ public class RaidRegistry {
         return current.getAll();
     }
 
+    public static void addToCache(ResourceLocation id, RaidBoss boss) {
+        RegistryCache<ResourceLocation, RaidBoss> current = CACHE;
+        if (current == null) return;
+        current.putIfCurrent(id, boss, current.currentEpoch());
+    }
+
     public static CompletableFuture<Optional<? extends RaidSession>> requestRaidSession(ResourceLocation location) {
-        if (CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(location)) return CompletableFuture.completedFuture(Optional.of(CustomRaidRegistries.ADVENTURE_REGISTRY.get(location)));
+        if (CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(location)) {
+            RaidAdventure adventure = CustomRaidRegistries.ADVENTURE_REGISTRY.get(location);
+            addToCache(adventure.getId(), adventure.boss());
+            return CompletableFuture.completedFuture(Optional.of(adventure));
+        }
         return requestRaidBoss(location).thenApply(opt -> opt);
     }
 

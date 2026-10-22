@@ -110,6 +110,7 @@ public class RaidBoss implements RaidSession {
     private transient Set<String> displayAspects;
 
     private transient ResourceLocation id;
+    private transient boolean isAdventure;
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     String raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
@@ -257,6 +258,7 @@ public class RaidBoss implements RaidSession {
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
+        this.isAdventure = false;
     }
 
     public void applyAspects() {
@@ -760,8 +762,14 @@ public class RaidBoss implements RaidSession {
         this.displayAspects = null;
     }
 
+    @Override
     public boolean isAdventure() {
-        return false;
+        return this.isAdventure;
+    }
+
+    @Override
+    public void setIsAdventure(boolean isAdventure) {
+        this.isAdventure = isAdventure;
     }
 
     public RaidBoss copy() {

@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.registry.custom;
 
 import java.util.Locale;
 
-public class StringRegistry<T> extends CustomRegistry<String, T> {
+public class StringRegistry<T> extends FrozenRegistry<String, T> {
     public StringRegistry(String defaultKey) {
         super(defaultKey);
     }

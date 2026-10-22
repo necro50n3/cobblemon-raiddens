@@ -52,4 +52,6 @@ public interface RaidSession {
     ResourceLocation getRandomDen(RandomSource random);
 
     boolean isAdventure();
+
+    void setIsAdventure(boolean isAdventure);
 }

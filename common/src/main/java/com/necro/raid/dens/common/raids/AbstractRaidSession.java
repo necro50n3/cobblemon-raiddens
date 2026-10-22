@@ -125,6 +125,8 @@ public abstract class AbstractRaidSession {
 
     public abstract @Nullable RaidInstance getActive();
 
+    public abstract void start(MinecraftServer server);
+
     public void closeRaid(MinecraftServer server) {
         this.closeRaid(server, false);
     }

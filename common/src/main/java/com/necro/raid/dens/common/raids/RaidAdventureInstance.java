@@ -5,10 +5,11 @@ import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.adventure.RaidNode;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,27 +21,63 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     private int currentNodeIndex;
     private @Nullable RaidInstance activeRaid;
     private RaidState raidState;
-    private final BlockPos startPos;
+    private final Vec3 startPos;
+    private final ServerLevel startDimension;
     private boolean started;
     private boolean finished;
+    private boolean noAI;
+    private boolean isInvulnerable;
+    private boolean isPersistent;
 
-    private RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, boolean isInDen, @Nullable BlockPos startPos) {
+    private RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
         super(host, raid, isInDen);
         this.adventure = adventure;
         this.currentNodeIndex = -1;
         this.activeRaid = null;
         this.raidState = RaidState.NOT_STARTED;
         this.startPos = startPos;
+        this.startDimension = startDimension;
         this.started = false;
         this.finished = false;
+        this.noAI = true;
+        this.isInvulnerable = true;
+        this.isPersistent = false;
     }
 
     public RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure) {
-        this(host, raid, adventure, true, null);
+        this(host, raid, adventure, true, null, null);
     }
 
-    public RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, @NotNull BlockPos startPos) {
-        this(host, raid, adventure, false, startPos);
+    public RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, @NotNull Vec3 startPos, @NotNull ServerLevel startDimension) {
+        this(host, raid, adventure, false, startPos, startDimension);
+    }
+
+    public void setFlags(boolean noAI, boolean isInvulnerable, boolean isPersistent) {
+        this.noAI = noAI;
+        this.isInvulnerable = isInvulnerable;
+        this.isPersistent = isPersistent;
+    }
+
+    public boolean noAI() {
+        return this.noAI;
+    }
+
+    public boolean isInvulnerable() {
+        return this.isInvulnerable;
+    }
+
+    public boolean isPersistent() {
+        return this.isPersistent;
+    }
+
+    @Override
+    public void addPlayer(ServerPlayer player) {
+        super.addPlayer(player);
+        if (this.getCurrentNode() != null) this.getCurrentNode().onPlayerJoin(player, this);
+    }
+
+    public RaidAdventure adventure() {
+        return this.adventure;
     }
 
     public List<AdventureNode> getNodes() {
@@ -51,8 +88,12 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         return this.currentNodeIndex;
     }
 
-    public BlockPos startPos() {
+    public Vec3 startPos() {
         return this.startPos;
+    }
+
+    public ServerLevel startDimension() {
+        return this.startDimension;
     }
 
     public @Nullable AdventureNode getCurrentNode() {
@@ -94,16 +135,18 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         return null;
     }
 
+    @Override
     public void start(MinecraftServer server) {
         if (this.started || this.isFinished()) return;
         this.started = true;
         this.raidState = RaidState.IN_PROGRESS;
-        this.advanceToNextNode(server);
+        this.schedule(() -> this.advanceToNextNode(server), 60, false);
     }
 
     public void advanceToNextNode(@Nullable MinecraftServer server) {
         if (server == null) server = this.getServer();
         if (server == null) return;
+        if (this.getCurrentNode() != null && !this.getCurrentNode().isCompleted()) return;
 
         while (true) {
             this.currentNodeIndex++;
