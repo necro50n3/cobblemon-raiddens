@@ -51,7 +51,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         if (blockPos == null) return false;
 
         boolean isAdventure = context.random().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate;
-        ResourceLocation location = isAdventure ? this.generateAdventure(context, level, blockState, blockPos) : this.generateBoss(context, level, blockState, blockPos);
+        ResourceLocation location = isAdventure ? this.generateAdventure(context, level, blockPos) : this.generateBoss(context, level, blockPos);
         if (location == null) return false;
 
         RaidRegistry.requestRaidSession(location, session -> {
@@ -59,25 +59,25 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
             RaidEvents.SET_RAID.emit(event);
             session = event.getRaid();
             if (session == null) {
-                this.handleError(level, blockPos, null);
+                this.handleError(level, blockPos);
                 return;
             }
 
+            Pair<RaidTier, RaidType> tierAndType = CustomRaidRegistries.ADVENTURE_REGISTRY.getTierAndType(location);
+            level.setBlock(blockPos, blockState
+                .setValue(RaidCrystalBlock.IS_ADVENTURE, isAdventure)
+                .setValue(RaidCrystalBlock.RAID_TYPE, tierAndType.getSecond())
+                .setValue(RaidCrystalBlock.RAID_TIER, tierAndType.getFirst()), 2);
+
             RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent(level.getLevel(), blockPos, session));
-        }, (id, error) -> handleError(level, blockPos, id), level.getServer());
+        }, (id, error) -> handleError(level, blockPos), level.getServer());
 
         return true;
     }
 
-    private @Nullable ResourceLocation generateAdventure(@NotNull FeaturePlaceContext<BlockStateConfiguration> context, WorldGenLevel level, BlockState blockState, BlockPos blockPos) {
+    private @Nullable ResourceLocation generateAdventure(@NotNull FeaturePlaceContext<BlockStateConfiguration> context, WorldGenLevel level, BlockPos blockPos) {
         ResourceLocation location = CustomRaidRegistries.ADVENTURE_REGISTRY.getRandom(context.random());
         if (location == null) return null;
-
-        Pair<RaidTier, RaidType> tierAndType = CustomRaidRegistries.ADVENTURE_REGISTRY.getTierAndType(location);
-        level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.IS_ADVENTURE, true)
-            .setValue(RaidCrystalBlock.RAID_TYPE, tierAndType.getSecond())
-            .setValue(RaidCrystalBlock.RAID_TIER, tierAndType.getFirst()), 2);
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return null;
@@ -86,7 +86,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         return location;
     }
 
-    private @Nullable ResourceLocation generateBoss(@NotNull FeaturePlaceContext<BlockStateConfiguration> context, WorldGenLevel level, BlockState blockState, BlockPos blockPos) {
+    private @Nullable ResourceLocation generateBoss(@NotNull FeaturePlaceContext<BlockStateConfiguration> context, WorldGenLevel level, BlockPos blockPos) {
         RaidCycleMode cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
         ResourceLocation bucket = null;
         ResourceLocation location = null;
@@ -99,12 +99,6 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         if (!RaidRegistry.exists(location)) location = RaidRegistry.getRandomRaidBoss(context.random(), level.getLevel());
         if (!RaidRegistry.exists(location)) return null;
 
-        Pair<RaidTier, RaidType> tierAndType = RaidRegistry.getTierAndType(location);
-        level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.IS_ADVENTURE, false)
-            .setValue(RaidCrystalBlock.RAID_TYPE, tierAndType.getSecond())
-            .setValue(RaidCrystalBlock.RAID_TIER, tierAndType.getFirst()), 2);
-
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return null;
         raidCrystal.setRaidSession(location, level.getLevel().getGameTime());
@@ -113,10 +107,9 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         return location;
     }
 
-    private void handleError(WorldGenLevel level, BlockPos blockPos, ResourceLocation boss) {
+    private void handleError(WorldGenLevel level, BlockPos blockPos) {
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity crystal)) return;
-        if (boss == null || !boss.equals(crystal.getRaidBossLocation())) return;
         level.setBlock(blockPos, crystal.getBlockState().setValue(RaidCrystalBlock.ACTIVE, false), 2);
     }
 
