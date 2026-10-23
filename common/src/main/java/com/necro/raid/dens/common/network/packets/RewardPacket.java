@@ -31,6 +31,6 @@ public record RewardPacket(float catchRate, String pokemon) implements CustomPac
 
     @Override
     public void handleClient() {
-        RaidDenGuiManager.OVERLAY_QUEUE.add(new RaidRewardOverlay(this.catchRate, this.pokemon));
+        RaidDenGuiManager.PRIORITY_QUEUE.add(new RaidRewardOverlay(this.catchRate, this.pokemon));
     }
 }
