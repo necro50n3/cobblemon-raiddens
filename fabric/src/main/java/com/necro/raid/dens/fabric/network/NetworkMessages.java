@@ -27,6 +27,7 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(ChooseRaidBossPacket.PACKET_TYPE, ChooseRaidBossPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RemoveBossSelectorPacket.PACKET_TYPE, RemoveBossSelectorPacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
@@ -56,6 +57,7 @@ public class NetworkMessages {
         ClientPlayNetworking.registerGlobalReceiver(RaidHealthBarPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidHealthUpdatePacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(ChooseRaidBossPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RemoveBossSelectorPacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void init() {
@@ -83,6 +85,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
         RaidDenNetworkMessages.CHOOSE_RAID_BOSS = (player, raidId, option1, option2) ->
             NetworkMessages.sendPacketToPlayer(player, new ChooseRaidBossPacket(raidId, option1, option2));
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR = (player, raidId) ->
+            NetworkMessages.sendPacketToPlayer(player, new RemoveBossSelectorPacket(raidId));
 
         RaidDenNetworkMessages.RAID_CHALLENGE = (pokemonEntity, pokemon) ->
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));

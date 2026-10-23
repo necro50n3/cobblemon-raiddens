@@ -30,6 +30,7 @@ public class RaidDenNetworkMessages {
     public static TriConsumer<ServerPlayer, List<Integer>, Boolean> RAID_HEALTH_BAR;
     public static TriConsumer<ServerPlayer, List<Integer>, List<Float>> RAID_HEALTH_UPDATE;
     public static QuadConsumer<ServerPlayer, UUID, ResourceLocation, ResourceLocation> CHOOSE_RAID_BOSS;
+    public static BiConsumer<ServerPlayer, UUID> REMOVE_BOSS_SELECTOR;
 
     // C2S Packets
     public static BiConsumer<PokemonEntity, Pokemon> RAID_CHALLENGE;

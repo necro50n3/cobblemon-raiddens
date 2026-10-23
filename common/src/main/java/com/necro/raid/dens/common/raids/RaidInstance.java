@@ -9,7 +9,6 @@ import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
 import com.cobblemon.mod.common.battles.BagItemActionResponse;
-import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.PassActionResponse;
 import com.cobblemon.mod.common.battles.ShowdownActionResponse;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
@@ -225,17 +224,6 @@ public class RaidInstance extends AbstractRaidSession {
             else if (this.activePlayers.stream().allMatch(p -> p.level() != this.bossEntity.level())) this.stopRaid(false);
             if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle);
         }
-    }
-
-    public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
-        List<ServerPlayer> players = battle.getPlayers();
-        if (players.isEmpty()) return;
-        this.removePlayer(players.getFirst(), battle, ignoreLives);
-    }
-
-    public void removePlayer(ServerPlayer player) {
-        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
-        this.removePlayer(player, battle, true);
     }
 
     @Override

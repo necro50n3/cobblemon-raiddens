@@ -34,6 +34,7 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(ChooseRaidBossPacket.PACKET_TYPE, ChooseRaidBossPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RemoveBossSelectorPacket.PACKET_TYPE, RemoveBossSelectorPacket.CODEC, NetworkMessages::handle);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
@@ -68,6 +69,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
         RaidDenNetworkMessages.CHOOSE_RAID_BOSS = (player, raidId, option1, option2) ->
             NetworkMessages.sendPacketToPlayer(player, new ChooseRaidBossPacket(raidId, option1, option2));
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR = (player, raidId) ->
+            NetworkMessages.sendPacketToPlayer(player, new RemoveBossSelectorPacket(raidId));
 
         RaidDenNetworkMessages.RAID_CHALLENGE = (pokemonEntity, pokemon) ->
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));

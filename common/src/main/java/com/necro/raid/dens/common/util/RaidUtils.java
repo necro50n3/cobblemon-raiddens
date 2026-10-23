@@ -118,8 +118,7 @@ public class RaidUtils {
             return;
         }
         else if (instance.getRaidState() != RaidState.NOT_STARTED && BattleRegistry.getBattleByParticipatingPlayer((ServerPlayer) player) != null) {
-            RaidInstance activeRaid = instance.getActive();
-            if (activeRaid != null) activeRaid.removePlayer((ServerPlayer) player);
+            instance.removePlayer((ServerPlayer) player);
             return;
         }
 
@@ -130,9 +129,7 @@ public class RaidUtils {
         if (items > 0 && isRaidDimension(player.level())) return;
 
         RaidInstance activeRaid = instance.getActive();
-        if (activeRaid != null) {
-            activeRaid.removePlayer((ServerPlayer) player);
-        }
+        instance.removePlayer((ServerPlayer) player);
         instance.closeRaid(player.getServer());
 
         if (activeRaid != null) {

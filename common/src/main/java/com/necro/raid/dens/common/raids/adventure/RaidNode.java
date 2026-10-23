@@ -112,24 +112,32 @@ public class RaidNode implements AdventureNode {
             CompletableFuture<Optional<RaidBoss>> option1 = RaidRegistry.requestRaidBoss(this.option1);
             CompletableFuture<Optional<RaidBoss>> option2 = RaidRegistry.requestRaidBoss(this.option2);
 
-            ServerPlayer selectingPlayer = adventure.getSelectingPlayer(server);
-            if (selectingPlayer == null) {
-                adventure.schedule(() -> this.startRaid(this.option1, adventure, server), this.delay(), false);
-                return;
-            }
-
-            this.choosingPlayerUuid = selectingPlayer.getUUID();
             this.waitingForChoice = true;
             this.choiceMade = false;
 
-            option1.thenAcceptBoth(option2, (boss1, boss2) ->
-                adventure.schedule(() -> RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2), this.delay(), false)
-            );
+            option1.thenAcceptBoth(option2, (boss1, boss2) -> adventure.schedule(() -> {
+                ServerPlayer selectingPlayer = adventure.getSelectingPlayer(server);
+                if (selectingPlayer == null) {
+                    this.waitingForChoice = false;
+                    this.choiceMade = true;
+                    adventure.schedule(() -> this.startRaid(this.option1, adventure, server), this.delay(), false);
+                    return;
+                }
+
+                this.choosingPlayerUuid = selectingPlayer.getUUID();
+                RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2);
+            }, this.delay(), false));
 
             adventure.schedule(() -> {
                 if (this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, server);
             }, 340, false);
         }
+    }
+
+    @Override
+    public void onPlayerLeave(ServerPlayer player, RaidAdventureInstance adventure) {
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR.accept(player, adventure.getRaid());
+        if (player.getUUID().equals(this.choosingPlayerUuid) && this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, player.getServer());
     }
 
     public void onBossSelected(ServerPlayer player, ResourceLocation selectedBoss, RaidAdventureInstance adventure, MinecraftServer server) {
@@ -140,6 +148,8 @@ public class RaidNode implements AdventureNode {
     }
 
     public void selectBoss(ResourceLocation selected, RaidAdventureInstance adventure, MinecraftServer server) {
+        ServerPlayer selectingPlayer = this.choosingPlayerUuid != null ? server.getPlayerList().getPlayer(this.choosingPlayerUuid) : null;
+        if (selectingPlayer != null) RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR.accept(selectingPlayer, adventure.getRaid());
         this.choiceMade = true;
         this.waitingForChoice = false;
         this.startRaid(selected, adventure, server);

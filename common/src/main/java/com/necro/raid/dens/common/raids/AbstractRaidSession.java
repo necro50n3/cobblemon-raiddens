@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -54,6 +55,17 @@ public abstract class AbstractRaidSession {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {}
+
+    public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
+        List<ServerPlayer> players = battle.getPlayers();
+        if (players.isEmpty()) return;
+        this.removePlayer(players.getFirst(), battle, ignoreLives);
+    }
+
+    public void removePlayer(ServerPlayer player) {
+        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+        this.removePlayer(player, battle, true);
+    }
 
     public boolean isPlayerIn(ServerPlayer player) {
         return this.activePlayers.contains(player);

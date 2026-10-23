@@ -89,6 +89,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         super.removePlayer(player, battle, ignoreLives);
         if (this.activeRaid != null) this.activeRaid.removePlayer(player, battle, ignoreLives);
+        if (this.getCurrentNode() != null) this.getCurrentNode().onPlayerLeave(player, this);
     }
 
     public RaidAdventure adventure() {

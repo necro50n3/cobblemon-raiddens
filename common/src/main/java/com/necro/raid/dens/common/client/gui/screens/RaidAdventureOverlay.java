@@ -48,10 +48,10 @@ public class RaidAdventureOverlay extends AbstractOverlay {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().scale(0.85f, 0.85f, 1.0f);
-        guiGraphics.drawCenteredString(font, Component.translatable("screen.cobblemonraiddens.adventure.title").withStyle(ChatFormatting.GOLD), (int) (WIDTH / 1.7), 12, 16777215);
+        guiGraphics.drawCenteredString(font, Component.translatable("screen.cobblemonraiddens.adventure.title").withStyle(ChatFormatting.GOLD), (int) (WIDTH / 1.7), 10, 16777215);
         guiGraphics.pose().popPose();
 
-        this.renderDescription(guiGraphics, x, y);
+        this.renderDescription(guiGraphics);
 
         if (!RaidDenKeybinds.MOUSE_KEYDOWN.isUnbound()) {
             guiGraphics.pose().pushPose();
@@ -70,25 +70,25 @@ public class RaidAdventureOverlay extends AbstractOverlay {
         RaidScreenComponents.RIGHT_ADVENTURE_BUTTON.renderStatic(guiGraphics);
     }
 
-    private void renderDescription(GuiGraphics guiGraphics, int x, int y) {
+    private void renderDescription(GuiGraphics guiGraphics) {
         RaidBoss option1 = ClientRaidRegistry.getRaidBoss(this.option1);
         RaidBoss option2 = ClientRaidRegistry.getRaidBoss(this.option2);
         if (option1 == null || option2 == null) return;
 
-        int boxWidth = WIDTH - 8;
-        int boxHeight = 32;
+        int size = 18;
 
-        int textureSize = 18;
-        int iconY = y + (boxHeight - textureSize) / 2;
-        int leftX = x + 4;
-        int rightX = x + boxWidth - textureSize - 4;
+        int iconY = 36 - size;
+        int leftX = 18;
+        int rightX = WIDTH - size - leftX;
 
         guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(leftX, iconY, 0);
         if (option1.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, option1.getType());
         else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, option1.getType());
         guiGraphics.pose().popPose();
 
         guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(rightX, iconY, 0);
         if (option2.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, option2.getType());
         else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, option2.getType());
         guiGraphics.pose().popPose();
