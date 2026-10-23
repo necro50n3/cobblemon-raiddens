@@ -224,31 +224,36 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        BlockState blockState = this.defaultBlockState();
-        if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = blockState.setValue(IS_NATURAL, false);
+        BlockState blockState;
+        if (context.getPlayer() != null && !context.getPlayer().hasInfiniteMaterials()) blockState = this.defaultBlockState().setValue(IS_NATURAL, false);
+        else blockState = this.defaultBlockState();
 
         ItemStack itemStack = context.getItemInHand();
         Level level = context.getLevel();
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
         if (data == null) {
+            BlockState newBlockState = blockState;
             RaidCycleMode cycleMode = blockState.getValue(CYCLE_MODE);
             // ensure raid tier is random if it can't be cycled.
-            if (!cycleMode.canCycleTier()) blockState = blockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
+            if (!cycleMode.canCycleTier()) newBlockState = newBlockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
             // ensure raid type is random if it can't be cycled.
-            if (!cycleMode.canCycleType()) blockState = blockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
-            blockState = blockState.setValue(IS_ADVENTURE, level.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate);
-            return blockState;
+            if (!cycleMode.canCycleType()) newBlockState = newBlockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
+            newBlockState = newBlockState.setValue(IS_ADVENTURE, level.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate);
+            return newBlockState;
         }
-        CompoundTag tag = data.copyTag();
 
-        RaidRegistry.requestRaidSession(ResourceLocation.parse(tag.getString("raid_boss")), session -> {
-            if (!(level.getBlockEntity(context.getClickedPos()) instanceof RaidCrystalBlockEntity)) return;
-            BlockState delayedBlockState = level.getBlockState(context.getClickedPos());
-            delayedBlockState = delayedBlockState.setValue(RAID_TYPE, session.instance().getType()).setValue(RAID_TIER, session.instance().getTier());
-            int clears = tag.getInt("raid_cleared");
-            if (clears >= session.instance().getMaxClears()) delayedBlockState = delayedBlockState.setValue(ACTIVE, false);
-            level.setBlock(context.getClickedPos(), delayedBlockState, Block.UPDATE_ALL);
-        }, level.getServer());
+        if (!level.isClientSide() && level.getServer() != null) {
+            CompoundTag tag = data.copyTag();
+            RaidRegistry.requestRaidSession(ResourceLocation.parse(tag.getString("raid_boss")), session -> {
+                if (!(level.getBlockEntity(context.getClickedPos()) instanceof RaidCrystalBlockEntity)) return;
+                int clears = tag.getInt("raid_cleared");
+                BlockState delayedBlockState = level.getBlockState(context.getClickedPos())
+                    .setValue(RAID_TYPE, session.instance().getType())
+                    .setValue(RAID_TIER, session.instance().getTier())
+                    .setValue(ACTIVE, session.instance().getMaxClears() < 0 || clears < session.instance().getMaxClears());
+                level.setBlock(context.getClickedPos(), delayedBlockState, Block.UPDATE_ALL);
+            }, level.getServer());
+        }
 
         return blockState;
     }
