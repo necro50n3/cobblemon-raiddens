@@ -34,34 +34,34 @@ public record RaidBossSyncPacket(Collection<RaidBoss> registry) implements Custo
     }
 
     private static void writeEntry(FriendlyByteBuf buf, RaidBoss boss) {
-        if (boss.getDisplaySpeciesIdentifier() == null) boss.createDisplayAspects();
+        if (boss.instance().getDisplaySpeciesIdentifier() == null) boss.instance().createDisplayAspects();
 
-        buf.writeResourceLocation(boss.getId());
-        buf.writeEnum(boss.getTier());
-        buf.writeEnum(boss.getType());
-        buf.writeUtf(boss.getFeature());
-        buf.writeFloat(boss.getShinyRate());
-        buf.writeInt(boss.getMaxCatches());
-        buf.writeFloat(boss.getCatchRate());
+        buf.writeResourceLocation(boss.instance().getId());
+        buf.writeEnum(boss.instance().getTier());
+        buf.writeEnum(boss.instance().getType());
+        buf.writeUtf(boss.instance().getFeature());
+        buf.writeFloat(boss.instance().getShinyRate());
+        buf.writeInt(boss.instance().getMaxCatches());
+        buf.writeFloat(boss.instance().getCatchRate());
         buf.writeBoolean(boss.isAdventure());
 
-        buf.writeResourceLocation(boss.getDisplaySpeciesIdentifier());
-        buf.writeCollection(boss.getDisplayAspects(), FriendlyByteBuf::writeUtf);
+        buf.writeResourceLocation(boss.instance().getDisplaySpeciesIdentifier());
+        buf.writeCollection(boss.instance().getDisplayAspects(), FriendlyByteBuf::writeUtf);
     }
 
     private static RaidBoss readEntry(FriendlyByteBuf buf) {
         RaidBoss boss = new RaidBoss();
-        boss.setId(buf.readResourceLocation());
-        boss.setTier(buf.readEnum(RaidTier.class));
-        boss.setType(buf.readEnum(RaidType.class));
-        boss.setFeature(buf.readUtf());
-        boss.setShinyRate(buf.readFloat());
-        boss.setMaxCatches(buf.readInt());
-        boss.setCatchRate(buf.readFloat());
+        boss.instance().setId(buf.readResourceLocation());
+        boss.instance().setTier(buf.readEnum(RaidTier.class));
+        boss.instance().setType(buf.readEnum(RaidType.class));
+        boss.instance().setFeature(buf.readUtf());
+        boss.instance().setShinyRate(buf.readFloat());
+        boss.instance().setMaxCatches(buf.readInt());
+        boss.instance().setCatchRate(buf.readFloat());
         boss.setIsAdventure(buf.readBoolean());
 
-        boss.setDisplaySpecies(buf.readResourceLocation());
-        boss.setDisplayAspects(buf.readCollection(HashSet::new, FriendlyByteBuf::readUtf));
+        boss.instance().setDisplaySpecies(buf.readResourceLocation());
+        boss.instance().setDisplayAspects(buf.readCollection(HashSet::new, FriendlyByteBuf::readUtf));
 
         return boss;
     }

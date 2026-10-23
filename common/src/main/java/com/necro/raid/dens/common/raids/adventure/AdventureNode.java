@@ -6,6 +6,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 public interface AdventureNode extends JsonSerializer<AdventureNode> {
+    default int delay() {
+        return 0;
+    }
+
     void run(RaidAdventureInstance adventure, MinecraftServer server);
 
     boolean isCompleted();

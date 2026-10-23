@@ -97,7 +97,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         boolean isIdle = this.isIdle();
         if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
 
-        if (this.raidSession != null && RaidRegistry.exists(this.raidSession) && level.getGameTime() % 400 == 0) RaidRegistry.requestRaidBoss(this.raidSession);
+        if (this.raidSession != null && this.exists() && level.getGameTime() % 400 == 0) RaidRegistry.requestRaidSession(this.raidSession);
         if (this.canGenerateBoss(blockState) && (this.raidSession == null || !this.exists())) {
             if (this.isAdventure(blockState)) this.generateRaidAdventure(level, blockPos, blockState);
             else this.generateRaidBoss(level, blockPos, blockState);
@@ -176,7 +176,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         RaidAdventure adventure = CustomRaidRegistries.ADVENTURE_REGISTRY.get(location);
         if (adventure == null) return;
 
-        RaidRegistry.addToCache(adventure.getId(), adventure.boss());
+        RaidRegistry.addToCache(adventure.instance().getId(), adventure.boss());
         this.generateRaid(adventure, level, blockPos, blockState);
     }
 
@@ -212,11 +212,11 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             return;
         }
 
-        this.setRaidSession(session.getId(), level.getGameTime());
+        this.setRaidSession(session.instance().getId(), level.getGameTime());
 
         level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.RAID_TIER, session.getTier())
-            .setValue(RaidCrystalBlock.RAID_TYPE, session.getType())
+            .setValue(RaidCrystalBlock.RAID_TIER, session.instance().getTier())
+            .setValue(RaidCrystalBlock.RAID_TYPE, session.instance().getType())
             .setValue(RaidCrystalBlock.ACTIVE, true), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, session));
@@ -444,14 +444,14 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public boolean isAtMaxClears() {
         RaidSession session = this.getRaidSession();
         if (session == null) return true;
-        int maxClears = session.getMaxClears();
+        int maxClears = session.instance().getMaxClears();
         return maxClears != -1 && this.clears >= maxClears;
     }
 
     public boolean isFull() {
         RaidSession session = this.getRaidSession();
         if (session == null) return true;
-        int maxPlayers = session.getMaxPlayers();
+        int maxPlayers = session.instance().getMaxPlayers();
         return maxPlayers != -1 && this.getPlayerCount() >= maxPlayers;
     }
 

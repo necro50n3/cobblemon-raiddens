@@ -55,20 +55,9 @@ public class RaidNode implements AdventureNode {
         this.isFinished = false;
     }
 
-    public List<String> getReferences() {
-        return this.references;
-    }
-
-    public boolean isWaitingForChoice() {
-        return this.waitingForChoice;
-    }
-
-    public @Nullable ResourceLocation getOption1() {
-        return this.option1;
-    }
-
-    public @Nullable ResourceLocation getOption2() {
-        return this.option2;
+    @Override
+    public int delay() {
+        return 40;
     }
 
     public List<ResourceLocation> resolveBosses() {
@@ -105,7 +94,7 @@ public class RaidNode implements AdventureNode {
             return;
         }
 
-        if (resolved.size() == 1) this.startRaid(resolved.getFirst(), adventure, server);
+        if (resolved.size() == 1) adventure.schedule(() -> this.startRaid(resolved.getFirst(), adventure, server), this.delay(), false);
         else {
             DoubleWeightedRandomMap<ResourceLocation> map = new DoubleWeightedRandomMap<>(false);
             for (ResourceLocation id : resolved) {
@@ -125,7 +114,7 @@ public class RaidNode implements AdventureNode {
 
             ServerPlayer selectingPlayer = adventure.getSelectingPlayer(server);
             if (selectingPlayer == null) {
-                this.startRaid(this.option1, adventure, server);
+                adventure.schedule(() -> this.startRaid(this.option1, adventure, server), this.delay(), false);
                 return;
             }
 
@@ -134,12 +123,12 @@ public class RaidNode implements AdventureNode {
             this.choiceMade = false;
 
             option1.thenAcceptBoth(option2, (boss1, boss2) ->
-                RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2)
+                adventure.schedule(() -> RaidDenNetworkMessages.CHOOSE_RAID_BOSS.accept(selectingPlayer, adventure.getRaid(), this.option1, this.option2), this.delay(), false)
             );
 
             adventure.schedule(() -> {
                 if (this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, server);
-            }, 300, false);
+            }, 340, false);
         }
     }
 
@@ -180,6 +169,7 @@ public class RaidNode implements AdventureNode {
             ((IRaidAccessor) pokemonEntity).crd_setRaidId(adventure.getRaid());
 
             this.activeRaid = new RaidInstance(pokemonEntity, adventure.getHost(), adventure.isInDen());
+            this.activeRaid.setAdventure(true);
             adventure.setActiveRaid(this.activeRaid);
 
             if (this.activeRaid.failedToStart()) {

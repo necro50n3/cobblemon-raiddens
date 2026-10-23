@@ -47,6 +47,10 @@ public class RaidRegistry {
     private static RaidType[] TYPE_BY_INDEX = new RaidType[0];
 
     public static void register(RaidBoss raidBoss) {
+        if (raidBoss.getId().getPath().toLowerCase(Locale.ROOT).endsWith("_adventure")) {
+            throw new IllegalArgumentException("Raid boss " + raidBoss.getId() + " cannot be registered with reserved suffix \"_adventure\"");
+        }
+
         if (LOADING.put(raidBoss.getId(), raidBoss) == null) {
             int index = RAID_LIST.size();
             RAID_LIST.add(raidBoss.getId());
@@ -116,7 +120,7 @@ public class RaidRegistry {
     public static CompletableFuture<Optional<? extends RaidSession>> requestRaidSession(ResourceLocation location) {
         if (CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(location)) {
             RaidAdventure adventure = CustomRaidRegistries.ADVENTURE_REGISTRY.get(location);
-            addToCache(adventure.getId(), adventure.boss());
+            addToCache(adventure.instance().getId(), adventure.boss());
             return CompletableFuture.completedFuture(Optional.of(adventure));
         }
         return requestRaidBoss(location).thenApply(opt -> opt);

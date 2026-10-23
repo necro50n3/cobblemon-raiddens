@@ -17,7 +17,7 @@ public class AdventureRegistry extends CustomRegistry<ResourceLocation, RaidAdve
     @Override
     public void register(ResourceLocation id, RaidAdventure entry) {
         super.register(id, entry);
-        this.weightedMap.add(id, entry.getWeight());
+        this.weightedMap.add(id, entry.instance().getWeight());
     }
 
     public @Nullable ResourceLocation getRandom(RandomSource random) {

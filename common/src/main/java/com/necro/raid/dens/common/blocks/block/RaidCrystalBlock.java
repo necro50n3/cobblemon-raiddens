@@ -96,7 +96,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         else if (RaidRegionHelper.getRegion(raidCrystal.getUuid()) != null && raidCrystal.isPlayerParticipating(player)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         else if (raidCrystal.isOpen()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-        if (raidCrystal.getRaidSession().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (raidCrystal.getRaidSession().instance().getKey().isEmpty() && !CobblemonRaidDens.TIER_CONFIG.get(blockState.getValue(RAID_TIER)).requiresKey()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         else if (!this.handleKey(player, raidCrystal, itemStack)) return ItemInteractionResult.FAIL;
 
         boolean success = this.startOrJoinRaid(player, blockState, raidCrystal, itemStack);
@@ -160,7 +160,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         if (player.getServer() == null || blockEntity.getRaidSession() == null) return false;
 
         RandomSource random = player.level().getRandom();
-        ResourceLocation structure = blockEntity.getRaidSession().getRandomDen(random);
+        ResourceLocation structure = blockEntity.getRaidSession().instance().getRandomDen(random);
         RaidRegion region = RaidRegionHelper.createRegion(blockEntity.getUuid(), structure, random);
         if (region == null || !blockEntity.spawnRaid(player.getUUID(), region)) {
             this.failRaidStart((ServerPlayer) player, blockEntity);
@@ -195,16 +195,16 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     private boolean handleKey(Player player, RaidCrystalBlockEntity blockEntity, ItemStack itemStack) {
         RaidSession session = blockEntity.getRaidSession();
         if (session == null) return false;
-        UniqueKey key = session.getKey();
+        UniqueKey key = session.instance().getKey();
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {
                 player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1])), true);
                 return false;
             }
-            else if (!CobblemonRaidDens.TIER_CONFIG.get(session.getTier()).allRequireUniqueKey()) blockEntity.setOpen();
+            else if (!CobblemonRaidDens.TIER_CONFIG.get(session.instance().getTier()).allRequireUniqueKey()) blockEntity.setOpen();
         }
-        else if (CobblemonRaidDens.TIER_CONFIG.get(session.getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
+        else if (CobblemonRaidDens.TIER_CONFIG.get(session.instance().getTier()).requiresKey() && !RaidUtils.isRaidDenKey(itemStack)) {
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.no_key"), true);
             return false;
         }
@@ -240,12 +240,12 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         }
         CompoundTag tag = data.copyTag();
 
-        RaidRegistry.requestRaidBoss(ResourceLocation.parse(tag.getString("raid_boss")), boss -> {
+        RaidRegistry.requestRaidSession(ResourceLocation.parse(tag.getString("raid_boss")), session -> {
             if (!(level.getBlockEntity(context.getClickedPos()) instanceof RaidCrystalBlockEntity)) return;
             BlockState delayedBlockState = level.getBlockState(context.getClickedPos());
-            delayedBlockState = delayedBlockState.setValue(RAID_TYPE, boss.getType()).setValue(RAID_TIER, boss.getTier());
+            delayedBlockState = delayedBlockState.setValue(RAID_TYPE, session.instance().getType()).setValue(RAID_TIER, session.instance().getTier());
             int clears = tag.getInt("raid_cleared");
-            if (clears >= boss.getMaxClears()) delayedBlockState = delayedBlockState.setValue(ACTIVE, false);
+            if (clears >= session.instance().getMaxClears()) delayedBlockState = delayedBlockState.setValue(ACTIVE, false);
             level.setBlock(context.getClickedPos(), delayedBlockState, Block.UPDATE_ALL);
         }, level.getServer());
 

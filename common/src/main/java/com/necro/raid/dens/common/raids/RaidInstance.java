@@ -165,11 +165,6 @@ public class RaidInstance extends AbstractRaidSession {
         this(entity, host, true);
     }
 
-    public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
-        this.addPlayer(player);
-        this.addBattle(battle);
-    }
-
     @Override
     public void addPlayer(ServerPlayer player) {
         this.addToBossEvent(player);
@@ -184,6 +179,7 @@ public class RaidInstance extends AbstractRaidSession {
         super.addPlayer(player);
     }
 
+    @Override
     public void addBattle(PokemonBattle battle) {
         ((IRaidBattle) battle).crd_setRaidBattle(this);
         this.sendHealthPacket(battle);
@@ -216,6 +212,7 @@ public class RaidInstance extends AbstractRaidSession {
         this.sendEvent(new ShowdownEvents.PlayerJoinShowdownEvent(newPlayer), null);
     }
 
+    @Override
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         if (battle != null) {
             this.battles.remove(battle);
@@ -344,7 +341,7 @@ public class RaidInstance extends AbstractRaidSession {
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
 
-        this.closeRaid(this.bossEntity.getServer());
+        if (!this.isAdventure()) this.closeRaid(this.bossEntity.getServer());
     }
 
     private void handleSuccess() {
@@ -497,14 +494,6 @@ public class RaidInstance extends AbstractRaidSession {
         this.triggerAddQueue.clear();
     }
 
-    public ServerBossEvent getBossEvent() {
-        return this.bossEvent;
-    }
-
-    public ServerBossEvent getTimerEvent() {
-        return this.timerEvent;
-    }
-
     public void addToBossEvent(ServerPlayer player) {
         this.schedule(() -> {
             if (this.bossEvent != null) this.bossEvent.addPlayer(player);
@@ -640,14 +629,6 @@ public class RaidInstance extends AbstractRaidSession {
         this.time -= (int) (this.maxTime * ratio);
     }
 
-    public int getTime() {
-        return this.time;
-    }
-
-    public int getMaxTime() {
-        return this.maxTime;
-    }
-
     public void addCatchRate(ServerPlayer player, float mod) {
         RaidPlayer p = this.playerMap.get(player.getUUID());
         if (p != null) p.addCatchRate(mod);
@@ -688,11 +669,6 @@ public class RaidInstance extends AbstractRaidSession {
         public RaidPlayer(RaidBoss boss) {
             this.cheers = boss.getMaxCheers();
             this.catchRate = boss.getCatchRate();
-        }
-
-        public RaidPlayer(int cheers, float catchRate) {
-            this.cheers = cheers;
-            this.catchRate = catchRate;
         }
 
         public boolean useCheer() {

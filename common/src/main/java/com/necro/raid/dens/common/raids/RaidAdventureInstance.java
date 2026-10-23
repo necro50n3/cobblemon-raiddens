@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.necro.raid.dens.common.data.adventure.RaidAdventure;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
@@ -32,6 +33,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     private RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
         super(host, raid, isInDen);
         this.adventure = adventure;
+        this.isAdventure = true;
         this.currentNodeIndex = -1;
         this.activeRaid = null;
         this.raidState = RaidState.NOT_STARTED;
@@ -73,7 +75,20 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     @Override
     public void addPlayer(ServerPlayer player) {
         super.addPlayer(player);
+        if (this.activeRaid != null) this.activeRaid.addPlayer(player);
         if (this.getCurrentNode() != null) this.getCurrentNode().onPlayerJoin(player, this);
+    }
+
+    @Override
+    public void addBattle(PokemonBattle battle) {
+        super.addBattle(battle);
+        if (this.activeRaid != null) this.activeRaid.addBattle(battle);
+    }
+
+    @Override
+    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
+        super.removePlayer(player, battle, ignoreLives);
+        if (this.activeRaid != null) this.activeRaid.removePlayer(player, battle, ignoreLives);
     }
 
     public RaidAdventure adventure() {
@@ -140,7 +155,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         if (this.started || this.isFinished()) return;
         this.started = true;
         this.raidState = RaidState.IN_PROGRESS;
-        this.schedule(() -> this.advanceToNextNode(server), 60, false);
+        this.schedule(() -> this.advanceToNextNode(server), 20, false);
     }
 
     public void advanceToNextNode(@Nullable MinecraftServer server) {

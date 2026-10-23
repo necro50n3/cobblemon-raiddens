@@ -40,10 +40,10 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return currentIcon;
 
-        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
-        else if (raidBoss.getDisplaySpecies() == null) return currentIcon;
+        if (raidBoss.instance().getDisplaySpecies() == null && raidBoss.instance().getReward() != null) raidBoss.instance().createDisplayAspects();
+        else if (raidBoss.instance().getDisplaySpecies() == null) return currentIcon;
 
-        ItemStack stack = PokemonItem.from(raidBoss.getDisplaySpecies(), raidBoss.getDisplayAspects(), 1, null);
+        ItemStack stack = PokemonItem.from(raidBoss.instance().getDisplaySpecies(), raidBoss.instance().getDisplayAspects(), 1, null);
         return IElementHelper.get().item(stack, 1.5f);
     }
 
@@ -65,14 +65,14 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
 
         RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
         if (raidBoss == null) return;
-        if (raidBoss.getDisplaySpecies() == null && raidBoss.getReward() != null) raidBoss.createDisplayAspects();
-        if (raidBoss.getDisplaySpecies() == null) return;
+        if (raidBoss.instance().getDisplaySpecies() == null && raidBoss.instance().getReward() != null) raidBoss.instance().createDisplayAspects();
+        if (raidBoss.instance().getDisplaySpecies() == null) return;
 
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
 
-        MutableComponent component = raidBoss.getDisplaySpecies().getTranslatedName();
-        Component feature = Component.translatable(raidBoss.isAdventure() ? "feature.cobblemonraiddens.adventure" : RaidFeature.getTranslatable(raidBoss.getFeature()));
+        MutableComponent component = raidBoss.instance().getDisplaySpecies().getTranslatedName();
+        Component feature = Component.translatable(raidBoss.isAdventure() ? "feature.cobblemonraiddens.adventure" : RaidFeature.getTranslatable(raidBoss.instance().getFeature()));
         component.append(" | ").append(feature);
         component.append(" | ").append(tier.getStars());
         tooltip.add(component, this.getUid());
@@ -100,8 +100,8 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
             if (!component1.equals(Component.empty())) tooltip.add(component1);
         }
 
-        int catches = raidBoss.getMaxCatches();
-        float catchRate = raidBoss.getCatchRate();
+        int catches = raidBoss.instance().getMaxCatches();
+        float catchRate = raidBoss.instance().getCatchRate();
         if (catches == 0 || catchRate == 0F) tooltip.add(helper.text(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY)).scale(0.5f));
         else {
             MutableComponent component1 = Component.empty();

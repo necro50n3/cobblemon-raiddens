@@ -86,7 +86,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Override
     public void crd_setRaidSession(ResourceLocation raid) {
         this.crd_raidBoss = raid;
-        RaidRegistry.requestRaidBoss(this.crd_raidBoss);
+        RaidRegistry.requestRaidSession(this.crd_raidBoss);
     }
 
     @Override
@@ -139,7 +139,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
             ci.cancel();
         }
 
-        if (this.level() instanceof ServerLevel && this.crd_isRaidBoss() && this.level().getGameTime() % 400 == 0) RaidRegistry.requestRaidBoss(this.crd_raidBoss);
+        if (this.level() instanceof ServerLevel && this.crd_isRaidBoss() && this.level().getGameTime() % 400 == 0) RaidRegistry.requestRaidSession(this.crd_raidBoss);
     }
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)

@@ -28,12 +28,21 @@ public class BossNode implements AdventureNode {
     private transient @Nullable RaidInstance activeRaid;
 
     @Override
+    public int delay() {
+        return 40;
+    }
+
+    @Override
     public boolean isCompleted() {
         return this.activeRaid != null && this.activeRaid.isFinished();
     }
 
     @Override
     public void run(RaidAdventureInstance adventure, MinecraftServer server) {
+        adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
+    }
+
+    private void startRaid(RaidAdventureInstance adventure, MinecraftServer server) {
         RaidBoss boss = adventure.adventure().boss();
         Vec3 vec3;
         ServerLevel level;

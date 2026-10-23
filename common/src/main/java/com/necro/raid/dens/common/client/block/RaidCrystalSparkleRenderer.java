@@ -28,7 +28,7 @@ public class RaidCrystalSparkleRenderer {
         wrapper.updateMatrix(matrix.last().pose());
         wrapper.updatePosition(blockEntity.getBlockPos().getBottomCenter());
         RaidSession session = blockEntity.getRaidSession();
-        String feature = session == null ? "DEFAULT" : session.getFeature();
+        String feature = session == null ? "DEFAULT" : session.instance().getFeature();
         RaidType type = blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE);
 
         new ParticleStorm(

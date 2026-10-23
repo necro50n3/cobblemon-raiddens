@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.raids;
 
+import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -16,6 +17,7 @@ public abstract class AbstractRaidSession {
     protected final @Nullable UUID host;
     protected final UUID raid;
     protected final boolean isInDen;
+    protected boolean isAdventure;
 
     protected final List<ServerPlayer> activePlayers;
     protected final Set<UUID> failedPlayers;
@@ -29,6 +31,7 @@ public abstract class AbstractRaidSession {
         this.host = host;
         this.raid = raid;
         this.isInDen = isInDen;
+        this.isAdventure = false;
 
         this.activePlayers = new ArrayList<>();
         this.failedPlayers = new HashSet<>();
@@ -42,6 +45,15 @@ public abstract class AbstractRaidSession {
     public void addPlayer(ServerPlayer player) {
         this.activePlayers.add(player);
     }
+
+    public void addBattle(PokemonBattle battle) {}
+
+    public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
+        this.addPlayer(player);
+        this.addBattle(battle);
+    }
+
+    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {}
 
     public boolean isPlayerIn(ServerPlayer player) {
         return this.activePlayers.contains(player);
@@ -59,10 +71,6 @@ public abstract class AbstractRaidSession {
         return this.failedPlayers.contains(player.getUUID());
     }
 
-    public Set<UUID> getFailedPlayers() {
-        return this.failedPlayers;
-    }
-
     public boolean playersShareLives() {
         return false;
     }
@@ -74,21 +82,12 @@ public abstract class AbstractRaidSession {
         return lives <= 0;
     }
 
-    public int getLife(UUID player) {
-        if (this.playersShareLives()) return this.sharedLives;
-        return this.playerLives.getOrDefault(player, 0);
+    public boolean isAdventure() {
+        return this.isAdventure;
     }
 
-    public Map<UUID, Integer> getPlayerLives() {
-        return this.playerLives;
-    }
-
-    public int getSharedLives() {
-        return this.sharedLives;
-    }
-
-    public void setSharedLives(int sharedLives) {
-        this.sharedLives = sharedLives;
+    public void setAdventure(boolean adventure) {
+        this.isAdventure = adventure;
     }
 
     public void tick() {

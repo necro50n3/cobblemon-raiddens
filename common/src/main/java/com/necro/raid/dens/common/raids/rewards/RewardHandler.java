@@ -6,7 +6,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.advancements.RaidDenCriteriaTriggers;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
@@ -36,43 +36,43 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class RewardHandler {
-    private final ResourceLocation raidBossId;
+    private final ResourceLocation raidSessionId;
     private final CompoundTag serializedPokemonReward;
 
-    private RaidBoss raidBoss;
+    private RaidSession raidSession;
     private final UUID playerUUID;
     private @Nullable Pokemon pokemonReward;
     private final float catchRate;
 
-    public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
-        this.raidBossId = raidBoss.getId();
+    public RewardHandler(RaidSession raidSession, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
+        this.raidSessionId = raidSession.instance().getId();
         this.serializedPokemonReward = null;
-        this.raidBoss = raidBoss;
+        this.raidSession = raidSession;
         this.playerUUID = playerUUID;
         this.pokemonReward = pokemonReward;
         this.catchRate = catchRate;
     }
 
-    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable CompoundTag pokemonReward, float catchRate) {
-        this.raidBossId = raidBossId;
+    public RewardHandler(ResourceLocation raidSessionId, UUID playerUUID, @Nullable CompoundTag pokemonReward, float catchRate) {
+        this.raidSessionId = raidSessionId;
         this.serializedPokemonReward = pokemonReward;
-        this.raidBoss = null;
+        this.raidSession = null;
         this.playerUUID = playerUUID;
         this.pokemonReward = null;
         this.catchRate = catchRate;
     }
 
     public void sendRewardMessage(ServerPlayer player) {
-        this.raidBoss(boss -> {
-            if (boss.getDisplaySpecies() == null) boss.createDisplayAspects();
-            String speciesName = ((TranslatableContents) boss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
+        this.raidSession(session -> {
+            if (session.instance().getDisplaySpecies() == null) session.instance().createDisplayAspects();
+            String speciesName = ((TranslatableContents) session.instance().getDisplaySpecies().getTranslatedName().getContents()).getKey();
             RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.catchRate, speciesName);
             RaidHelper.REWARD_QUEUE.put(player.getUUID(), this);
         }, player.getServer());
     }
 
     public CompletableFuture<Boolean> givePokemonToPlayer(ServerPlayer player) {
-        return this.raidBoss(boss -> {
+        return this.raidSession(session -> {
             if (this.pokemonReward == null && this.serializedPokemonReward != null) {
                 this.pokemonReward = new Pokemon().loadFromNBT(player.registryAccess(), this.serializedPokemonReward);
             }
@@ -117,8 +117,8 @@ public class RewardHandler {
     }
 
     public CompletableFuture<Boolean> giveItemToPlayer(ServerPlayer player, boolean applyBonus) {
-        return this.raidBoss(boss -> {
-            ItemStack raidPouch = this.buildRaidPouch(boss, applyBonus);
+        return this.raidSession(session -> {
+            ItemStack raidPouch = this.buildRaidPouch(session, applyBonus);
             if (raidPouch == null) {
                 player.displayClientMessage(ComponentUtils.getErrorMessage("error.cobblemonraiddens.raid_boss_not_found"), true);
                 return true;
@@ -134,21 +134,21 @@ public class RewardHandler {
         }, player.getServer());
     }
 
-    private ItemStack buildRaidPouch(RaidBoss boss, boolean applyBonus) {
-        if (boss == null) return null;
+    private ItemStack buildRaidPouch(RaidSession session, boolean applyBonus) {
+        if (session == null) return null;
 
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
-        item.set(ModComponents.TIER_COMPONENT.value(), boss.getTier());
-        item.set(ModComponents.FEATURE_COMPONENT.value(), boss.getFeature());
-        item.set(ModComponents.TYPE_COMPONENT.value(), boss.getType());
-        if (boss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), boss.getId());
+        item.set(ModComponents.TIER_COMPONENT.value(), session.instance().getTier());
+        item.set(ModComponents.FEATURE_COMPONENT.value(), session.instance().getFeature());
+        item.set(ModComponents.TYPE_COMPONENT.value(), session.instance().getType());
+        if (session.instance().getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), session.instance().getId());
         item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
         return item;
     }
 
     public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.putString("raid_boss", this.raidBossId.toString());
+        tag.putString("raid_boss", this.raidSessionId.toString());
         tag.putUUID("player", this.playerUUID);
         if (this.serializedPokemonReward != null) {
             tag.put("pokemon_reward", this.serializedPokemonReward);
@@ -162,33 +162,33 @@ public class RewardHandler {
 
     @SuppressWarnings("unused")
     public static RewardHandler deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        ResourceLocation raidBossId = ResourceLocation.parse(tag.getString("raid_boss"));
+        ResourceLocation raidSessionId = ResourceLocation.parse(tag.getString("raid_boss"));
         UUID playerUUID = tag.getUUID("player");
         CompoundTag pokemonReward = null;
         if (tag.contains("pokemon_reward")) pokemonReward = tag.getCompound("cached_reward");
         float catchRate = tag.getFloat("catch_rate");
-        return new RewardHandler(raidBossId, playerUUID, pokemonReward, catchRate);
+        return new RewardHandler(raidSessionId, playerUUID, pokemonReward, catchRate);
     }
 
-    public <T> CompletableFuture<T> raidBoss(Function<RaidBoss, T> function, MinecraftServer server) {
-        if (this.raidBoss != null) return CompletableFuture.completedFuture(function.apply(this.raidBoss));
+    public <T> CompletableFuture<T> raidSession(Function<RaidSession, T> function, MinecraftServer server) {
+        if (this.raidSession != null) return CompletableFuture.completedFuture(function.apply(this.raidSession));
 
-        return RaidRegistry.requestRaidBoss(this.raidBossId).thenApplyAsync(boss -> {
-            if (boss.isEmpty()) return null;
-            this.raidBoss = boss.get();
-            return function.apply(boss.get());
+        return RaidRegistry.requestRaidSession(this.raidSessionId).thenApplyAsync(session -> {
+            if (session.isEmpty()) return null;
+            this.raidSession = session.get();
+            return function.apply(session.get());
         }, server);
     }
 
-    public void raidBoss(Consumer<RaidBoss> consumer, MinecraftServer server) {
-        if (this.raidBoss != null) {
-            consumer.accept(this.raidBoss);
+    public void raidSession(Consumer<RaidSession> consumer, MinecraftServer server) {
+        if (this.raidSession != null) {
+            consumer.accept(this.raidSession);
             return;
         }
 
-        RaidRegistry.requestRaidBoss(this.raidBossId, boss -> {
-            this.raidBoss = boss;
-            consumer.accept(boss);
+        RaidRegistry.requestRaidSession(this.raidSessionId, session -> {
+            this.raidSession = session;
+            consumer.accept(session);
         }, server);
     }
 }

@@ -100,7 +100,7 @@ public final class RegistryCache<K, V> implements AutoCloseable {
         source.whenComplete((value, error) -> {
             if (error == null && value != null && value.isPresent()) {
                 V loaded = value.get();
-                if (putIfCurrent(id, loaded, startEpoch)) this.onLoadHandler.accept(id, loaded);
+                this.putIfCurrent(id, loaded, startEpoch);
             }
 
             this.inFlight.remove(id, created);
@@ -136,9 +136,9 @@ public final class RegistryCache<K, V> implements AutoCloseable {
         return this.epoch;
     }
 
-    public synchronized boolean putIfCurrent(K id, V value, long expectedEpoch) {
-        if (this.epoch != expectedEpoch) return false;
+    public synchronized void putIfCurrent(K id, V value, long expectedEpoch) {
+        if (this.epoch != expectedEpoch) return;
         this.cache.put(id, value);
-        return true;
+        this.onLoadHandler.accept(id, value);
     }
 }

@@ -202,6 +202,11 @@ public class RaidBoss implements RaidSession {
         this.id = null;
     }
 
+    @Override
+    public RaidBoss instance() {
+        return this;
+    }
+
     public void createDisplayAspects() {
         Pokemon displayPokemon = this.getBossProperties().create();
         displayPokemon.setShiny(this.getShinyRate() == 1.0f);

@@ -20,7 +20,7 @@ public class RaidAdventureReloadImpl extends AbstractReloadImpl {
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
         RaidAdventure adventure = RaidAdventure.GSON.fromJson(object, RaidAdventure.class);
-        adventure.setId(key);
+        adventure.instance().setId(key);
         adventure.applyDefaults();
         CustomRaidRegistries.ADVENTURE_REGISTRY.register(key, adventure);
     }

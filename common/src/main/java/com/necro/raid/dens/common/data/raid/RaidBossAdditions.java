@@ -136,7 +136,7 @@ public class RaidBossAdditions {
         return this.replace;
     }
 
-    private String suffix() {
+    public String suffix() {
         return this.suffix;
     }
 

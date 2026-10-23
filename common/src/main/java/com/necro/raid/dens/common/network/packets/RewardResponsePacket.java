@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidRewardPostEvent;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -51,7 +51,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
         handler.givePokemonToPlayer(player).whenCompleteAsync((result, error) -> {
             if (error != null || !result) return;
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+            handler.raidSession((Consumer<RaidSession>) session -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(session, player)), player.getServer());
         });
     }
 
@@ -60,7 +60,7 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
             if (error != null || !result) return;
             player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+            handler.raidSession((Consumer<RaidSession>) session -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(session, player)), player.getServer());
         });
     }
 }

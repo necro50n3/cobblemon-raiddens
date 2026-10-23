@@ -33,6 +33,9 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
         if (this.registry == null) this.registry = new ArrayList<>(RaidRegistry.getAll());
         RaidBossAdditions additions = RaidBossAdditions.GSON.fromJson(object, RaidBossAdditions.class);
         additions.applyDefaults();
+        if (additions.suffix().equalsIgnoreCase("_adventure")) {
+            throw new IllegalArgumentException("Boss addition " + key + " cannot be registered with reserved suffix \"_adventure\"");
+        }
         this.additionsList.add(additions);
     }
 

@@ -51,9 +51,7 @@ public class RaidAdventureOverlay extends AbstractOverlay {
         guiGraphics.drawCenteredString(font, Component.translatable("screen.cobblemonraiddens.adventure.title").withStyle(ChatFormatting.GOLD), (int) (WIDTH / 1.7), 12, 16777215);
         guiGraphics.pose().popPose();
 
-        guiGraphics.pose().pushPose();
         this.renderDescription(guiGraphics, x, y);
-        guiGraphics.pose().popPose();
 
         if (!RaidDenKeybinds.MOUSE_KEYDOWN.isUnbound()) {
             guiGraphics.pose().pushPose();
@@ -85,39 +83,34 @@ public class RaidAdventureOverlay extends AbstractOverlay {
         int leftX = x + 4;
         int rightX = x + boxWidth - textureSize - 4;
 
-        if (option1.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, leftX, iconY, option1.getType());
-        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, leftX, iconY, option1.getType());
+        guiGraphics.pose().pushPose();
+        if (option1.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, option1.getType());
+        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, option1.getType());
+        guiGraphics.pose().popPose();
 
-        if (option2.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, rightX, iconY, option2.getType());
-        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, rightX, iconY, option2.getType());
+        guiGraphics.pose().pushPose();
+        if (option2.getType() != RaidType.STELLAR) this.renderElementalTypeIcon(guiGraphics, option2.getType());
+        else if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.renderTeraTypeIcon(guiGraphics, option2.getType());
+        guiGraphics.pose().popPose();
     }
 
-    private void renderElementalTypeIcon(GuiGraphics guiGraphics, int x, int y, RaidType type) {
+    private void renderElementalTypeIcon(GuiGraphics guiGraphics, RaidType type) {
         ResourceLocation texture = ResourceLocation.parse("cobblemon:textures/gui/types_small.png");
         int width = 324;
         int height = 18;
         int offset = getOffset(type, height);
 
-        RenderSystem.enableBlend();
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
         guiGraphics.blit(texture, 0, 0, offset, 0, height, height, width, height);
-        guiGraphics.pose().popPose();
         RenderSystem.disableBlend();
     }
 
-    private void renderTeraTypeIcon(GuiGraphics guiGraphics, int x, int y, RaidType type) {
+    private void renderTeraTypeIcon(GuiGraphics guiGraphics, RaidType type) {
         ResourceLocation texture = ResourceLocation.parse(String.format("mega_showdown:textures/gui/summary/tera_types/%s.png", type.getSerializedName()));
         int width = 32;
         int height = 32;
 
-        RenderSystem.enableBlend();
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
         guiGraphics.pose().scale(0.75F, 0.75F, 1f);
         guiGraphics.blit(texture, 0, 0, 4, 4, width - 8, height - 8, width, height);
-        guiGraphics.pose().popPose();
-        RenderSystem.disableBlend();
     }
 
     private static int getOffset(RaidType type, int height) {
