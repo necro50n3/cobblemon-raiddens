@@ -2,9 +2,7 @@ package com.necro.raid.dens.common.loot.predicate;
 
 import com.mojang.serialization.Codec;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.advancements.critereon.ItemSubPredicate;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 public record RaidAdventurePredicate(boolean isAdventure) implements ItemSubPredicate {
@@ -12,10 +10,8 @@ public record RaidAdventurePredicate(boolean isAdventure) implements ItemSubPred
 
     @Override
     public boolean matches(ItemStack itemStack) {
-        ResourceLocation adventure = itemStack.get(ModComponents.BOSS_COMPONENT.value());
-        if (adventure == null) return false;
-        else if (!CustomRaidRegistries.ADVENTURE_REGISTRY.containsKey(adventure)) return false;
-        return CustomRaidRegistries.ADVENTURE_REGISTRY.get(adventure).isAdventure() == isAdventure;
+        boolean isAdventure = Boolean.TRUE.equals(itemStack.get(ModComponents.ADVENTURE_COMPONENT.value()));
+        return isAdventure == this.isAdventure;
     }
 
     public static RaidAdventurePredicate ofFlag(boolean isAdventure) {

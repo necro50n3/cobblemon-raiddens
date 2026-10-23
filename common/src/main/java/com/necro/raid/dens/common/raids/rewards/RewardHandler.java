@@ -143,6 +143,7 @@ public class RewardHandler {
         item.set(ModComponents.TYPE_COMPONENT.value(), session.instance().getType());
         if (session.instance().getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), session.instance().getId());
         item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
+        item.set(ModComponents.ADVENTURE_COMPONENT.value(), session.isAdventure());
         return item;
     }
 
