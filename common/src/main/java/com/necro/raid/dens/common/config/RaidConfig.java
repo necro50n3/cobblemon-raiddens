@@ -22,6 +22,8 @@ public class RaidConfig implements ConfigData {
     public Map<String, Integer> dimension_spawn_rate = new HashMap<>(Map.of(
         "minecraft:overworld", 256
     ));
+    @Comment("The chance of a raid den spawning as a raid adventure den. Default: 0.02")
+    public double adventure_spawn_rate = 0.02;
     @Comment("The timer system raid dens use for resets (Options: GAME_TIME, SYSTEM_TIME, GLOBAL_GAME_TIME, GLOBAL_SYSTEM_TIME). Default: GAME_TIME")
     public RaidTimerMode reset_mode = RaidTimerMode.GAME_TIME;
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")

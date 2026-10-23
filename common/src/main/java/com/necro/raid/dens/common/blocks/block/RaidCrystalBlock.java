@@ -236,6 +236,7 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             if (!cycleMode.canCycleTier()) blockState = blockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
             // ensure raid type is random if it can't be cycled.
             if (!cycleMode.canCycleType()) blockState = blockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
+            blockState = blockState.setValue(IS_ADVENTURE, level.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate);
             return blockState;
         }
         CompoundTag tag = data.copyTag();

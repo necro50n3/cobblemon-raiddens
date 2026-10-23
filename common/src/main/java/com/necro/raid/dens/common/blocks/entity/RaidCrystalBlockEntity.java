@@ -120,7 +120,8 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         long gameTime = level.getGameTime();
         if (this.lastReset == null) this.lastReset = new RaidResetContext(gameTime);
         else if (this.lastReset.shouldReset(gameTime)) {
-            this.generateRaidBoss(level, blockPos, blockState);
+            if (this.isAdventure(blockState)) this.generateRaidAdventure(level, blockPos, blockState);
+            else this.generateRaidBoss(level, blockPos, blockState);
         }
     }
 
