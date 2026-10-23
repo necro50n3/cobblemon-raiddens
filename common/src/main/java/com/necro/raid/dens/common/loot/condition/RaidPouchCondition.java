@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.loot.context.RaidLootContexts;
+import com.necro.raid.dens.common.loot.predicate.RaidAdventurePredicate;
 import com.necro.raid.dens.common.loot.predicate.RaidFeaturePredicate;
 import com.necro.raid.dens.common.loot.predicate.RaidTierPredicate;
 import com.necro.raid.dens.common.loot.predicate.RaidTypePredicate;
@@ -17,12 +18,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<RaidTypePredicate> type, Optional<RaidFeaturePredicate> feature) implements LootItemCondition {
+public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<RaidTypePredicate> type, Optional<RaidFeaturePredicate> feature, Optional<RaidAdventurePredicate> isAdventure) implements LootItemCondition {
     public static final MapCodec<RaidPouchCondition> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
-            RaidTierPredicate.CODEC.optionalFieldOf("tier").forGetter(RaidPouchCondition::tier),
-            RaidTypePredicate.CODEC.optionalFieldOf("type").forGetter(RaidPouchCondition::type),
-            RaidFeaturePredicate.CODEC.optionalFieldOf("feature").forGetter(RaidPouchCondition::feature)
-        ).apply(instance, RaidPouchCondition::new));
+        RaidTierPredicate.CODEC.optionalFieldOf("tier").forGetter(RaidPouchCondition::tier),
+        RaidTypePredicate.CODEC.optionalFieldOf("type").forGetter(RaidPouchCondition::type),
+        RaidFeaturePredicate.CODEC.optionalFieldOf("feature").forGetter(RaidPouchCondition::feature),
+        RaidAdventurePredicate.CODEC.optionalFieldOf("is_adventure").forGetter(RaidPouchCondition::isAdventure)
+    ).apply(instance, RaidPouchCondition::new));
     public static final LootItemConditionType TYPE = new LootItemConditionType(CODEC);
 
     @Override
@@ -35,18 +37,20 @@ public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<Raid
         ItemStack itemStack = lootContext.getParam(RaidLootContexts.RAID_POUCH);
         return this.tier().map(p -> p.matches(itemStack)).orElse(true)
             && this.type().map(p -> p.matches(itemStack)).orElse(true)
-            && this.feature().map(p -> p.matches(itemStack)).orElse(true);
+            && this.feature().map(p -> p.matches(itemStack)).orElse(true)
+            && this.isAdventure().map(p -> p.matches(itemStack)).orElse(true);
     }
 
-    public static LootItemCondition.Builder matches(@Nullable RaidTier tier, @Nullable RaidType type, @Nullable String feature) {
+    public static LootItemCondition.Builder matches(@Nullable RaidTier tier, @Nullable RaidType type, @Nullable String feature, Boolean isAdventure) {
         return () -> new RaidPouchCondition(
             tier == null ? Optional.empty() : Optional.of(RaidTierPredicate.ofTier(tier)),
             type == null ? Optional.empty() : Optional.of(RaidTypePredicate.ofType(type)),
-            feature == null ? Optional.empty() : Optional.of(RaidFeaturePredicate.ofFeature(feature))
+            feature == null ? Optional.empty() : Optional.of(RaidFeaturePredicate.ofFeature(feature)),
+            isAdventure == null ? Optional.empty() : Optional.of(RaidAdventurePredicate.ofFlag(isAdventure))
         );
     }
 
     public static LootItemCondition.Builder matches(@Nullable String feature) {
-        return matches(null, null, feature);
+        return matches(null, null, feature, false);
     }
 }
