@@ -58,8 +58,8 @@ public final class RegistryCache<K, V> implements AutoCloseable {
         if (this.gameTicks.incrementAndGet() % CLEANUP_INTERVAL_TICKS == 0) this.cache.cleanUp();
     }
 
-    public V present(K id) {
-        return this.cache.getIfPresent(id);
+    public boolean contains(K id) {
+        return this.cache.getIfPresent(id) != null || this.inFlight.containsKey(id);
     }
 
     public V request(K id) {

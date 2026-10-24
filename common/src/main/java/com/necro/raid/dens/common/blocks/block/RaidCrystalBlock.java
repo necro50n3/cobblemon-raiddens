@@ -231,41 +231,39 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
         ItemStack itemStack = context.getItemInHand();
         Level level = context.getLevel();
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
-        if (data == null) {
-            BlockState newBlockState = blockState;
-            RaidCycleMode cycleMode = blockState.getValue(CYCLE_MODE);
-            // ensure raid tier is random if it can't be cycled.
-            if (!cycleMode.canCycleTier()) newBlockState = newBlockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
-            // ensure raid type is random if it can't be cycled.
-            if (!cycleMode.canCycleType()) newBlockState = newBlockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
-            newBlockState = newBlockState.setValue(IS_ADVENTURE, level.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate);
-            return newBlockState;
-        }
+        if (data != null) return blockState;
 
-        if (!level.isClientSide() && level.getServer() != null) {
-            CompoundTag tag = data.copyTag();
-            RaidRegistry.requestRaidSession(ResourceLocation.parse(tag.getString("raid_boss")), session -> {
-                if (!(level.getBlockEntity(context.getClickedPos()) instanceof RaidCrystalBlockEntity)) return;
-                int clears = tag.getInt("raid_cleared");
-                BlockState delayedBlockState = level.getBlockState(context.getClickedPos())
-                    .setValue(RAID_TYPE, session.instance().getType())
-                    .setValue(RAID_TIER, session.instance().getTier())
-                    .setValue(ACTIVE, session.instance().getMaxClears() < 0 || clears < session.instance().getMaxClears());
-                level.setBlock(context.getClickedPos(), delayedBlockState, Block.UPDATE_ALL);
-            }, level.getServer());
-        }
-
-        return blockState;
+        BlockState newBlockState = blockState;
+        RaidCycleMode cycleMode = blockState.getValue(CYCLE_MODE);
+        // ensure raid tier is random if it can't be cycled.
+        if (!cycleMode.canCycleTier()) newBlockState = newBlockState.setValue(RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level));
+        // ensure raid type is random if it can't be cycled.
+        if (!cycleMode.canCycleType()) newBlockState = newBlockState.setValue(RAID_TYPE, RaidType.getRandom(level.getRandom()));
+        newBlockState = newBlockState.setValue(IS_ADVENTURE, level.getRandom().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate);
+        return newBlockState;
     }
 
     @Override
-    public void setPlacedBy(Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
-        if (level.isClientSide) return;
+    public void setPlacedBy(@NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState blockState, LivingEntity livingEntity, @NotNull ItemStack itemStack) {
+        super.setPlacedBy(level, blockPos, blockState, livingEntity, itemStack);
+
+        if (level.isClientSide() || level.getServer() == null) return;
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (blockEntity == null) return;
-
         CustomData data = itemStack.get(DataComponents.BLOCK_ENTITY_DATA);
-        if (data != null) blockEntity.loadCustomOnly(data.copyTag(), level.registryAccess());
+        if (data == null) return;
+
+        CompoundTag tag = data.copyTag();
+        RaidRegistry.requestRaidSession(ResourceLocation.parse(tag.getString("raid_session")), session -> {
+            int clears = tag.getInt("raid_cleared");
+            BlockState newState = level.getBlockState(blockPos);
+            if (!newState.is(this)) return;
+            newState = newState.setValue(RAID_TYPE, session.instance().getType())
+                .setValue(RAID_TIER, session.instance().getTier())
+                .setValue(ACTIVE, session.instance().getMaxClears() < 0 || clears < session.instance().getMaxClears());
+            level.setBlock(blockPos, newState, Block.UPDATE_ALL);
+            blockEntity.loadCustomOnly(tag, level.registryAccess());
+        }, level.getServer());
     }
 
     @Override

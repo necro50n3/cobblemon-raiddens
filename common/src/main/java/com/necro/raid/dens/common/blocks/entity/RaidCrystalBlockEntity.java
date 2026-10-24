@@ -97,7 +97,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         boolean isIdle = this.isIdle();
         if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
 
-        if (this.raidSession != null && this.exists() && level.getGameTime() % 400 == 0) RaidRegistry.requestRaidSession(this.raidSession);
+        if (this.raidSession != null && this.exists() && (!RaidRegistry.cacheHas(this.raidSession) || level.getGameTime() % 400 == 0)) {
+            RaidRegistry.requestRaidSession(this.raidSession);
+        }
         if (this.canGenerateBoss(blockState) && (this.raidSession == null || !this.exists())) {
             if (this.isAdventure(blockState)) this.generateRaidAdventure(level, blockPos, blockState);
             else this.generateRaidBoss(level, blockPos, blockState);
@@ -487,12 +489,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_sync")) this.raidSync = RaidSyncContext.load(compoundTag.getCompound("raid_sync"));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidSession != null) {
-            Consumer<RaidSession> consumer = boss -> {
+            Consumer<RaidSession> consumer = session -> {
                 if (this.isRemoved()) return;
-                RaidEvents.RAID_DEN_LOAD.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
+                RaidEvents.RAID_DEN_LOAD.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), session));
             };
-            if (this.getRaidSession() == null) RaidRegistry.requestRaidSession(this.raidSession, consumer, serverLevel.getServer());
-            else consumer.accept(this.getRaidSession());
+            RaidSession session = this.getRaidSession();
+            if (session == null) RaidRegistry.requestRaidSession(this.raidSession, consumer, serverLevel.getServer());
+            else consumer.accept(session);
         }
     }
 
@@ -508,12 +511,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidSync != null) compoundTag.put("raid_sync", this.raidSync.save(new CompoundTag()));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidSession != null) {
-            Consumer<RaidSession> consumer = boss -> {
+            Consumer<RaidSession> consumer = session -> {
                 if (this.isRemoved()) return;
-                RaidEvents.RAID_DEN_SAVE.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
+                RaidEvents.RAID_DEN_SAVE.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), session));
             };
-            if (this.getRaidSession() == null) RaidRegistry.requestRaidSession(this.raidSession, consumer, serverLevel.getServer());
-            else consumer.accept(this.getRaidSession());
+            RaidSession session = this.getRaidSession();
+            if (session == null) RaidRegistry.requestRaidSession(this.raidSession, consumer, serverLevel.getServer());
+            else consumer.accept(session);
         }
     }
 

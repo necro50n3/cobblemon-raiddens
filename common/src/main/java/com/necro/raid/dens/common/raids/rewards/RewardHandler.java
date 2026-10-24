@@ -149,7 +149,7 @@ public class RewardHandler {
 
     public CompoundTag serialize(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.putString("raid_boss", this.raidSessionId.toString());
+        tag.putString("raid_session", this.raidSessionId.toString());
         tag.putUUID("player", this.playerUUID);
         if (this.serializedPokemonReward != null) {
             tag.put("pokemon_reward", this.serializedPokemonReward);
@@ -163,7 +163,7 @@ public class RewardHandler {
 
     @SuppressWarnings("unused")
     public static RewardHandler deserialize(CompoundTag tag, HolderLookup.Provider provider) {
-        ResourceLocation raidSessionId = ResourceLocation.parse(tag.getString("raid_boss"));
+        ResourceLocation raidSessionId = ResourceLocation.parse(tag.contains("raid_boss") ? tag.getString("raid_boss") : tag.getString("raid_session"));
         UUID playerUUID = tag.getUUID("player");
         CompoundTag pokemonReward = null;
         if (tag.contains("pokemon_reward")) pokemonReward = tag.getCompound("cached_reward");

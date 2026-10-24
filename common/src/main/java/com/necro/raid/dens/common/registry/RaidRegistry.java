@@ -10,7 +10,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.registry.store.BinaryRecordStore;
 import com.necro.raid.dens.common.registry.store.RegistryCache;
 import com.necro.raid.dens.common.util.RegistryMap;
-import kotlin.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -44,7 +43,6 @@ public class RaidRegistry {
     public static final Map<String, int[]> INDEX_CACHE = new HashMap<>();
     public static double[] WEIGHTS_BY_INDEX = new double[0];
     private static RaidTier[] TIER_BY_INDEX = new RaidTier[0];
-    private static RaidType[] TYPE_BY_INDEX = new RaidType[0];
 
     public static void register(RaidBoss raidBoss) {
         if (raidBoss.getId().getPath().toLowerCase(Locale.ROOT).endsWith("_adventure")) {
@@ -62,7 +60,6 @@ public class RaidRegistry {
         int size = RAID_LIST.size();
         WEIGHTS_BY_INDEX = new double[size];
         TIER_BY_INDEX = new RaidTier[size];
-        TYPE_BY_INDEX = new RaidType[size];
 
         for (int index = 0; index < RAID_LIST.size(); index++) {
             RaidBoss raidBoss = LOADING.get(RAID_LIST.get(index));
@@ -73,7 +70,6 @@ public class RaidRegistry {
 
             WEIGHTS_BY_INDEX[index] = raidBoss.getWeight();
             TIER_BY_INDEX[index] = raidBoss.getTier();
-            TYPE_BY_INDEX[index] = raidBoss.getType();
 
             if (raidBoss.getWeight() > 0.0) {
                 raidBoss.getTier().setPresent();
@@ -109,6 +105,12 @@ public class RaidRegistry {
         RegistryCache<ResourceLocation, RaidBoss> current = CACHE;
         if (current == null) return Optional.of(PENDING.get().values()).orElse(List.of());
         return current.getAll();
+    }
+
+    public static boolean cacheHas(ResourceLocation id) {
+        RegistryCache<ResourceLocation, RaidBoss> current = CACHE;
+        if (current == null) return Optional.of(PENDING.get().containsKey(id)).orElse(false);
+        return current.contains(id);
     }
 
     public static void addToCache(ResourceLocation id, RaidBoss boss) {
@@ -168,11 +170,6 @@ public class RaidRegistry {
 
     public static @Nullable RaidBoss getLoading(ResourceLocation location) {
         return LOADING.get(location);
-    }
-
-    public static Pair<RaidTier, RaidType> getTierAndType(ResourceLocation location) {
-        int index = RAID_INDEX.get(location);
-        return new Pair<>(TIER_BY_INDEX[index], TYPE_BY_INDEX[index]);
     }
 
     public static boolean exists(ResourceLocation location) {
@@ -298,7 +295,6 @@ public class RaidRegistry {
 
         WEIGHTS_BY_INDEX = new double[0];
         TIER_BY_INDEX = new RaidTier[0];
-        TYPE_BY_INDEX = new RaidType[0];
 
         WEIGHTS_CACHE.clear();
         INDEX_CACHE.clear();
