@@ -16,21 +16,10 @@ public abstract class ShowdownLoader {
         if (this.isMegaShowdownLoaded()) return;
         CobblemonRaidDens.LOGGER.info("Initiating showdown files");
 
-        Path showdown_sim = Path.of("./showdown/sim");
-        Path showdown_data = Path.of("./showdown/data");
         Path showdown = Path.of("./showdown");
-        Path showdown_mod_data = Path.of("./showdown/data/mods/cobblemon");
 
         try {
-            Files.createDirectories(showdown_sim);
-            Files.createDirectories(showdown_data);
-
-            yoink("assets/cobblemonraiddens/showdown/conditions.js", showdown_data.resolve("conditions.js"));
             yoink("assets/cobblemonraiddens/showdown/index.js", showdown.resolve("index.js"));
-
-            if (!Files.exists(showdown_mod_data.resolve("conditions.js"))) {
-                yoink("assets/cobblemonraiddens/showdown/mods/conditions.js", showdown_mod_data.resolve("conditions.js"));
-            }
         } catch (IOException e) {
             CobblemonRaidDens.LOGGER.error("Failed to load showdown files: {}", e.getMessage());
         }
