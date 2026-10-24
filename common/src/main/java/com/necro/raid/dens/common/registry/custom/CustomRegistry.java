@@ -9,7 +9,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public class CustomRegistry<K, T> {
     protected final Object2ObjectOpenHashMap<K, T> registry;
-    private final K defaultKey;
+    protected final K defaultKey;
 
     public CustomRegistry(K defaultKey) {
         this.registry = new Object2ObjectOpenHashMap<>();

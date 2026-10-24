@@ -13,8 +13,7 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidAdventureInstance;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
@@ -66,7 +65,7 @@ public class RaidNode implements AdventureNode {
             if (ref == null || ref.isEmpty()) continue;
             if (ref.startsWith("@")) {
                 ResourceLocation bucketId = ResourceLocation.parse(ref.substring(1));
-                RaidBucket bucket = RaidBucketRegistry.getBucket(bucketId);
+                RaidBucket bucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucketId);
                 if (bucket != null) {
                     BitSet compiled = bucket.getCompiled();
                     for (int i = compiled.nextSetBit(0); i >= 0; i = compiled.nextSetBit(i + 1)) {
@@ -171,7 +170,7 @@ public class RaidNode implements AdventureNode {
             }
 
             PokemonEntity pokemonEntity = boss.getBossEntity(level, null);
-            double scaleMod = region != null ? RaidDenRegistry.getScaleModifier(region.structure()) : 1.0;
+            double scaleMod = region != null ? CustomRaidRegistries.RAID_DEN_REGISTRY.getScaleModifier(region.structure()) : 1.0;
             pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleMod));
             if (boss.getNoAi() && adventure.noAI()) pokemonEntity.setNoAi(true);
             pokemonEntity.setInvulnerable(adventure.isInvulnerable());

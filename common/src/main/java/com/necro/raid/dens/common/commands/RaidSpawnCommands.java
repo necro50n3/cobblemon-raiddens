@@ -19,7 +19,6 @@ import com.necro.raid.dens.common.raids.RaidAdventureInstance;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -219,7 +218,7 @@ public class RaidSpawnCommands {
     }
 
     private static int spawnBossFromBucket(CommandContext<CommandSourceStack> context, Vec3 vec3, ServerLevel dimension, ResourceLocation bucket, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
-        RaidBucket raidBucket = RaidBucketRegistry.getBucket(bucket);
+        RaidBucket raidBucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucket);
         if (raidBucket == null) return 0;
         ResourceLocation boss = raidBucket.getRandomRaidBoss(dimension.getRandom(), dimension);
         return spawnBoss(context, vec3, dimension, boss, noAI, isInvulnerable, isPersistent);

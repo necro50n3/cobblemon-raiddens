@@ -15,6 +15,8 @@ import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.registry.custom.*;
+import com.necro.raid.dens.common.registry.custom.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.custom.RaidSupportRegistry;
 import com.necro.raid.dens.common.showdown.events.AbstractEvent;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.showdown.events.ShowdownEvents;
@@ -28,6 +30,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CustomRaidRegistries {
+    public static final RaidBucketRegistry RAID_BUCKET_REGISTRY = new RaidBucketRegistry();
+    public static final RaidDenPoolRegistry RAID_DEN_REGISTRY = new RaidDenPoolRegistry();
+    public static final RaidSupportRegistry RAID_SUPPORT_REGISTRY = new RaidSupportRegistry();
+
     public static final StringRegistry<Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final StringRegistry<RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
     public static final ScriptRegistry SCRIPT_REGISTRY = new ScriptRegistry();

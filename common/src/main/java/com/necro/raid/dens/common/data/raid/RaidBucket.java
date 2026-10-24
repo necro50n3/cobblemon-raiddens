@@ -2,9 +2,10 @@ package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -69,10 +70,10 @@ public class RaidBucket {
         return this.biomesInner;
     }
 
-    public boolean isValidBiome(Holder<Biome> biome) {
+    public boolean isValidBiome(Holder<Biome> biome, RegistryAccess registryAccess) {
         if (this.isAlwaysValid) return true;
         else if (this.biomesInner.isEmpty()) return false;
-        if (this.biomes == null) this.resolveBiomes();
+        if (this.biomes == null) this.resolveBiomes(registryAccess);
         return biome.unwrapKey()
             .map(this.biomes::contains)
             .orElse(false);
@@ -97,19 +98,20 @@ public class RaidBucket {
         else return RaidRegistry.getRandomRaidBoss(random, level, this.getCompiled(), key);
     }
 
-    private void resolveBiomes() {
+    private void resolveBiomes(RegistryAccess registryAccess) {
         Set<ResourceKey<Biome>> result = new HashSet<>();
+        Registry<Biome> biomeRegistry = registryAccess.registryOrThrow(Registries.BIOME);
 
         for (String entry : this.biomesInner) {
             if (entry.equals("*")) {
-                result.addAll(RaidBucketRegistry.BIOME_REGISTRY.registryKeySet());
+                result.addAll(biomeRegistry.registryKeySet());
                 break;
             }
 
             ResourceLocation id = ResourceLocation.parse(entry.startsWith("#") ? entry.substring(1) : entry);
             if (entry.startsWith("#")) {
                 TagKey<Biome> tag = TagKey.create(Registries.BIOME, id);
-                RaidBucketRegistry.BIOME_REGISTRY.getTag(tag).ifPresent(holderSet ->
+                biomeRegistry.getTag(tag).ifPresent(holderSet ->
                     holderSet.forEach(holder -> {
                         if (holder.unwrapKey().isEmpty()) return;
                         result.add(holder.unwrapKey().get());
@@ -117,7 +119,7 @@ public class RaidBucket {
             }
             else {
                 ResourceKey<Biome> biomeKey = ResourceKey.create(Registries.BIOME, id);
-                if (RaidBucketRegistry.BIOME_REGISTRY.containsKey(biomeKey)) result.add(biomeKey);
+                if (biomeRegistry.containsKey(biomeKey)) result.add(biomeKey);
             }
         }
 

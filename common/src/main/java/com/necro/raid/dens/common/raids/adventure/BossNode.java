@@ -10,7 +10,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.RaidAdventureInstance;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import net.minecraft.network.chat.Component;
@@ -58,7 +58,7 @@ public class BossNode implements AdventureNode {
         }
 
         PokemonEntity pokemonEntity = boss.getBossEntity(level, null);
-        double scaleMod = region != null ? RaidDenRegistry.getScaleModifier(region.structure()) : 1.0;
+        double scaleMod = region != null ? CustomRaidRegistries.RAID_DEN_REGISTRY.getScaleModifier(region.structure()) : 1.0;
         pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleMod));
         if (boss.getNoAi() && adventure.noAI()) pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(adventure.isInvulnerable());

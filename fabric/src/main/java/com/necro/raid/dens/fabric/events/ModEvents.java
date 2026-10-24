@@ -5,7 +5,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -50,7 +49,6 @@ public class ModEvents {
     public static void onServerStarted(MinecraftServer server) {
         RaidHelper.initHelper(server);
         RaidRegistry.init(server);
-        RaidBucketRegistry.init(server);
     }
 
     public static void onServerClose(MinecraftServer server) {

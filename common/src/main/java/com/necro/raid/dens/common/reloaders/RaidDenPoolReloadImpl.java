@@ -3,8 +3,8 @@ package com.necro.raid.dens.common.reloaders;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.structure.RaidDenPool;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import net.minecraft.resources.ResourceLocation;
 
 public class RaidDenPoolReloadImpl extends AbstractReloadImpl {
@@ -21,7 +21,7 @@ public class RaidDenPoolReloadImpl extends AbstractReloadImpl {
     protected void onLoad(ResourceLocation key, JsonObject object) {
         RaidDenPool denPool = RaidDenPool.codec().decode(JsonOps.INSTANCE, object).getOrThrow().getFirst();
         denPool.setId(key);
-        RaidDenRegistry.register(denPool);
+        CustomRaidRegistries.RAID_DEN_REGISTRY.register(key, denPool);
     }
 
     @Override

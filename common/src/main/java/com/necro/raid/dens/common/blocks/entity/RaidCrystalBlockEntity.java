@@ -20,8 +20,6 @@ import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.*;
 import net.minecraft.core.BlockPos;
@@ -226,9 +224,9 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     private ResourceLocation generateFromBucket(Level level, BlockState blockState, RaidCycleMode cycleMode) {
-        if (this.raidBucket == null) this.raidBucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(this.getBlockPos()));
+        if (this.raidBucket == null) this.raidBucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.getRandom(level.getRandom(), level.getBiome(this.getBlockPos()), level.registryAccess());
         if (this.raidBucket == null) return this.generateRandom(level, blockState, cycleMode);
-        RaidBucket bucket = RaidBucketRegistry.getBucket(this.raidBucket);
+        RaidBucket bucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(this.raidBucket);
         if (bucket == null) {
             this.raidBucket = null;
             return this.generateFromBucket(level, blockState, cycleMode);
@@ -277,7 +275,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidSession, e);
             return false;
         }
-        pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * RaidDenRegistry.getScaleModifier(region.structure())));
+        pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * CustomRaidRegistries.RAID_DEN_REGISTRY.getScaleModifier(region.structure())));
         if (boss.getNoAi()) pokemonEntity.setNoAi(true);
         pokemonEntity.setInvulnerable(true);
         pokemonEntity.setPersistenceRequired();
@@ -348,7 +346,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     }
 
     public RaidBucket getRaidBucket() {
-        return RaidBucketRegistry.getBucket(this.raidBucket);
+        return CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(this.raidBucket);
     }
 
     public @Nullable RaidSession getRaidSession() {

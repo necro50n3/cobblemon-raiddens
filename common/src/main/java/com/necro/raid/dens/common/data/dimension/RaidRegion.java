@@ -2,7 +2,7 @@ package com.necro.raid.dens.common.data.dimension;
 
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -54,15 +54,15 @@ public class RaidRegion {
     }
 
     public BlockPos getOffset() {
-        return BlockPos.containing(RaidDenRegistry.getOffset(this.structure).add(this.centre.getBottomCenter()));
+        return BlockPos.containing(CustomRaidRegistries.RAID_DEN_REGISTRY.getOffset(this.structure).add(this.centre.getBottomCenter()));
     }
 
     public Vec3 getPlayerPos() {
-        return RaidDenRegistry.getPlayerPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
+        return CustomRaidRegistries.RAID_DEN_REGISTRY.getPlayerPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
     }
 
     public Vec3 getBossPos() {
-        return RaidDenRegistry.getBossPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
+        return CustomRaidRegistries.RAID_DEN_REGISTRY.getBossPos(this.structure).add(Vec3.atLowerCornerOf(this.centre));
     }
 
     public void clearRegion(ServerLevel level) {
@@ -115,7 +115,7 @@ public class RaidRegion {
     public void placeStructure(ServerLevel level) {
         StructureTemplateManager manager = level.getServer().getStructureManager();
         StructureTemplate template = manager.get(this.structure).orElseGet(() -> {
-            this.structure = RaidDenRegistry.DEFAULT;
+            this.structure = CustomRaidRegistries.RAID_DEN_REGISTRY.defaultKey();
             return manager.getOrCreate(this.structure);
         });
 

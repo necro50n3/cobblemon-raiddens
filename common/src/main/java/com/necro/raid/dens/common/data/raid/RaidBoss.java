@@ -29,7 +29,6 @@ import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.raids.moves.RaidMovesetBuilder;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
 import com.necro.raid.dens.common.util.*;
 import kotlin.Unit;
 import net.minecraft.network.chat.Component;
@@ -619,11 +618,11 @@ public class RaidBoss implements RaidSession {
     private void resolveDens() {
         List<ResourceLocation> validDens = new ArrayList<>();
         for (String value : this.den) {
-            if (value.startsWith("#")) validDens.addAll(RaidDenRegistry.getStructures(ResourceLocation.parse(value.substring(1))));
+            if (value.startsWith("#")) validDens.addAll(CustomRaidRegistries.RAID_DEN_REGISTRY.getStructures(ResourceLocation.parse(value.substring(1))));
             else validDens.add(ResourceLocation.parse(value));
         }
-        validDens.removeIf(RaidDenRegistry::isNotValidStructure);
-        if (validDens.isEmpty()) validDens.add(RaidDenRegistry.DEFAULT);
+        validDens.removeIf(CustomRaidRegistries.RAID_DEN_REGISTRY::isNotValidStructure);
+        if (validDens.isEmpty()) validDens.add(CustomRaidRegistries.RAID_DEN_REGISTRY.defaultKey());
         this.densActual = validDens;
     }
 
