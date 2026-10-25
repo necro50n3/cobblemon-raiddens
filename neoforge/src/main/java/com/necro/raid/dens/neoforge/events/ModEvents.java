@@ -6,7 +6,6 @@ import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
@@ -33,7 +32,7 @@ public class ModEvents {
         RaidHelper.commonTick(event.getServer());
         RaidJoinHelper.serverTick();
         RaidEvents.ScaleBossRaidEvent.tick();
-        RaidRegistry.tick();
+        CustomRaidRegistries.RAID_REGISTRY.tick();
     }
 
     @SubscribeEvent
@@ -57,20 +56,19 @@ public class ModEvents {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         CustomRaidRegistries.freeze();
+        CustomRaidRegistries.RAID_REGISTRY.init(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        MinecraftServer server = event.getServer();
-        RaidHelper.initHelper(server);
-        RaidRegistry.init(server);
+        RaidHelper.initHelper(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerClose(ServerStoppingEvent event) {
         RaidJoinHelper.onServerClose();
         RaidHelper.onServerClose(event.getServer());
-        RaidRegistry.close();
+        CustomRaidRegistries.RAID_REGISTRY.close();
     }
 
     @SubscribeEvent
@@ -101,7 +99,6 @@ public class ModEvents {
         event.addListener(new RaidTemplateReloadListener());
         event.addListener(new RaidTagReloadListener());
         event.addListener(new BossAdditionsReloadListener());
-        event.addListener(new RaidAdventureReloadListener());
         event.addListener(new StatusEffectsReloadListener());
         event.addListener(new RaidSupportReloadListener());
     }

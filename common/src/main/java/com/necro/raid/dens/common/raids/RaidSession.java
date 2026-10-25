@@ -1,10 +1,12 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.necro.raid.dens.common.data.adventure.RaidAdventure;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.data.raid.RaidSyncContext;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
+import com.necro.raid.dens.common.raids.adventure.BossNode;
 import com.necro.raid.dens.common.raids.adventure.RaidNode;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -14,11 +16,13 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class RaidAdventureInstance extends AbstractRaidSession {
-    private final RaidAdventure adventure;
+public class RaidSession extends AbstractRaidSession {
+    private final RaidBoss raidBoss;
+    private final List<AdventureNode> nodes;
     private int currentNodeIndex;
     private @Nullable RaidInstance activeRaid;
     private RaidState raidState;
@@ -29,11 +33,13 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     private boolean noAI;
     private boolean isInvulnerable;
     private boolean isPersistent;
+    private @Nullable RaidSyncContext raidSync;
 
-    private RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
+    private RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
         super(host, raid, isInDen);
-        this.adventure = adventure;
-        this.isAdventure = true;
+        this.raidBoss = raidBoss;
+        this.nodes = new ArrayList<>(raidBoss.getNodes());
+        this.nodes.add(new BossNode());
         this.currentNodeIndex = -1;
         this.activeRaid = null;
         this.raidState = RaidState.NOT_STARTED;
@@ -44,14 +50,15 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         this.noAI = true;
         this.isInvulnerable = true;
         this.isPersistent = false;
+        this.raidSync = null;
     }
 
-    public RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure) {
-        this(host, raid, adventure, true, null, null);
+    public RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss) {
+        this(host, raid, raidBoss, true, null, null);
     }
 
-    public RaidAdventureInstance(@Nullable UUID host, UUID raid, RaidAdventure adventure, @NotNull Vec3 startPos, @NotNull ServerLevel startDimension) {
-        this(host, raid, adventure, false, startPos, startDimension);
+    public RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss, @NotNull Vec3 startPos, @NotNull ServerLevel startDimension) {
+        this(host, raid, raidBoss, false, startPos, startDimension);
     }
 
     public void setFlags(boolean noAI, boolean isInvulnerable, boolean isPersistent) {
@@ -76,7 +83,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     public void addPlayer(ServerPlayer player) {
         super.addPlayer(player);
         if (this.activeRaid != null) this.activeRaid.addPlayer(player);
-        if (this.getCurrentNode() != null) this.getCurrentNode().onPlayerJoin(player, this);
+        if (this.currentNode() != null) this.currentNode().onPlayerJoin(player, this);
     }
 
     @Override
@@ -89,18 +96,18 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         super.removePlayer(player, battle, ignoreLives);
         if (this.activeRaid != null) this.activeRaid.removePlayer(player, battle, ignoreLives);
-        if (this.getCurrentNode() != null) this.getCurrentNode().onPlayerLeave(player, this);
+        if (this.currentNode() != null) this.currentNode().onPlayerLeave(player, this);
     }
 
-    public RaidAdventure adventure() {
-        return this.adventure;
+    public RaidBoss boss() {
+        return this.raidBoss;
     }
 
-    public List<AdventureNode> getNodes() {
-        return this.adventure.nodes();
+    public List<AdventureNode> nodes() {
+        return this.nodes;
     }
 
-    public int getCurrentNodeIndex() {
+    public int currentNodeIndex() {
         return this.currentNodeIndex;
     }
 
@@ -112,9 +119,9 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         return this.startDimension;
     }
 
-    public @Nullable AdventureNode getCurrentNode() {
-        if (this.currentNodeIndex >= 0 && this.currentNodeIndex < this.getNodes().size()) {
-            return this.getNodes().get(this.currentNodeIndex);
+    public AdventureNode currentNode() {
+        if (this.currentNodeIndex >= 0 && this.currentNodeIndex < this.nodes().size()) {
+            return this.nodes().get(this.currentNodeIndex);
         }
         return null;
     }
@@ -135,7 +142,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     }
 
     public void onBossSelected(ServerPlayer player, ResourceLocation selectedBoss) {
-        AdventureNode current = this.getCurrentNode();
+        AdventureNode current = this.currentNode();
         if (current instanceof RaidNode raidNode) {
             MinecraftServer server = this.getServer();
             if (server != null) raidNode.onBossSelected(player, selectedBoss, this, server);
@@ -156,22 +163,24 @@ public class RaidAdventureInstance extends AbstractRaidSession {
         if (this.started || this.isFinished()) return;
         this.started = true;
         this.raidState = RaidState.IN_PROGRESS;
-        this.schedule(() -> this.advanceToNextNode(server), 20, false);
+        if (this.isAdventure()) this.schedule(() -> this.advanceToNextNode(server), 20, false);
+        else this.advanceToNextNode(server);
+
     }
 
     public void advanceToNextNode(@Nullable MinecraftServer server) {
         if (server == null) server = this.getServer();
         if (server == null) return;
-        if (this.getCurrentNode() != null && !this.getCurrentNode().isCompleted()) return;
+        if (this.currentNode() != null && !this.currentNode().isCompleted()) return;
 
         while (true) {
             this.currentNodeIndex++;
-            if (this.currentNodeIndex >= this.getNodes().size()) {
+            if (this.currentNodeIndex >= this.nodes().size()) {
                 this.stopRaid(true);
                 return;
             }
 
-            AdventureNode nextNode = this.getNodes().get(this.currentNodeIndex);
+            AdventureNode nextNode = this.nodes().get(this.currentNodeIndex);
             nextNode.run(this, server);
             if (!nextNode.isCompleted()) break;
         }
@@ -201,7 +210,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
             }
         }
         else {
-            AdventureNode current = this.getCurrentNode();
+            AdventureNode current = this.currentNode();
             if (current != null) {
                 current.tick(this, server);
                 if (current.isCompleted()) {
@@ -223,7 +232,7 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     @Override
     public void closeRaid(MinecraftServer server, boolean wasCancelled) {
         super.closeRaid(server, wasCancelled);
-        RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.adventure, this.raidState == RaidState.SUCCESS));
+        RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.raidBoss, this.raidState == RaidState.SUCCESS));
     }
 
     @Override
@@ -239,5 +248,17 @@ public class RaidAdventureInstance extends AbstractRaidSession {
     @Override
     public @Nullable RaidInstance getActive() {
         return this.activeRaid;
+    }
+
+    public boolean isAdventure() {
+        return this.raidBoss.isAdventure();
+    }
+
+    public RaidSyncContext raidSync() {
+        return this.raidSync;
+    }
+
+    public void setRaidSync(@NotNull RaidSyncContext raidSync) {
+        this.raidSync = raidSync;
     }
 }

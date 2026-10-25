@@ -30,16 +30,18 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CustomRaidRegistries {
-    public static final RaidBucketRegistry RAID_BUCKET_REGISTRY = new RaidBucketRegistry();
-    public static final RaidDenPoolRegistry RAID_DEN_REGISTRY = new RaidDenPoolRegistry();
-    public static final RaidSupportRegistry RAID_SUPPORT_REGISTRY = new RaidSupportRegistry();
-
+    // Builtin Registries
     public static final StringRegistry<Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final StringRegistry<RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
     public static final ScriptRegistry SCRIPT_REGISTRY = new ScriptRegistry();
     public static final NodeRegistry NODE_REGISTRY = new NodeRegistry();
-    public static final AdventureRegistry ADVENTURE_REGISTRY = new AdventureRegistry();
     public static final StringRegistry<RaidFeature> FEATURE_REGISTRY = new StringRegistry<>("default");
+
+    // Data Registries
+    public static final RaidRegistry RAID_REGISTRY = new RaidRegistry();
+    public static final RaidBucketRegistry RAID_BUCKET_REGISTRY = new RaidBucketRegistry();
+    public static final RaidDenPoolRegistry RAID_DEN_REGISTRY = new RaidDenPoolRegistry();
+    public static final RaidSupportRegistry RAID_SUPPORT_REGISTRY = new RaidSupportRegistry();
 
     private static final Map<String, Stat> STAT_MAP = Map.of(
         "atk", Stats.ATTACK,
@@ -226,6 +228,7 @@ public class CustomRaidRegistries {
             return new RaidNode(bosses);
         });
         NODE_REGISTRY.register(RecoverNode.ID, node -> new RecoverNode());
+        NODE_REGISTRY.register(BossNode.ID, node -> new BossNode());
     }
 
     private static void registerFeatures() {

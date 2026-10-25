@@ -72,7 +72,7 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
 
         MutableComponent component = raidBoss.instance().getDisplaySpecies().getTranslatedName();
-        Component feature = Component.translatable(raidBoss.isAdventure() ? "feature.cobblemonraiddens.adventure" : RaidFeature.getTranslatable(raidBoss.instance().getFeature()));
+        Component feature = Component.translatable(RaidFeature.getTranslatable(raidBoss.instance().getFeature()));
         component.append(" | ").append(feature);
         component.append(" | ").append(tier.getStars());
         tooltip.add(component, this.getUid());

@@ -1,13 +1,11 @@
 package com.necro.raid.dens.common.worldgen;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
@@ -27,7 +25,6 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         else if (Arrays.stream(RaidType.values()).noneMatch(RaidType::isPresent)) return false;
         
         WorldGenLevel level = context.level();
-        BlockState blockState = context.config().state;
         if (level.isClientSide()) return false;
 
         String dimension = level.getLevel().dimension().location().toString();
@@ -36,12 +33,7 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         if (level.getRandom().nextInt(chance) != 0) return false;
 
         BlockPos blockPos = this.checkAdditionalRequirements(level, context.origin());
-        if (blockPos == null) return false;
-
-        boolean isAdventure = context.random().nextDouble() < CobblemonRaidDens.CONFIG.adventure_spawn_rate;
-        level.setBlock(blockPos, blockState.setValue(RaidCrystalBlock.IS_ADVENTURE, isAdventure), 2);
-
-        return true;
+        return blockPos != null;
     }
 
     protected BlockPos checkAdditionalRequirements(WorldGenLevel level, BlockPos blockPos) {

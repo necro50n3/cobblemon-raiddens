@@ -1,19 +1,19 @@
 package com.necro.raid.dens.common.events;
 
-import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 
 public class SetRaidEvent {
-    private RaidSession raid;
+    private RaidBoss raid;
 
-    public SetRaidEvent(RaidSession raid) {
+    public SetRaidEvent(RaidBoss raid) {
         this.raid = raid;
     }
 
-    public RaidSession getRaid() {
+    public RaidBoss getRaid() {
         return this.raid;
     }
 
-    public void setRaid(RaidSession raid) {
+    public void setRaid(RaidBoss raid) {
         this.raid = raid;
     }
 }

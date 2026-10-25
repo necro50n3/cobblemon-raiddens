@@ -27,7 +27,7 @@ public class RaidCrystalSparkleRenderer {
         PoseStack matrix = new PoseStack();
         wrapper.updateMatrix(matrix.last().pose());
         wrapper.updatePosition(blockEntity.getBlockPos().getBottomCenter());
-        RaidSession session = blockEntity.getRaidSession();
+        RaidSession session = blockEntity.getRaidBoss();
         String feature = session == null ? "DEFAULT" : session.instance().getFeature();
         RaidType type = blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE);
 

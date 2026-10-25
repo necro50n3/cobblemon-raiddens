@@ -7,7 +7,7 @@ import com.google.gson.JsonSerializationContext;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
-import com.necro.raid.dens.common.raids.RaidAdventureInstance;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
@@ -38,26 +38,26 @@ public class BossNode implements AdventureNode {
     }
 
     @Override
-    public void run(RaidAdventureInstance adventure, MinecraftServer server) {
-        adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
+    public void run(RaidSession adventure, MinecraftServer server) {
+        if (adventure.isAdventure()) adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
+        else this.startRaid(adventure, server);
     }
 
-    private void startRaid(RaidAdventureInstance adventure, MinecraftServer server) {
-        RaidBoss boss = adventure.adventure().boss();
+    private void startRaid(RaidSession adventure, MinecraftServer server) {
+        RaidBoss boss = adventure.boss();
         Vec3 vec3;
         ServerLevel level;
         RaidRegion region = RaidRegionHelper.getRegion(adventure.getRaid());
         if (region != null) {
             vec3 = region.getBossPos();
             level = ModDimensions.getRaidDimension(server);
-            region.addRegionTicket(level);
         }
         else {
             vec3 = adventure.startPos();
             level = adventure.startDimension();
         }
 
-        PokemonEntity pokemonEntity = boss.getBossEntity(level, null);
+        PokemonEntity pokemonEntity = boss.getBossEntity(level, adventure.raidSync());
         double scaleMod = region != null ? CustomRaidRegistries.RAID_DEN_REGISTRY.getScaleModifier(region.structure()) : 1.0;
         pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleMod));
         if (boss.getNoAi() && adventure.noAI()) pokemonEntity.setNoAi(true);

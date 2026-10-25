@@ -4,11 +4,11 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidState;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ITransformer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -74,19 +74,19 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     }
 
     @Override
-    public RaidSession crd_getRaidSession() {
-        return RaidRegistry.getRaidSession(this.crd_raidBoss);
+    public RaidBoss crd_getRaidBoss() {
+        return CustomRaidRegistries.RAID_REGISTRY.getRaidBoss(this.crd_raidBoss);
     }
 
     @Override
-    public ResourceLocation crd_getRaidSessionId() {
+    public ResourceLocation crd_getRaidBossId() {
         return this.crd_raidBoss;
     }
 
     @Override
-    public void crd_setRaidSession(ResourceLocation raid) {
+    public void crd_setRaidBoss(ResourceLocation raid) {
         this.crd_raidBoss = raid;
-        RaidRegistry.requestRaidSession(this.crd_raidBoss);
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.crd_raidBoss);
     }
 
     @Override
@@ -139,7 +139,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
             ci.cancel();
         }
 
-        if (this.level() instanceof ServerLevel && this.crd_isRaidBoss() && this.level().getGameTime() % 400 == 0) RaidRegistry.requestRaidSession(this.crd_raidBoss);
+        if (this.level() instanceof ServerLevel && this.crd_isRaidBoss() && this.level().getGameTime() % 400 == 0) CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.crd_raidBoss);
     }
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)
@@ -167,7 +167,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     @Inject(method = "load", at = @At("RETURN"))
     private void loadInject(CompoundTag nbt, CallbackInfo ci) {
         if (nbt.contains("raid_id")) this.crd_raidId = UUID.fromString(nbt.getString("raid_id"));
-        if (nbt.contains("raid_boss")) this.crd_setRaidSession(ResourceLocation.parse(nbt.getString("raid_boss")));
+        if (nbt.contains("raid_boss")) this.crd_setRaidBoss(ResourceLocation.parse(nbt.getString("raid_boss")));
         this.crd_flagRemove = nbt.contains("raid_flag_remove");
         if (nbt.contains("raid_state")) this.crd_raidState = nbt.getInt("raid_state") == 1 ? RaidState.SUCCESS : RaidState.FAILED;
 

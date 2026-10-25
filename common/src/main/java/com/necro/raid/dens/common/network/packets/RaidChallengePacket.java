@@ -76,7 +76,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             return;
         }
 
-        RaidSession session = ((IRaidAccessor) entity).crd_getRaidSession();
+        RaidSession session = ((IRaidAccessor) entity).crd_getRaidBoss();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         RaidInstance active = raid == null ? null : raid.getActive();

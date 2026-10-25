@@ -36,6 +36,10 @@ public class ClientConfig implements ConfigData {
     @Comment("Beacon Beam Strength for Tier Seven Raids")
     public int beam_strength_tier_seven = 224;
     @ConfigEntry.Category("beacon_beam")
+    @ConfigEntry.BoundedDiscrete(max=255)
+    @Comment("Beacon Beam Strength for Tier Seven Raids")
+    public int beam_strength_adventure = 255;
+    @ConfigEntry.Category("beacon_beam")
     @Comment("Render the raid crystal particle effects")
     public boolean show_particles = true;
     @ConfigEntry.Category("beacon_beam")

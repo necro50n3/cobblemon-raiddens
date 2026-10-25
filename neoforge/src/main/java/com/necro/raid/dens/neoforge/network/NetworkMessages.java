@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -50,7 +50,7 @@ public class NetworkMessages {
         RaidDenNetworkMessages.REMOVE_SYNCED_BOSS = (server, boss) ->
             NetworkMessages.sendPacketToAll(new RaidBossSyncRemovePacket(boss));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.getCache()));
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(CustomRaidRegistries.RAID_REGISTRY.getCache()));
         RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->

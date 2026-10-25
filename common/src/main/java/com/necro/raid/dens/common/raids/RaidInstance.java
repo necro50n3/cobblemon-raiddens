@@ -19,8 +19,6 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassRespon
 import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.data.RaidSession;
-import com.necro.raid.dens.common.data.adventure.RaidAdventure;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
@@ -34,7 +32,6 @@ import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.raids.scripts.triggers.TimerTrigger;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.showdown.events.*;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -89,9 +86,9 @@ public class RaidInstance extends AbstractRaidSession {
         this.failedToStart = false;
         this.bossEntity = entity;
 
-        RaidSession session = ((IRaidAccessor) entity).crd_getRaidSession();
-        if (session == null) session = RaidRegistry.requestRaidSession(((IRaidAccessor) entity).crd_getRaidSessionId()).resultNow().orElseThrow();
-        this.raidBoss = session instanceof RaidBoss ? (RaidBoss) session : ((RaidAdventure) session).boss();
+        RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
+        if (boss == null) boss = CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(((IRaidAccessor) entity).crd_getRaidBossId()).resultNow().orElseThrow();
+        this.raidBoss = boss;
 
         this.bossEvent = new ServerBossEvent(
             this.bossBarText(entity, this.raidBoss),

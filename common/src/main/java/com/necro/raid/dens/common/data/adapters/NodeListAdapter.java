@@ -14,7 +14,8 @@ public class NodeListAdapter implements JsonSerializer<List<AdventureNode>>, Jso
         if (!json.isJsonArray()) throw new JsonParseException("Expected a JSON array");
         List<AdventureNode> result = new ArrayList<>();
         for (JsonElement element : json.getAsJsonArray()) {
-            result.add(NodeAdapter.INSTANCE.deserialize(element, typeOfT, context));
+            AdventureNode node = NodeAdapter.INSTANCE.deserialize(element, typeOfT, context);
+            if (node != null) result.add(node);
         }
         return result;
     }

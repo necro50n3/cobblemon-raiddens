@@ -2,12 +2,11 @@ package com.necro.raid.dens.common.items.item;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.components.ModComponents;
-import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.OpenPouchEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.loot.context.RaidLootContexts;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -53,9 +52,9 @@ public class RaidPouchItem extends Item {
         boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
         player.getCooldowns().addCooldown(this, 2);
 
-        RaidRegistry.requestRaidSession(
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(
             bossId,
-            session -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, session, tier, applyBonus),
+            boss -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, boss, tier, applyBonus),
             (id, error) -> this.onFailed((ServerPlayer) player),
             player.getServer()
         );
@@ -63,13 +62,13 @@ public class RaidPouchItem extends Item {
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 
-    private void openPouch(ServerLevel level, ServerPlayer player, InteractionHand hand, ItemStack snapshot, RaidSession session, RaidTier tier, boolean applyBonus) {
+    private void openPouch(ServerLevel level, ServerPlayer player, InteractionHand hand, ItemStack snapshot, RaidBoss boss, RaidTier tier, boolean applyBonus) {
         player.getCooldowns().removeCooldown(this);
         if (player.isRemoved() || !player.isAlive()) return;
 
         ItemStack itemStack = player.getItemInHand(hand);
         if (itemStack.isEmpty() || !ItemStack.isSameItemSameComponents(itemStack, snapshot)) return;
-        List<ItemStack> rewards = this.getRewardItems(itemStack, session, tier, level, player, applyBonus);
+        List<ItemStack> rewards = this.getRewardItems(itemStack, boss, tier, level, player, applyBonus);
         if (!RaidEvents.OPEN_POUCH.postWithResult(new OpenPouchEvent(player, itemStack, rewards))) return;
 
         for (ItemStack item : rewards) {
@@ -98,13 +97,13 @@ public class RaidPouchItem extends Item {
         tooltip.add(Component.translatable(RaidFeature.getTranslatable(feature)).append(" | ").append(tier.getStars()));
     }
 
-    private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidSession session, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {
+    private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {
         List<ItemStack> rewards;
-        BossLootTable lootTable = session == null ? null : session.instance().getLootTable();
+        BossLootTable lootTable = boss == null ? null : boss.instance().getLootTable();
         if (lootTable != null && lootTable.replace()) rewards = new ArrayList<>();
         else rewards = this.getDefault(itemStack, tier, level, player, applyBonus);
 
-        if (lootTable != null) rewards.addAll(session.instance().getRandomRewards(level, itemStack, player, applyBonus));
+        if (lootTable != null) rewards.addAll(boss.instance().getRandomRewards(level, itemStack, player, applyBonus));
         return rewards;
     }
 

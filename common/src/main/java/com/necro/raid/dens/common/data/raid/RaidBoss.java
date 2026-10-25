@@ -21,12 +21,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.adapters.*;
+import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.moves.RaidMovesetBuilder;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.*;
@@ -69,6 +71,8 @@ public class RaidBoss implements RaidSession {
     private ResourceLocation music;
     @SerializedName("no_ai")
     private Boolean noAi;
+    @SerializedName("adventure")
+    private List<AdventureNode> nodes;
 
     @SerializedName("max_players")
     private Integer maxPlayers;
@@ -109,12 +113,11 @@ public class RaidBoss implements RaidSession {
     private transient Set<String> displayAspects;
 
     private transient ResourceLocation id;
-    private transient boolean isAdventure;
 
     public RaidBoss(PokemonProperties reward,PokemonProperties boss, RaidTier raidTier, RaidType raidType,
                     String raidFeature, BossLootTable lootTable, Double weight, List<String> den, UniqueKey key,
-                    Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Boolean noAi, Integer maxPlayers,
-                    Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
+                    Component bossBarText, Float scale, Boolean forceDynamax, ResourceLocation music, Boolean noAi, List<AdventureNode> nodes,
+                    Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
                     String raidAI, List<String> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
                     Float catchRate) {
@@ -132,6 +135,7 @@ public class RaidBoss implements RaidSession {
         this.forceDynamax = forceDynamax;
         this.music = music;
         this.noAi = noAi;
+        this.nodes = nodes;
 
         this.maxPlayers = maxPlayers;
         this.maxClears = maxClears;
@@ -174,6 +178,7 @@ public class RaidBoss implements RaidSession {
         this.forceDynamax = null;
         this.music = null;
         this.noAi = null;
+        this.nodes = new ArrayList<>();
 
         this.maxPlayers = null;
         this.maxClears = null;
@@ -240,6 +245,7 @@ public class RaidBoss implements RaidSession {
         if (this.forceDynamax == null) this.forceDynamax = false;
         if (this.music == null) this.music = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "battle.raid." + this.raidTier.getSerializedName());
         if (this.noAi == null) this.noAi = true;
+        if (this.nodes == null) this.nodes = new ArrayList<>();
 
         if (this.maxPlayers == null) this.maxPlayers = tierConfig.maxPlayers();
         if (this.maxClears == null) this.maxClears = tierConfig.maxClears();
@@ -262,7 +268,6 @@ public class RaidBoss implements RaidSession {
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
-        this.isAdventure = false;
     }
 
     public void applyAspects() {
@@ -336,7 +341,7 @@ public class RaidBoss implements RaidSession {
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToBoss(pokemon, pokemonEntity);
 
-        ((IRaidAccessor) pokemonEntity).crd_setRaidSession(this.id);
+        ((IRaidAccessor) pokemonEntity).crd_setRaidBoss(this.id);
         pokemonEntity.getPokemon().setScaleModifier(this.scale == null ? this.calculateScale(pokemonEntity) : this.scale);
 
         pokemonEntity.refreshDimensions();
@@ -557,6 +562,10 @@ public class RaidBoss implements RaidSession {
         return this.raidAI;
     }
 
+    public List<AdventureNode> getNodes() {
+        return this.nodes;
+    }
+
     public List<String> getMarks() {
         return this.marks;
     }
@@ -734,6 +743,10 @@ public class RaidBoss implements RaidSession {
         this.raidAI = raidAI;
     }
 
+    public void setNodes(List<AdventureNode> nodes) {
+        this.nodes = nodes;
+    }
+
     public void setMarks(List<String> marks) {
         this.marks = new ArrayList<>(marks);
     }
@@ -768,13 +781,11 @@ public class RaidBoss implements RaidSession {
 
     @Override
     public boolean isAdventure() {
-        return this.isAdventure;
+        return !this.nodes.isEmpty();
     }
 
     @Override
-    public void setIsAdventure(boolean isAdventure) {
-        this.isAdventure = isAdventure;
-    }
+    public void setIsAdventure(boolean isAdventure) {}
 
     public RaidBoss copy() {
         PokemonProperties rewardCopy = this.reward.copy();
@@ -797,6 +808,7 @@ public class RaidBoss implements RaidSession {
             this.forceDynamax,
             this.music,
             this.noAi,
+            new ArrayList<>(this.nodes),
             this.maxPlayers,
             this.maxClears,
             this.haRate,
@@ -838,6 +850,8 @@ public class RaidBoss implements RaidSession {
             .registerTypeAdapter(UniqueKey.class, new UniqueKeyAdapter())
             .registerTypeAdapter(BossLootTable.class, new BossLootTableAdapter())
             .registerTypeAdapter(Component.class, new RaidBossTextAdapter())
+            .registerTypeAdapter(AdventureNode.class, NodeAdapter.INSTANCE)
+            .registerTypeAdapter(new TypeToken<List<AdventureNode>>(){}.getType(), NodeListAdapter.INSTANCE)
             .create();
     }
 }
