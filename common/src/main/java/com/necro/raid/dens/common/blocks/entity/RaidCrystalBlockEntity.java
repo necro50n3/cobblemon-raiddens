@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.blocks.entity;
 
-import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
@@ -64,7 +63,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     private RaidResetContext lastReset;
     private boolean isOpen;
-    private RaidSyncContext raidSync;
     private Consumer<ServerPlayer> aspectSync;
 
     private boolean isGenerating;
@@ -237,21 +235,12 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
 
     public boolean spawnRaid(UUID playerId, RaidBoss boss, ServerLevel level) {
         RaidSession raid = new RaidSession(playerId, this.getUuid(), boss);
-        if (CobblemonRaidDens.CONFIG.sync_rewards && this.raidSync != null) raid.setRaidSync(this.raidSync);
         raid.start(level.getServer());
         if (raid.isFinished()) return false;
         RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), raid);
 
         if (raid.isAdventure() || raid.getActive() == null) return true;
         PokemonEntity bossEntity = raid.getActive().getBossEntity();
-
-        if (CobblemonRaidDens.CONFIG.sync_rewards && this.raidSync == null) {
-            this.raidSync = new RaidSyncContext(
-                bossEntity.getAspects(),
-                bossEntity.getPokemon().getMoveSet().getMoves().stream().map(Move::getName).toList()
-            );
-            raid.setRaidSync(this.raidSync);
-        }
 
         if (bossEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
             this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, bossEntity));
@@ -263,7 +252,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     public void clearRaid(boolean wasWin) {
         this.clears++;
         if (wasWin) {
-            this.raidSync = null;
+            RaidHelper.clearRaidSync(this.getUuid());
             this.setChanged();
         }
         if (this.isAtMaxClears()) {
@@ -351,7 +340,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         this.inactiveTicks = 0;
         this.lastReset = new RaidResetContext(gameTime);
         this.raidBoss = raidBoss;
-        this.raidSync = null;
+        RaidHelper.clearRaidSync(this.getUuid());
         this.setChanged();
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
@@ -437,7 +426,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("is_open")) this.isOpen = true;
-        if (compoundTag.contains("raid_sync")) this.raidSync = RaidSyncContext.load(compoundTag.getCompound("raid_sync"));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {
@@ -459,7 +447,6 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
-        if (this.raidSync != null) compoundTag.put("raid_sync", this.raidSync.save(new CompoundTag()));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {

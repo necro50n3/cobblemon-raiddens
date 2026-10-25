@@ -3,12 +3,14 @@ package com.necro.raid.dens.common.raids.helpers;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.data.raid.RaidResetContext;
+import com.necro.raid.dens.common.data.raid.RaidSyncContext;
 import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.RequestHandler;
 import com.necro.raid.dens.common.raids.rewards.RewardHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +30,7 @@ public class RaidHelper extends SavedData {
 
     private final Map<UUID, Set<UUID>> CLEARED_RAIDS = new HashMap<>();
     private final Map<UUID, RaidState> RAID_CLOSE_QUEUE = new HashMap<>();
+    private final Map<UUID, Map<ResourceLocation, RaidSyncContext>> RAID_SYNC = new HashMap<>();
     private RaidResetContext GLOBAL_RESET = new RaidResetContext(0, 0, 0);
 
     public static void initRequest(ServerPlayer host, RaidCrystalBlockEntity blockEntity) {
@@ -94,6 +97,20 @@ public class RaidHelper extends SavedData {
         RaidState state = INSTANCE.RAID_CLOSE_QUEUE.remove(raid);
         INSTANCE.setDirty();
         return state;
+    }
+
+    public static RaidSyncContext getRaidSync(UUID raid, ResourceLocation boss) {
+        return INSTANCE.RAID_SYNC.getOrDefault(raid, new HashMap<>()).get(boss);
+    }
+
+    public static void setRaidSync(UUID raid, ResourceLocation boss, RaidSyncContext context) {
+        INSTANCE.RAID_SYNC.computeIfAbsent(raid, uuid -> new HashMap<>()).put(boss, context);
+        INSTANCE.setDirty();
+    }
+
+    public static void clearRaidSync(UUID raid) {
+        INSTANCE.RAID_SYNC.remove(raid);
+        INSTANCE.setDirty();
     }
 
     public static RaidResetContext getGlobalCycle() {
@@ -166,6 +183,17 @@ public class RaidHelper extends SavedData {
             data.RAID_CLOSE_QUEUE.put(UUID.fromString(uuid), state);
         }
 
+        ListTag raidSync = compoundTag.getList("raid_sync", Tag.TAG_COMPOUND);
+        for (Tag t : raidSync) {
+            CompoundTag entry = (CompoundTag) t;
+            String raid = entry.getString("uuid");
+            if (raid.isEmpty() || entry.getString("boss").isEmpty()) continue;
+            ResourceLocation boss = ResourceLocation.parse(entry.getString("boss"));
+            RaidSyncContext context = RaidSyncContext.load(entry.getCompound("context"));
+
+            data.RAID_SYNC.computeIfAbsent(UUID.fromString(raid), uuid -> new HashMap<>()).put(boss, context);
+        }
+
         REWARD_QUEUE.clear();
         ListTag rewardQueue = compoundTag.getList("reward_queue", Tag.TAG_COMPOUND);
         for (Tag t : rewardQueue) {
@@ -210,6 +238,19 @@ public class RaidHelper extends SavedData {
             raidCloseQueue.add(e);
         }
         compoundTag.put("raid_close_queue", raidCloseQueue);
+
+        ListTag raidSync = new ListTag();
+        for (Map.Entry<UUID, Map<ResourceLocation, RaidSyncContext>> entry : RAID_SYNC.entrySet()) {
+            for (Map.Entry<ResourceLocation, RaidSyncContext> context : entry.getValue().entrySet()) {
+                CompoundTag e = new CompoundTag();
+                e.putString("uuid", entry.getKey().toString());
+                e.putString("boss", context.getKey().toString());
+                e.put("context", context.getValue().save(new CompoundTag()));
+
+                raidSync.add(e);
+            }
+        }
+        compoundTag.put("raid_sync", raidSync);
 
         ListTag rewardQueueTag = new ListTag();
         for (RewardHandler handler : REWARD_QUEUE.values()) {

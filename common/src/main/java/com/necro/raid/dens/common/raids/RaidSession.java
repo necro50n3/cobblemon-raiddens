@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.adventure.BossNode;
 import com.necro.raid.dens.common.raids.adventure.RaidNode;
+import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -33,7 +34,6 @@ public class RaidSession extends AbstractRaidSession {
     private boolean noAI;
     private boolean isInvulnerable;
     private boolean isPersistent;
-    private @Nullable RaidSyncContext raidSync;
 
     private RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
         super(host, raid, isInDen);
@@ -50,7 +50,6 @@ public class RaidSession extends AbstractRaidSession {
         this.noAI = true;
         this.isInvulnerable = true;
         this.isPersistent = false;
-        this.raidSync = null;
     }
 
     public RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss) {
@@ -255,10 +254,6 @@ public class RaidSession extends AbstractRaidSession {
     }
 
     public RaidSyncContext raidSync() {
-        return this.raidSync;
-    }
-
-    public void setRaidSync(@NotNull RaidSyncContext raidSync) {
-        this.raidSync = raidSync;
+        return RaidHelper.getRaidSync(this.raid, this.raidBoss.getId());
     }
 }
