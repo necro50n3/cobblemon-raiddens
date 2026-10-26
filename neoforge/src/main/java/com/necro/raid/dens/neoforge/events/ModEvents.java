@@ -1,8 +1,11 @@
 package com.necro.raid.dens.neoforge.events;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
@@ -57,6 +60,7 @@ public class ModEvents {
     public static void onServerStarting(ServerStartingEvent event) {
         CustomRaidRegistries.freeze();
         CustomRaidRegistries.RAID_REGISTRY.init(event.getServer());
+        Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
     }
 
     @SubscribeEvent

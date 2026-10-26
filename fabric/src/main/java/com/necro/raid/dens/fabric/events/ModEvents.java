@@ -1,7 +1,10 @@
 package com.necro.raid.dens.fabric.events;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
@@ -44,6 +47,7 @@ public class ModEvents {
     public static void onServerStarting(MinecraftServer server) {
         CustomRaidRegistries.freeze();
         CustomRaidRegistries.RAID_REGISTRY.init(server);
+        Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
     }
 
     public static void onServerStarted(MinecraftServer server) {

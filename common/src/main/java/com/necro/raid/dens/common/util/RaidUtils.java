@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.util;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -15,6 +17,7 @@ import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidState;
@@ -141,6 +144,14 @@ public class RaidUtils {
     private static void leaveRaidFallback(Player player) {
         RaidHelper.removeRequests(player.getUUID());
         RaidJoinHelper.removeParticipant(player);
+        removePlayerParty((ServerPlayer) player);
+    }
+
+    public static void removePlayerParty(ServerPlayer player) {
+        RaidStoreFactory.removePlayerParty(player.getUUID());
+        PlayerPartyStore party = PlayerExtensionsKt.party(player);
+        party.sendTo(player);
+        Cobblemon.INSTANCE.getStorage().onPlayerDataSync(player);
     }
 
     public static boolean isRaidDenKey(ItemStack itemStack) {

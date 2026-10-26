@@ -1,14 +1,18 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.CobblemonNetwork;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.net.messages.client.storage.party.SetPartyReferencePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
@@ -21,15 +25,25 @@ import java.util.*;
 
 public class RaidBuilder {
     public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss) {
-        List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player)
-            .toBattleTeam(false, false, leadingPokemon)
-            .stream().filter(p ->
-                !p.getEffectedPokemon().isFainted()
-                && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
-                && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
-                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().heldItem())
-            ).toList();
-        if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, boss.getRaidPartySize()));
+        PlayerPartyStore party;
+        if (!RaidStoreFactory.hasPlayerParty(player.getUUID())) {
+            List<Pokemon> playerTeam = PlayerExtensionsKt.party(player).toGappyList().stream()
+                .filter(p -> p != null
+                    && !RaidUtils.isPokemonBlacklisted(p)
+                    && !RaidUtils.isAbilityBlacklisted(p.getAbility())
+                    && !RaidUtils.isHeldItemBlacklisted(p.heldItem()))
+                .toList();
+            playerTeam = playerTeam.subList(0, Mth.clamp(playerTeam.size(), 1, boss.getRaidPartySize()));
+            RaidStoreFactory.addPlayerParty(player.getUUID(), playerTeam);
+
+            party = PlayerExtensionsKt.party(player);
+            party.initialize();
+            party.sendTo(player);
+            CobblemonNetwork.sendPacketToPlayers(List.of(player), new SetPartyReferencePacket(party.getUuid()));
+        }
+        else party = PlayerExtensionsKt.party(player);
+        List<BattlePokemon> battleTeam = !party.isEmpty() ? PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon) : List.of();
+
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),

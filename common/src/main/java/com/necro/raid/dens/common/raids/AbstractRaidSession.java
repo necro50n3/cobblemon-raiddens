@@ -8,6 +8,7 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
@@ -152,6 +153,7 @@ public abstract class AbstractRaidSession {
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
         if (this.host != null) RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
+        this.activePlayers.forEach(RaidUtils::removePlayerParty);
     }
 
     protected boolean shouldClearRaid() {
