@@ -5,31 +5,34 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import kotlin.Unit;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 
 public class RaidDenCriteriaTriggers {
-    public static Holder<? extends CriterionTrigger<? extends CriterionTriggerInstance>> JOIN_RAID_DEN;
-    public static Holder<? extends CriterionTrigger<? extends CriterionTriggerInstance>> RAID_TIER;
-    public static Holder<? extends CriterionTrigger<? extends CriterionTriggerInstance>> RAID_FEATURE;
-    public static Holder<? extends CriterionTrigger<? extends CriterionTriggerInstance>> RAID_SHINY;
+    public static Holder<JoinRaidDenTrigger> JOIN_RAID_DEN;
+    public static Holder<RaidTierTrigger> RAID_TIER;
+    public static Holder<RaidFeatureTrigger> RAID_FEATURE;
+    public static Holder<RaidShinyTrigger> RAID_SHINY;
+    public static Holder<RaidAdventureTrigger> RAID_ADVENTURE;
 
     public static void triggerJoinRaid(ServerPlayer player) {
-        ((JoinRaidDenTrigger) JOIN_RAID_DEN.value()).trigger(player);
+        JOIN_RAID_DEN.value().trigger(player);
     }
 
     public static void triggerRaidTier(ServerPlayer player, RaidTier tier) {
-        ((RaidTierTrigger) RAID_TIER.value()).trigger(player, tier);
+        RAID_TIER.value().trigger(player, tier);
     }
 
     public static void triggerRaidFeature(ServerPlayer player, String feature) {
-        ((RaidFeatureTrigger) RAID_FEATURE.value()).trigger(player, feature);
+        RAID_FEATURE.value().trigger(player, feature);
     }
 
     public static void triggerRaidShiny(ServerPlayer player, Pokemon pokemon) {
-        ((RaidShinyTrigger) RAID_SHINY.value()).trigger(player, pokemon.getShiny());
+        RAID_SHINY.value().trigger(player, pokemon.getShiny());
+    }
+
+    public static void triggerRaidAdventure(ServerPlayer player, boolean adventure) {
+        RAID_ADVENTURE.value().trigger(player, adventure);
     }
 
     public static void init() {
@@ -42,6 +45,7 @@ public class RaidDenCriteriaTriggers {
             if (!event.isWin()) return Unit.INSTANCE;
             triggerRaidTier(event.player(), event.raidBoss().getTier());
             triggerRaidFeature(event.player(), event.raidBoss().getFeature());
+            triggerRaidAdventure(event.player(), event.raidBoss().isAdventure());
             return Unit.INSTANCE;
         });
     }

@@ -29,7 +29,7 @@ public class JoinRaidDenTrigger extends SimpleCriterionTrigger<JoinRaidDenTrigge
             ).apply(instance, JoinRaidDenTrigger.TriggerInstance::new));
 
         public static Criterion<TriggerInstance> joinRaidDen() {
-            return ((JoinRaidDenTrigger) RaidDenCriteriaTriggers.JOIN_RAID_DEN.value()).createCriterion(new TriggerInstance(Optional.empty()));
+            return RaidDenCriteriaTriggers.JOIN_RAID_DEN.value().createCriterion(new TriggerInstance(Optional.empty()));
         }
     }
 }

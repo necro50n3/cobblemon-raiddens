@@ -3,6 +3,8 @@
   "advancement.cobblemonraiddens.great_friend.description": "각 응원을 하나씩 모두 사용하세요.",
   "advancement.cobblemonraiddens.join_raid.title": "코블몬 레이드 굴",
   "advancement.cobblemonraiddens.join_raid.description": "첫 레이드에 참가하세요.",
+
+
   "advancement.cobblemonraiddens.raid_dynamax.title": "다이맥스 어드벤처",
   "advancement.cobblemonraiddens.raid_dynamax.description": "다이맥스 레이드를 클리어하세요.",
   "advancement.cobblemonraiddens.raid_mega.title": "넘쳐흐르는 힘",
@@ -163,6 +165,7 @@
   "stat.cobblemonraiddens.tier_five_completed": "클리어한 5성 레이드 수",
   "stat.cobblemonraiddens.tier_six_completed": "클리어한 6성 레이드 수",
   "stat.cobblemonraiddens.tier_seven_completed": "클리어한 7성 레이드 수",
+
   "tag.item.cobblemonraiddens.raid_den_keys": "레이드 굴 키",
   "text.autoconfig.cobblemonraiddens/client.title": "코블몬 레이드 굴 설정",
   "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "비콘 빔",
@@ -175,6 +178,7 @@
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five": "5성 비콘",
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six": "6성 비콘",
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven": "7성 비콘",
+
   "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "기존 비콘 효과를 표시합니다",
   "text.autoconfig.cobblemonraiddens/client.option.show_particles": "레이드 크리스탈 파티클 효과를 표시합니다",
   "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "참가 요청 자동 수락",

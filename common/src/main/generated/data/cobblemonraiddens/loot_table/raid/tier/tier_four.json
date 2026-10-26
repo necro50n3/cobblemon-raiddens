@@ -696,7 +696,8 @@
           "conditions": [
             {
               "condition": "cobblemonraiddens:raid_pouch_condition",
-              "feature": "tera"
+              "feature": "tera",
+              "is_adventure": false
             }
           ],
           "functions": [
@@ -726,7 +727,8 @@
           "conditions": [
             {
               "condition": "cobblemonraiddens:raid_pouch_condition",
-              "feature": "dynamax"
+              "feature": "dynamax",
+              "is_adventure": false
             }
           ],
           "functions": [
@@ -753,7 +755,8 @@
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "shadow"
+          "feature": "shadow",
+          "is_adventure": false
         }
       ],
       "entries": [

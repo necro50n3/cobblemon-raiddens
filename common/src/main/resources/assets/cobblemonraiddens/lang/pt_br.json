@@ -3,6 +3,8 @@
     "advancement.cobblemonraiddens.great_friend.description": "Utilize um de cada tipo de Apoio.",
     "advancement.cobblemonraiddens.join_raid.title": "Cobblemon Raid Dens",
     "advancement.cobblemonraiddens.join_raid.description": "Entre na sua primeira invasão.",
+
+
     "advancement.cobblemonraiddens.raid_dynamax.title": "Uma aventura Dynamax",
     "advancement.cobblemonraiddens.raid_dynamax.description": "Derrote uma invasão dynamax.",
     "advancement.cobblemonraiddens.raid_mega.title": "Transbordando poder",
@@ -163,6 +165,7 @@
     "stat.cobblemonraiddens.tier_five_completed": "Invasões de nível cinco concluídas",
     "stat.cobblemonraiddens.tier_six_completed": "Invasões de nível seis concluídas",
     "stat.cobblemonraiddens.tier_seven_completed": "Invasões de nível sete concluídas",
+
     "tag.item.cobblemonraiddens.raid_den_keys": "Chave da Toca de Invasão",
     "text.autoconfig.cobblemonraiddens/client.title": "Configurações do Cobblemon Raid Dens",
     "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "Feixes de sinalizador",
@@ -175,6 +178,7 @@
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five": "Sinalizador de Nível Cinco",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six": "Sinalizador de Nível Seis",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven": "Sinalizador de Nível Sete",
+
     "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "Renderizar o efeito de sinalizador legado",
     "text.autoconfig.cobblemonraiddens/client.option.show_particles": "Renderizar os efeitos de partículas do cristal de invasão",
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",

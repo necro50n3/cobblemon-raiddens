@@ -1,0 +1,32 @@
+{
+  "parent": "cobblemonraiddens:join_raid",
+  "criteria": {
+    "completed_adventure": {
+      "conditions": {
+        "adventure": true
+      },
+      "trigger": "cobblemonraiddens:completed_adventure"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "translate": "advancement.cobblemonraiddens.raid_adventure.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "cobblemon:automaton_armor_trim_smithing_template"
+    },
+    "title": {
+      "translate": "advancement.cobblemonraiddens.raid_adventure.title"
+    }
+  },
+  "requirements": [
+    [
+      "completed_adventure"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
