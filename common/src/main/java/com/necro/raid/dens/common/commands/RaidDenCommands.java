@@ -242,7 +242,7 @@ public class RaidDenCommands {
         if (location == null) {
             RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
             RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, cycleMode, location, bucket);
@@ -287,14 +287,14 @@ public class RaidDenCommands {
         RaidType type;
         if (!blockState.hasProperty(RaidCrystalBlock.RAID_TYPE) || cycleMode.canCycleType()) type = null;
         else type = level.getBlockState(blockPos).getValue(RaidCrystalBlock.RAID_TYPE);
-        return createRaidDen(context, blockPos, level, CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(random, level, raidTier, type, null), cycleMode, canReset);
+        return createRaidDen(context, blockPos, level, CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(random, level, raidTier, type, null, null), cycleMode, canReset);
     }
 
     private static int createRaidDenWithBucketFromExisting(Level level, BlockState blockState, BlockPos blockPos, ResourceLocation bucket, boolean canReset) {
         ResourceLocation location = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucket).getRandomRaidBoss(level.getRandom(), level);
         if (location == null) {
             RaidTier tier = RaidTier.getWeightedRandom(level.getRandom(), level);
-            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, null, null);
+            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, null, null, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, RaidCycleMode.BUCKET, location, bucket);

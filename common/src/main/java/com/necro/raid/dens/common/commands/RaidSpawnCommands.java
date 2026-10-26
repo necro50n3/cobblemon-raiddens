@@ -169,7 +169,7 @@ public class RaidSpawnCommands {
     }
 
     private static int spawnBossFromTier(CommandContext<CommandSourceStack> context, Vec3 vec3, ServerLevel dimension, RaidTier raidTier, boolean noAI, boolean isInvulnerable, boolean isPersistent) {
-        ResourceLocation boss = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(dimension.getRandom(), dimension, raidTier, null, null);
+        ResourceLocation boss = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(dimension.getRandom(), dimension, raidTier, null, null, null);
         return spawnBoss(context, vec3, dimension, boss, noAI, isInvulnerable, isPersistent);
     }
 

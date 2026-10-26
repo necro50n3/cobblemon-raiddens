@@ -31,6 +31,7 @@ public class RaidRegistry {
     private final Map<RaidTier, BitSet> byTier = new EnumMap<>(RaidTier.class);
     private final Map<RaidType, BitSet> byType = new EnumMap<>(RaidType.class);
     private final Map<String, BitSet> byFeature = new HashMap<>();
+    private final BitSet byAdventure = new BitSet();
     private final List<ResourceLocation> raidList = new ArrayList<>();
     private final Map<ResourceLocation, Integer> raidIndex = new HashMap<>();
     private final Map<ResourceLocation, Set<ResourceLocation>> raidTags = new HashMap<>();
@@ -41,40 +42,41 @@ public class RaidRegistry {
     private double[] weightsByIndex = new double[0];
     private RaidTier[] tierByIndex = new RaidTier[0];
 
-    public void register(RaidBoss raidBoss) {
-        if (loading.put(raidBoss.getId(), raidBoss) == null) {
-            int index = raidList.size();
-            raidList.add(raidBoss.getId());
-            raidIndex.put(raidBoss.getId(), index);
+    public void register(RaidBoss boss) {
+        if (this.loading.put(boss.getId(), boss) == null) {
+            int index = this.raidList.size();
+            this.raidList.add(boss.getId());
+            this.raidIndex.put(boss.getId(), index);
         }
     }
 
     public void registerAll() {
-        int size = raidList.size();
-        weightsByIndex = new double[size];
-        tierByIndex = new RaidTier[size];
+        int size = this.raidList.size();
+        this.weightsByIndex = new double[size];
+        this.tierByIndex = new RaidTier[size];
 
         for (int index = 0; index < raidList.size(); index++) {
-            RaidBoss raidBoss = loading.get(raidList.get(index));
+            RaidBoss boss = loading.get(raidList.get(index));
 
-            byTier.computeIfAbsent(raidBoss.getTier(), tier -> new BitSet()).set(index);
-            byType.computeIfAbsent(raidBoss.getType(), type -> new BitSet()).set(index);
-            byFeature.computeIfAbsent(raidBoss.getFeature(), feature -> new BitSet()).set(index);
+            this.byTier.computeIfAbsent(boss.getTier(), tier -> new BitSet()).set(index);
+            this.byType.computeIfAbsent(boss.getType(), type -> new BitSet()).set(index);
+            this.byFeature.computeIfAbsent(boss.getFeature(), feature -> new BitSet()).set(index);
+            if (boss.isAdventure()) this.byAdventure.set(index);
 
-            weightsByIndex[index] = raidBoss.getWeight();
-            tierByIndex[index] = raidBoss.getTier();
+            this.weightsByIndex[index] = boss.getWeight();
+            this.tierByIndex[index] = boss.getTier();
 
-            if (raidBoss.getWeight() > 0.0) {
-                raidBoss.getTier().setPresent();
-                raidBoss.getType().setPresent();
+            if (boss.getWeight() > 0.0) {
+                boss.getTier().setPresent();
+                boss.getType().setPresent();
             }
         }
 
-        Map<ResourceLocation, RaidBoss> snapshot = loading;
-        loading = new HashMap<>();
-        pending.set(snapshot);
+        Map<ResourceLocation, RaidBoss> snapshot = this.loading;
+        this.loading = new HashMap<>();
+        this.pending.set(snapshot);
 
-        BinaryRecordStore<ResourceLocation, RaidBoss> current = store;
+        BinaryRecordStore<ResourceLocation, RaidBoss> current = this.store;
         if (current != null) this.persist(current, snapshot);
 
         CobblemonRaidDens.LOGGER.info("Registered {} raid bosses", size);
@@ -86,30 +88,30 @@ public class RaidRegistry {
                 CobblemonRaidDens.LOGGER.error("Failed to write raid boss storage, keeping bosses in memory", error);
                 return;
             }
-            pending.compareAndSet(snapshot, Map.of());
+            this.pending.compareAndSet(snapshot, Map.of());
         });
     }
 
     public List<ResourceLocation> getAll() {
-        return raidList;
+        return this.raidList;
     }
 
     public Collection<RaidBoss> getCache() {
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
-        if (current == null) return Optional.of(pending.get().values()).orElse(List.of());
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
+        if (current == null) return Optional.of(this.pending.get().values()).orElse(List.of());
         return current.getAll();
     }
 
     public boolean cacheHas(ResourceLocation id) {
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
-        if (current == null) return Optional.of(pending.get().containsKey(id)).orElse(false);
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
+        if (current == null) return Optional.of(this.pending.get().containsKey(id)).orElse(false);
         return current.contains(id);
     }
 
     public CompletableFuture<Optional<RaidBoss>> requestRaidBoss(ResourceLocation location) {
         if (location == null || this.isClosed()) return CompletableFuture.completedFuture(Optional.empty());
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
-        if (current == null) return CompletableFuture.completedFuture(Optional.ofNullable(pending.get().get(location)));
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
+        if (current == null) return CompletableFuture.completedFuture(Optional.ofNullable(this.pending.get().get(location)));
         return current.getAsync(location);
     }
 
@@ -129,17 +131,17 @@ public class RaidRegistry {
 
     public @Nullable RaidBoss getRaidBoss(ResourceLocation location) {
         if (location == null) return null;
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
-        if (current == null) return pending.get().get(location);
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
+        if (current == null) return this.pending.get().get(location);
         return current.request(location);
     }
 
     public @Nullable RaidBoss getLoading(ResourceLocation location) {
-        return loading.get(location);
+        return this.loading.get(location);
     }
 
     public boolean exists(ResourceLocation location) {
-        return raidIndex.containsKey(location);
+        return this.raidIndex.containsKey(location);
     }
 
     public void setTags(Map<ResourceLocation, Set<ResourceLocation>> tags) {
@@ -147,21 +149,21 @@ public class RaidRegistry {
     }
 
     public void addTags(ResourceLocation tag, Set<ResourceLocation> bosses) {
-        raidTags.computeIfAbsent(tag, set -> new HashSet<>()).addAll(bosses);
-        bosses.forEach(boss -> tagReverseLookup.computeIfAbsent(boss, set -> new HashSet<>()).add(tag));
+        this.raidTags.computeIfAbsent(tag, set -> new HashSet<>()).addAll(bosses);
+        bosses.forEach(boss -> this.tagReverseLookup.computeIfAbsent(boss, set -> new HashSet<>()).add(tag));
     }
 
     public Set<ResourceLocation> getTagsOfBoss(ResourceLocation boss) {
-        return new HashSet<>(tagReverseLookup.getOrDefault(boss, Set.of()));
+        return new HashSet<>(this.tagReverseLookup.getOrDefault(boss, Set.of()));
     }
 
     public boolean isTag(ResourceLocation tag, ResourceLocation boss) {
-        if (!raidTags.containsKey(tag)) return false;
-        return raidTags.get(tag).contains(boss);
+        if (!this.raidTags.containsKey(tag)) return false;
+        return this.raidTags.get(tag).contains(boss);
     }
 
     public Set<ResourceLocation> getTagEntries(ResourceLocation tag) {
-        return raidTags.getOrDefault(tag, new HashSet<>());
+        return this.raidTags.getOrDefault(tag, new HashSet<>());
     }
 
     public BitSet getBitSet(RaidTier byTier) {
@@ -174,6 +176,10 @@ public class RaidRegistry {
 
     public BitSet getBitSet(String byFeature) {
         return this.byFeature.get(byFeature);
+    }
+
+    public BitSet adventureBitSet() {
+        return this.byAdventure;
     }
 
     public Integer getIndex(ResourceLocation boss) {
@@ -197,7 +203,7 @@ public class RaidRegistry {
         float sum = 0f;
         for (int i = 0; i < matches.length; i++) {
             int index = matches[i];
-            sum += (float) (weightsByIndex[index] * tierByIndex[index].getWeight(level));
+            sum += (float) (this.weightsByIndex[index] * this.tierByIndex[index].getWeight(level));
             weights[i] = sum;
         }
         return weights;
@@ -208,7 +214,7 @@ public class RaidRegistry {
         int idx = Arrays.binarySearch(weights, roll);
         if (idx < 0) idx = -idx - 1;
 
-        return raidList.get(indexes[idx]);
+        return this.raidList.get(indexes[idx]);
     }
 
     public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, BitSet bitSet, @Nullable String cacheKey) {
@@ -222,31 +228,31 @@ public class RaidRegistry {
         float[] cachedWeights = buildWeights(matches, level);
 
         if (cacheKey != null) {
-            weightsCache.put(cacheKey, cachedWeights);
-            indexCache.put(cacheKey, matches);
+            this.weightsCache.put(cacheKey, cachedWeights);
+            this.indexCache.put(cacheKey, matches);
         }
 
         return roll(random, cachedWeights, matches);
     }
 
-    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, List<RaidTier> tiers, List<RaidType> types, List<String> features) {
+    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, List<RaidTier> tiers, List<RaidType> types, List<String> features, Boolean isAdventure) {
         if (tiers == null || tiers.isEmpty()) return null;
 
         boolean cacheable = (tiers.size() == 1 && (types == null || types.size() <= 1) && (features == null || features.isEmpty()));
         String key = level.dimension().location() + ":" + tiers.getFirst() + ":" + (types == null ? null : types.getFirst());
-        if (cacheable && weightsCache.containsKey(key)) return roll(random, weightsCache.get(key), indexCache.get(key));
+        if (cacheable && this.weightsCache.containsKey(key)) return roll(random, this.weightsCache.get(key), this.indexCache.get(key));
 
         BitSet result = new BitSet();
 
         for (RaidTier tier : tiers) {
-            BitSet set = byTier.get(tier);
+            BitSet set = this.byTier.get(tier);
             if (set != null) result.or(set);
         }
 
         if (types != null && !types.isEmpty()) {
             BitSet typeSet = new BitSet();
             for (RaidType type : types) {
-                BitSet set = byType.get(type);
+                BitSet set = this.byType.get(type);
                 if (set != null) typeSet.or(set);
             }
             result.and(typeSet);
@@ -255,43 +261,49 @@ public class RaidRegistry {
         if (features != null && !features.isEmpty()) {
             BitSet featureSet = new BitSet();
             for (String feature : features) {
-                BitSet set = byFeature.get(feature.toLowerCase(Locale.ROOT));
+                BitSet set = this.byFeature.get(feature.toLowerCase(Locale.ROOT));
                 if (set != null) featureSet.or(set);
             }
             result.and(featureSet);
         }
 
+        if (isAdventure != null) {
+            if (isAdventure) result.and(this.byAdventure);
+            else result.andNot(this.byAdventure);
+        }
+
         return getRandomRaidBoss(random, level, result, cacheable ? key : null);
     }
 
-    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidTier tier, RaidType type, String feature) {
-        return getRandomRaidBoss(random, level, List.of(tier), type == null ? null : List.of(type), feature == null ? null : List.of(feature));
+    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidTier tier, RaidType type, String feature, Boolean isAdventure) {
+        return getRandomRaidBoss(random, level, List.of(tier), type == null ? null : List.of(type), feature == null ? null : List.of(feature), isAdventure);
     }
 
-    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidType type, String feature) {
-        return getRandomRaidBoss(random, level, RaidTier.getWeightedRandom(random, level), type, feature);
+    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidType type, String feature, Boolean isAdventure) {
+        return getRandomRaidBoss(random, level, RaidTier.getWeightedRandom(random, level), type, feature, isAdventure);
     }
 
     public ResourceLocation getRandomRaidBoss(RandomSource random, Level level) {
-        return getRandomRaidBoss(random, level, (RaidType) null, null);
+        return getRandomRaidBoss(random, level, null, null, null);
     }
 
     public void clear() {
-        byTier.values().forEach(BitSet::clear);
-        byType.values().forEach(BitSet::clear);
-        byFeature.values().forEach(BitSet::clear);
-        raidList.clear();
-        raidIndex.clear();
+        this.byTier.values().forEach(BitSet::clear);
+        this.byType.values().forEach(BitSet::clear);
+        this.byFeature.values().forEach(BitSet::clear);
+        this.byAdventure.clear();
+        this.raidList.clear();
+        this.raidIndex.clear();
 
-        loading.clear();
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
+        this.loading.clear();
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
         if (current != null) current.invalidateAll();
 
-        weightsByIndex = new double[0];
-        tierByIndex = new RaidTier[0];
+        this.weightsByIndex = new double[0];
+        this.tierByIndex = new RaidTier[0];
 
-        weightsCache.clear();
-        indexCache.clear();
+        this.weightsCache.clear();
+        this.indexCache.clear();
 
         for (RaidTier tier : RaidTier.values()) { tier.setPresent(false); }
         for (RaidType type : RaidType.values()) { type.setPresent(false); }
@@ -308,8 +320,8 @@ public class RaidRegistry {
             RaidBoss::encode,
             RaidBoss::decode
         );
-        store = newStore;
-        cache = new RegistryCache<>(
+        this.store = newStore;
+        this.cache = new RegistryCache<>(
             id -> this.loadRaidBoss(newStore, id, server),
             CACHE_EXPIRY_TICKS,
             (id, error) -> CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, error),
@@ -321,7 +333,7 @@ public class RaidRegistry {
             }
         );
 
-        Map<ResourceLocation, RaidBoss> unsaved = pending.get();
+        Map<ResourceLocation, RaidBoss> unsaved = this.pending.get();
         if (!unsaved.isEmpty()) this.persist(newStore, unsaved);
     }
 
@@ -332,21 +344,21 @@ public class RaidRegistry {
     }
 
     public void close() {
-        RegistryCache<ResourceLocation, RaidBoss> currentCache = cache;
-        BinaryRecordStore<ResourceLocation, RaidBoss> currentStore = store;
-        cache = null;
-        store = null;
+        RegistryCache<ResourceLocation, RaidBoss> currentCache = this.cache;
+        BinaryRecordStore<ResourceLocation, RaidBoss> currentStore = this.store;
+        this.cache = null;
+        this.store = null;
         if (currentCache != null) currentCache.close();
         if (currentStore != null) currentStore.close();
     }
 
     public boolean isClosed() {
-        BinaryRecordStore<ResourceLocation, RaidBoss> currentStore = store;
+        BinaryRecordStore<ResourceLocation, RaidBoss> currentStore = this.store;
         return currentStore == null || currentStore.isClosed();
     }
 
     public void tick() {
-        RegistryCache<ResourceLocation, RaidBoss> current = cache;
+        RegistryCache<ResourceLocation, RaidBoss> current = this.cache;
         if (current != null) current.tick();
     }
 }

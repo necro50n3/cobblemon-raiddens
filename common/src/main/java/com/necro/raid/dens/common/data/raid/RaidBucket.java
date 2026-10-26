@@ -27,6 +27,7 @@ public class RaidBucket {
     private final HashSet<String> excludeFeatures;
     private Set<ResourceLocation> excludeBosses;
 
+    private final Boolean adventure;
     private Set<ResourceKey<Biome>> biomes;
     private final double weight;
 
@@ -41,7 +42,7 @@ public class RaidBucket {
 
     private RaidBucket(HashSet<RaidTier> includeTiers, HashSet<RaidType> includeTypes, HashSet<String> includeFeatures, HashSet<String> includeBosses,
                        HashSet<RaidTier> excludeTiers, HashSet<RaidType> excludeTypes, HashSet<String> excludeFeatures, HashSet<String> excludeBosses,
-                       HashSet<String> biomes, double weight) {
+                       Boolean adventure, HashSet<String> biomes, double weight) {
         this.includeTiers = includeTiers;
         this.includeTypes = includeTypes;
         this.includeFeatures = includeFeatures;
@@ -52,6 +53,7 @@ public class RaidBucket {
         this.excludeFeatures = excludeFeatures;
         this.excludeBosses = null;
 
+        this.adventure = adventure;
         this.biomes = null;
         this.weight = weight;
 
@@ -64,6 +66,10 @@ public class RaidBucket {
 
         this.isAlwaysValid = this.biomesInner.contains("*")
             || (this.biomesInner.contains("#cobblemonraiddens:raid_spawnable") && this.biomesInner.contains("#cobblemonraiddens:raid_spawnable_ignore_sky"));
+    }
+
+    private Optional<Boolean> getAdventure() {
+        return Optional.ofNullable(this.adventure);
     }
 
     private HashSet<String> getBiomes() {
@@ -196,6 +202,11 @@ public class RaidBucket {
                 Integer index = CustomRaidRegistries.RAID_REGISTRY.getIndex(boss);
                 if (index != null) this.compiled.clear(index);
             }
+
+            if (this.adventure != null) {
+                if (this.adventure) this.compiled.and(CustomRaidRegistries.RAID_REGISTRY.adventureBitSet());
+                else this.compiled.andNot(CustomRaidRegistries.RAID_REGISTRY.adventureBitSet());
+            }
         }
         return this.compiled;
     }
@@ -231,12 +242,13 @@ public class RaidBucket {
         return RecordCodecBuilder.create(inst -> inst.group(
             RaidBucketFilters.codec().optionalFieldOf("include", new RaidBucketFilters()).forGetter(RaidBucket::getIncluded),
             RaidBucketFilters.codec().optionalFieldOf("exclude", new RaidBucketFilters()).forGetter(RaidBucket::getExcluded),
+            Codec.BOOL.optionalFieldOf("adventure").forGetter(RaidBucket::getAdventure),
             Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new).fieldOf("biome").forGetter(RaidBucket::getBiomes),
             Codec.DOUBLE.optionalFieldOf("weight", 10.0).forGetter(RaidBucket::getWeight)
-        ).apply(inst, (include, exclude, biomes, weight) -> new RaidBucket(
+        ).apply(inst, (include, exclude, adventure, biomes, weight) -> new RaidBucket(
             include.tiers(), include.types(), include.features(), include.bosses(),
             exclude.tiers(), exclude.types(), exclude.features(), exclude.bosses(),
-            biomes, weight
+            adventure.orElse(null), biomes, weight
         )));
     }
 }

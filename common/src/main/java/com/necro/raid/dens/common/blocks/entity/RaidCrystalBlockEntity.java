@@ -214,7 +214,7 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
     private ResourceLocation generateRandom(Level level, BlockState blockState, RaidCycleMode cycleMode) {
         RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        return CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+        return CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null, null);
     }
 
     private ResourceLocation generateFromExisting(Level level, BlockState blockState, RaidCycleMode cycleMode) {
