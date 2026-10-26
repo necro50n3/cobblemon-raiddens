@@ -188,12 +188,13 @@ public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoB
             return;
         }
 
-        this.setRaidBoss(boss.instance().getId(), level.getGameTime());
+        this.setRaidBoss(boss.getId(), level.getGameTime());
 
         level.setBlock(blockPos, blockState
-            .setValue(RaidCrystalBlock.RAID_TIER, boss.instance().getTier())
-            .setValue(RaidCrystalBlock.RAID_TYPE, boss.instance().getType())
-            .setValue(RaidCrystalBlock.ACTIVE, true), 2);
+            .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier())
+            .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
+            .setValue(RaidCrystalBlock.ACTIVE, true)
+            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure()), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
     }

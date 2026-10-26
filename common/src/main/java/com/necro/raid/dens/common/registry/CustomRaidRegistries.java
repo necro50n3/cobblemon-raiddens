@@ -129,8 +129,8 @@ public class CustomRaidRegistries {
         SCRIPT_REGISTRY.register("reset_stats", script -> {
             String target = SCRIPT_REGISTRY.parse(script, "target", String.class);
             if ("player".equals(target)) return new ShowdownEvents.ResetPlayerShowdownEvent();
-            else if ("boss".equals(target)) return new ShowdownEvents.ResetBossShowdownEvent();
-            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
+            else if ("raidBoss".equals(target)) return new ShowdownEvents.ResetBossShowdownEvent();
+            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"raidBoss\"");
         });
         SCRIPT_REGISTRY.register("modify_catch_rate", script -> {
             float value = SCRIPT_REGISTRY.transform(script, "value", Number.class, Script::toFloat);
@@ -217,8 +217,8 @@ public class CustomRaidRegistries {
         SCRIPT_REGISTRY.register("clear_all_stats", script -> {
             String target = SCRIPT_REGISTRY.parse(script, "target", String.class);
             if ("player".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(1, false);
-            else if ("boss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
-            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
+            else if ("raidBoss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
+            else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"raidBoss\"");
         });
     }
 

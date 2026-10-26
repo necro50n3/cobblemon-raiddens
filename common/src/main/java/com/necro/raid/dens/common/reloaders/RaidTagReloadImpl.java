@@ -57,7 +57,7 @@ public class RaidTagReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onError(ResourceLocation id, Exception e) {
-        CobblemonRaidDens.LOGGER.error("Failed to load boss tag {}", id, e);
+        CobblemonRaidDens.LOGGER.error("Failed to load raidBoss tag {}", id, e);
     }
 
     @Override

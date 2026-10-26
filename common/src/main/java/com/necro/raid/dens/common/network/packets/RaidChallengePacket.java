@@ -11,7 +11,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -76,7 +76,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             return;
         }
 
-        RaidSession session = ((IRaidAccessor) entity).crd_getRaidBoss();
+        RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         RaidInstance active = raid == null ? null : raid.getActive();
@@ -85,7 +85,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
-        else if (session.instance().getMaxPlayers() != -1 && active.getBattles().size() >= session.instance().getMaxPlayers()) {
+        else if (boss.getMaxPlayers() != -1 && active.getBattles().size() >= boss.getMaxPlayers()) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }

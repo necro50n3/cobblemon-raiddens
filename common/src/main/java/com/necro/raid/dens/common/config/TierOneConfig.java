@@ -23,11 +23,11 @@ public class TierOneConfig implements ConfigData, TierConfig {
     public double ha_rate = 0.20;
     @Comment("The max number Pokemon a player can use in a raid. Default: 1")
     public int raid_party_size = 1;
-    @Comment("Raid boss HP multiplier. Default: 5")
+    @Comment("Raid raidBoss HP multiplier. Default: 5")
     public int health_multiplier = 5;
-    @Comment("Bonus raid boss HP multiplier for each extra player that joins the raid battle. Default: 1.0")
+    @Comment("Bonus raid raidBoss HP multiplier for each extra player that joins the raid battle. Default: 1.0")
     public float multiplayer_health_multiplier = 1.0f;
-    @Comment("Raid boss level. Default: 12")
+    @Comment("Raid raidBoss level. Default: 12")
     public int boss_level = 12;
     @Comment("Reward Pokemon level. Default: 12")
     public int reward_level = 12;
@@ -35,13 +35,13 @@ public class TierOneConfig implements ConfigData, TierConfig {
     public int ivs = 0;
     @Comment("The default shiny chance for raid bosses as 1 in X (Set to -1 to use the Cobblemon rate). Default: -1.0")
     public float shiny_rate = -1.0f;
-    @Comment("How much currency is rewarded for clearing a raid boss (Requires CobbleDollars). Default: 1000")
+    @Comment("How much currency is rewarded for clearing a raid raidBoss (Requires CobbleDollars). Default: 1000")
     public int currency = 1000;
     @Comment("The max number of Pokemon that can be caught from a raid battle. Default -1.")
     public int max_catches = -1;
     @Comment("The default script to add to raid bosses without a script. Default: {}")
     public Map<String, Script> default_scripts = new HashMap<>();
-    @Comment("The battle AI used by the raid boss (Options: random, strong, rct). Default: random")
+    @Comment("The battle AI used by the raid raidBoss (Options: random, strong, rct). Default: random")
     public String raid_ai = "random";
     @Comment("The list of marks the reward Pokemon will have. Default: [].")
     public String[] marks = {};
@@ -53,7 +53,7 @@ public class TierOneConfig implements ConfigData, TierConfig {
     public int energy = 0;
     @Comment("The required damage percentage contribution a player needs to do to get rewards. Default: 0.0")
     public float required_damage = 0f;
-    @Comment("The base catch rate of the raid boss. Default: 1.0")
+    @Comment("The base catch rate of the raid raidBoss. Default: 1.0")
     public float catch_rate = 1.0f;
 
     public boolean requiresKey() {

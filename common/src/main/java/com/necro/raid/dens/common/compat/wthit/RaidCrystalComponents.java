@@ -28,9 +28,9 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         BlockEntity blockEntity = accessor.getBlockEntity();
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return null;
         RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
-        if (raidBoss == null || raidBoss.instance().getDisplaySpecies() == null) return null;
+        if (raidBoss == null || raidBoss.getDisplaySpecies() == null) return null;
 
-        ItemStack stack = PokemonItem.from(raidBoss.instance().getDisplaySpecies(), raidBoss.instance().getDisplayAspects(), 1, null);
+        ItemStack stack = PokemonItem.from(raidBoss.getDisplaySpecies(), raidBoss.getDisplayAspects(), 1, null);
         return new ScalableComponent(stack, 1.5f);
     }
 
@@ -70,12 +70,12 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
         BlockState blockState = accessor.getBlockState();
 
         RaidBoss raidBoss = ClientRaidRegistry.getRaidBoss(raidCrystal.getRaidBossLocation());
-        if (raidBoss == null || raidBoss.instance().getDisplaySpecies() == null) return;
+        if (raidBoss == null || raidBoss.getDisplaySpecies() == null) return;
 
         RaidTier tier = blockState.getValue(RaidCrystalBlock.RAID_TIER);
 
-        MutableComponent component = raidBoss.instance().getDisplaySpecies().getTranslatedName();
-        Component feature = Component.translatable(RaidFeature.getTranslatable(raidBoss.instance().getFeature()));
+        MutableComponent component = raidBoss.getDisplaySpecies().getTranslatedName();
+        Component feature = Component.translatable(RaidFeature.getTranslatable(raidBoss.getFeature()));
         component.append(" | ").append(feature);
         component.append(" | ").append(tier.getStars());
         tooltip.addLine(component);
@@ -91,8 +91,8 @@ public class RaidCrystalComponents implements IBlockComponentProvider {
             if (!component1.equals(Component.empty())) tooltip.addLine(component1);
         }
 
-        int catches = raidBoss.instance().getMaxCatches();
-        float catchRate = raidBoss.instance().getCatchRate();
+        int catches = raidBoss.getMaxCatches();
+        float catchRate = raidBoss.getCatchRate();
         if (catches == 0 || catchRate == 0F) tooltip.addLine(new ScalableComponent(Component.translatable("jade.cobblemonraiddens.not_catchable").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY), 0.5f));
         else {
             MutableComponent component1 = Component.empty();

@@ -187,8 +187,8 @@ public class RaidHelper extends SavedData {
         for (Tag t : raidSync) {
             CompoundTag entry = (CompoundTag) t;
             String raid = entry.getString("uuid");
-            if (raid.isEmpty() || entry.getString("boss").isEmpty()) continue;
-            ResourceLocation boss = ResourceLocation.parse(entry.getString("boss"));
+            if (raid.isEmpty() || entry.getString("raidBoss").isEmpty()) continue;
+            ResourceLocation boss = ResourceLocation.parse(entry.getString("raidBoss"));
             RaidSyncContext context = RaidSyncContext.load(entry.getCompound("context"));
 
             data.RAID_SYNC.computeIfAbsent(UUID.fromString(raid), uuid -> new HashMap<>()).put(boss, context);
@@ -244,7 +244,7 @@ public class RaidHelper extends SavedData {
             for (Map.Entry<ResourceLocation, RaidSyncContext> context : entry.getValue().entrySet()) {
                 CompoundTag e = new CompoundTag();
                 e.putString("uuid", entry.getKey().toString());
-                e.putString("boss", context.getKey().toString());
+                e.putString("raidBoss", context.getKey().toString());
                 e.put("context", context.getValue().save(new CompoundTag()));
 
                 raidSync.add(e);

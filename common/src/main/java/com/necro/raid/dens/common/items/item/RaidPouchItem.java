@@ -99,11 +99,11 @@ public class RaidPouchItem extends Item {
 
     private List<ItemStack> getRewardItems(ItemStack itemStack, @Nullable RaidBoss boss, RaidTier tier, ServerLevel level, Player player, boolean applyBonus) {
         List<ItemStack> rewards;
-        BossLootTable lootTable = boss == null ? null : boss.instance().getLootTable();
+        BossLootTable lootTable = boss == null ? null : boss.getLootTable();
         if (lootTable != null && lootTable.replace()) rewards = new ArrayList<>();
         else rewards = this.getDefault(itemStack, tier, level, player, applyBonus);
 
-        if (lootTable != null) rewards.addAll(boss.instance().getRandomRewards(level, itemStack, player, applyBonus));
+        if (lootTable != null) rewards.addAll(boss.getRandomRewards(level, itemStack, player, applyBonus));
         return rewards;
     }
 

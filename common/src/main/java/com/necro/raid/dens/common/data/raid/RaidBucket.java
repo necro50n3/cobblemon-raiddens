@@ -214,7 +214,7 @@ public class RaidBucket {
                 Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("feature", new HashSet<>()).forGetter(RaidBucketFilters::features),
                 Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
-                    .optionalFieldOf("boss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)
+                    .optionalFieldOf("raidBoss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)
             ).apply(inst, RaidBucketFilters::new));
         }
     }

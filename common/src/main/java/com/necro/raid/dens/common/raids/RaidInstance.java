@@ -130,7 +130,7 @@ public class RaidInstance extends AbstractRaidSession {
                     .toList();
             }
             catch (Exception e) {
-                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.raidBoss.getId(), e);
+                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid raidBoss {}: ", scripts, this.raidBoss.getId(), e);
                 this.failedToStart = true;
                 return;
             }
@@ -142,7 +142,7 @@ public class RaidInstance extends AbstractRaidSession {
                 this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
             }
             catch (Exception e) {
-                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.raidBoss.getId(), e);
+                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid raidBoss {}: ", key, this.raidBoss.getId(), e);
                 this.failedToStart = true;
             }
         });

@@ -155,13 +155,13 @@ public class RaidDenCommands {
                 null,
                 true
             ))
-            .then(Commands.literal("boss")
-                .then(addBossOptions(Commands.argument("boss", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BOSSES),
+            .then(Commands.literal("raidBoss")
+                .then(addBossOptions(Commands.argument("raidBoss", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BOSSES),
                     (context, cycleMode, canReset) -> createRaidDen(
                         context,
                         BlockPosArgument.getBlockPos(context, "position"),
                         hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : context.getSource().getLevel(),
-                        ResourceLocationArgument.getId(context, "boss"),
+                        ResourceLocationArgument.getId(context, "raidBoss"),
                         cycleMode,
                         canReset
                     )
@@ -215,8 +215,8 @@ public class RaidDenCommands {
                 .setValue(RaidCrystalBlock.ACTIVE, true)
                 .setValue(RaidCrystalBlock.CAN_RESET, canReset)
                 .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
-                .setValue(RaidCrystalBlock.RAID_TYPE, boss.instance().getType())
-                .setValue(RaidCrystalBlock.RAID_TIER, boss.instance().getTier()), 2);
+                .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
+                .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier()), 2);
 
             if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
                 raidCrystal.setRaidBoss(location, level.getGameTime());

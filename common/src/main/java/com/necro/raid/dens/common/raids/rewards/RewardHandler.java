@@ -45,7 +45,7 @@ public class RewardHandler {
     private final float catchRate;
 
     public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
-        this.raidBossId = raidBoss.instance().getId();
+        this.raidBossId = raidBoss.getId();
         this.serializedPokemonReward = null;
         this.raidBoss = raidBoss;
         this.playerUUID = playerUUID;
@@ -64,8 +64,8 @@ public class RewardHandler {
 
     public void sendRewardMessage(ServerPlayer player) {
         this.raidBoss(boss -> {
-            if (boss.instance().getDisplaySpecies() == null) boss.instance().createDisplayAspects();
-            String speciesName = ((TranslatableContents) boss.instance().getDisplaySpecies().getTranslatedName().getContents()).getKey();
+            if (boss.getDisplaySpecies() == null) boss.createDisplayAspects();
+            String speciesName = ((TranslatableContents) boss.getDisplaySpecies().getTranslatedName().getContents()).getKey();
             RaidDenNetworkMessages.REWARD_PACKET.accept(player, this.catchRate, speciesName);
             RaidHelper.REWARD_QUEUE.put(player.getUUID(), this);
         }, player.getServer());
@@ -138,10 +138,10 @@ public class RewardHandler {
         if (boss == null) return null;
 
         ItemStack item = ModItems.RAID_POUCH.value().getDefaultInstance();
-        item.set(ModComponents.TIER_COMPONENT.value(), boss.instance().getTier());
-        item.set(ModComponents.FEATURE_COMPONENT.value(), boss.instance().getFeature());
-        item.set(ModComponents.TYPE_COMPONENT.value(), boss.instance().getType());
-        if (boss.instance().getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), boss.instance().getId());
+        item.set(ModComponents.TIER_COMPONENT.value(), boss.getTier());
+        item.set(ModComponents.FEATURE_COMPONENT.value(), boss.getFeature());
+        item.set(ModComponents.TYPE_COMPONENT.value(), boss.getType());
+        if (boss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), boss.getId());
         item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
         item.set(ModComponents.ADVENTURE_COMPONENT.value(), boss.isAdventure());
         return item;

@@ -73,8 +73,8 @@ public class RaidEvents {
 
         RaidEvents.RAID_REWARD_POST.subscribe(Priority.LOWEST, event -> {
             if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
-            else if (event.session().instance().getCurrency() <= 0) return;
-            RaidDensCobbleDollarsCompat.addCurrency(event.player(), event.session().instance().getCurrency());
+            else if (event.raidBoss().getCurrency() <= 0) return;
+            RaidDensCobbleDollarsCompat.addCurrency(event.player(), event.raidBoss().getCurrency());
         });
     }
 }

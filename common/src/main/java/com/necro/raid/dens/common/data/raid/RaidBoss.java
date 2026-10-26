@@ -26,7 +26,6 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.sizevariations.RaidDensSizeVariationsCompat;
 import com.necro.raid.dens.common.config.TierConfig;
-import com.necro.raid.dens.common.data.RaidSession;
 import com.necro.raid.dens.common.data.adapters.*;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.moves.RaidMovesetBuilder;
@@ -46,7 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class RaidBoss implements RaidSession {
+public class RaidBoss {
     public static final Gson GSON;
 
     @SerializedName("pokemon")
@@ -108,6 +107,7 @@ public class RaidBoss implements RaidSession {
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
+    private transient boolean isAdventure;
 
     private transient ResourceLocation displaySpecies;
     private transient Set<String> displayAspects;
@@ -158,6 +158,7 @@ public class RaidBoss implements RaidSession {
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
+        this.isAdventure = false;
         this.displaySpecies = null;
         this.displayAspects = null;
         this.id = null;
@@ -201,14 +202,10 @@ public class RaidBoss implements RaidSession {
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
+        this.isAdventure = false;
         this.displaySpecies = null;
         this.displayAspects = null;
         this.id = null;
-    }
-
-    @Override
-    public RaidBoss instance() {
-        return this;
     }
 
     public void createDisplayAspects() {
@@ -779,13 +776,13 @@ public class RaidBoss implements RaidSession {
         this.displayAspects = null;
     }
 
-    @Override
     public boolean isAdventure() {
-        return !this.nodes.isEmpty();
+        return this.isAdventure || !this.nodes.isEmpty();
     }
 
-    @Override
-    public void setIsAdventure(boolean isAdventure) {}
+    public void setIsAdventure(boolean isAdventure) {
+        this.isAdventure = isAdventure;
+    }
 
     public RaidBoss copy() {
         PokemonProperties rewardCopy = this.reward.copy();

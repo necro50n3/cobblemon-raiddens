@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Type;
 
 public class BossNode implements AdventureNode {
-    public static final String ID = "boss";
+    public static final String ID = "raidBoss";
 
     private transient @Nullable RaidInstance activeRaid;
 

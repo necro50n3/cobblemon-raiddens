@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
-import com.necro.raid.dens.common.data.RaidSession;
+import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import kotlin.Unit;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,8 +27,8 @@ public class RaidCrystalSparkleRenderer {
         PoseStack matrix = new PoseStack();
         wrapper.updateMatrix(matrix.last().pose());
         wrapper.updatePosition(blockEntity.getBlockPos().getBottomCenter());
-        RaidSession session = blockEntity.getRaidBoss();
-        String feature = session == null ? "DEFAULT" : session.instance().getFeature();
+        RaidBoss boss = blockEntity.getRaidBoss();
+        String feature = boss == null ? "DEFAULT" : boss.getFeature();
         RaidType type = blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE);
 
         new ParticleStorm(
