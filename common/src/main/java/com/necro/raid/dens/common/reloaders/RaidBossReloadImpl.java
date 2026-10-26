@@ -27,7 +27,7 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onError(ResourceLocation id, Exception e) {
-        CobblemonRaidDens.LOGGER.error("Failed to load raid raidBoss {}", id, e);
+        CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, e);
     }
 
     @Override

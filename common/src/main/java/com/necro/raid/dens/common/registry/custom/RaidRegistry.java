@@ -83,7 +83,7 @@ public class RaidRegistry {
     private void persist(BinaryRecordStore<ResourceLocation, RaidBoss> target, Map<ResourceLocation, RaidBoss> snapshot) {
         target.rebuildAsync(snapshot.values(), RaidBoss::getId).whenComplete((result, error) -> {
             if (error != null) {
-                CobblemonRaidDens.LOGGER.error("Failed to write raid raidBoss storage, keeping bosses in memory", error);
+                CobblemonRaidDens.LOGGER.error("Failed to write raid boss storage, keeping bosses in memory", error);
                 return;
             }
             pending.compareAndSet(snapshot, Map.of());
@@ -312,7 +312,7 @@ public class RaidRegistry {
         cache = new RegistryCache<>(
             id -> this.loadRaidBoss(newStore, id, server),
             CACHE_EXPIRY_TICKS,
-            (id, error) -> CobblemonRaidDens.LOGGER.error("Failed to load raid raidBoss {}", id, error),
+            (id, error) -> CobblemonRaidDens.LOGGER.error("Failed to load raid boss {}", id, error),
             (id, loaded) -> {
                 if (!this.isClosed()) RaidDenNetworkMessages.SYNC_BOSS.accept(server, loaded);
             },

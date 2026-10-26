@@ -18,10 +18,10 @@ import java.util.Set;
 public interface RaidFeature {
     String getId();
 
-    // Adds additional aspects/custom properties to the raid raidBoss
+    // Adds additional aspects/custom properties to the raid boss
     void applyAspects(Set<String> aspects, List<CustomPokemonProperty> customProperties);
 
-    // Adds custom behaviours to the raid raidBoss
+    // Adds custom behaviours to the raid boss
     void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity);
 
     // Adds custom behaviours to the reward Pokemon

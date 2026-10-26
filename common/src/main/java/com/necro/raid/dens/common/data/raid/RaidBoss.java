@@ -270,9 +270,6 @@ public class RaidBoss {
     public void applyAspects() {
         Set<String> aspects = new HashSet<>(this.boss.getAspects());
         List<CustomPokemonProperty> customProperties = new ArrayList<>(this.boss.getCustomProperties());
-
-        aspects.add("raid");
-        customProperties.add(new StringSpeciesFeature("aspect", "raid"));
         customProperties.add(new FlagSpeciesFeature("uncatchable", true));
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyAspects(aspects, customProperties);
 
@@ -331,6 +328,7 @@ public class RaidBoss {
 
         this.setMoveSet(properties, pokemon, true);
         pokemon.getPersistentData().putBoolean("raid", true);
+        new StringSpeciesFeature("raid", "boss").apply(pokemon);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setDrops(new DropTable());
@@ -398,6 +396,7 @@ public class RaidBoss {
 
         this.setMoveSet(properties, pokemon, false);
         for (Mark mark : this.buildMarks()) pokemon.exchangeMark(mark, true);
+        new StringSpeciesFeature("raid", "reward").apply(pokemon);
 
         CustomRaidRegistries.FEATURE_REGISTRY.get(this.raidFeature).applyToReward(properties, pokemon);
         if (ModCompat.SIZE_VARIATIONS.isLoaded()) RaidDensSizeVariationsCompat.setRandomSize(pokemon, player);

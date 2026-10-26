@@ -26,7 +26,7 @@ public class RaidConfig implements ConfigData {
     public RaidTimerMode reset_mode = RaidTimerMode.GAME_TIME;
     @Comment("How long in seconds until raid dens reset (Set to -1 for no resets). Default: 7200")
     public int reset_time = 7200;
-    @Comment("Whether the raid raidBoss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, BUCKET, ALL). Default: ALL")
+    @Comment("Whether the raid boss and raid tier changes between resets (Options: NONE, LOCK_BOTH, LOCK_TIER, LOCK_TYPE, BUCKET, ALL). Default: ALL")
     public RaidCycleMode cycle_mode = RaidCycleMode.ALL;
     @Comment("Whether failed raids count towards the max clears. Default: false")
     public boolean max_clears_include_fails = false;

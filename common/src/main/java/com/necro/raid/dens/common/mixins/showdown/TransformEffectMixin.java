@@ -26,7 +26,7 @@ public abstract class TransformEffectMixin {
     private PokemonProperties mock;
 
     @Inject(method = "<init>(Lcom/cobblemon/mod/common/pokemon/Pokemon;Z)V", at = @At("RETURN"), remap = false)
-    private void initInject(Pokemon mimic, boolean canCry, CallbackInfo ci) {
+    private void initInject(Pokemon mimic, boolean doCry, CallbackInfo ci) {
         this.crd_raidScale = Mth.clamp(80f / mimic.getSpecies().getHeight(), 1.0f, 5.0f);
     }
 
@@ -35,7 +35,7 @@ public abstract class TransformEffectMixin {
         if (!((IRaidAccessor) entity).crd_isRaidBoss()) return;
 
         Set<String> aspects = new HashSet<>(this.mock.getAspects());
-        aspects.add("raid");
+        aspects.add("raid-boss");
         this.mock.setAspects(aspects);
 
         if (this.crd_raidScale > 0) entity.getPokemon().setScaleModifier(this.crd_raidScale);

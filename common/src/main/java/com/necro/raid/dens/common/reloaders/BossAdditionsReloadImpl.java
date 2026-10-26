@@ -23,7 +23,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
-        CobblemonRaidDens.LOGGER.info("Registering raidBoss additions");
+        CobblemonRaidDens.LOGGER.info("Registering boss additions");
         this.registry = null;
         this.additionsList.clear();
     }
@@ -38,7 +38,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onError(ResourceLocation id, Exception e) {
-        CobblemonRaidDens.LOGGER.error("Failed to load raidBoss additions {}", id, e);
+        CobblemonRaidDens.LOGGER.error("Failed to load boss additions {}", id, e);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
             if (additions.replace() || additions.forceApply()) additions.apply(CustomRaidRegistries.RAID_REGISTRY.getAll());
             else additions.apply(this.registry);
         });
-        CobblemonRaidDens.LOGGER.info("Registered {} raidBoss additions", this.additionsList.size());
+        CobblemonRaidDens.LOGGER.info("Registered {} boss additions", this.additionsList.size());
 
         CustomRaidRegistries.RAID_REGISTRY.registerAll();
         RaidTier.updateRandom();

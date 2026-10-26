@@ -182,8 +182,8 @@ public class RaidBucket {
 
             if (!this.includeBosses.isEmpty()) {
                 BitSet bossSet = new BitSet();
-                for (ResourceLocation raidBoss : this.includeBosses) {
-                    Integer index = CustomRaidRegistries.RAID_REGISTRY.getIndex(raidBoss);
+                for (ResourceLocation boss : this.includeBosses) {
+                    Integer index = CustomRaidRegistries.RAID_REGISTRY.getIndex(boss);
                     if (index != null) bossSet.set(index);
                 }
                 this.compiled.or(bossSet);
@@ -192,8 +192,8 @@ public class RaidBucket {
             for (RaidTier tier : this.excludeTiers) this.compiled.andNot(CustomRaidRegistries.RAID_REGISTRY.getBitSet(tier));
             for (RaidType type : this.excludeTypes) this.compiled.andNot(CustomRaidRegistries.RAID_REGISTRY.getBitSet(type));
             for (String feature : this.excludeFeatures) this.compiled.andNot(CustomRaidRegistries.RAID_REGISTRY.getBitSet(feature.toLowerCase(Locale.ROOT)));
-            for (ResourceLocation raidBoss : this.excludeBosses) {
-                Integer index = CustomRaidRegistries.RAID_REGISTRY.getIndex(raidBoss);
+            for (ResourceLocation boss : this.excludeBosses) {
+                Integer index = CustomRaidRegistries.RAID_REGISTRY.getIndex(boss);
                 if (index != null) this.compiled.clear(index);
             }
         }
@@ -214,7 +214,7 @@ public class RaidBucket {
                 Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
                     .optionalFieldOf("feature", new HashSet<>()).forGetter(RaidBucketFilters::features),
                 Codec.STRING.listOf().xmap(HashSet::new, ArrayList::new)
-                    .optionalFieldOf("raidBoss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)
+                    .optionalFieldOf("boss", new HashSet<>()).forGetter(RaidBucketFilters::bosses)
             ).apply(inst, RaidBucketFilters::new));
         }
     }

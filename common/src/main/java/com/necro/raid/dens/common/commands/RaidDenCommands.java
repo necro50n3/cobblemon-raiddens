@@ -155,13 +155,13 @@ public class RaidDenCommands {
                 null,
                 true
             ))
-            .then(Commands.literal("raidBoss")
-                .then(addBossOptions(Commands.argument("raidBoss", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BOSSES),
+            .then(Commands.literal("boss")
+                .then(addBossOptions(Commands.argument("boss", ResourceLocationArgument.id()).suggests(RaidDenCommands.RAID_BOSSES),
                     (context, cycleMode, canReset) -> createRaidDen(
                         context,
                         BlockPosArgument.getBlockPos(context, "position"),
                         hasDimensionArg ? DimensionArgument.getDimension(context, "dimension") : context.getSource().getLevel(),
-                        ResourceLocationArgument.getId(context, "raidBoss"),
+                        ResourceLocationArgument.getId(context, "boss"),
                         cycleMode,
                         canReset
                     )
@@ -265,12 +265,12 @@ public class RaidDenCommands {
     }
 
     @SuppressWarnings("unused")
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation raidBoss, RaidCycleMode cycleMode, boolean canReset) {
+    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation boss, RaidCycleMode cycleMode, boolean canReset) {
         if (level.getBiome(blockPos).is(ModDimensions.RAID_DIM_BIOME)) return 0;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal, blockPos, raidBoss, cycleMode, canReset);
-        else return createRaidDenNew(level, blockPos, raidBoss, cycleMode, canReset);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal, blockPos, boss, cycleMode, canReset);
+        else return createRaidDenNew(level, blockPos, boss, cycleMode, canReset);
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, boolean canReset) {
