@@ -21,7 +21,6 @@ subprojects {
     apply plugin: 'architectury-plugin'
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'maven-publish'
-    apply plugin: 'com.gradleup.shadow'
 
     idea {
         module {

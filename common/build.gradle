@@ -3,7 +3,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/cobblemonraiddens.accesswidener")
+    accessWidenerPath = file("src/main/resources/${rootProject.archives_name}.accesswidener")
 }
 
 repositories {
@@ -54,7 +54,7 @@ dependencies {
 
     compileOnly "dev.emi:emi-xplat-mojmap:1.1.22+1.21.1:api"
 
-    include(modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version")
+    modApi "me.shedaniel.cloth:cloth-config:$rootProject.cloth_config_version"
 }
 
 sourceSets {

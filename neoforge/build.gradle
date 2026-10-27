@@ -1,3 +1,7 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
 architectury {
     platformSetupLoomIde()
     neoForge()
@@ -79,7 +83,7 @@ dependencies {
     modCompileOnly "dev.emi:emi-neoforge:1.1.22+1.21.1:api"
     // modRuntimeOnly "dev.emi:emi-neoforge:1.1.22+1.21.1"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 
@@ -114,9 +118,9 @@ shadowJar {
 }
 
 remapJar {
-    atAccessWideners.add("cobblemonraiddens.accesswidener")
+    atAccessWideners.add("${rootProject.archives_name}.accesswidener")
 
-    inputFile.set shadowJar.archiveFile
+    input.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = null
 }
