@@ -1,8 +1,10 @@
 plugins {
     id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id 'com.gradleup.shadow' version '9.6.1' apply false
     id 'org.jetbrains.kotlin.jvm' version '2.2.10'
+    id 'maven-publish'
+    id "me.modmuss50.mod-publish-plugin" version "2.2.1"
 }
 
 architectury {
@@ -18,6 +20,8 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'
     apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'maven-publish'
+    apply plugin: 'com.gradleup.shadow'
 
     idea {
         module {
@@ -31,6 +35,7 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         maven { url = "https://maven.impactdev.net/repository/development/" }
         maven { url = "https://thedarkcolour.github.io/KotlinForForge/"}
         maven { url = "https://api.modrinth.com/maven" }
@@ -68,7 +73,107 @@ subprojects {
         withSourcesJar()
     }
 
+    publishing {
+        publications {
+            create("mavenJava", MavenPublication) {
+                groupId = rootProject.maven_group
+                artifactId = "${rootProject.archives_name}-${project.name}"
+                version = "${rootProject.mod_version}-SNAPSHOT"
+                from components["java"]
+
+                pom.withXml {
+                    def root = asNode()
+                    root.get("dependencies").each { root.remove(it as Node) }
+                }
+            }
+        }
+    }
+
     tasks.withType(JavaCompile).configureEach {
         it.options.release = 21
+    }
+
+    tasks.withType(GenerateModuleMetadata).configureEach {
+        enabled = false
+    }
+}
+
+Properties dotenv = new Properties()
+File envFile = file(".env")
+
+if (envFile.exists()) {
+    envFile.withInputStream { stream -> dotenv.load(stream) }
+}
+
+def resolveEnv = { String key ->
+    String value = dotenv.getProperty(key)
+    return value != null ? value : System.getenv(key)
+}
+
+publishMods {
+    changelog = file("CHANGELOG.md").text
+    type = STABLE
+
+    def cfOptions = curseforgeOptions {
+        accessToken = resolveEnv("CURSEFORGE_TOKEN")
+        projectId = project.curseforge_id
+        minecraftVersions.add(project.minecraft_version)
+        javaVersions.add(JavaVersion.VERSION_21)
+        clientRequired = true
+        serverRequired = true
+        projectSlug = "cobblemonraiddens"
+    }
+
+    def mrOptions = modrinthOptions {
+        accessToken = resolveEnv("MODRINTH_TOKEN")
+        projectId = project.modrinth_id
+        minecraftVersions.add(project.minecraft_version)
+    }
+
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        displayName = file.map { it.asFile.name }
+        modLoaders.add("fabric")
+        requires("cobblemon")
+        requires("geckolib")
+        optional("cobblemon-mega-showdown")
+        optional("jade")
+        optional("cobbledollars")
+    }
+
+    curseforge("curseforgeNeoForge") {
+        from cfOptions
+        file project(":neoforge")
+        displayName = file.map { it.asFile.name }
+        modLoaders.add("neoforge")
+        requires("cobblemon")
+        requires("geckolib")
+        optional("cobblemon-mega-showdown")
+        optional("jade")
+        optional("cobbledollars")
+    }
+
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires("fabric-api")
+        requires("cobblemon")
+        requires("geckolib")
+        optional("cobblemon-mega-showdown")
+        optional("jade")
+        optional("cobbledollars")
+    }
+
+    modrinth("modrinthNeoForge") {
+        from mrOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        requires("cobblemon")
+        requires("geckolib")
+        optional("cobblemon-mega-showdown")
+        optional("jade")
+        optional("cobbledollars")
     }
 }
