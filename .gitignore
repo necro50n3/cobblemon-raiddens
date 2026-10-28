@@ -7,6 +7,7 @@ out/
 classes/
 run/
 lib/
+/.architectury-transformer
 
 # eclipse
 

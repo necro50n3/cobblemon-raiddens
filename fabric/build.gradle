@@ -54,7 +54,7 @@ dependencies {
     modImplementation "curse.maven:radical-cobblemon-trainers-api-1152792:8876927"
 
     modRuntimeOnly "io.wispforest:accessories-fabric:1.1.0-beta.52+1.21.1"
-    modImplementation "curse.maven:cobblemon-mega-showdown-1189523:8870188"
+    modImplementation "curse.maven:cobblemon-mega-showdown-1189523:9343426"
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 
