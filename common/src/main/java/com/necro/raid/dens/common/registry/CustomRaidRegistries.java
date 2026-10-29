@@ -167,8 +167,8 @@ public class CustomRaidRegistries {
             return new ShowdownEvents.FormeChangeShowdownEvent(form);
         });
         SCRIPT_REGISTRY.register("mega_evolve", script -> new ShowdownEvents.MegaEvolveShowdownEvent());
-        SCRIPT_REGISTRY.register("dynamax", script -> new ShowdownEvents.DynamaxShowdownEvent());
-        SCRIPT_REGISTRY.register("terastallize", script -> new ShowdownEvents.TerastallizeShowdownEvent());
+        SCRIPT_REGISTRY.register("dynamax", script -> new ShowdownEvents.DynamaxShowdownEvent(true));
+        SCRIPT_REGISTRY.register("terastallize", script -> new ShowdownEvents.TerastallizeShowdownEvent(true));
         SCRIPT_REGISTRY.register("add_script", script -> {
             String trigger = SCRIPT_REGISTRY.parse(script, "trigger", String.class);
             List<AbstractEvent> events = SCRIPT_REGISTRY.decodeList(script.get("scripts"));

@@ -135,40 +135,40 @@ public class RaidInstance {
         this.triggers = new EnumMap<>(RaidTriggerType.class);
         this.triggerAddQueue = new ArrayList<>();
 
-//        this.raidBoss.getScript().forEach((key, scripts) -> {
-//            List<AbstractEvent> functions;
-//            try {
-//                functions = scripts.stream()
-//                    .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
-//                    .filter(Objects::nonNull)
-//                    .toList();
-//            }
-//            catch (Exception e) {
-//                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.raidBoss.getId(), e);
-//                this.failedToStart = true;
-//                return;
-//            }
-//            if (functions.isEmpty()) return;
-//
-//            try {
-//                RaidTrigger<?> trigger = RaidTriggerType.decode(key, functions);
-//                if (trigger == null) return;
-//                this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
-//            }
-//            catch (Exception e) {
-//                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.raidBoss.getId(), e);
-//                this.failedToStart = true;
-//            }
-//        });
+        this.raidBoss.getScript().forEach((key, scripts) -> {
+            List<AbstractEvent> functions;
+            try {
+                functions = scripts.stream()
+                    .map(CustomRaidRegistries.SCRIPT_REGISTRY::decode)
+                    .filter(Objects::nonNull)
+                    .toList();
+            }
+            catch (Exception e) {
+                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.raidBoss.getId(), e);
+                this.failedToStart = true;
+                return;
+            }
+            if (functions.isEmpty()) return;
+
+            try {
+                RaidTrigger<?> trigger = RaidTriggerType.decode(key, functions);
+                if (trigger == null) return;
+                this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
+            }
+            catch (Exception e) {
+                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.raidBoss.getId(), e);
+                this.failedToStart = true;
+            }
+        });
         if (this.failedToStart) {
             this.closeRaid(this.bossEntity.getServer(), true);
             return;
         }
 
-//        this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
-//            TimerTrigger trigger = (TimerTrigger) t;
-//            this.schedule(() -> trigger.trigger(this, null), trigger.after() * 20, trigger.repeat());
-//        });
+        this.triggers.computeIfAbsent(RaidTriggerType.TIMER, type -> new ArrayList<>()).forEach(t -> {
+            TimerTrigger trigger = (TimerTrigger) t;
+            this.schedule(() -> trigger.trigger(this, null), trigger.after() * 20, trigger.repeat());
+        });
     }
 
     public RaidInstance(PokemonEntity entity, UUID host) {
@@ -205,20 +205,12 @@ public class RaidInstance {
         }
 
         this.battles.add(battle);
-//        List<String> effects = new ArrayList<>();
-//        if (this.raidBoss.getForceDynamax()) effects.add(RaidFeature.Base.DYNAMAX.getId());
-//        if (this.raidBoss.getFeature().equalsIgnoreCase("tera")) effects.add(RaidFeature.Base.TERA.getId());
-//        this.sendEvent(new StartRaidShowdownEvent(this.battleState, effects), battle);
-//        this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
-        ShowdownService.Companion.getService().send(
-            battle.getBattleId(),
-            new String[]{String.format(
-                ">raidstart %s %s",
-                this.raidBoss.getForceDynamax(),
-                this.raidBoss.getFeature().equalsIgnoreCase("tera")
-            )}
-        );
-        ShowdownService.Companion.getService().send(battle.getBattleId(), new String[]{">donothing"});
+        this.sendEvent(new StartRaidShowdownEvent(
+            this.battleState,
+            this.raidBoss.getForceDynamax(),
+            this.raidBoss.getFeature().equalsIgnoreCase("tera")
+        ), battle);
+        this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
         this.runScripts(RaidTriggerType.JOIN, battle, this.battles::size);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
@@ -529,7 +521,7 @@ public class RaidInstance {
 
     @SuppressWarnings("unchecked")
     public <T> void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle, @NotNull Supplier<T> predicate) {
-        // this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate.get()));
+        this.getTriggers(type).removeIf(trigger -> ((RaidTrigger<T>) trigger).trigger(this, battle, predicate.get()));
     }
 
     public void runScripts(RaidTriggerType type, @Nullable PokemonBattle battle) {
@@ -687,16 +679,16 @@ public class RaidInstance {
     }
 
     public void addTrigger(RaidTrigger<?> trigger) {
-        // this.triggerAddQueue.add(trigger);
+        this.triggerAddQueue.add(trigger);
     }
 
     public void actuallyAddTriggers() {
-//        this.triggerAddQueue.forEach(trigger -> {
-//            if (trigger.type() == RaidTriggerType.TIMER && trigger instanceof TimerTrigger timerTrigger) {
-//                this.schedule(() -> timerTrigger.trigger(this, null), timerTrigger.after() * 20, timerTrigger.repeat());
-//            }
-//            else this.triggers.get(trigger.type()).add(trigger);
-//        });
+        this.triggerAddQueue.forEach(trigger -> {
+            if (trigger.type() == RaidTriggerType.TIMER && trigger instanceof TimerTrigger timerTrigger) {
+                this.schedule(() -> timerTrigger.trigger(this, null), timerTrigger.after() * 20, timerTrigger.repeat());
+            }
+            else this.triggers.get(trigger.type()).add(trigger);
+        });
         this.triggerAddQueue.clear();
     }
 

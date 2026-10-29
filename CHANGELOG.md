@@ -1,0 +1,2 @@
+- Updated for Cobblemon 1.8.4.
+- Temporarily removed battle sync and raid scripts due to the Cobblemon update.

@@ -15,10 +15,10 @@ import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import java.util.ArrayList;
 import java.util.List;
 
-public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> effects) implements ShowdownEvent {
+public record StartRaidShowdownEvent(RaidBattleState battleState, boolean isDynamax, boolean isTera) implements ShowdownEvent {
     @SuppressWarnings("deprecation")
     public String build(PokemonBattle battle) {
-        Builder builder = new Builder(this.effects);
+        Builder builder = new Builder(this.isDynamax, this.isTera);
         List<Pair<ContextManager, BattleContext>> contexts = new ArrayList<>();
 
         if (this.battleState.terrain != null) {
@@ -67,101 +67,51 @@ public record StartRaidShowdownEvent(RaidBattleState battleState, List<String> e
             return DispatchResultKt.getGO();
         });
 
-        return builder.build();
+        builder.build().forEach(event -> event.send(battle));
+        return "";
+    }
+
+    @Override
+    public void send(PokemonBattle battle) {
+        this.build(battle);
     }
 
     private static class Builder {
-        private String string;
+        private final List<ShowdownEvent> events;
 
-        private Builder(List<String> effects) {
-            this.string = ">eval battle.sides[1].pokemon[0].addVolatile('raidboss'); ";
-            if (effects.contains("dynamax")) this.string += "battle.sides[1].pokemon[0].addVolatile('dynamax'); ";
-            if (effects.contains("tera")) this.string += "battle.actions.terastallize(battle.sides[1].pokemon[0]); ";
+        private Builder(boolean isDynamax, boolean isTera) {
+            this.events = new ArrayList<>();
+            this.events.add(new ShowdownEvents.RaidStartShowdownEvent());
+            if (isDynamax) this.events.add(new ShowdownEvents.DynamaxShowdownEvent(false));
+            if (isTera) this.events.add(new ShowdownEvents.TerastallizeShowdownEvent(false));
         }
 
         private void addTerrain(String terrain) {
-            this.string += String.format(
-                "const terrain = battle.dex.conditions.get('%1$s'); " +
-                "if (terrain && battle.field.terrain === '') { " +
-                    "battle.field.terrain = terrain.id; " +
-                    "battle.field.terrainState = { " +
-                        "id: terrain.id, " +
-                        "source: battle.sides[1].active[0], " +
-                        "sourceSlot: battle.sides[1].active[0].getSlot(), " +
-                        "duration: terrain.duration " +
-                    "}; " +
-                "} ",
-                terrain
-            );
+            this.events.add(new ShowdownEvents.SetTerrainShowdownEvent(terrain, true));
         }
 
         private void addField(String field) {
-            this.string += String.format(
-                "const pseudoWeather = this.battle.dex.conditions.get('%1$s'); " +
-                "if (pseudoWeather && !battle.field.pseudoWeather[pseudoWeather.id]) { " +
-                    "battle.field.pseudoWeather[pseudoWeather.id] = { " +
-                        "id: pseudoWeather.id, " +
-                        "source: battle.sides[1].active[0], " +
-                        "sourceSlot: battle.sides[1].active[0].getSlot(), " +
-                        "duration: pseudoWeather.duration " +
-                    "}; " +
-                "} ",
-                field
-            );
+            this.events.add(new ShowdownEvents.SetFieldShowdownEvent(field));
         }
 
         private void addWeather(String weather) {
-            this.string += String.format(
-                "const weather = this.battle.dex.conditions.get('%1$s'); " +
-                "if (weather && battle.field.weather === '') { " +
-                    "battle.field.weather = weather.id; " +
-                    "battle.field.weatherState = { id: weather.id }; " +
-                    "if (weather.duration) battle.field.weatherState.duration = weather.duration; " +
-                "} ",
-                weather
-            );
+            this.events.add(new ShowdownEvents.SetWeatherShowdownEvent(weather, true));
         }
 
         private void addSideConditions(int side, String sideCondition) {
-            this.string += String.format(
-                "const condition = battle.dex.conditions.get('%1$s'); " +
-                "const side = battle.sides[%2$d]; " +
-                "if (condition && !side.sideConditions[condition.id]) { " +
-                    "side.sideConditions[condition.id] = { " +
-                        "id: condition.id, " +
-                        "target: side, " +
-                        "source: side.active[0], " +
-                        "sourceSlot: side.active[0].getSlot(), " +
-                        "duration: condition.duration, " +
-                    "}; " +
-                    "battle.effectState.layers = 1; " +
-                "} ",
-                sideCondition, side - 1);
+            this.events.add(new ShowdownEvents.SetSideConditionShowdownEvent(sideCondition, side - 1));
         }
 
         private void addVolatile(VolatileStatus status) {
-            this.string += String.format(
-                "const status = battle.dex.conditions.get('%1$s'); " +
-                "for (let p of battle.sides[1].active) { " +
-                    "if (!p) continue; " +
-                    "if (status) p.volatiles[status.id] = { id: status.id, name: status.name, target: p }; " +
-                "} ",
-                status.getShowdownName()
-            );
+            this.events.add(new ShowdownEvents.SetStatusShowdownEvent(status, 1));
         }
 
         private void setBoost(Stat stat, int stages) {
-            this.string += String.format(
-                "for (let p of battle.sides[1].active) { " +
-                    "if (!p) continue; " +
-                    "p.boosts['%1$s'] = %2$d; " +
-                "} ",
-                stat.getShowdownId(), stages
-            );
+            this.events.add(new ShowdownEvents.SetBoostShowdownEvent(stat, stages, 1));
         }
 
-        private String build() {
-            return string;
+        private List<ShowdownEvent> build() {
+            return this.events;
         }
     }
 }

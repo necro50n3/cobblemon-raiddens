@@ -64,10 +64,10 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
             RaidSupport support = RaidSupportRegistry.getSupport(moveId);
             if (support != null) {
                 support.boosts().forEach((stat, stages) ->
-                    raid.broadcastToOthers(new ShowdownEvents.RaidSupportShowdownEvent(moveId, stat, stages), battle)
+                    raid.broadcastToOthers(new ShowdownEvents.SupportBoostShowdownEvent(moveId, stat, stages), battle)
                 );
-                if (support.heal() > 0) raid.broadcastToOthers(new ShowdownEvents.RaidHealShowdownEvent(support.heal()), battle);
-                if (support.cure()) raid.broadcastToOthers(new ShowdownEvents.RaidCureShowdownEvent(), battle);
+                if (support.heal() > 0) raid.broadcastToOthers(new ShowdownEvents.SupportHealShowdownEvent(support.heal()), battle);
+                if (support.cure()) raid.broadcastToOthers(new ShowdownEvents.SupportCureShowdownEvent(), battle);
                 if (support.sendUpdate()) RaidSupportRegistry.addToQueue(this.userPokemon.getUuid());
             }
             else {
