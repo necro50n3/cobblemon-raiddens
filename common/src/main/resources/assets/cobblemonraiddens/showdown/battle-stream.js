@@ -195,66 +195,71 @@ ${team}`);
       case "version":
       case "version-origin":
         break;
-      case "insertactor":
-        const [side, partySize, actor, team] = splitFirst(message, " ");
-        const side = battle.sides[parseInt(side)];
-        side.name = actor;
-        side.initTeam(battle.getTeam({ team: team }));
-        side.totalFainted = 0;
+      case "insertactor": {
+        const [toSide, partySize, actor, packedTeam] = splitFirst(message, " ");
+        const insertSide = this.battle.sides[parseInt(toSide)];
+        insertSide.name = actor;
+        insertSide.initTeam(this.battle.getTeam({ team: packedTeam }));
+        insertSide.totalFainted = 0;
 
-        for (let i = 0; i < side.pokemon.length; i++) {
-          battle.initPokemon(side.pokemon[i]);
+        for (let i = 0; i < insertSide.pokemon.length; i++) {
+          this.battle.initPokemon(insertSide.pokemon[i]);
         }
-        for (let i = 0; i < Math.min(side.active.length, side.pokemon.length); i++) {
-          side.active[i] = side.pokemon[i];
-        }
-
-        const requests = battle.getRequests(move);
-        side.emitRequest(requests[parseInt(side)]);
-        side.chooseTeam(parseInt(partySize));
-        for (let i = 0; i < Math.min(side.active.length, side.pokemon.length); i++) {
-          side.active[i] = null;
-          battle.actions.switchIn(side.pokemon[i], i);
+        for (let i = 0; i < Math.min(insertSide.active.length, insertSide.pokemon.length); i++) {
+          insertSide.active[i] = insertSide.pokemon[i];
         }
 
-        battle.sendUpdates();
-        if (battle.awaitTurnEnd) battle.delayedNextTurn();
+        const requests = this.battle.getRequests(move);
+        insertSide.emitRequest(requests[parseInt(insertSide)]);
+        insertSide.chooseTeam(parseInt(partySize));
+        for (let i = 0; i < Math.min(insertSide.active.length, insertSide.pokemon.length); i++) {
+          insertSide.active[i] = null;
+          this.battle.actions.switchIn(insertSide.pokemon[i], i);
+        }
+
+        this.battle.sendUpdates();
+        if (this.battle.awaitTurnEnd) this.battle.delayedNextTurn();
         break;
-      case "raidstart":
+      }
+      case "raidstart": {
         this.battle.sides[1].pokemon.forEach(p => p.addVolatile('raidboss'));
         const [isDynamax, isTera] = splitFirst(message, " ").map(value => value === "true");
         if (isDynamax) this.battle.sides[1].pokemon.forEach(p => p.addVolatile('dynamax'));
         if (isTera) this.battle.sides[1].pokemon.forEach(p => this.battle.actions.terastallize(p));
         break;
-      case "cheerattack":
+      }
+      case "cheerattack": {
         const [origin] = splitFirst(message, " ");
         this.battle.add('cheer', 'cheer_attack', origin);
-        for (let p of battle.sides[0].active) {
+        for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           p.addVolatile('cheerattack');
         }
         break;
-      case "cheerdefense":
+      }
+      case "cheerdefense": {
         const [origin] = splitFirst(message, " ");
         this.battle.add('cheer', 'cheer_defense', origin);
-        for (let p of battle.sides[0].active) {
+        for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           p.addVolatile('cheerdefense');
         }
         break;
-      case "cheerheal":
+      }
+      case "cheerheal": {
         const [origin] = splitFirst(message, " ");
         this.battle.add('cheer', 'cheer_heal', origin);
-        for (let p of battle.sides[0].active) {
+        for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           p.heal(Math.floor(p.maxhp * 0.5));
           p.cureStatus();
-          battle.add('-heal', p, p.getHealth, '[from] bagitem: ' + 'cheer_heal');
+          this.battle.add('-heal', p, p.getHealth, '[from] bagitem: ' + 'cheer_heal');
         }
         break;
-      case "clearboost":
-        const [side, isSilent] = splitFirst(message, " ");
-        for (let p of this.battle.sides[parseInt(side)].active) {
+      }
+      case "clearboost": {
+        const [toSide, isSilent] = splitFirst(message, " ");
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p) continue;
           for (let boost in p.boosts) {
             p.boosts[boost] = 0;
@@ -262,14 +267,16 @@ ${team}`);
           if (!isSilent) this.battle.add('-clearboost', p);
         }
         break;
-      case "clearfield":
+      }
+      case "clearfield": {
         const [id] = splitFirst(message, " ");
         const pseudoWeather = this.battle.dex.conditions.get(id);
         if (this.battle.field.pseudoWeather[pseudoWeather.id]) delete this.battle.field.pseudoWeather[pseudoWeather.id];
         break;
-      case "clearnegativeboost":
-        const [side] = splitFirst(message, " ");
-        for (let p of this.battle.sides[parseInt(side)].active) {
+      }
+      case "clearnegativeboost": {
+        const [toSide] = splitFirst(message, " ");
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p) continue;
           for (let i in p.boosts) {
             if (p.boosts[i] >= 0) continue;
@@ -277,36 +284,42 @@ ${team}`);
           }
         }
         break;
-      case "clearsidecondition":
-        const [id, side] = splitFirst(message, " ");
+      }
+      case "clearsidecondition": {
+        const [id, toSide] = splitFirst(message, " ");
         const condition = this.battle.dex.conditions.get(id);
-        const side = this.battle.sides[parseInt(side)];
-        if (condition && side.sideConditions[condition.id]) delete side.sideConditions[condition.id];
+        const conditionSide = this.battle.sides[parseInt(toSide)];
+        if (condition && conditionSide.sideConditions[condition.id]) delete conditionSide.sideConditions[condition.id];
         break;
-      case "clearterrain":
+      }
+      case "clearterrain": {
         this.battle.field.terrain = "";
         this.battle.field.terrainState = { id: "" };
         break;
-      case "clearweather":
+      }
+      case "clearweather": {
         this.battle.field.weather = "";
         this.battle.field.weatherState = { id: "" };
         break;
-      case "curestatus":
-        const [side] = splitFirst(message, " ");
-        for (let p of this.battle.sides[parseInt(side)].active) {
+      }
+      case "curestatus": {
+        const [toSide] = splitFirst(message, " ");
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p) continue;
           if (p.status !== 'shield') p.clearStatus();
         }
         break;
-      case "curevolatile":
-        const [id, side] = splitFirst(message, " ");
+      }
+      case "curevolatile": {
+        const [id, toSide] = splitFirst(message, " ");
         const status = this.battle.dex.conditions.get(id);
-        for (let p of this.battle.sides[parseInt(side)].active) {
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p || !status || !p.volatiles[status.id]) continue;
           delete p.volatiles[status.id];
         }
         break;
-      case "dragoncheer":
+      }
+      case "dragoncheer": {
         const status = this.battle.dex.conditions.get('dragoncheer');
         for (let p of this.battle.sides[0].active) {
           if (!p) continue;
@@ -318,9 +331,10 @@ ${team}`);
           this.battle.add('-start', p, 'move: Dragon Cheer');
         }
         break;
-      case "invertboost":
-        const [side] = splitFirst(message, " ");
-        for (let p of this.battle.sides[parseInt(side)].active) {
+      }
+      case "invertboost": {
+        const [toSide] = splitFirst(message, " ");
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p) continue;
           for (let i in p.boosts) {
             if (p.boosts[i] === 0) continue;
@@ -328,11 +342,13 @@ ${team}`);
           }
         }
         break;
-      case "playerjoin":
+      }
+      case "playerjoin": {
         const [player] = splitFirst(message, " ");
-        this.battle.add('playerjoin', battle.sides[1].active[0], player);
+        this.battle.add('playerjoin', this.battle.sides[1].active[0], player);
         break;
-      case "raidboost":
+      }
+      case "raidboost": {
         const [stat, stages] = splitFirst(message, " ");
         var boosts = {};
         boosts[stat] = parseInt(stages);
@@ -356,7 +372,8 @@ ${team}`);
           }
         }
         break;
-      case "resetboss":
+      }
+      case "resetboss": {
         const [uuid] = splitFirst(message, " ");
         this.battle.add('raidenergy', uuid, true);
         for (let p of this.battle.sides[1].active) {
@@ -369,14 +386,16 @@ ${team}`);
           this.battle.add('clearboss', p, uuid);
         }
         break;
-      case "setboost":
-        const [stat, stages, side] = splitFirst(message, " ");
-        for (let p of this.battle.sides[parseInt(side)].active) {
+      }
+      case "setboost": {
+        const [stat, stages, toSide] = splitFirst(message, " ");
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!p) continue;
           p.boosts[stat] = parseInt(stages);
         }
         break;
-      case "setfield":
+      }
+      case "setfield": {
         const [id] = splitFirst(message, " ");
         const pokemon = this.battle.sides[1].active[0];
         const pseudoWeather = this.battle.dex.conditions.get(id);
@@ -387,30 +406,32 @@ ${team}`);
           duration: pseudoWeather.duration
         };
         break;
-      case "setsidecondition":
-        const [id, side] = splitFirst(message, " ");
+      }
+      case "setsidecondition": {
+        const [id, toSide] = splitFirst(message, " ");
         const condition = this.battle.dex.conditions.get(id);
-        const side = this.battle.sides[parseInt(side)];
-        const pokemon = side.active[0];
-        if (condition && !side.sideConditions[condition.id]) {
-          side.sideConditions[condition.id] = {
+        const conditionSide = this.battle.sides[parseInt(toSide)];
+        const pokemon = conditionSide.active[0];
+        if (condition && !conditionSide.sideConditions[condition.id]) {
+          conditionSide.sideConditions[condition.id] = {
             id: condition.id,
-            target: side,
+            target: conditionSide,
             source: pokemon,
             sourceSlot: pokemon.getSlot(),
             duration: condition.duration,
           };
           this.battle.effectState.layers = 1;
         }
-        else if (condition && side.sideConditions[condition.id]) {
+        else if (condition && conditionSide.sideConditions[condition.id]) {
           if (condition.id === 'spikes' && this.battle.effectState.layers < 3) this.battle.effectState.layers++;
           if (condition.id === 'toxicspikes' && this.battle.effectState.layers < 2) this.battle.effectState.layers++;
         }
         break;
-      case "setstatus":
-        const [id, side] = splitFirst(message, " ");
+      }
+      case "setstatus": {
+        const [id, toSide] = splitFirst(message, " ");
         const status = this.battle.dex.conditions.get(id);
-        for (let p of this.battle.sides[parseInt(side)].active) {
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (status && p.status !== 'shield') {
             if (p.status === status.id) continue;
             this.battle.runEvent('SetStatus', p, null, null, status);
@@ -427,10 +448,11 @@ ${team}`);
           }
         }
         break;
-      case "setvolatile":
-        const [id, side] = splitFirst(message, " ");
+      }
+      case "setvolatile": {
+        const [id, toSide] = splitFirst(message, " ");
         const status = this.battle.dex.conditions.get(id);
-        for (let p of this.battle.sides[parseInt(side)].active) {
+        for (let p of this.battle.sides[parseInt(toSide)].active) {
           if (!status || status.id === 'typechange') continue;
           if (p.volatiles[status.id]) {
             if (status.onRestart) this.battle.singleEvent('Restart', status, p.volatiles[status.id], p, null, null);
@@ -440,7 +462,8 @@ ${team}`);
           if (status.id === 'confusion') p.volatiles[status.id].time = this.battle.random(2, 6);
         }
         break;
-      case "setterrain":
+      }
+      case "setterrain": {
         const [id, isSilent] = splitFirst(message, " ");
         if (isSilent === "true") {
           const pokemon = this.battle.sides[1].active[0];
@@ -458,7 +481,8 @@ ${team}`);
           this.battle.field.setTerrain(id, pokemon);
         }
         break;
-      case "setweather":
+      }
+      case "setweather": {
         const [id, isSilent] = splitFirst(message, " ");
         if (isSilent === "true") {
           const weather = this.battle.dex.conditions.get(id);
@@ -471,7 +495,8 @@ ${team}`);
           this.battle.field.setWeather(id, pokemon);
         }
         break;
-      case "shieldadd":
+      }
+      case "shieldadd": {
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           p.clearStatus();
@@ -479,19 +504,21 @@ ${team}`);
           this.battle.add('shieldadd', p);
         }
         break;
-      case "shieldremove":
+      }
+      case "shieldremove": {
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           p.cureStatus();
           this.battle.add('shieldremove', p);
         }
         break;
-      case "statboost":
-        const [stat, stages, side, isSilent] = splitFirst(message, " ");
+      }
+      case "statboost": {
+        const [stat, stages, toSide, isSilent] = splitFirst(message, " ");
         var boosts = {};
         boosts[stat] = parseInt(stages);
         if (isSilent) {
-          for (let p of this.battle.sides[parseInt(side)].active) {
+          for (let p of this.battle.sides[parseInt(toSide)].active) {
             if (!p) continue;
             var boost = this.battle.runEvent('ChangeBoost', p, p, {name: 'Raid Energy'}, {...boosts});
             boost = p.getCappedBoost(boost);
@@ -510,7 +537,8 @@ ${team}`);
           }
         }
         break;
-      case "supportboost":
+      }
+      case "supportboost": {
         const [move, stat, stages] = splitFirst(message, " ");
         var boosts = {};
         boosts[stat] = parseInt(stages);
@@ -519,27 +547,30 @@ ${team}`);
           else if (['gearup', 'magneticflux'].includes(move)) {
             if (!p.hasAbility('plus') && !p.hasAbility('minus')) continue;
           }
-          battle.boost(boosts, p, null, '[from] Raid');
+          this.battle.boost(boosts, p, null, '[from] Raid');
         }
         break;
-      case "supportcure":
+      }
+      case "supportcure": {
         for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           p.cureStatus();
         }
         break;
-      case "supportheal":
+      }
+      case "supportheal": {
         const [heal] = splitFirst(message, " ");
         for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           this.battle.heal(Math.floor(p.maxhp * parseFloat(heal)), p);
         }
         break;
-      case "swapsideconditions":
+      }
+      case "swapsideconditions": {
         const sourceSideConditions = this.battle.sides[0].sideConditions;
         const targetSideConditions = this.battle.sides[1].sideConditions;
-        const sourceTemp: typeof sourceSideConditions = {};
-        const targetTemp: typeof targetSideConditions = {};
+        const sourceTemp = {};
+        const targetTemp = {};
         for (const id in sourceSideConditions) {
           if (!sideConditions.includes(id)) continue;
           sourceTemp[id] = sourceSideConditions[id];
@@ -557,33 +588,38 @@ ${team}`);
           sourceSideConditions[id] = targetTemp[id];
         }
         break;
-      case "raiddynamax":
+      }
+      case "raiddynamax": {
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           p.addVolatile('dynamax');
         }
         break;
-      case "raidformechange":
+      }
+      case "raidformechange": {
         const [forme] = splitFirst(message, " ");
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           p.formeChange(forme, null, true);
         }
         break;
-      case "raidmega":
+      }
+      case "raidmega": {
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           if (p.species.baseSpecies === 'Zygarde') p.canMegaEvo = 'Zygarde-Mega';
           this.battle.actions.runMegaEvo(p);
         }
         break;
-      case "raidtera":
+      }
+      case "raidtera": {
         for (let p of this.battle.sides[1].active) {
           if (!p) continue;
           this.battle.actions.terastallize(p);
         }
         break;
-      case "playerboost":
+      }
+      case "playerboost": {
         const [stat, stages] = splitFirst(message, " ");
         var boosts = {};
         boosts[stat] = parseInt(stages);
@@ -592,9 +628,10 @@ ${team}`);
           this.battle.boost(boosts, p, null, '[from] Raid');
         }
         break;
-      case "resetplayer":
+      }
+      case "resetplayer": {
         const [origin] = splitFirst(message, " ");
-        battle.add('raidenergy', origin);
+        this.battle.add('raidenergy', origin);
         for (let p of this.battle.sides[0].active) {
           if (!p) continue;
           for (let i in p.boosts) {
@@ -606,19 +643,23 @@ ${team}`);
           this.battle.add('clearplayer', p, origin);
         }
         break;
-      case "usemove":
-        const [move, side] = splitFirst(message, " ");
+      }
+      case "usemove": {
+        const [move, toSide] = splitFirst(message, " ");
         let p = this.battle.sides[1].active[0];
         p.side.lastSelectedMove = this.battle.toID(move);
-        this.battle.actions.runMove(move, p, parseInt(side), null, null, true, false);
+        this.battle.actions.runMove(move, p, parseInt(toSide), null, null, true, false);
         break;
-      case "raidenergy":
+      }
+      case "raidenergy": {
         const [origin] = splitFirst(message, " ");
         this.battle.add('raidenergy', origin);
         break;
-      case "donothing":
+      }
+      case "donothing": {
         this.battle.add('donothing');
         break;
+      }
       default:
         throw new Error(`Unrecognized command ">${type} ${message}"`);
     }

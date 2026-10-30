@@ -48,6 +48,7 @@ dependencies {
         exclude group: "net.neoforged.fancymodloader", module: "loader"
     }
     modImplementation "software.bernie.geckolib:geckolib-neoforge-$rootProject.geckolib_version"
+    modImplementation "com.necro.asymmetric.battles:asymmetricbattles-neoforge:$rootProject.asymmetricbattles_version"
     include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"
@@ -96,6 +97,7 @@ processResources {
         minecraft_version: rootProject.minecraft_version,
         cobblemon_version: rootProject.cobblemon_dependency,
         geckolib_version: rootProject.geckolib_dependency,
+        asymmetricbattles_version: rootProject.asymmetricbattles_dependency,
         neoforge_version: rootProject.neoforge_version
     ]
     inputs.properties replaceProperties

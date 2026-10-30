@@ -43,6 +43,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-language-kotlin:$rootProject.fabric_kotlin"
     modImplementation "com.cobblemon:fabric:$rootProject.cobblemon_version"
     modImplementation "software.bernie.geckolib:geckolib-fabric-$rootProject.geckolib_version"
+    modImplementation "com.necro.asymmetric.battles:asymmetricbattles-fabric:$rootProject.asymmetricbattles_version"
     include(modApi "me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version")
 
     modImplementation "com.terraformersmc:modmenu:11.0.3"
@@ -88,7 +89,8 @@ processResources {
         version: project.version,
         minecraft_version: rootProject.minecraft_version,
         cobblemon_version: rootProject.cobblemon_dependency,
-        geckolib_version: rootProject.geckolib_dependency
+        geckolib_version: rootProject.geckolib_dependency,
+        asymmetricbattles_version: rootProject.asymmetricbattles_dependency
     ]
     inputs.properties replaceProperties
 

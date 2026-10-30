@@ -317,7 +317,7 @@ public class ShowdownEvents {
     public static class RaidEnergyShowdownEvent implements ShowdownEvent {
         @Override
         public String build(PokemonBattle battle) {
-            return String.format(">eval battle.add('raidenergy', '%1$s');", battle.getSide2().getActors()[0].getUuid());
+            return ">raidenergy " + battle.getSide2().getActors()[0].getUuid();
         }
     }
 
