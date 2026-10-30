@@ -101,6 +101,8 @@ public class RaidBoss {
     private Float requiredDamage;
     @SerializedName("catch_rate")
     private Float catchRate;
+    @SerializedName("battle_format")
+    private RaidBattleFormat battleFormat;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -116,7 +118,7 @@ public class RaidBoss {
                     Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
                     String raidAI, List<String> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
-                    Float catchRate) {
+                    Float catchRate, RaidBattleFormat battleFormat) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -150,6 +152,7 @@ public class RaidBoss {
         this.energy = energy;
         this.requiredDamage = requiredDamage;
         this.catchRate = catchRate;
+        this.battleFormat = battleFormat;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -192,6 +195,7 @@ public class RaidBoss {
         this.energy = null;
         this.requiredDamage = null;
         this.catchRate = null;
+        this.battleFormat = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -253,6 +257,7 @@ public class RaidBoss {
         if (this.energy == null) this.energy = tierConfig.energy();
         if (this.requiredDamage == null) this.requiredDamage = tierConfig.requiredDamage();
         if (this.catchRate == null) this.catchRate = tierConfig.catchRate();
+        if (this.battleFormat == null) this.battleFormat = tierConfig.battleFormat();
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
@@ -503,6 +508,7 @@ public class RaidBoss {
     }
 
     public Integer getMaxPlayers() {
+        if (this.getBattleFormat() == RaidBattleFormat.RAID) return Math.min(this.maxPlayers, 4);
         return this.maxPlayers;
     }
 
@@ -576,6 +582,10 @@ public class RaidBoss {
 
     public Float getCatchRate() {
         return this.catchRate;
+    }
+
+    public RaidBattleFormat getBattleFormat() {
+        return this.battleFormat;
     }
 
     public Species getDisplaySpecies() {
@@ -751,6 +761,10 @@ public class RaidBoss {
         this.catchRate = catchRate;
     }
 
+    public void setBattleFormat(RaidBattleFormat battleFormat) {
+        this.battleFormat = battleFormat;
+    }
+
     public void clearCaches() {
         this.cachedBossProperties = null;
         if (this.lootTable != null) this.lootTable.clearCache();
@@ -797,7 +811,8 @@ public class RaidBoss {
             this.playersShareLives,
             this.energy,
             this.requiredDamage,
-            this.catchRate
+            this.catchRate,
+            this.battleFormat
         );
     }
 

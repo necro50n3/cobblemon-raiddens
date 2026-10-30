@@ -8,6 +8,8 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.asymmetric.battles.common.api.BattleParticipant;
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ITransformer;
@@ -27,7 +29,7 @@ public class RaidBuilder {
                 !p.getEffectedPokemon().isFainted()
                 && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
                 && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
-                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().getHeldItem$common())
+                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().heldItem())
             ).toList();
         if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, boss.getRaidPartySize()));
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
@@ -37,7 +39,7 @@ public class RaidBuilder {
         );
         setTransformTarget(pokemonEntity, wildActor);
 
-        BattleFormat battleFormat = BattleFormat.Companion.getGEN_9_SINGLES();
+        BattleFormat battleFormat = boss.getBattleFormat().format();
         ErroredBattleStart errors = new ErroredBattleStart();
 
         if (!battleTeam.isEmpty() && battleTeam.getFirst().getHealth() <= 0) {
@@ -59,7 +61,18 @@ public class RaidBuilder {
         playerActor.setBattleTheme(boss.getMusic());
 
         if (errors.isEmpty()) {
-            return BattleRegistry.startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
+            BattleSide side1;
+            BattleSide side2;
+            if (boss.getBattleFormat() == RaidBattleFormat.RAID) {
+                side1 = new BattleSide(playerActor, BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor());
+                side2 = new BattleSide(wildActor, BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor());
+            }
+            else {
+                side1 = new BattleSide(playerActor);
+                side2 = new BattleSide(wildActor);
+            }
+
+            return BattleRegistry.startBattle(battleFormat, side1, side2, true);
         }
         else return errors;
     }

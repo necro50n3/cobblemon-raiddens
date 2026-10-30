@@ -10,7 +10,10 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.asymmetric.battles.common.api.AsymmetricAPI;
+import com.necro.asymmetric.battles.common.api.BattleParticipant;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -98,8 +101,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_ability", Component.translatable(pokemon.getAbility().getDisplayName()))), true);
             return;
         }
-        else if (RaidUtils.isHeldItemBlacklisted(pokemon.getHeldItem$common())) {
-            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_held_item", pokemon.getHeldItem$common().getDisplayName())), true);
+        else if (RaidUtils.isHeldItemBlacklisted(pokemon.heldItem())) {
+            player.displayClientMessage(ComponentUtils.getErrorMessage(Component.translatable("message.cobblemonraiddens.raid.forbidden_held_item", pokemon.heldItem().getDisplayName())), true);
             return;
         }
         else if (pokemon.isFainted()) {
@@ -109,7 +112,8 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         UUID leadingPokemon = pokemon.getUuid();
 
-        if (PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) && pokemonEntity.canBattle(player)) {
+        if (!PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) || !pokemonEntity.canBattle(player)) {}
+        else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getBattles().isEmpty()) {
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, boss)
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
@@ -127,6 +131,13 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                     errors.sendTo(player, component -> component.withStyle(ChatFormatting.RED));
                     return Unit.INSTANCE;
                 });
+        }
+        else {
+            PokemonBattle battle = raid.getBattles().getFirst();
+            AsymmetricAPI.setRaidBattleActor(BattleParticipant.player(player, leadingPokemon).toActor(), battle);
+            this.flagAsSeen(battle, pokemonEntity);
+            if (!raid.isPlayerIn(player)) raid.addPlayer(player);
+            RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
         }
     }
 

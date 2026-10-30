@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.Script;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -55,6 +56,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     public float required_damage = 0f;
     @Comment("The base catch rate of the raid boss. Default: 1.0")
     public float catch_rate = 1.0f;
+    @Comment("The battle format for the raid. (Options: SINGLES, DOUBLES, TRIPLES, QUADRUPLES, PENTUPLES, SEXTUPLES, RAID). Default: SINGLES")
+    public RaidBattleFormat battle_format = RaidBattleFormat.SINGLES;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -125,5 +128,8 @@ public class TierFiveConfig implements ConfigData, TierConfig {
     }
     public float catchRate() {
         return this.catch_rate;
+    }
+    public RaidBattleFormat battleFormat() {
+        return this.battle_format;
     }
 }

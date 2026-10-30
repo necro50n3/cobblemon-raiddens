@@ -15,8 +15,10 @@ import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.necro.asymmetric.battles.common.api.AsymmetricBattleFormats;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
@@ -175,7 +177,7 @@ public class RaidInstance {
 
     public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
         this.addPlayer(player);
-        this.addBattle(battle);
+        if (this.raidBoss.getBattleFormat().format() != AsymmetricBattleFormats.GEN_9_RAID) this.addBattle(battle);
     }
 
     public void addPlayer(ServerPlayer player) {
@@ -319,13 +321,15 @@ public class RaidInstance {
     }
 
     private void sendHealthPacket(PokemonBattle battle) {
-        String pnx = battle.getSide2().getActivePokemon().getFirst().getPNX();
-        BattleActor actor = battle.getActorAndActiveSlotFromPNX(pnx).getFirst();
-        battle.sendSidedUpdate(
-            actor,
-            new BattleHealthChangePacket(pnx, this.getCurrentHealth(), null),
-            new BattleHealthChangePacket(pnx, this.getCurrentHealth() / this.getMaxHealth(), null),
-            false
+        Set<String> players = new HashSet<>();
+        battle.getSide2().getActivePokemon().forEach(pokemon -> players.add(pokemon.getPNX()));
+        players.forEach(pnx ->
+            battle.sendSidedUpdate(
+                battle.getActorAndActiveSlotFromPNX(pnx).getFirst(),
+                new BattleHealthChangePacket(pnx, this.getCurrentHealth(), null),
+                new BattleHealthChangePacket(pnx, this.getCurrentHealth() / this.getMaxHealth(), null),
+                false
+            )
         );
     }
 
@@ -575,7 +579,7 @@ public class RaidInstance {
     }
 
     public boolean canSync() {
-        return false;
+        return this.raidBoss.getBattleFormat() != RaidBattleFormat.RAID && CobblemonRaidDens.CONFIG.max_players_for_support >= this.activePlayers.size();
     }
 
     public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {
