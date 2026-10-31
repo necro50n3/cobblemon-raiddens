@@ -18,11 +18,8 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
-import com.necro.raid.dens.common.raids.RaidBuilder;
-import com.necro.raid.dens.common.raids.RaidState;
+import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
-import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -81,7 +78,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         RaidInstance active = raid == null ? null : raid.getActive();
         if (active == null) return;
         else if (active.hasFailed(player)) {

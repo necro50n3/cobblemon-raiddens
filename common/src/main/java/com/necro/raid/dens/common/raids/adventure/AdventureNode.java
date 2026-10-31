@@ -19,4 +19,6 @@ public interface AdventureNode extends JsonSerializer<AdventureNode> {
     default void onPlayerJoin(ServerPlayer player, RaidSession adventure) {}
 
     default void onPlayerLeave(ServerPlayer player, RaidSession adventure) {}
+
+    AdventureNode copy();
 }

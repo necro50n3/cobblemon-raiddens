@@ -3,7 +3,6 @@ package com.necro.raid.dens.common.network.packets;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,10 +35,8 @@ public record ChooseRaidBossResponsePacket(UUID raidId, ResourceLocation selecte
 
     @Override
     public void handleServer(ServerPlayer player) {
-        AbstractRaidSession session = RaidHelper.ACTIVE_RAIDS.get(this.raidId);
-        if (session instanceof RaidSession adventure) {
-            RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR.accept(player, this.raidId);
-            adventure.onBossSelected(player, this.selectedBoss);
-        }
+        RaidSession session = RaidHelper.ACTIVE_RAIDS.get(this.raidId);
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR.accept(player, this.raidId);
+        session.onBossSelected(player, this.selectedBoss);
     }
 }

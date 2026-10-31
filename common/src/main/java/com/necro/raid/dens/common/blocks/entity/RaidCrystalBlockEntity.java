@@ -310,7 +310,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     }
 
     public int getPlayerCount() {
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
         if (raid == null) return 0;
         return raid.getPlayerCount();
     }
@@ -403,9 +403,9 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     public boolean hasStartedAdventure() {
         RaidBoss boss = this.getRaidBoss();
         if (boss == null || !boss.isAdventure()) return false;
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
         if (raid == null) return false;
-        return ((RaidSession) raid).currentNodeIndex() > 1;
+        return raid.isInProgress();
     }
 
     public void syncAspects(ServerPlayer player) {

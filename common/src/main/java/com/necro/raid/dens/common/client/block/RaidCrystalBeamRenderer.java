@@ -74,7 +74,7 @@ public class RaidCrystalBeamRenderer {
         PoseStack.Pose pose = poseStack.last();
         addVertices(vertexConsumer, pose, 0.5F, height, color, alpha);
 
-        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(isAdventure ? ADVENTURE_GLOW_LOCATION : GLOW_LOCATION, false);
+        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(GLOW_LOCATION, false);
         else renderType = isAdventure ? RAID_ADVENTURE_GLOW : RAID_DEN_GLOW;
         vertexConsumer = bufferSource.getBuffer(renderType);
         addVertices(vertexConsumer, pose, 1.0F, 5.0F, color, alpha);

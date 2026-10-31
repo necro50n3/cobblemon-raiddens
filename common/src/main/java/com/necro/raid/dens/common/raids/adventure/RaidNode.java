@@ -58,6 +58,11 @@ public class RaidNode implements AdventureNode {
     }
 
     @Override
+    public RaidNode copy() {
+        return new RaidNode(List.copyOf(this.references));
+    }
+
+    @Override
     public int delay() {
         return 40;
     }
@@ -131,7 +136,7 @@ public class RaidNode implements AdventureNode {
             }, this.delay(), false));
 
             adventure.schedule(() -> {
-                if (this.waitingForChoice && !this.choiceMade) this.selectBoss(this.option1, adventure, server);
+                if (this.waitingForChoice && !this.choiceMade && !adventure.isFinished()) this.selectBoss(this.option1, adventure, server);
             }, 340, false);
         }
     }

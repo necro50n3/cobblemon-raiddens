@@ -3,8 +3,8 @@ package com.necro.raid.dens.neoforge.mixins.msd;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.github.yajatkaul.mega_showdown.api.lilycobble.networking.battle.BattlePokemonState;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.util.IRaidAccessor;
@@ -28,7 +28,7 @@ public class BattlePokemonStateMixin {
         if (pokemon.getEntity() == null) return;
         else if (!((IRaidAccessor) pokemon.getEntity()).crd_isRaidBoss()) return;
         statChanges.clear();
-        AbstractRaidSession session = RaidHelper.ACTIVE_RAIDS.get(((IRaidAccessor) pokemon.getEntity()).crd_getRaidId());
+        RaidSession session = RaidHelper.ACTIVE_RAIDS.get(((IRaidAccessor) pokemon.getEntity()).crd_getRaidId());
         if (session == null) return;
         RaidInstance raid = session.getActive();
         if (raid == null) return;

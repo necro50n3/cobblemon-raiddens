@@ -2,18 +2,27 @@ package com.necro.raid.dens.fabric.events;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
+import com.cobblemon.mod.common.api.item.HealingSource;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.party.RaidStoreFactory;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 @SuppressWarnings("unused")
 public class ModEvents {
@@ -58,5 +67,17 @@ public class ModEvents {
         RaidJoinHelper.onServerClose();
         RaidHelper.onServerClose(server);
         CustomRaidRegistries.RAID_REGISTRY.close();
+    }
+
+    public static InteractionResultHolder<ItemStack> onUseItem(Player player, Level level, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player instanceof LocalPlayer) return InteractionResultHolder.pass(stack);
+        if (!(stack.getItem() instanceof HealingSource)) return InteractionResultHolder.pass(stack);
+        RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(player);
+        if (participant == null) return InteractionResultHolder.pass(stack);
+        RaidSession session = RaidHelper.ACTIVE_RAIDS.get(participant.raid());
+        if (session == null || session.canUseHealingItems((ServerPlayer) player)) return InteractionResultHolder.pass(stack);
+        player.displayClientMessage(Component.translatable("cobblemon.battle.bagitem.cannot"), true);
+        return InteractionResultHolder.fail(stack);
     }
 }

@@ -10,7 +10,7 @@ import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.commands.permission.RaidDenPermission;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -157,7 +157,7 @@ public class RaidAdminCommands {
 
     private static int forceClear(ServerPlayer player) {
         if (RaidJoinHelper.getParticipant(player) == null) return 0;
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(RaidJoinHelper.getParticipant(player).raid());
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(RaidJoinHelper.getParticipant(player).raid());
         if (raid == null) return 0;
         raid.stopRaid(true);
         return 1;

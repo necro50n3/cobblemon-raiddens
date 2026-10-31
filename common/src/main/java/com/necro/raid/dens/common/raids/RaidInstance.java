@@ -20,11 +20,8 @@ import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePac
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.asymmetric.battles.common.api.AsymmetricBattleFormats;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
-import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidBattleEndEvent;
 import com.necro.raid.dens.common.events.RaidEndEvent;

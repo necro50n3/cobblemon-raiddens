@@ -28,8 +28,13 @@ public class BossNode implements AdventureNode {
     private transient @Nullable RaidInstance activeRaid;
 
     @Override
+    public BossNode copy() {
+        return new BossNode();
+    }
+
+    @Override
     public int delay() {
-        return 40;
+        return 60;
     }
 
     @Override
@@ -39,8 +44,7 @@ public class BossNode implements AdventureNode {
 
     @Override
     public void run(RaidSession adventure, MinecraftServer server) {
-        if (adventure.isAdventure()) adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
-        else this.startRaid(adventure, server);
+        adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
     }
 
     private void startRaid(RaidSession adventure, MinecraftServer server) {

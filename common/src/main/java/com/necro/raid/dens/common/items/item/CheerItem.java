@@ -6,8 +6,8 @@ import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.item.battle.SimpleBagItemLike;
 import com.cobblemon.mod.common.util.LocalizationUtilsKt;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import com.necro.raid.dens.common.util.ComponentUtils;
@@ -67,7 +67,7 @@ public class CheerItem extends Item implements SimpleBagItemLike {
 
         UUID raidId = ((IRaidAccessor) raidPokemon.getEntity()).crd_getRaidId();
         String data = player.getName().getString();
-        AbstractRaidSession session = RaidHelper.ACTIVE_RAIDS.get(raidId);
+        RaidSession session = RaidHelper.ACTIVE_RAIDS.get(raidId);
         RaidInstance raid = session == null ? null : session.getActive();
         if (raid == null || !raid.runCheer(player, battle, (CheerBagItem) this.getBagItem(), data)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("battle.cobblemonraiddens.cheer.cannot"), true);

@@ -11,6 +11,7 @@
         "ai.RandomBattleAIMixin",
         "ai.StrongBattleAIMixin",
         "den.LavaFluidMixin",
+        "player.PlayerExtensionsKtMixin",
         "player.ServerPlayerMixin",
         "raid.BattleActorMixin",
         "raid.BattleRegistryMixin",

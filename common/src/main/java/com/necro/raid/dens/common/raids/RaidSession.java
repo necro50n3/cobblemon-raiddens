@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidSyncContext;
 import com.necro.raid.dens.common.events.RaidEndEvent;
@@ -17,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ public class RaidSession extends AbstractRaidSession {
     private RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
         super(host, raid, isInDen);
         this.raidBoss = raidBoss;
-        this.nodes = new ArrayList<>(raidBoss.getNodes());
+        this.nodes = raidBoss.copyNodes();
         this.nodes.add(new BossNode());
         this.currentNodeIndex = -1;
         this.activeRaid = null;
@@ -104,10 +104,6 @@ public class RaidSession extends AbstractRaidSession {
 
     public List<AdventureNode> nodes() {
         return this.nodes;
-    }
-
-    public int currentNodeIndex() {
-        return this.currentNodeIndex;
     }
 
     public Vec3 startPos() {
@@ -237,6 +233,23 @@ public class RaidSession extends AbstractRaidSession {
     @Override
     public RaidState getRaidState() {
         return this.raidState;
+    }
+
+    public boolean isInProgress() {
+        if (this.currentNodeIndex == -1) return false;
+        else if (this.currentNodeIndex > 0) return true;
+        else if (this.activeRaid == null) return true;
+        else return this.activeRaid.getRaidState() != RaidState.NOT_STARTED;
+    }
+
+    public boolean canUsePC(ServerPlayer player) {
+        return this.currentNodeIndex == -1 || !this.playerLives.containsKey(player.getUUID()) || this.raidState == RaidState.NOT_STARTED;
+    }
+
+    public boolean canUseHealingItems(ServerPlayer player) {
+        if (!this.isAdventure() || this.currentNodeIndex == -1 || !this.playerLives.containsKey(player.getUUID()) || this.raidState == RaidState.NOT_STARTED) return true;
+        else if (this.boss().getLives() <= 1) return false;
+        return PlayerExtensionsKt.party(player).toGappyList().stream().allMatch(pokemon -> pokemon == null || pokemon.isFainted());
     }
 
     @Override

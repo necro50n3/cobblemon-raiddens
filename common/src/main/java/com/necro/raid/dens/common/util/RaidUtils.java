@@ -18,8 +18,8 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.party.RaidStoreFactory;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
@@ -115,7 +115,7 @@ public class RaidUtils {
         ServerLevel level = ModDimensions.getRaidDimension(player.getServer());
         if (level == null) return;
 
-        AbstractRaidSession instance = RaidHelper.ACTIVE_RAIDS.get(raid);
+        RaidSession instance = RaidHelper.ACTIVE_RAIDS.get(raid);
         if (instance == null) {
             leaveRaidFallback(player);
             return;

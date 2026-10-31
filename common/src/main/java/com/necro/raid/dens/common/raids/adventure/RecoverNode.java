@@ -16,6 +16,11 @@ public class RecoverNode implements AdventureNode {
     private transient boolean completed = false;
 
     @Override
+    public RecoverNode copy() {
+        return new RecoverNode();
+    }
+
+    @Override
     public void run(RaidSession adventure, MinecraftServer server) {
         for (ServerPlayer player : adventure.getPlayers()) {
             if (player != null) PlayerExtensionsKt.party(player).heal();

@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -84,9 +85,8 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register(RaidSpawnCommands::register);
         PlayerBlockBreakEvents.BEFORE.register(RaidUtils::canBreak);
         UseBlockCallback.EVENT.register(RaidUtils::canPlace);
-        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) ->
-            RaidDenNetworkMessages.SYNC_REGISTRY.accept(player)
-        ));
+        UseItemCallback.EVENT.register(ModEvents::onUseItem);
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) -> RaidDenNetworkMessages.SYNC_REGISTRY.accept(player)));
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketReloadListener());

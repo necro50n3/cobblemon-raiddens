@@ -10,8 +10,8 @@ import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
@@ -163,7 +163,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
     }
 
     private boolean requestJoinRaid(Player player, RaidCrystalBlockEntity blockEntity, @Nullable ItemStack key) {
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
         if (raid == null) return false;
         MinecraftServer server = player.getServer();
         if (server == null) return false;
@@ -200,7 +200,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         if (!RaidJoinHelper.addParticipant(player, blockEntity.getUuid(), true, true)) return false;
         RaidHelper.initRequest((ServerPlayer) player, blockEntity);
 
-        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+        RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
         raid.addPlayer((ServerPlayer) player);
         RaidUtils.teleportPlayerToRaid((ServerPlayer) player, player.getServer(), region);
         blockEntity.syncAspects((ServerPlayer) player);
@@ -240,7 +240,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity blockEntity) {
             blockEntity.closeRaid();
             if (blockState.getValue(IS_NATURAL)) RaidHelper.resetClearedRaids(blockEntity.getUuid());
-            AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
+            RaidSession raid = RaidHelper.ACTIVE_RAIDS.get(blockEntity.getUuid());
             if (raid != null) raid.closeRaid(level.getServer(), true);
         }
         super.onRemove(blockState, level, blockPos, blockState2, bl);

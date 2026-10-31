@@ -5,4 +5,4 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.List;
 
-public record RaidEndEvent(List<ServerPlayer> players, RaidBoss raid, boolean isWin) {}
+public record RaidEndEvent(List<ServerPlayer> players, RaidBoss raidBoss, boolean isWin) {}

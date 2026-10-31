@@ -568,6 +568,12 @@ public class RaidBoss {
         return this.nodes;
     }
 
+    public List<AdventureNode> copyNodes() {
+        List<AdventureNode> copies = new ArrayList<>();
+        this.nodes.forEach(node -> copies.add(node.copy()));
+        return copies;
+    }
+
     public List<String> getMarks() {
         return this.marks;
     }
