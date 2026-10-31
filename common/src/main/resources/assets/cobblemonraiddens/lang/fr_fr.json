@@ -37,6 +37,8 @@
     "battle.cobblemonraiddens.reset.boss": "%1$s a annulé ses effets négatifs !",
     "battle.cobblemonraiddens.reset.player": "%1$s a annulé vos améliorations de statistiques !",
     "biome.cobblemonraiddens.raid_den": "Caverne de Cristal",
+
+
     "block.cobblemonraiddens.raid_crystal_block": "Cristal d’Antre de Raid",
     "block.cobblemonraiddens.raid_home_block": "Cristal d’Antre de Raid",
     "category.cobblemonraiddens.raid_dens": "Antres de Raid",
@@ -76,6 +78,7 @@
     "item.cobblemonraiddens.cheer_defense.tooltip": "Augmente la Défense et la Défense Spéciale du groupe de 50 %",
     "item.cobblemonraiddens.cheer_heal": "Encouragement de Soin",
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restaure 50 % des PV du groupe",
+
     "item.cobblemonraiddens.raid_pouch": "Sac de Raid",
 
 

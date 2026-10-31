@@ -262,7 +262,7 @@ public class RaidDenCommands {
         }
         if (location == null) location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
 
-        setCrystal(level, blockPos, ModBlocks.INSTANCE.getRaidCrystalBlock().defaultBlockState(), canReset, cycleMode, location, bucket);
+        setCrystal(level, blockPos, ModBlocks.RAID_CRYSTAL_BLOCK.value().defaultBlockState(), canReset, cycleMode, location, bucket);
         return 1;
     }
 
@@ -307,7 +307,7 @@ public class RaidDenCommands {
         ResourceLocation location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level);
         if (location == null) location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
 
-        setCrystal(level, blockPos, ModBlocks.INSTANCE.getRaidCrystalBlock().defaultBlockState(), canReset, RaidCycleMode.BUCKET, location, bucket);
+        setCrystal(level, blockPos, ModBlocks.RAID_CRYSTAL_BLOCK.value().defaultBlockState(), canReset, RaidCycleMode.BUCKET, location, bucket);
         return 1;
     }
 

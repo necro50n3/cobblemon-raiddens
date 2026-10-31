@@ -37,6 +37,8 @@
   "battle.cobblemonraiddens.reset.boss": "%1$s의 나쁜 상태 변화가 사라졌다!",
   "battle.cobblemonraiddens.reset.player": "%1$s에 걸린 능력 상승 효과가 사라졌다!",
   "biome.cobblemonraiddens.raid_den": "크리스탈 동굴",
+
+
   "block.cobblemonraiddens.raid_crystal_block": "레이드 굴 크리스탈",
   "block.cobblemonraiddens.raid_home_block": "레이드 굴 크리스탈",
   "category.cobblemonraiddens.raid_dens": "레이드 굴",
@@ -77,6 +79,7 @@
   "item.cobblemonraiddens.cheer_defense.tooltip": "아군의 방어와 특수방어를 50% 올립니다",
   "item.cobblemonraiddens.cheer_heal": "회복 응원",
   "item.cobblemonraiddens.cheer_heal.tooltip": "아군의 HP를 50% 회복합니다",
+
   "item.cobblemonraiddens.raid_pouch": "레이드 파우치",
   "item.cobblemonraiddens.raid_shard": "레이드 샤드",
   "item.cobblemonraiddens.raid_shard.tooltip": "레이드를 클리어해 레이드 에너지를 모으세요",

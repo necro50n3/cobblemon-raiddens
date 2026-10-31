@@ -51,7 +51,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-public abstract class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
     private int clears;
     private int inactiveTicks;
     private int soundTicks;

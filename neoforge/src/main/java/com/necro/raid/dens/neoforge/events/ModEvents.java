@@ -1,6 +1,7 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
@@ -11,12 +12,24 @@ import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.BuiltInPackSource;
+import net.minecraft.server.packs.repository.KnownPack;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -26,6 +39,11 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforgespi.language.IModInfo;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+
+import java.nio.file.Path;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = CobblemonRaidDens.MOD_ID)
 public class ModEvents {
@@ -111,5 +129,32 @@ public class ModEvents {
     public static void onDataPackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) return;
         RaidDenNetworkMessages.SYNC_REGISTRY.accept(event.getPlayer());
+    }
+
+    @SubscribeEvent
+    private static void onAddPackFinders(AddPackFindersEvent event) {
+        if (ModCompat.CREATE.isLoaded()) registerDatapack(event, "raiddenscreatecompat", "Raid Dens Create Compat");
+        if (ModCompat.MEKANISM.isLoaded()) registerDatapack(event, "raiddensmekanismcompat", "Raid Dens Mekanism Compat");
+    }
+
+    private static void registerDatapack(AddPackFindersEvent event, String path, String name) {
+        String packLocation = "mod/" + ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, path);
+        IModInfo modInfo = ModList.get().getModContainerById(CobblemonRaidDens.MOD_ID).orElseThrow().getModInfo();
+        ArtifactVersion version = modInfo.getVersion();
+        Path resourcePath = modInfo.getOwningFile().getFile().findResource("datapacks/" + path);
+        Pack pack = Pack.readMetaAndCreate(
+            new PackLocationInfo(
+                packLocation,
+                Component.literal(name),
+                PackSource.BUILT_IN,
+                Optional.of(new KnownPack("neoforge", packLocation, version.toString()))
+            ),
+            BuiltInPackSource.fromName(info -> new PathPackResources(info, resourcePath)),
+            PackType.SERVER_DATA,
+            new PackSelectionConfig(true, Pack.Position.TOP, false)
+        );
+
+        if (pack == null) return;
+        event.addRepositorySource(consumer -> consumer.accept(pack));
     }
 }

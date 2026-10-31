@@ -57,7 +57,7 @@ public class RaidShardItem extends Item {
                 player.getRandom().nextLong()
             ));
 
-            ItemStack raidCrystal = ModBlocks.INSTANCE.getRaidCrystalBlock().asItem().getDefaultInstance();
+            ItemStack raidCrystal = ModBlocks.RAID_CRYSTAL_BLOCK.value().asItem().getDefaultInstance();
             player.setItemInHand(hand, raidCrystal);
         }
 

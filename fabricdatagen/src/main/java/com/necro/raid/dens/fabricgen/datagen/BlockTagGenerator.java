@@ -17,13 +17,13 @@ public class BlockTagGenerator extends FabricTagProvider.BlockTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
         getOrCreateTagBuilder(BlockTags.CAN_INTERACT)
-            .add(ModBlocks.INSTANCE.getRaidHomeBlock())
-            .add(ModBlocks.INSTANCE.getRaidCrystalBlock())
+            .add(ModBlocks.RAID_HOME_BLOCK.value())
+            .add(ModBlocks.RAID_CRYSTAL_BLOCK.value())
             .addOptional(ResourceLocation.fromNamespaceAndPath("yigd", "grave"))
             .addOptional(ResourceLocation.fromNamespaceAndPath("gravestone", "gravestone"));
 
         getOrCreateTagBuilder(BlockTags.RAID_CRYSTAL)
-            .add(ModBlocks.INSTANCE.getRaidHomeBlock())
-            .add(ModBlocks.INSTANCE.getRaidCrystalBlock());
+            .add(ModBlocks.RAID_HOME_BLOCK.value())
+            .add(ModBlocks.RAID_CRYSTAL_BLOCK.value());
     }
 }

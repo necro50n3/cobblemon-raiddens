@@ -1,9 +1,9 @@
 package com.necro.raid.dens.common.data.raid;
 
 import com.mojang.serialization.Codec;
+import com.necro.asymmetric.battles.common.util.DoubleWeightedRandomMap;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
-import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;

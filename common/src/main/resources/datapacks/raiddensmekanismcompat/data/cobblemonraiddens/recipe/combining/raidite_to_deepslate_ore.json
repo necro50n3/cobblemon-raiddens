@@ -1,0 +1,16 @@
+{
+    "type": "mekanism:combining",
+    "category": "building",
+    "extra_input": {
+        "count": 1,
+        "ingredient": "#c:cobblestones/deepslate"
+    },
+    "group": "raidite_ore",
+    "main_input": {
+        "count": 5,
+        "ingredient": "cobblemonraiddens:raidite"
+    },
+    "output": {
+        "id": "cobblemonraiddens:deepslate_raidite_ore"
+    }
+}

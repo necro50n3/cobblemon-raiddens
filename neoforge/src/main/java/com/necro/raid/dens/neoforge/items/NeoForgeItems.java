@@ -7,10 +7,8 @@ import com.necro.raid.dens.common.items.item.CheerItem;
 import com.necro.raid.dens.common.items.item.RaidPouchItem;
 import com.necro.raid.dens.common.items.item.RaidShardItem;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
-import java.util.function.Supplier;
 
 public class NeoForgeItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CobblemonRaidDens.MOD_ID);
@@ -22,9 +20,6 @@ public class NeoForgeItems {
         ModItems.HEAL_CHEER = ITEMS.register("cheer_heal", () -> new CheerItem(CheerBagItem.CheerType.HEAL));
         ModItems.RAID_SHARD = ITEMS.register("raid_shard", RaidShardItem::new);
         ModItems.CATCHING_CHARM = ITEMS.register("catching_charm", CatchingCharmItem::new);
-    }
-
-    public static void registerBlockItem(String name, Supplier<BlockItem> blockItem) {
-        ITEMS.register(name, blockItem);
+        ModItems.RAIDITE = ITEMS.register("raidite", () -> new Item(new Item.Properties()));
     }
 }

@@ -1,8 +1,10 @@
-// 1.21.1	2026-09-18T00:02:27.7532536	Cobblemon Raid Dens/World Gen
+// 1.21.1	2026-10-31T12:31:33.4777027	Cobblemon Raid Dens/World Gen
 408a53f79814cb67d16531c89cb88ea451f33191 data\cobblemonraiddens\worldgen\configured_feature\raid_den_ignore_sky.json
 902e411c9c6b090186512e56075e635b9c082de9 data\cobblemonraiddens\worldgen\configured_feature\raid_den.json
 0d177d6dd8e150cdfad9110c39ebe7bf307cfcec data\cobblemonraiddens\worldgen\biome\raid_den.json
+5ca9d0f405670049f6d98c98f805aa4da147635b data\cobblemonraiddens\worldgen\configured_feature\raidite_ore.json
 61f42a64213281c7fdbee963e1b930d9c748c851 data\cobblemonraiddens\dimension_type\raid_dimension_type.json
+ab2a22552f3de71a18a6af01e3af276cede1d1d4 data\cobblemonraiddens\worldgen\placed_feature\raidite_ore_placed.json
 7b0bdb7166fac01f975120647640315243582abb data\cobblemonraiddens\worldgen\placed_feature\raid_den_placed_ignore_sky.json
 6c2e007f9529bf04baca50a3c1239cfef8050c0e data\cobblemonraiddens\dimension\raid_dimension.json
 3cbbd16581cffdd7d9d882402ff1d2f29d394ece data\cobblemonraiddens\worldgen\placed_feature\raid_den_placed.json

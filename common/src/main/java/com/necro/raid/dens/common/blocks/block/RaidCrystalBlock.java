@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.blocks.block;
 
+import com.mojang.serialization.MapCodec;
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
 import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.*;
@@ -37,6 +39,8 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -53,7 +57,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public abstract class RaidCrystalBlock extends BaseEntityBlock {
+public class RaidCrystalBlock extends BaseEntityBlock {
+    public static final MapCodec<RaidCrystalBlock> CODEC = simpleCodec(RaidCrystalBlock::new);
+
     public static final EnumProperty<RaidType> RAID_TYPE = EnumProperty.create("raid_type", RaidType.class);
     public static final EnumProperty<RaidTier> RAID_TIER = EnumProperty.create("raid_tier", RaidTier.class);
     public static final BooleanProperty ACTIVE = BooleanProperty.create("is_active");
@@ -72,6 +78,23 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(CAN_RESET, true)
             .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
             .setValue(IS_NATURAL, true)
+        );
+    }
+
+    @Override
+    protected @NotNull MapCodec<RaidCrystalBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        return new RaidCrystalBlockEntity(ModBlocks.RAID_CRYSTAL_BLOCK_ENTITY.value(), blockPos, blockState);
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState blockState, @NotNull BlockEntityType<T> blockEntityType) {
+        return createTickerHelper(blockEntityType, ModBlocks.RAID_CRYSTAL_BLOCK_ENTITY.value(),
+            (level2, blockPos, blockState2, blockEntity) -> blockEntity.tick(level2, blockPos, blockState2)
         );
     }
 
@@ -287,11 +310,6 @@ public abstract class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
-    }
-
-    @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return null;
     }
 
     @Override

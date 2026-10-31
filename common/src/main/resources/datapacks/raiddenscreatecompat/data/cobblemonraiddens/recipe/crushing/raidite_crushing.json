@@ -1,0 +1,26 @@
+{
+    "type": "create:crushing",
+    "ingredients": [
+        {
+            "item": "cobblemonraiddens:raidite_ore"
+        }
+    ],
+    "processing_time": 450,
+    "results": [
+        {
+            "id": "cobblemonraiddens:raidite"
+        },
+        {
+            "chance": 0.75,
+            "id": "cobblemonraiddens:raidite"
+        },
+        {
+            "chance": 0.75,
+            "id": "create:experience_nugget"
+        },
+        {
+            "chance": 0.125,
+            "id": "minecraft:cobblestone"
+        }
+    ]
+}

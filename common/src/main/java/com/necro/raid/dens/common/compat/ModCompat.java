@@ -10,7 +10,9 @@ public enum ModCompat {
     SIZE_VARIATIONS("cobblemonsizevariation"),
     IRIS("iris"),
     VOCALIZED("cobblemon_vocalized"),
-    SHADOWED_HEARTS("shadowedhearts");
+    SHADOWED_HEARTS("shadowedhearts"),
+    CREATE("create"),
+    MEKANISM("mekanism");
 
     private static Function2<String, String, Integer> VERSION_COMPARATOR = null;
 

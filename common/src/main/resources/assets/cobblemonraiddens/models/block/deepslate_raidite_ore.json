@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "cobblemonraiddens:block/deepslate_raidite_ore"
+  }
+}

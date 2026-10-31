@@ -124,7 +124,7 @@ public class RaidRegion {
         BlockPos offset = this.getOffset();
         template.placeInWorld(level, offset, offset, settings, level.getRandom(), 2);
 
-        level.setBlock(this.centre(), ModBlocks.INSTANCE.getRaidHomeBlock().defaultBlockState(), 2);
+        level.setBlock(this.centre(), ModBlocks.RAID_HOME_BLOCK.value().defaultBlockState(), 2);
 
         ChunkPos chunkPos = new ChunkPos(this.centre());
         level.getChunkSource().addRegionTicket(TicketType.FORCED, chunkPos, 1, chunkPos);

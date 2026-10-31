@@ -7,7 +7,6 @@ import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
-import com.necro.raid.dens.common.network.packets.*;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -33,9 +32,14 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 
 public class CobblemonRaidDensFabric implements ModInitializer {
@@ -55,7 +59,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         CobblemonRaidDens.init();
 
         NetworkMessages.registerPayload();
-        FabricBlocks.registerModBlocks();
+        FabricBlocks.registerBlocks();
         FabricComponents.registerDataComponents();
         FabricItems.registerItems();
         FabricDimensions.registerChunkGenerator();
@@ -94,5 +98,16 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidSupportReloadListener());
 
         NetworkMessages.init();
+
+        if (ModCompat.CREATE.isLoaded()) this.registerDatapack("raiddenscreatecompat", "Raid Dens Create Compat");
+        if (ModCompat.MEKANISM.isLoaded()) this.registerDatapack("raiddensmekanismcompat", "Raid Dens Mekanism Compat");
+    }
+
+    @SuppressWarnings("all")
+    private void registerDatapack(String path, String name) {
+        ModContainer mod = FabricLoader.getInstance().getModContainer(CobblemonRaidDens.MOD_ID).orElseThrow();
+        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, path);
+        String subPath = "datapacks/" + path;
+        ResourceManagerHelperImpl.registerBuiltinResourcePack(id, subPath, mod, Component.literal(name), ResourcePackActivationType.ALWAYS_ENABLED);
     }
 }

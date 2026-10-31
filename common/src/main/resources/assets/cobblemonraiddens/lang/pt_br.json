@@ -37,6 +37,8 @@
     "battle.cobblemonraiddens.reset.boss": "%1$s limpou seus próprios efeitos negativos!",
     "battle.cobblemonraiddens.reset.player": "%1$s limpou suas alterações de status positivas!",
     "biome.cobblemonraiddens.raid_den": "Caverna de Cristal",
+
+
     "block.cobblemonraiddens.raid_crystal_block": "Cristal da Toca de Invasão",
     "block.cobblemonraiddens.raid_home_block": "Cristal da Toca de Invasão",
     "category.cobblemonraiddens.raid_dens": "Tocas de Invasão",
@@ -77,6 +79,7 @@
     "item.cobblemonraiddens.cheer_defense.tooltip": "Aumenta a Def e Sp. Def do seu grupo em 50%",
     "item.cobblemonraiddens.cheer_heal": "Apoio de Cura",
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restaura 50% do PS do seu grupo",
+
     "item.cobblemonraiddens.raid_pouch": "Bolsa de Invasão",
     "item.cobblemonraiddens.raid_shard": "Fragmento de Invasão",
     "item.cobblemonraiddens.raid_shard.tooltip": "Conclua invasões para ganhar energia de invasão",

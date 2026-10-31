@@ -7,12 +7,12 @@ import com.necro.raid.dens.common.advancements.RaidFeatureTrigger;
 import com.necro.raid.dens.common.advancements.RaidTierTrigger;
 import com.necro.raid.dens.common.advancements.JoinRaidDenTrigger;
 import com.necro.raid.dens.common.advancements.RaidShinyTrigger;
+import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
-import com.necro.raid.dens.fabricgen.blocks.FabricBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.Advancement;
@@ -34,7 +34,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
     @Override
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
-        ItemStack display = new ItemStack(FabricBlocks.RAID_CRYSTAL_BLOCK);
+        ItemStack display = new ItemStack(ModBlocks.RAID_CRYSTAL_BLOCK.value());
 
         AdvancementHolder joinRaidDenAdvancement = Advancement.Builder.advancement()
             .display(

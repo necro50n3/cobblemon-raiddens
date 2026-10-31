@@ -1,5 +1,8 @@
 package com.necro.raid.dens.common.blocks.block;
 
+import com.mojang.serialization.MapCodec;
+import com.necro.raid.dens.common.blocks.ModBlocks;
+import com.necro.raid.dens.common.blocks.entity.RaidHomeBlockEntity;
 import com.necro.raid.dens.common.util.IRaidTeleporter;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
@@ -16,7 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class RaidHomeBlock extends BaseEntityBlock {
+public class RaidHomeBlock extends BaseEntityBlock {
+    public static final MapCodec<RaidHomeBlock> CODEC = simpleCodec(RaidHomeBlock::new);
+
     public RaidHomeBlock(Properties settings) {
         super(settings);
     }
@@ -32,13 +37,18 @@ public abstract class RaidHomeBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemStack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    protected @NotNull MapCodec<RaidHomeBlock> codec() {
+        return CODEC;
     }
 
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        return null;
+        return new RaidHomeBlockEntity(ModBlocks.RAID_HOME_BLOCK_ENTITY.value(), blockPos, blockState);
+    }
+
+    @Override
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemStack, @NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

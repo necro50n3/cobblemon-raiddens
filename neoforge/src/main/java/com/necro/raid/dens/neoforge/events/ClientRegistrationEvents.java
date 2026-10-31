@@ -1,11 +1,10 @@
 package com.necro.raid.dens.neoforge.events;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.client.ClientHud;
 import com.necro.raid.dens.common.client.block.RaidHomeRenderer;
 import com.necro.raid.dens.common.client.keybind.RaidDenKeybinds;
-import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
-import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import com.necro.raid.dens.neoforge.client.block.RaidCrystalRendererNeoForge;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.api.distmarker.Dist;
@@ -19,14 +18,14 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 public class ClientRegistrationEvents {
     @SubscribeEvent
     public static void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(NeoForgeBlockEntities.RAID_CRYSTAL_BLOCK_ENTITY.get(), RaidCrystalRendererNeoForge::new);
-        event.registerBlockEntityRenderer(NeoForgeBlockEntities.RAID_HOME_BLOCK_ENTITY.get(), RaidHomeRenderer::new);
+        event.registerBlockEntityRenderer(ModBlocks.RAID_CRYSTAL_BLOCK_ENTITY.value(), RaidCrystalRendererNeoForge::new);
+        event.registerBlockEntityRenderer(ModBlocks.RAID_HOME_BLOCK_ENTITY.value(), RaidHomeRenderer::new);
     }
 
     @SubscribeEvent
     public static void addCreativeModeTab(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(NeoForgeBlocks.RAID_CRYSTAL_BLOCK.get());
+            event.accept(ModBlocks.RAID_CRYSTAL_BLOCK.value());
         }
     }
 

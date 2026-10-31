@@ -163,6 +163,18 @@
           ],
           "name": "minecraft:iron_nugget",
           "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "cobblemonraiddens:raidite",
+          "weight": 5
         }
       ],
       "rolls": {
