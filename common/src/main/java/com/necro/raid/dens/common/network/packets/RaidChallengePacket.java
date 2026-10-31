@@ -115,7 +115,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (!PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) || !pokemonEntity.canBattle(player)) {}
-        else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getBattles().isEmpty()) {
+        else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getActive().getBattles().isEmpty()) {
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, active.getRaidBoss())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
@@ -135,7 +135,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                 });
         }
         else {
-            PokemonBattle battle = raid.getBattles().getFirst();
+            PokemonBattle battle = raid.getActive().getBattles().getFirst();
             AsymmetricAPI.setRaidBattleActor(BattleParticipant.player(player, leadingPokemon).toActor(), battle);
             this.flagAsSeen(battle, pokemonEntity);
             if (!raid.isPlayerIn(player)) raid.addPlayer(player);

@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.registry.custom;
 
+import com.necro.asymmetric.battles.common.util.DoubleWeightedRandomMap;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
-import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
