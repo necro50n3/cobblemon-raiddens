@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class RaidJoinEvent extends Cancelable {
     private final ServerPlayer player;
     private final boolean isHost;
-    private final RaidBoss raidBoss;
+    private final RaidBoss raid;
 
-    public RaidJoinEvent(@NotNull ServerPlayer player, boolean isHost, @NotNull RaidBoss raidBoss) {
+    public RaidJoinEvent(@NotNull ServerPlayer player, boolean isHost, @NotNull RaidBoss raid) {
         this.player = player;
         this.isHost = isHost;
-        this.raidBoss = raidBoss;
+        this.raid = raid;
     }
 
     public ServerPlayer getPlayer() {
@@ -24,7 +24,7 @@ public class RaidJoinEvent extends Cancelable {
         return this.isHost;
     }
 
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
+    public RaidBoss getRaid() {
+        return this.raid;
     }
 }

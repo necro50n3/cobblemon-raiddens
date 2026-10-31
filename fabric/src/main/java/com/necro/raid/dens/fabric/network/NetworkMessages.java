@@ -5,7 +5,7 @@ import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -26,18 +26,22 @@ public class NetworkMessages {
         PayloadTypeRegistry.playS2C().register(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC);
         PayloadTypeRegistry.playS2C().register(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(ChooseRaidBossPacket.PACKET_TYPE, ChooseRaidBossPacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(RemoveBossSelectorPacket.PACKET_TYPE, RemoveBossSelectorPacket.CODEC);
 
         PayloadTypeRegistry.playC2S().register(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC);
         PayloadTypeRegistry.playC2S().register(UseCheerPacket.PACKET_TYPE, UseCheerPacket.CODEC);
+        PayloadTypeRegistry.playC2S().register(ChooseRaidBossResponsePacket.PACKET_TYPE, ChooseRaidBossResponsePacket.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(RaidChallengePacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(LeaveRaidPacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(RequestResponsePacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(RewardResponsePacket.PACKET_TYPE, NetworkMessages::handle);
         ServerPlayNetworking.registerGlobalReceiver(UseCheerPacket.PACKET_TYPE, NetworkMessages::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ChooseRaidBossResponsePacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void registerS2CPackets() {
@@ -52,6 +56,8 @@ public class NetworkMessages {
         ClientPlayNetworking.registerGlobalReceiver(RaidLogPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidHealthBarPacket.PACKET_TYPE, NetworkMessages::handle);
         ClientPlayNetworking.registerGlobalReceiver(RaidHealthUpdatePacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(ChooseRaidBossPacket.PACKET_TYPE, NetworkMessages::handle);
+        ClientPlayNetworking.registerGlobalReceiver(RemoveBossSelectorPacket.PACKET_TYPE, NetworkMessages::handle);
     }
 
     public static void init() {
@@ -60,7 +66,7 @@ public class NetworkMessages {
         RaidDenNetworkMessages.REMOVE_SYNCED_BOSS = (server, boss) ->
             NetworkMessages.sendPacketToAll(server, new RaidBossSyncRemovePacket(boss));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.getCache()));
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(CustomRaidRegistries.RAID_REGISTRY.getCache()));
         RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
@@ -77,6 +83,10 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
         RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
+        RaidDenNetworkMessages.CHOOSE_RAID_BOSS = (player, raidId, option1, option2) ->
+            NetworkMessages.sendPacketToPlayer(player, new ChooseRaidBossPacket(raidId, option1, option2));
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR = (player, raidId) ->
+            NetworkMessages.sendPacketToPlayer(player, new RemoveBossSelectorPacket(raidId));
 
         RaidDenNetworkMessages.RAID_CHALLENGE = (pokemonEntity, pokemon) ->
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));
@@ -87,6 +97,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
         RaidDenNetworkMessages.USE_CHEER = (cheerType ->
             NetworkMessages.sendPacketToServer(new UseCheerPacket(cheerType)));
+        RaidDenNetworkMessages.CHOOSE_RAID_BOSS_RESPONSE = (raidId, selectedBoss) ->
+            NetworkMessages.sendPacketToServer(new ChooseRaidBossResponsePacket(raidId, selectedBoss));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

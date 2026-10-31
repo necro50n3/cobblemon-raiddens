@@ -4,6 +4,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
+import com.necro.raid.dens.common.util.QuadConsumer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -27,6 +29,8 @@ public class RaidDenNetworkMessages {
     public static TriConsumer<ServerPlayer, String, String> RAID_LOG;
     public static TriConsumer<ServerPlayer, List<Integer>, Boolean> RAID_HEALTH_BAR;
     public static TriConsumer<ServerPlayer, List<Integer>, List<Float>> RAID_HEALTH_UPDATE;
+    public static QuadConsumer<ServerPlayer, UUID, ResourceLocation, ResourceLocation> CHOOSE_RAID_BOSS;
+    public static BiConsumer<ServerPlayer, UUID> REMOVE_BOSS_SELECTOR;
 
     // C2S Packets
     public static BiConsumer<PokemonEntity, Pokemon> RAID_CHALLENGE;
@@ -34,4 +38,5 @@ public class RaidDenNetworkMessages {
     public static BiConsumer<Boolean, String> REQUEST_RESPONSE;
     public static Consumer<Boolean> REWARD_RESPONSE;
     public static Consumer<CheerBagItem.CheerType> USE_CHEER;
+    public static BiConsumer<UUID, ResourceLocation> CHOOSE_RAID_BOSS_RESPONSE;
 }

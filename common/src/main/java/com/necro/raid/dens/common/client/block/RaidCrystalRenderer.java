@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +39,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         Level level = blockEntity.getLevel();
         if (level != null && checkConfig(blockEntity) && blockEntity.canGenerateBoss(blockEntity.getBlockState())) {
             if (CobblemonRaidDensClient.CLIENT_CONFIG.show_legacy_beacon) this.renderLegacyBeacon(blockEntity, level, poseStack, multiBufferSource, f);
-            else this.renderBeam(blockEntity, f);
+            else this.renderBeam(blockEntity);
         }
 
         super.actuallyRender(poseStack, blockEntity, model, renderType, multiBufferSource, buffer, isReRender, f, i, j, colour);
@@ -56,7 +57,7 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
         poseStack.popPose();
     }
 
-    private void renderBeam(RaidCrystalBlockEntity blockEntity, float f) {
+    private void renderBeam(RaidCrystalBlockEntity blockEntity) {
         if (Minecraft.getInstance().player == null) return;
 
         if (blockEntity.getBeamHeight() > 4) {
@@ -65,9 +66,14 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
                 Minecraft.getInstance().player.blockPosition().distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),
                 blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor(),
-                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getAlpha()
+                this.getAlpha(blockEntity)
             );
         }
+    }
+
+    private int getAlpha(BlockEntity blockEntity) {
+        if (blockEntity.getBlockState().getValue(RaidCrystalBlock.IS_ADVENTURE)) return CobblemonRaidDensClient.CLIENT_CONFIG.beam_strength_adventure;
+        else return blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TIER).getAlpha();
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.events.OpenPouchEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.loot.context.RaidLootContexts;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -52,7 +52,7 @@ public class RaidPouchItem extends Item {
         boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
         player.getCooldowns().addCooldown(this, 2);
 
-        RaidRegistry.requestRaidBoss(
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(
             bossId,
             boss -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, boss, tier, applyBonus),
             (id, error) -> this.onFailed((ServerPlayer) player),

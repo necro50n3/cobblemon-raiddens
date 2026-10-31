@@ -34,7 +34,7 @@ public class RaidFeatureTrigger extends SimpleCriterionTrigger<RaidFeatureTrigge
         }
 
         public static Criterion<TriggerInstance> feature(String feature) {
-            return ((RaidFeatureTrigger) RaidDenCriteriaTriggers.RAID_FEATURE.value()).createCriterion(new RaidFeatureTrigger.TriggerInstance(Optional.empty(), Optional.of(feature)));
+            return RaidDenCriteriaTriggers.RAID_FEATURE.value().createCriterion(new RaidFeatureTrigger.TriggerInstance(Optional.empty(), Optional.of(feature)));
         }
     }
 }

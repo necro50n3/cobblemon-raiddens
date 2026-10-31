@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.network.packets;
 
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.cobblemon.mod.common.pokemon.properties.AspectPropertyType;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.network.ClientPacket;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,7 @@ public record RaidAspectPacket(int entityId) implements CustomPacketPayload, Cli
         if (level == null) return;
         Entity entity = level.getEntity(this.entityId);
         if (!(entity instanceof PokemonEntity pokemonEntity)) return;
-        AspectPropertyType.INSTANCE.fromString("raid").apply(pokemonEntity);
+        new StringSpeciesFeature("raid", "boss").apply(pokemonEntity);
         pokemonEntity.refreshDimensions();
     }
 }

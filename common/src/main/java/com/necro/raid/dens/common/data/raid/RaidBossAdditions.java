@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.adapters.PropertiesAdapter;
 import com.necro.raid.dens.common.data.adapters.RaidBossAdapter;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
@@ -51,24 +51,24 @@ public class RaidBossAdditions {
         else {
             for (String target : this.include()) {
                 ResourceLocation id = ResourceLocation.parse(target.startsWith("#") ? target.substring(1) : target);
-                if (target.startsWith("#")) targets.addAll(RaidRegistry.getTagEntries(id));
-                else if (RaidRegistry.exists(id)) targets.add(id);
+                if (target.startsWith("#")) targets.addAll(CustomRaidRegistries.RAID_REGISTRY.getTagEntries(id));
+                else if (CustomRaidRegistries.RAID_REGISTRY.exists(id)) targets.add(id);
             }
         }
 
         Set<ResourceLocation> excluded = new HashSet<>();
         for (String exclude : this.exclude()) {
             ResourceLocation id = ResourceLocation.parse(exclude.startsWith("#") ? exclude.substring(1) : exclude);
-            if (exclude.startsWith("#")) excluded.addAll(RaidRegistry.getTagEntries(id));
-            else if (RaidRegistry.exists(id)) excluded.add(id);
+            if (exclude.startsWith("#")) excluded.addAll(CustomRaidRegistries.RAID_REGISTRY.getTagEntries(id));
+            else if (CustomRaidRegistries.RAID_REGISTRY.exists(id)) excluded.add(id);
         }
 
         for (ResourceLocation loc : targets) {
             if (excluded.contains(loc)) continue;
-            RaidBoss temp = RaidRegistry.getLoading(loc);
+            RaidBoss temp = CustomRaidRegistries.RAID_REGISTRY.getLoading(loc);
             if (temp == null) continue;
             ResourceLocation id = temp.getId();
-            if (!this.replace() && !this.forceApply() && RaidRegistry.isTag(BLACKLIST, id)) continue;
+            if (!this.replace() && !this.forceApply() && CustomRaidRegistries.RAID_REGISTRY.isTag(BLACKLIST, id)) continue;
             final RaidBoss boss = this.replace() ? temp : temp.copy();
 
             getOptional(this.additions()::getReward).ifPresent(properties -> boss.setReward(PropertiesAdapter.apply(boss.getReward(), properties)));
@@ -85,6 +85,7 @@ public class RaidBossAdditions {
             getOptional(this.additions()::getForceDynamax).ifPresent(boss::setForceDynamax);
             getOptional(this.additions()::getMusic).ifPresent(boss::setMusic);
             getOptional(this.additions()::getNoAi).ifPresent(boss::setNoAi);
+            getOptional(this.additions()::getNodes).ifPresent(boss::setNodes);
 
             getOptional(this.additions()::getMaxPlayers).ifPresent(boss::setMaxPlayers);
             getOptional(this.additions()::getMaxClears).ifPresent(boss::setMaxClears);
@@ -111,8 +112,8 @@ public class RaidBossAdditions {
 
             if (!this.replace()) {
                 boss.setId(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + this.suffix()));
-                RaidRegistry.register(boss);
-                if (this.extendTags()) RaidRegistry.addTags(boss.getId(), RaidRegistry.getTagsOfBoss(id));
+                CustomRaidRegistries.RAID_REGISTRY.register(boss);
+                if (this.extendTags()) CustomRaidRegistries.RAID_REGISTRY.addTags(boss.getId(), CustomRaidRegistries.RAID_REGISTRY.getTagsOfBoss(id));
             }
         }
     }
@@ -137,7 +138,7 @@ public class RaidBossAdditions {
         return this.replace;
     }
 
-    private String suffix() {
+    public String suffix() {
         return this.suffix;
     }
 
@@ -155,7 +156,7 @@ public class RaidBossAdditions {
 
     static {
         GSON = new GsonBuilder()
-            .registerTypeAdapter(RaidBoss.class, new RaidBossAdapter())
+            .registerTypeAdapter(RaidBoss.class, RaidBossAdapter.INSTANCE)
             .create();
     }
 }

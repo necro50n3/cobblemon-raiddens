@@ -10,10 +10,13 @@ import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.compat.rctapi.RaidDensRCTCompat;
 import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.Script;
+import com.necro.raid.dens.common.raids.adventure.*;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributor;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
 import com.necro.raid.dens.common.raids.scripts.triggers.RaidTrigger;
 import com.necro.raid.dens.common.registry.custom.*;
+import com.necro.raid.dens.common.registry.custom.RaidBucketRegistry;
+import com.necro.raid.dens.common.registry.custom.RaidSupportRegistry;
 import com.necro.raid.dens.common.showdown.events.AbstractEvent;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.showdown.events.ShowdownEvents;
@@ -27,10 +30,18 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CustomRaidRegistries {
+    // Builtin Registries
     public static final StringRegistry<Supplier<BattleAI>> AI_REGISTRY = new StringRegistry<>("random");
     public static final StringRegistry<RewardDistributor> REWARD_DIST_REGISTRY = new StringRegistry<>("random");
     public static final ScriptRegistry SCRIPT_REGISTRY = new ScriptRegistry();
+    public static final NodeRegistry NODE_REGISTRY = new NodeRegistry();
     public static final StringRegistry<RaidFeature> FEATURE_REGISTRY = new StringRegistry<>("default");
+
+    // Data Registries
+    public static final RaidRegistry RAID_REGISTRY = new RaidRegistry();
+    public static final RaidBucketRegistry RAID_BUCKET_REGISTRY = new RaidBucketRegistry();
+    public static final RaidDenPoolRegistry RAID_DEN_REGISTRY = new RaidDenPoolRegistry();
+    public static final RaidSupportRegistry RAID_SUPPORT_REGISTRY = new RaidSupportRegistry();
 
     private static final Map<String, Stat> STAT_MAP = Map.of(
         "atk", Stats.ATTACK,
@@ -46,6 +57,7 @@ public class CustomRaidRegistries {
         AI_REGISTRY.freeze();
         REWARD_DIST_REGISTRY.freeze();
         SCRIPT_REGISTRY.freeze();
+        NODE_REGISTRY.freeze();
         FEATURE_REGISTRY.freeze();
     }
 
@@ -53,6 +65,7 @@ public class CustomRaidRegistries {
         registerAI();
         registerRewardDistributors();
         registerScripts();
+        registerNodes();
         registerFeatures();
     }
 
@@ -207,6 +220,15 @@ public class CustomRaidRegistries {
             else if ("boss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
             else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
         });
+    }
+
+    private static void registerNodes() {
+        NODE_REGISTRY.register(RaidNode.ID, node -> {
+            List<String> bosses = NODE_REGISTRY.parseList(node, "bosses", String.class);
+            return new RaidNode(bosses);
+        });
+        NODE_REGISTRY.register(RecoverNode.ID, node -> new RecoverNode());
+        NODE_REGISTRY.register(BossNode.ID, node -> new BossNode());
     }
 
     private static void registerFeatures() {

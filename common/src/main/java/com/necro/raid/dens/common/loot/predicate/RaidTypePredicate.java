@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 public record RaidTypePredicate(RaidType type) implements ItemSubPredicate {
     public static final Codec<RaidTypePredicate> CODEC;
 
+    @Override
     public boolean matches(ItemStack itemStack) {
         RaidType type = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         if (type == null) return false;

@@ -6,7 +6,7 @@ import com.necro.raid.dens.common.network.ClientPacket;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.network.ServerPacket;
 import com.necro.raid.dens.common.network.packets.*;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -33,12 +33,15 @@ public class NetworkMessages {
         payloadRegistrar.playToClient(RaidLogPacket.PACKET_TYPE, RaidLogPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidHealthBarPacket.PACKET_TYPE, RaidHealthBarPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToClient(RaidHealthUpdatePacket.PACKET_TYPE, RaidHealthUpdatePacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(ChooseRaidBossPacket.PACKET_TYPE, ChooseRaidBossPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToClient(RemoveBossSelectorPacket.PACKET_TYPE, RemoveBossSelectorPacket.CODEC, NetworkMessages::handle);
 
         payloadRegistrar.playToServer(RaidChallengePacket.PACKET_TYPE, RaidChallengePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(LeaveRaidPacket.PACKET_TYPE, LeaveRaidPacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(RequestResponsePacket.PACKET_TYPE, RequestResponsePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(RewardResponsePacket.PACKET_TYPE, RewardResponsePacket.CODEC, NetworkMessages::handle);
         payloadRegistrar.playToServer(UseCheerPacket.PACKET_TYPE, UseCheerPacket.CODEC, NetworkMessages::handle);
+        payloadRegistrar.playToServer(ChooseRaidBossResponsePacket.PACKET_TYPE, ChooseRaidBossResponsePacket.CODEC, NetworkMessages::handle);
     }
 
     public static void init() {
@@ -47,7 +50,7 @@ public class NetworkMessages {
         RaidDenNetworkMessages.REMOVE_SYNCED_BOSS = (server, boss) ->
             NetworkMessages.sendPacketToAll(new RaidBossSyncRemovePacket(boss));
         RaidDenNetworkMessages.SYNC_REGISTRY = (player) ->
-            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(RaidRegistry.getCache()));
+            NetworkMessages.sendPacketToPlayer(player, new RaidBossSyncPacket(CustomRaidRegistries.RAID_REGISTRY.getCache()));
         RaidDenNetworkMessages.SYNC_CONFIG = (player) ->
             NetworkMessages.sendPacketToPlayer(player, new ConfigSyncPacket());
         RaidDenNetworkMessages.JOIN_RAID = (player, isJoining) ->
@@ -64,6 +67,10 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthBarPacket(entityIds, shouldRender));
         RaidDenNetworkMessages.RAID_HEALTH_UPDATE = (player, entityIds, health) ->
             NetworkMessages.sendPacketToPlayer(player, new RaidHealthUpdatePacket(entityIds, health));
+        RaidDenNetworkMessages.CHOOSE_RAID_BOSS = (player, raidId, option1, option2) ->
+            NetworkMessages.sendPacketToPlayer(player, new ChooseRaidBossPacket(raidId, option1, option2));
+        RaidDenNetworkMessages.REMOVE_BOSS_SELECTOR = (player, raidId) ->
+            NetworkMessages.sendPacketToPlayer(player, new RemoveBossSelectorPacket(raidId));
 
         RaidDenNetworkMessages.RAID_CHALLENGE = (pokemonEntity, pokemon) ->
             NetworkMessages.sendPacketToServer(new RaidChallengePacket(pokemonEntity.getId(), pokemon.getUuid(), BattleFormat.Companion.getGEN_9_SINGLES()));
@@ -74,6 +81,8 @@ public class NetworkMessages {
             NetworkMessages.sendPacketToServer(new RewardResponsePacket(catchPokemon));
         RaidDenNetworkMessages.USE_CHEER = (cheerType ->
             NetworkMessages.sendPacketToServer(new UseCheerPacket(cheerType)));
+        RaidDenNetworkMessages.CHOOSE_RAID_BOSS_RESPONSE = (raidId, selectedBoss) ->
+            NetworkMessages.sendPacketToServer(new ChooseRaidBossResponsePacket(raidId, selectedBoss));
     }
 
     public static void sendPacketToServer(CustomPacketPayload packet) {

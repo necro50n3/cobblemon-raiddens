@@ -43,7 +43,7 @@ public abstract class StartInstructionMixin {
         battle.dispatch(() -> {
             if (status instanceof VolatileStatus vol) {
                 raid.updateBattleState(battle, battleState -> battleState.bossSide.pokemon.addVolatile(vol));
-                Component lang = LocalizationUtilsKt.battleLang(String.format("start.%s", statusLabel), battlePokemon.getName(), extraEffect);
+                Component lang = LocalizationUtilsKt.battleLang(String.format("run.%s", statusLabel), battlePokemon.getName(), extraEffect);
                 raid.updateBattleContext(battle, b -> b.broadcastChatMessage(lang));
             }
             return DispatchResultKt.getGO();

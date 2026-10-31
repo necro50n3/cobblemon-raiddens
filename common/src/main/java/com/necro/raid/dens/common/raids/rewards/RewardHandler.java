@@ -12,7 +12,7 @@ import com.necro.raid.dens.common.events.RewardPokemonEvent;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.HolderLookup;
@@ -143,6 +143,7 @@ public class RewardHandler {
         item.set(ModComponents.TYPE_COMPONENT.value(), boss.getType());
         if (boss.getId() != null) item.set(ModComponents.BOSS_COMPONENT.value(), boss.getId());
         item.set(ModComponents.BONUS_LOOT_COMPONENT.value(), applyBonus);
+        item.set(ModComponents.ADVENTURE_COMPONENT.value(), boss.isAdventure());
         return item;
     }
 
@@ -173,7 +174,7 @@ public class RewardHandler {
     public <T> CompletableFuture<T> raidBoss(Function<RaidBoss, T> function, MinecraftServer server) {
         if (this.raidBoss != null) return CompletableFuture.completedFuture(function.apply(this.raidBoss));
 
-        return RaidRegistry.requestRaidBoss(this.raidBossId).thenApplyAsync(boss -> {
+        return CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.raidBossId).thenApplyAsync(boss -> {
             if (boss.isEmpty()) return null;
             this.raidBoss = boss.get();
             return function.apply(boss.get());
@@ -186,7 +187,7 @@ public class RewardHandler {
             return;
         }
 
-        RaidRegistry.requestRaidBoss(this.raidBossId, boss -> {
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.raidBossId, boss -> {
             this.raidBoss = boss;
             consumer.accept(boss);
         }, server);

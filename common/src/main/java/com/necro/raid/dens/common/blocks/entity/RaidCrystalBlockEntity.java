@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.blocks.entity;
 
-import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.CobblemonRaidDensClient;
@@ -11,14 +10,13 @@ import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidDenSpawnEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
-import com.necro.raid.dens.common.events.SetRaidBossEvent;
+import com.necro.raid.dens.common.events.SetRaidEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.*;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -37,7 +35,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -66,7 +63,6 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
 
     private RaidResetContext lastReset;
     private boolean isOpen;
-    private RaidSyncContext raidSync;
     private Consumer<ServerPlayer> aspectSync;
 
     private boolean isGenerating;
@@ -93,10 +89,10 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         boolean isIdle = this.isIdle();
         if (RaidHelper.hasRaidState(this.getUuid()) && isIdle) this.closeRaid();
 
-        if (this.raidBoss != null && RaidRegistry.exists(this.raidBoss) && level.getGameTime() % 400 == 0) RaidRegistry.requestRaidBoss(this.raidBoss);
-        if (this.canGenerateBoss(blockState) && (this.raidBoss == null || !RaidRegistry.exists(this.raidBoss))) {
-            this.generateRaidBoss(level, blockPos, blockState);
+        if (this.raidBoss != null && this.exists() && (!CustomRaidRegistries.RAID_REGISTRY.cacheHas(this.raidBoss) || level.getGameTime() % 400 == 0)) {
+            CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.raidBoss);
         }
+        if (this.canGenerateBoss(blockState) && (this.raidBoss == null || !this.exists())) this.generateRaid(level, blockPos, blockState);
 
         if (this.isInProgress() && isIdle) {
             if (++this.inactiveTicks > 2400) this.closeRaid();
@@ -114,9 +110,11 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
 
         long gameTime = level.getGameTime();
         if (this.lastReset == null) this.lastReset = new RaidResetContext(gameTime);
-        else if (this.lastReset.shouldReset(gameTime)) {
-            this.generateRaidBoss(level, blockPos, blockState);
-        }
+        else if (this.lastReset.shouldReset(gameTime)) this.generateRaid(level, blockPos, blockState);
+    }
+
+    private boolean exists() {
+        return CustomRaidRegistries.RAID_REGISTRY.exists(this.raidBoss);
     }
 
     private void clientTick(BlockState blockState) {
@@ -160,7 +158,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         return this.beamHeight;
     }
 
-    public void generateRaidBoss(Level level, BlockPos blockPos, BlockState blockState) {
+    public void generateRaid(Level level, BlockPos blockPos, BlockState blockState) {
         if (this.isGenerating) return;
 
         RaidCycleMode cycleMode = blockState.getValue(RaidCrystalBlock.CYCLE_MODE);
@@ -173,35 +171,38 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         if (bossLocation == null) return;
         this.isGenerating = true;
 
-        RaidRegistry.requestRaidBoss(bossLocation).whenCompleteAsync((optional, error) -> {
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(bossLocation).whenCompleteAsync((optional, error) -> {
             this.isGenerating = false;
             if (error != null || optional.isEmpty() || this.isRemoved()) return;
-
-            RaidBoss raidBoss = optional.get();
-            SetRaidBossEvent event = new SetRaidBossEvent(raidBoss);
-            RaidEvents.SET_RAID_BOSS.emit(event);
-            raidBoss = event.getRaidBoss();
-            if (raidBoss == null) {
-                this.inactiveTicks = 0;
-                this.lastReset = new RaidResetContext(level.getGameTime());
-                return;
-            }
-
-            this.setRaidBoss(raidBoss.getId(), level.getGameTime());
-
-            level.setBlock(blockPos, blockState
-                .setValue(RaidCrystalBlock.RAID_TIER, raidBoss.getTier())
-                .setValue(RaidCrystalBlock.RAID_TYPE, raidBoss.getType())
-                .setValue(RaidCrystalBlock.ACTIVE, true), 2);
-
-            RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, raidBoss));
+            this.generateRaid(optional.get(), level, blockPos, blockState);
         }, level.getServer());
     }
 
+    private void generateRaid(RaidBoss boss, Level level, BlockPos blockPos, BlockState blockState) {
+        SetRaidEvent event = new SetRaidEvent(boss);
+        RaidEvents.SET_RAID.emit(event);
+        boss = event.getRaid();
+        if (boss == null) {
+            this.inactiveTicks = 0;
+            this.lastReset = new RaidResetContext(level.getGameTime());
+            return;
+        }
+
+        this.setRaidBoss(boss.getId(), level.getGameTime());
+
+        level.setBlock(blockPos, blockState
+            .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier())
+            .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
+            .setValue(RaidCrystalBlock.ACTIVE, true)
+            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure()), 2);
+
+        RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
+    }
+
     private ResourceLocation generateFromBucket(Level level, BlockState blockState, RaidCycleMode cycleMode) {
-        if (this.raidBucket == null) this.raidBucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(this.getBlockPos()));
+        if (this.raidBucket == null) this.raidBucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.getRandom(level.getRandom(), level.getBiome(this.getBlockPos()), level.registryAccess());
         if (this.raidBucket == null) return this.generateRandom(level, blockState, cycleMode);
-        RaidBucket bucket = RaidBucketRegistry.getBucket(this.raidBucket);
+        RaidBucket bucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(this.raidBucket);
         if (bucket == null) {
             this.raidBucket = null;
             return this.generateFromBucket(level, blockState, cycleMode);
@@ -213,63 +214,46 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     private ResourceLocation generateRandom(Level level, BlockState blockState, RaidCycleMode cycleMode) {
         RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
         RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-        return RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+        return CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null, null);
     }
 
     private ResourceLocation generateFromExisting(Level level, BlockState blockState, RaidCycleMode cycleMode) {
         return this.raidBoss == null ? this.generateRandom(level, blockState, cycleMode) : this.raidBoss;
     }
 
-    public boolean spawnRaidBoss(UUID playerId, double scaleModifier) {
+    public boolean spawnRaid(UUID playerId, RaidRegion region) {
         if (this.getLevel() == null) return false;
-        RaidBoss raidBoss = this.getRaidBoss();
-        RaidRegion region = RaidRegionHelper.getRegion(this.getUuid());
+        RaidBoss raid = this.getRaidBoss();
         ServerLevel level = ModDimensions.getRaidDimension(this.getLevel().getServer());
-        if (raidBoss == null || region == null || level == null) {
-            CobblemonRaidDens.LOGGER.error("Could not load Raid Boss {}", this.raidBoss);
+        if (raid == null || region == null || level == null) {
+            CobblemonRaidDens.LOGGER.error("Could not load Raid {}", this.raidBoss);
             this.setRaidBoss(null, 0);
             return false;
         }
-
         region.placeStructure(level);
+        return this.spawnRaid(playerId, raid, level);
+    }
 
-        PokemonEntity pokemonEntity;
-        try { pokemonEntity = raidBoss.getBossEntity(level, this.raidSync); }
-        catch (Exception e) {
-            CobblemonRaidDens.LOGGER.error("Failed to parse raid boss {}: ", this.raidBoss, e);
-            return false;
-        }
-        pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleModifier));
-        if (raidBoss.getNoAi()) pokemonEntity.setNoAi(true);
-        pokemonEntity.setInvulnerable(true);
-        pokemonEntity.setPersistenceRequired();
-        ((IRaidAccessor) pokemonEntity).crd_setRaidId(this.getUuid());
-
-        if (CobblemonRaidDens.CONFIG.sync_rewards && this.raidSync == null) {
-            this.raidSync = new RaidSyncContext(
-                pokemonEntity.getAspects(),
-                pokemonEntity.getPokemon().getMoveSet().getMoves().stream().map(Move::getName).toList()
-            );
-            this.setChanged();
-        }
-
-        RaidInstance raid = new RaidInstance(pokemonEntity, playerId);
-        if (raid.failedToStart()) return false;
+    public boolean spawnRaid(UUID playerId, RaidBoss boss, ServerLevel level) {
+        RaidSession raid = new RaidSession(playerId, this.getUuid(), boss);
+        raid.start(level.getServer());
+        if (raid.isFinished()) return false;
         RaidHelper.ACTIVE_RAIDS.put(this.getUuid(), raid);
 
-        pokemonEntity.moveTo(region.getBossPos());
-        level.addFreshEntity(pokemonEntity);
+        if (raid.isAdventure() || raid.getActive() == null) return true;
+        PokemonEntity bossEntity = raid.getActive().getBossEntity();
 
-        if (pokemonEntity.getPokemon().getAbility().getName().equals("imposter")) {
-            this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, pokemonEntity));
+        if (bossEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
+            this.setAspectSync(player -> RaidDenNetworkMessages.RAID_ASPECT.accept(player, bossEntity));
         }
+        this.setChanged();
         return true;
     }
 
     public void clearRaid(boolean wasWin) {
         this.clears++;
         if (wasWin) {
-            this.raidSync = null;
+            RaidHelper.clearRaidSync(this.getUuid());
             this.setChanged();
         }
         if (this.isAtMaxClears()) {
@@ -310,11 +294,11 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     }
 
     public RaidBucket getRaidBucket() {
-        return RaidBucketRegistry.getBucket(this.raidBucket);
+        return CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(this.raidBucket);
     }
 
-    public @Nullable RaidBoss getRaidBoss() {
-        return RaidRegistry.getRaidBoss(this.raidBoss);
+    public RaidBoss getRaidBoss() {
+        return CustomRaidRegistries.RAID_REGISTRY.getRaidBoss(this.raidBoss);
     }
 
     public ResourceLocation getRaidBossLocation() {
@@ -326,7 +310,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     }
 
     public int getPlayerCount() {
-        RaidInstance raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
+        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
         if (raid == null) return 0;
         return raid.getPlayerCount();
     }
@@ -357,7 +341,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         this.inactiveTicks = 0;
         this.lastReset = new RaidResetContext(gameTime);
         this.raidBoss = raidBoss;
-        this.raidSync = null;
+        RaidHelper.clearRaidSync(this.getUuid());
         this.setChanged();
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
@@ -416,6 +400,14 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         return maxPlayers != -1 && this.getPlayerCount() >= maxPlayers;
     }
 
+    public boolean hasStartedAdventure() {
+        RaidBoss boss = this.getRaidBoss();
+        if (boss == null || !boss.isAdventure()) return false;
+        AbstractRaidSession raid = RaidHelper.ACTIVE_RAIDS.get(this.getUuid());
+        if (raid == null) return false;
+        return ((RaidSession) raid).currentNodeIndex() > 1;
+    }
+
     public void syncAspects(ServerPlayer player) {
         if (this.aspectSync == null) return;
         CompletableFuture.delayedExecutor(1, TimeUnit.SECONDS).execute(() -> this.aspectSync.accept(player));
@@ -435,15 +427,15 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         if (compoundTag.contains("raid_bucket")) this.raidBucket = ResourceLocation.parse(compoundTag.getString("raid_bucket"));
         if (compoundTag.contains("raid_boss")) this.raidBoss = ResourceLocation.parse(compoundTag.getString("raid_boss"));
         if (compoundTag.contains("is_open")) this.isOpen = true;
-        if (compoundTag.contains("raid_sync")) this.raidSync = RaidSyncContext.load(compoundTag.getCompound("raid_sync"));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {
                 if (this.isRemoved()) return;
                 RaidEvents.RAID_DEN_LOAD.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
             };
-            if (this.getRaidBoss() == null) RaidRegistry.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
-            else consumer.accept(this.getRaidBoss());
+            RaidBoss boss = this.getRaidBoss();
+            if (boss == null) CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
+            else consumer.accept(boss);
         }
     }
 
@@ -456,15 +448,15 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         if (this.raidBucket != null) compoundTag.putString("raid_bucket", this.raidBucket.toString());
         if (this.raidBoss != null) compoundTag.putString("raid_boss", this.raidBoss.toString());
         if (this.isOpen) compoundTag.putBoolean("is_open", true);
-        if (this.raidSync != null) compoundTag.put("raid_sync", this.raidSync.save(new CompoundTag()));
 
         if (this.getLevel() instanceof ServerLevel serverLevel && this.raidBoss != null) {
             Consumer<RaidBoss> consumer = boss -> {
                 if (this.isRemoved()) return;
                 RaidEvents.RAID_DEN_SAVE.emit(new RaidDenSpawnEvent(serverLevel, this.getBlockPos(), boss));
             };
-            if (this.getRaidBoss() == null) RaidRegistry.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
-            else consumer.accept(this.getRaidBoss());
+            RaidBoss boss = this.getRaidBoss();
+            if (boss == null) CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.raidBoss, consumer, serverLevel.getServer());
+            else consumer.accept(boss);
         }
     }
 

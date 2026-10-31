@@ -18,6 +18,7 @@ public class RaidStatistics {
     public static final ResourceLocation TIER_FIVE_COMPLETED = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "tier_five_completed");
     public static final ResourceLocation TIER_SIX_COMPLETED = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "tier_six_completed");
     public static final ResourceLocation TIER_SEVEN_COMPLETED = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "tier_seven_completed");
+    public static final ResourceLocation ADVENTURE_COMPLETED = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "adventure_completed");
 
     public static void init() {
         RaidEvents.RAID_JOIN.subscribe(Priority.LOWEST, event -> {
@@ -26,7 +27,7 @@ public class RaidStatistics {
             return Unit.INSTANCE;
         });
 
-        RaidEvents.RAID_END.subscribe(Priority.LOWEST, event -> {
+        RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return Unit.INSTANCE;
             event.player().awardStat(RAIDS_COMPLETED);
 
@@ -40,6 +41,8 @@ public class RaidStatistics {
                 case TIER_SEVEN -> TIER_SEVEN_COMPLETED;
             };
             event.player().awardStat(tier);
+
+            if (event.raidBoss().isAdventure()) event.player().awardStat(ADVENTURE_COMPLETED);
             return Unit.INSTANCE;
         });
     }

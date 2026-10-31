@@ -21,8 +21,7 @@ import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import com.necro.raid.dens.common.data.raid.RaidBucket;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ComponentUtils;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -47,7 +46,7 @@ public class RaidDenCommands {
     public static final SuggestionProvider<CommandSourceStack> RAID_BOSSES = (context, builder) -> {
         String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
-        for (ResourceLocation id : RaidRegistry.getAll()) {
+        for (ResourceLocation id : CustomRaidRegistries.RAID_REGISTRY.getAll()) {
             if (id.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
@@ -61,7 +60,7 @@ public class RaidDenCommands {
     public static final SuggestionProvider<CommandSourceStack> RAID_BUCKETS = (context, builder) -> {
         String remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
-        for (ResourceLocation id : RaidBucketRegistry.getAll()) {
+        for (ResourceLocation id : CustomRaidRegistries.RAID_BUCKET_REGISTRY.keySet()) {
             if (id.toString().toLowerCase(Locale.ROOT).startsWith(remaining)) {
                 builder.suggest(id.toString());
             }
@@ -210,9 +209,8 @@ public class RaidDenCommands {
         register(dispatcher);
     }
 
-    private static void setCrystal(Level level, BlockPos blockPos, BlockState blockState, boolean canReset,
-                                   RaidCycleMode cycleMode, ResourceLocation location, @Nullable ResourceLocation bucket) {
-        RaidRegistry.requestRaidBoss(location, boss -> {
+    private static void setCrystal(Level level, BlockPos blockPos, BlockState blockState, boolean canReset, RaidCycleMode cycleMode, ResourceLocation location, @Nullable ResourceLocation bucket) {
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(location, boss -> {
             level.setBlock(blockPos, blockState
                 .setValue(RaidCrystalBlock.ACTIVE, true)
                 .setValue(RaidCrystalBlock.CAN_RESET, canReset)
@@ -244,7 +242,7 @@ public class RaidDenCommands {
         if (location == null) {
             RaidTier tier = cycleMode.canCycleTier() ? RaidTier.getWeightedRandom(level.getRandom(), level) : blockState.getValue(RaidCrystalBlock.RAID_TIER);
             RaidType type = cycleMode.canCycleType() ? null : blockState.getValue(RaidCrystalBlock.RAID_TYPE);
-            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, type, null);
+            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, type, null, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, cycleMode, location, bucket);
@@ -256,23 +254,23 @@ public class RaidDenCommands {
 
         ResourceLocation bucket = null;
         if (cycleMode == RaidCycleMode.BUCKET && location == null) {
-            bucket = RaidBucketRegistry.getRandomBucket(level.getRandom(), level.getBiome(blockPos));
-            RaidBucket rBucket = RaidBucketRegistry.getBucket(bucket);
+            bucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.getRandom(level.getRandom(), level.getBiome(blockPos), level.registryAccess());
+            RaidBucket rBucket = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucket);
             if (rBucket != null) location = rBucket.getRandomRaidBoss(level.getRandom(), level);
         }
-        if (location == null) location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
+        if (location == null) location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level);
 
         setCrystal(level, blockPos, ModBlocks.RAID_CRYSTAL_BLOCK.value().defaultBlockState(), canReset, cycleMode, location, bucket);
         return 1;
     }
 
     @SuppressWarnings("unused")
-    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation raidBoss, RaidCycleMode cycleMode, boolean canReset) {
+    private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, ResourceLocation boss, RaidCycleMode cycleMode, boolean canReset) {
         if (level.getBiome(blockPos).is(ModDimensions.RAID_DIM_BIOME)) return 0;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
-        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal, blockPos, raidBoss, cycleMode, canReset);
-        else return createRaidDenNew(level, blockPos, raidBoss, cycleMode, canReset);
+        if (blockEntity instanceof RaidCrystalBlockEntity raidCrystal) return createRaidDenFromExisting(level, raidCrystal, blockPos, boss, cycleMode, canReset);
+        else return createRaidDenNew(level, blockPos, boss, cycleMode, canReset);
     }
 
     private static int createRaidDen(CommandContext<CommandSourceStack> context, BlockPos blockPos, ServerLevel level, RaidTier raidTier, RaidCycleMode cycleMode, boolean canReset) {
@@ -289,14 +287,14 @@ public class RaidDenCommands {
         RaidType type;
         if (!blockState.hasProperty(RaidCrystalBlock.RAID_TYPE) || cycleMode.canCycleType()) type = null;
         else type = level.getBlockState(blockPos).getValue(RaidCrystalBlock.RAID_TYPE);
-        return createRaidDen(context, blockPos, level, RaidRegistry.getRandomRaidBoss(random, level, raidTier, type, null), cycleMode, canReset);
+        return createRaidDen(context, blockPos, level, CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(random, level, raidTier, type, null, null), cycleMode, canReset);
     }
 
     private static int createRaidDenWithBucketFromExisting(Level level, BlockState blockState, BlockPos blockPos, ResourceLocation bucket, boolean canReset) {
-        ResourceLocation location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level);
+        ResourceLocation location = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucket).getRandomRaidBoss(level.getRandom(), level);
         if (location == null) {
             RaidTier tier = RaidTier.getWeightedRandom(level.getRandom(), level);
-            location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level, tier, null, null);
+            location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level, tier, null, null, null);
         }
 
         setCrystal(level, blockPos, blockState, canReset, RaidCycleMode.BUCKET, location, bucket);
@@ -304,8 +302,8 @@ public class RaidDenCommands {
     }
 
     private static int createRaidDenWithBucketNew(Level level, BlockPos blockPos, ResourceLocation bucket, boolean canReset) {
-        ResourceLocation location = RaidBucketRegistry.getBucket(bucket).getRandomRaidBoss(level.getRandom(), level);
-        if (location == null) location = RaidRegistry.getRandomRaidBoss(level.getRandom(), level);
+        ResourceLocation location = CustomRaidRegistries.RAID_BUCKET_REGISTRY.get(bucket).getRandomRaidBoss(level.getRandom(), level);
+        if (location == null) location = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(level.getRandom(), level);
 
         setCrystal(level, blockPos, ModBlocks.RAID_CRYSTAL_BLOCK.value().defaultBlockState(), canReset, RaidCycleMode.BUCKET, location, bucket);
         return 1;

@@ -1,9 +1,7 @@
 package com.necro.raid.dens.fabric.items;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.loot.predicate.RaidLootPredicates;
-import com.necro.raid.dens.common.loot.predicate.RaidTierPredicate;
-import com.necro.raid.dens.common.loot.predicate.RaidTypePredicate;
+import com.necro.raid.dens.common.loot.predicate.*;
 import net.minecraft.advancements.critereon.ItemSubPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -22,6 +20,18 @@ public class FabricPredicates {
             BuiltInRegistries.ITEM_SUB_PREDICATE_TYPE,
             ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_type"),
             new ItemSubPredicate.Type<>(RaidTypePredicate.CODEC)
+        ));
+
+        RaidLootPredicates.ITEM_FEATURE_PREDICATE = Holder.direct(Registry.register(
+            BuiltInRegistries.ITEM_SUB_PREDICATE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_feature"),
+            new ItemSubPredicate.Type<>(RaidFeaturePredicate.CODEC)
+        ));
+
+        RaidLootPredicates.ITEM_ADVENTURE_PREDICATE = Holder.direct(Registry.register(
+            BuiltInRegistries.ITEM_SUB_PREDICATE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_adventure"),
+            new ItemSubPredicate.Type<>(RaidAdventurePredicate.CODEC)
         ));
     }
 }

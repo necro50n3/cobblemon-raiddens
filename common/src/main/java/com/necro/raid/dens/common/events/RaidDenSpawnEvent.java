@@ -8,12 +8,12 @@ import org.jetbrains.annotations.NotNull;
 public class RaidDenSpawnEvent {
     private final ServerLevel level;
     private final BlockPos blockPos;
-    private final RaidBoss raidBoss;
+    private final RaidBoss raid;
 
-    public RaidDenSpawnEvent(@NotNull ServerLevel level, @NotNull BlockPos blockPos, @NotNull RaidBoss raidBoss) {
+    public RaidDenSpawnEvent(@NotNull ServerLevel level, @NotNull BlockPos blockPos, @NotNull RaidBoss raid) {
         this.level = level;
         this.blockPos = blockPos;
-        this.raidBoss = raidBoss;
+        this.raid = raid;
     }
 
     public ServerLevel getLevel() {
@@ -24,7 +24,7 @@ public class RaidDenSpawnEvent {
         return this.blockPos;
     }
 
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
+    public RaidBoss getRaid() {
+        return this.raid;
     }
 }

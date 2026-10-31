@@ -50,7 +50,7 @@ public abstract class WeatherInstructionMixin {
                 raid.updateBattleState(battle, battleState -> battleState.addWeather(weather));
                 raid.updateBattleContext(battle, b -> {
                     b.getContextManager().add(new BasicContext(weather, b.getTurn(), BattleContext.Type.WEATHER, null));
-                    b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.start", weather)));
+                    b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.run", weather)));
                 });
             }
             else {
@@ -73,7 +73,7 @@ public abstract class WeatherInstructionMixin {
             }
             else if (!weather.equals("none")) {
                 battle.getContextManager().add(ShowdownInterpreter.INSTANCE.getContextFromAction(this.getMessage(), BattleContext.Type.WEATHER, battle));
-                lang = LocalizationUtilsKt.battleLang(String.format("weather.%s.start", weather));
+                lang = LocalizationUtilsKt.battleLang(String.format("weather.%s.run", weather));
             }
             else {
                 Collection<BattleContext> context = battle.getContextManager().get(BattleContext.Type.WEATHER);

@@ -23,6 +23,7 @@ public class NeoForgeComponents {
         ModComponents.TYPE_COMPONENT = registerComponent("raid_type", RaidType.codec());
         ModComponents.BOSS_COMPONENT = registerComponent("raid_boss", ResourceLocation.CODEC);
         ModComponents.BONUS_LOOT_COMPONENT = registerComponent("bonus_loot", Codec.BOOL);
+        ModComponents.ADVENTURE_COMPONENT = registerComponent("is_adventure", Codec.BOOL);
 
         ModComponents.RAID_DEN_KEY = registerComponent("raid_den_key", Codec.BOOL);
         ModComponents.REMOTE_KEY = registerComponent("remote_key", Codec.BOOL);

@@ -3,6 +3,8 @@
     "advancement.cobblemonraiddens.great_friend.description": "Utilize um de cada tipo de Apoio.",
     "advancement.cobblemonraiddens.join_raid.title": "Cobblemon Raid Dens",
     "advancement.cobblemonraiddens.join_raid.description": "Entre na sua primeira invasão.",
+
+
     "advancement.cobblemonraiddens.raid_dynamax.title": "Uma aventura Dynamax",
     "advancement.cobblemonraiddens.raid_dynamax.description": "Derrote uma invasão dynamax.",
     "advancement.cobblemonraiddens.raid_mega.title": "Transbordando poder",
@@ -58,6 +60,7 @@
     "error.cobblemonraiddens.raid_boss_not_found": "Falha ao criar a bolsa de invasão devido à ausência do chefe de invasão.",
     "error.cobblemonraiddens.raid_boss_spawn_fail": "Não foi possível criar uma invasão. Verifique os registros para ver o erro.",
     "error.cobblemonraiddens.reset_mode_not_global": "Modo de Redefinição deve ser um modo global.",
+
     "feature.cobblemonraiddens.default": "Regular",
     "feature.cobblemonraiddens.dynamax": "Dynamax",
     "feature.cobblemonraiddens.gigantamax": "Gigantamax",
@@ -106,6 +109,7 @@
     "message.cobblemonraiddens.command.reset_clears_not_found": "Não foi possível encontrar o cristal de invasão naquele local.",
     "message.cobblemonraiddens.command.remove_dimension": "A dimensão da invasão foi removida.",
     "message.cobblemonraiddens.raid.accepted_request": "Seu pedido foi aceito.",
+
     "message.cobblemonraiddens.raid.already_hosting": "Você já está hospedando outra invasão.",
     "message.cobblemonraiddens.raid.already_in_queue": "Você já está esperando para entrar em uma invasão.",
     "message.cobblemonraiddens.raid.already_participating": "Você já está participando de outra invasão.",
@@ -138,6 +142,7 @@
     "message.cobblemonraiddens.reward.reward_item": "Você recebeu a recompensa!",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Você precisa segurar uma Pokébola para reivindicar o Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Você recebeu o Pokémon!",
+
     "screen.cobblemonraiddens.raid.title": "Invasão em Andamento",
     "screen.cobblemonraiddens.raid.title.1": "Invasão em",
     "screen.cobblemonraiddens.raid.title.2": "Andamento",
@@ -163,6 +168,7 @@
     "stat.cobblemonraiddens.tier_five_completed": "Invasões de nível cinco concluídas",
     "stat.cobblemonraiddens.tier_six_completed": "Invasões de nível seis concluídas",
     "stat.cobblemonraiddens.tier_seven_completed": "Invasões de nível sete concluídas",
+
     "tag.item.cobblemonraiddens.raid_den_keys": "Chave da Toca de Invasão",
     "text.autoconfig.cobblemonraiddens/client.title": "Configurações do Cobblemon Raid Dens",
     "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "Feixes de sinalizador",
@@ -175,6 +181,7 @@
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five": "Sinalizador de Nível Cinco",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six": "Sinalizador de Nível Seis",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven": "Sinalizador de Nível Sete",
+
     "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "Renderizar o efeito de sinalizador legado",
     "text.autoconfig.cobblemonraiddens/client.option.show_particles": "Renderizar os efeitos de partículas do cristal de invasão",
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Aceitar pedidos de entrada automaticamente",

@@ -3,10 +3,7 @@ package com.necro.raid.dens.fabricgen.datagen;
 import com.cobblemon.mod.common.CobblemonItems;
 import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.advancements.RaidFeatureTrigger;
-import com.necro.raid.dens.common.advancements.RaidTierTrigger;
-import com.necro.raid.dens.common.advancements.JoinRaidDenTrigger;
-import com.necro.raid.dens.common.advancements.RaidShinyTrigger;
+import com.necro.raid.dens.common.advancements.*;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
@@ -60,6 +57,19 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .parent(joinRaidDenAdvancement)
             .addCriterion("shiny_from_raid", RaidShinyTrigger.TriggerInstance.shiny(true))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_shiny");
+
+        Advancement.Builder.advancement()
+            .display(
+                CobblemonItems.AUTOMATON_ARMOR_TRIM_SMITHING_TEMPLATE,
+                Component.translatable("advancement.cobblemonraiddens.raid_adventure.title"),
+                Component.translatable("advancement.cobblemonraiddens.raid_adventure.description"),
+                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
+                AdvancementType.GOAL,
+                true, false, false
+            )
+            .parent(joinRaidDenAdvancement)
+            .addCriterion("completed_adventure", RaidAdventureTrigger.TriggerInstance.adventure(true))
+            .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_adventure");
 
         ItemStack tierOneStack = display.copy();
         tierOneStack.set(ModComponents.TYPE_COMPONENT.value(), RaidType.NORMAL);

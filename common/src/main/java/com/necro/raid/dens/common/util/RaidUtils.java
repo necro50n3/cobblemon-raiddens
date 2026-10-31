@@ -1,6 +1,8 @@
 package com.necro.raid.dens.common.util;
 
+import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.abilities.Ability;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -15,6 +17,8 @@ import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.items.ItemTags;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
+import com.necro.raid.dens.common.raids.AbstractRaidSession;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidState;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
@@ -111,7 +115,7 @@ public class RaidUtils {
         ServerLevel level = ModDimensions.getRaidDimension(player.getServer());
         if (level == null) return;
 
-        RaidInstance instance = RaidHelper.ACTIVE_RAIDS.get(raid);
+        AbstractRaidSession instance = RaidHelper.ACTIVE_RAIDS.get(raid);
         if (instance == null) {
             leaveRaidFallback(player);
             return;
@@ -127,16 +131,27 @@ public class RaidUtils {
         int items = level.getEntitiesOfClass(ItemEntity.class, region.bound(), item -> item.getOwner() != null).size();
         if (items > 0 && isRaidDimension(player.level())) return;
 
+        RaidInstance activeRaid = instance.getActive();
         instance.removePlayer((ServerPlayer) player);
         instance.closeRaid(player.getServer());
 
-        PokemonEntity entity = instance.getBossEntity();
-        if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
+        if (activeRaid != null) {
+            PokemonEntity entity = activeRaid.getBossEntity();
+            if (!entity.isRemoved()) ((IRaidAccessor) entity).crd_flagForRemoval();
+        }
     }
 
     private static void leaveRaidFallback(Player player) {
         RaidHelper.removeRequests(player.getUUID());
         RaidJoinHelper.removeParticipant(player);
+        removePlayerParty((ServerPlayer) player);
+    }
+
+    public static void removePlayerParty(ServerPlayer player) {
+        RaidStoreFactory.removePlayerParty(player.getUUID());
+        PlayerPartyStore party = PlayerExtensionsKt.party(player);
+        party.sendTo(player);
+        Cobblemon.INSTANCE.getStorage().onPlayerDataSync(player);
     }
 
     public static boolean isRaidDenKey(ItemStack itemStack) {

@@ -17,5 +17,6 @@ public class FabricStatistics {
         Registry.register(BuiltInRegistries.CUSTOM_STAT, RaidStatistics.TIER_FIVE_COMPLETED, RaidStatistics.TIER_FIVE_COMPLETED);
         Registry.register(BuiltInRegistries.CUSTOM_STAT, RaidStatistics.TIER_SIX_COMPLETED, RaidStatistics.TIER_SIX_COMPLETED);
         Registry.register(BuiltInRegistries.CUSTOM_STAT, RaidStatistics.TIER_SEVEN_COMPLETED, RaidStatistics.TIER_SEVEN_COMPLETED);
+        Registry.register(BuiltInRegistries.CUSTOM_STAT, RaidStatistics.ADVENTURE_COMPLETED, RaidStatistics.ADVENTURE_COMPLETED);
     }
 }

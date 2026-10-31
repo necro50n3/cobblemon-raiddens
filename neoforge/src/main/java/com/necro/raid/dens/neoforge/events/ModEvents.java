@@ -1,14 +1,15 @@
 package com.necro.raid.dens.neoforge.events;
 
+import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.Priority;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
-import com.necro.raid.dens.common.registry.RaidBucketRegistry;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
@@ -52,7 +53,7 @@ public class ModEvents {
         RaidHelper.commonTick(event.getServer());
         RaidJoinHelper.serverTick();
         RaidEvents.ScaleBossRaidEvent.tick();
-        RaidRegistry.tick();
+        CustomRaidRegistries.RAID_REGISTRY.tick();
     }
 
     @SubscribeEvent
@@ -76,21 +77,20 @@ public class ModEvents {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         CustomRaidRegistries.freeze();
+        CustomRaidRegistries.RAID_REGISTRY.init(event.getServer());
+        Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
     }
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
-        MinecraftServer server = event.getServer();
-        RaidHelper.initHelper(server);
-        RaidRegistry.init(server);
-        RaidBucketRegistry.init(server);
+        RaidHelper.initHelper(event.getServer());
     }
 
     @SubscribeEvent
     public static void onServerClose(ServerStoppingEvent event) {
         RaidJoinHelper.onServerClose();
         RaidHelper.onServerClose(event.getServer());
-        RaidRegistry.close();
+        CustomRaidRegistries.RAID_REGISTRY.close();
     }
 
     @SubscribeEvent
