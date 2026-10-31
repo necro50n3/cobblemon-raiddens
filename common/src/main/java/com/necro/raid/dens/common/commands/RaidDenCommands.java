@@ -216,7 +216,8 @@ public class RaidDenCommands {
                 .setValue(RaidCrystalBlock.CAN_RESET, canReset)
                 .setValue(RaidCrystalBlock.CYCLE_MODE, cycleMode)
                 .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
-                .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier()), 2);
+                .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier())
+                .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure()), 2);
 
             if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
                 raidCrystal.setRaidBoss(location, level.getGameTime());

@@ -27,22 +27,32 @@ public class RaidCrystalBeamRenderer {
 
     public static final ResourceLocation BEAM_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_den_beam.png");
     public static final ResourceLocation GLOW_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_den_glow.png");
+    public static final ResourceLocation ADVENTURE_BEAM_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_adventure_beam.png");
+    public static final ResourceLocation ADVENTURE_GLOW_LOCATION = ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "textures/entity/raid_adventure_glow.png");
 
     private static final RenderType RAID_DEN_BEAM;
     private static final RenderType RAID_DEN_GLOW;
+    private static final RenderType RAID_ADVENTURE_BEAM;
+    private static final RenderType RAID_ADVENTURE_GLOW;
 
     public static void tick(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource) {
         RENDER_QUEUE.sort(Comparator.comparingDouble(Instance::distanceSqr));
-        RENDER_QUEUE.forEach(inst -> inst.consumer().accept(poseStack, bufferSource));
+
+        Boolean lastAdventure = null;
+        for (Instance instance : RENDER_QUEUE) {
+            if (lastAdventure != null && lastAdventure != instance.isAdventure()) bufferSource.endBatch();
+            instance.consumer().accept(poseStack, bufferSource);
+            lastAdventure = instance.isAdventure();
+        }
         bufferSource.endBatch();
         RENDER_QUEUE.clear();
     }
 
-    public static void render(Vec3 pos, double distanceSqr, int height, int color, int alpha) {
-        RENDER_QUEUE.add(new Instance(-distanceSqr, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color, alpha)));
+    public static void render(Vec3 pos, double distanceSqr, int height, int color, int alpha, boolean isAdventure) {
+        RENDER_QUEUE.add(new Instance(-distanceSqr, isAdventure, (poseStack, multiBufferSource) -> renderBeam(poseStack, multiBufferSource, pos, height, color, alpha, isAdventure)));
     }
 
-    public static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color, int alpha) {
+    public static void renderBeam(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Vec3 pos, int height, int color, int alpha, boolean isAdventure) {
         poseStack.pushPose();
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
@@ -51,19 +61,21 @@ public class RaidCrystalBeamRenderer {
         poseStack.mulPose(Axis.YP.rotationDegrees(180F - camera.getYRot()));
 
         RenderType renderType;
+        VertexConsumer vertexConsumer;
+
         if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) {
             // Black does not render as light beams using shaders. Change to a gray.
             if (color == 657930) color = 6250335;
-            renderType = RenderType.entityTranslucentEmissive(BEAM_LOCATION, false);
+            renderType = RenderType.entityTranslucentEmissive(isAdventure ? ADVENTURE_BEAM_LOCATION : BEAM_LOCATION, false);
         }
-        else renderType = RAID_DEN_BEAM;
+        else renderType = isAdventure ? RAID_ADVENTURE_BEAM : RAID_DEN_BEAM;
 
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(renderType);
+        vertexConsumer = bufferSource.getBuffer(renderType);
         PoseStack.Pose pose = poseStack.last();
         addVertices(vertexConsumer, pose, 0.5F, height, color, alpha);
 
-        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(GLOW_LOCATION, false);
-        else renderType = RAID_DEN_GLOW;
+        if (ModCompat.IRIS.isLoaded() && RaidDensIrisCompat.isEnabled()) renderType = RenderType.entityTranslucentEmissive(isAdventure ? ADVENTURE_GLOW_LOCATION : GLOW_LOCATION, false);
+        else renderType = isAdventure ? RAID_ADVENTURE_GLOW : RAID_DEN_GLOW;
         vertexConsumer = bufferSource.getBuffer(renderType);
         addVertices(vertexConsumer, pose, 1.0F, 5.0F, color, alpha);
 
@@ -81,7 +93,7 @@ public class RaidCrystalBeamRenderer {
         vertexConsumer.addVertex(pose.pose(), -radius, height, 0.0F).setUv(0, 0).setColor(r, g, b, alpha).setLight(15728880).setOverlay(OverlayTexture.NO_OVERLAY).setNormal(pose, 0, 1, 0);
     }
 
-    private record Instance(double distanceSqr, BiConsumer<PoseStack, MultiBufferSource.BufferSource> consumer) {}
+    private record Instance(double distanceSqr, boolean isAdventure, BiConsumer<PoseStack, MultiBufferSource.BufferSource> consumer) {}
 
     static {
         RenderType.CompositeState beamState = RenderType.CompositeState.builder()
@@ -118,6 +130,42 @@ public class RaidCrystalBeamRenderer {
             false,
             true,
             glowState
+        );
+
+        RenderType.CompositeState adventureBeamState = RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShard.RENDERTYPE_BEACON_BEAM_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(ADVENTURE_BEAM_LOCATION, false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setCullState(RenderStateShard.NO_CULL)
+            .createCompositeState(false);
+
+        RAID_ADVENTURE_BEAM = RenderType.create(
+            "raid_adventure_beam",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            true,
+            adventureBeamState
+        );
+
+        RenderType.CompositeState adventureGlowState = RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShard.RENDERTYPE_BEACON_BEAM_SHADER)
+            .setTextureState(new RenderStateShard.TextureStateShard(ADVENTURE_GLOW_LOCATION, false, false))
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setCullState(RenderStateShard.NO_CULL)
+            .createCompositeState(false);
+
+        RAID_ADVENTURE_GLOW = RenderType.create(
+            "raid_adventure_glow",
+            DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            true,
+            adventureGlowState
         );
     }
 }

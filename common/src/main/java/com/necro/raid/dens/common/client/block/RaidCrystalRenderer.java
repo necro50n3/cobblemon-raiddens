@@ -65,10 +65,16 @@ public class RaidCrystalRenderer extends GeoBlockRenderer<RaidCrystalBlockEntity
                 blockEntity.getBlockPos().getBottomCenter(),
                 Minecraft.getInstance().player.blockPosition().distSqr(blockEntity.getBlockPos()),
                 blockEntity.getBeamHeight(),
-                blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor(),
-                this.getAlpha(blockEntity)
+                this.getColor(blockEntity),
+                this.getAlpha(blockEntity),
+                blockEntity.getBlockState().getValue(RaidCrystalBlock.IS_ADVENTURE)
             );
         }
+    }
+
+    private int getColor(BlockEntity blockEntity) {
+        if (blockEntity.getBlockState().getValue(RaidCrystalBlock.IS_ADVENTURE)) return 16777215;
+        else return blockEntity.getBlockState().getValue(RaidCrystalBlock.RAID_TYPE).getColor();
     }
 
     private int getAlpha(BlockEntity blockEntity) {
