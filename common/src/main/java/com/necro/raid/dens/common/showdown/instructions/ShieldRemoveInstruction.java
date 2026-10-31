@@ -74,7 +74,7 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
         battle.dispatch(() -> {
-            ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("pause"));
+            ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("hurt"));
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
 
