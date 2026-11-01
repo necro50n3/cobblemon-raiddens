@@ -225,7 +225,7 @@ public class RaidNode implements AdventureNode {
         JsonArray bosses = new JsonArray();
         for (String reference : this.references) bosses.add(reference);
         object.add("bosses", bosses);
-        // object.addProperty("can_catch", this.canCatch);
+        object.addProperty("can_catch", this.canCatch);
         return object;
     }
 }

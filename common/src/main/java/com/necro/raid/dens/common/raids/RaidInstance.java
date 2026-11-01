@@ -348,6 +348,7 @@ public class RaidInstance {
     private void handleSuccess() {
         this.raidState = RaidState.SUCCESS;
         ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.SUCCESS);
+        if (!this.canCatch) return;
 
         int catches = this.boss.getMaxCatches();
         List<ServerPlayer> success;
@@ -366,7 +367,7 @@ public class RaidInstance {
             }
         }
 
-        if (catches == 0 || !this.canCatch) {
+        if (catches == 0) {
             success = List.of();
             failed = players;
         }
