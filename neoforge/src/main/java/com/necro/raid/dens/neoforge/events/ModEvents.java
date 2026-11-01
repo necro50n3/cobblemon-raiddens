@@ -2,7 +2,7 @@ package com.necro.raid.dens.neoforge.events;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
-import com.cobblemon.mod.common.api.item.HealingSource;
+import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
@@ -123,7 +123,7 @@ public class ModEvents {
     private static boolean cancelUseItem(PlayerInteractEvent event) {
         ItemStack stack = event.getEntity().getItemInHand(event.getHand());
         if (event.getEntity() instanceof LocalPlayer) return false;
-        if (!(stack.getItem() instanceof HealingSource)) return false;
+        if (!(stack.getItem() instanceof PokemonSelectingItem)) return false;
         RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(event.getEntity());
         if (participant == null) return false;
         RaidSession session = RaidHelper.ACTIVE_RAIDS.get(participant.raid());

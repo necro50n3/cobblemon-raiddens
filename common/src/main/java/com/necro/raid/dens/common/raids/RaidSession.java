@@ -10,13 +10,13 @@ import com.necro.raid.dens.common.data.raid.RaidSyncContext;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.adventure.BossNode;
 import com.necro.raid.dens.common.raids.adventure.RaidNode;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
-import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -339,7 +339,7 @@ public class RaidSession {
         else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
         if (this.host != null) RaidHelper.removeRequests(this.host);
         RaidJoinHelper.removeParticipants(this.activePlayers);
-        this.activePlayers.forEach(RaidUtils::removePlayerParty);
+        this.activePlayers.forEach(RaidStoreFactory::removePlayerParty);
         RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.boss, this.raidState == RaidState.SUCCESS));
     }
 

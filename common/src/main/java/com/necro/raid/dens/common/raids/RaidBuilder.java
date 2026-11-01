@@ -36,11 +36,9 @@ public class RaidBuilder {
                     && !RaidUtils.isHeldItemBlacklisted(p.heldItem()))
                 .toList();
             playerTeam = playerTeam.subList(0, Mth.clamp(playerTeam.size(), 1, boss.getRaidPartySize()));
-            RaidStoreFactory.addPlayerParty(player.getUUID(), playerTeam);
+            RaidStoreFactory.addPlayerParty(player, playerTeam);
 
             party = PlayerExtensionsKt.party(player);
-            party.initialize();
-            party.sendTo(player);
             CobblemonNetwork.sendPacketToPlayers(List.of(player), new SetPartyReferencePacket(party.getUuid()));
         }
         else party = PlayerExtensionsKt.party(player);

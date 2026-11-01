@@ -2,7 +2,7 @@ package com.necro.raid.dens.fabric.events;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.Priority;
-import com.cobblemon.mod.common.api.item.HealingSource;
+import com.cobblemon.mod.common.api.item.PokemonSelectingItem;
 import com.necro.raid.dens.common.client.gui.RaidDenGuiManager;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.party.RaidStoreFactory;
@@ -72,7 +72,7 @@ public class ModEvents {
     public static InteractionResultHolder<ItemStack> onUseItem(Player player, Level level, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player instanceof LocalPlayer) return InteractionResultHolder.pass(stack);
-        if (!(stack.getItem() instanceof HealingSource)) return InteractionResultHolder.pass(stack);
+        if (!(stack.getItem() instanceof PokemonSelectingItem)) return InteractionResultHolder.pass(stack);
         RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(player);
         if (participant == null) return InteractionResultHolder.pass(stack);
         RaidSession session = RaidHelper.ACTIVE_RAIDS.get(participant.raid());

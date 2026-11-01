@@ -1,8 +1,6 @@
 package com.necro.raid.dens.common.util;
 
-import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.abilities.Ability;
-import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
@@ -144,14 +142,7 @@ public class RaidUtils {
     private static void leaveRaidFallback(Player player) {
         RaidHelper.removeRequests(player.getUUID());
         RaidJoinHelper.removeParticipant(player);
-        removePlayerParty((ServerPlayer) player);
-    }
-
-    public static void removePlayerParty(ServerPlayer player) {
-        RaidStoreFactory.removePlayerParty(player.getUUID());
-        PlayerPartyStore party = PlayerExtensionsKt.party(player);
-        party.sendTo(player);
-        Cobblemon.INSTANCE.getStorage().onPlayerDataSync(player);
+        RaidStoreFactory.removePlayerParty((ServerPlayer) player);
     }
 
     public static boolean isRaidDenKey(ItemStack itemStack) {
