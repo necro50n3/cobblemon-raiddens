@@ -226,8 +226,8 @@ public class RaidInstance {
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
         if (!this.session.activePlayers().contains(player) && ((IRaidBattle) battle).crd_isRaid()) this.session.addPlayerAndBattle(player, battle);
-        this.session().getDamageRecord(player, this.maxHealth).addDamage(damage);
-        this.runScripts(RaidTriggerType.DAMAGE, battle, () -> new Pair<>(this.session().getDamage(player, this.maxHealth), player.getUUID()));
+        this.session().getDamageRecord(player).addDamage(damage);
+        this.runScripts(RaidTriggerType.DAMAGE, battle, () -> new Pair<>(this.session().getDamage(player), player.getUUID()));
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
@@ -324,6 +324,7 @@ public class RaidInstance {
         this.bossEvent.removeAllPlayers();
         this.timerEvent.setVisible(false);
         this.timerEvent.removeAllPlayers();
+        this.session().addTotalHealth(this.getMaxHealth());
 
         List<Integer> entityIds = this.getEntityIds(this.battles);
         this.session.activePlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, false));

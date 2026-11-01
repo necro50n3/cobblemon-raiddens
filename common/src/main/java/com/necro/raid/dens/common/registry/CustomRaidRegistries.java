@@ -225,7 +225,7 @@ public class CustomRaidRegistries {
     private static void registerNodes() {
         NODE_REGISTRY.register(RaidNode.ID, node -> {
             List<String> bosses = NODE_REGISTRY.parseList(node, "bosses", String.class);
-            boolean canCatch = NODE_REGISTRY.parse(node, "can_catch", Boolean.class, true);
+            boolean canCatch = NODE_REGISTRY.parse(node, "can_catch", Boolean.class, false);
             return new RaidNode(bosses, canCatch);
         });
         NODE_REGISTRY.register(RecoverNode.ID, node -> new RecoverNode());

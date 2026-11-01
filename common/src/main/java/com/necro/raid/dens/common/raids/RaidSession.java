@@ -193,7 +193,6 @@ public class RaidSession {
 
     public void setActiveRaid(@NotNull RaidInstance activeRaid) {
         this.activeRaid = activeRaid;
-        this.addTotalHealth(activeRaid.getMaxHealth());
     }
 
     public List<ServerPlayer> getPlayers() {
@@ -379,17 +378,13 @@ public class RaidSession {
         }
     }
 
-    public DamageRecord getDamageRecord(ServerPlayer player, float maxHealthFallback) {
-        return this.damageTracker.computeIfAbsent(player.getUUID(), uuid -> new DamageRecord(0F, maxHealthFallback));
-    }
-
-    public float getDamage(ServerPlayer player, float maxHealthFallback) {
-        return this.getDamageRecord(player, maxHealthFallback).ratio();
+    public DamageRecord getDamageRecord(ServerPlayer player) {
+        return this.damageTracker.computeIfAbsent(player.getUUID(), uuid -> new DamageRecord(0F, 0F));
     }
 
     public float getDamage(ServerPlayer player) {
-        if (this.damageTracker.containsKey(player.getUUID())) return 0;
-        return this.getDamage(player, 0F);
+        if (!this.damageTracker.containsKey(player.getUUID())) return 0;
+        return this.getDamageRecord(player).ratio();
     }
 
     public @Nullable RaidInstance getActive() {
