@@ -20,11 +20,13 @@
     "adventure": [
         {
             "type": "raid",
-            "bosses": [ "@cobblemonraiddens:tier_three" ]
+            "bosses": [ "@cobblemonraiddens:tier_three" ],
+            "can_catch": false
         },
         {
             "type": "raid",
-            "bosses": [ "@cobblemonraiddens:tier_four" ]
+            "bosses": [ "@cobblemonraiddens:tier_four" ],
+            "can_catch": false
         }
     ],
     "key": "cobblemonraiddens:raidite"

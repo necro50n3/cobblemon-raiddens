@@ -15,7 +15,6 @@ import com.cobblemon.mod.common.battles.dispatch.UntilDispatch;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import kotlin.Unit;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 

@@ -7,10 +7,7 @@ import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
-import com.cobblemon.mod.common.battles.ActiveBattlePokemon;
-import com.cobblemon.mod.common.battles.BagItemActionResponse;
-import com.cobblemon.mod.common.battles.PassActionResponse;
-import com.cobblemon.mod.common.battles.ShowdownActionResponse;
+import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
@@ -24,7 +21,6 @@ import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidBattleEndEvent;
-import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
@@ -43,7 +39,6 @@ import kotlin.Pair;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,9 +52,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class RaidInstance extends AbstractRaidSession {
+public class RaidInstance {
+    private final RaidSession session;
     private final PokemonEntity bossEntity;
-    private final RaidBoss raidBoss;
+    private final RaidBoss boss;
+    private final boolean isBoss;
+    private final boolean canCatch;
 
     private float currentHealth;
     private float maxHealth;
@@ -69,30 +67,31 @@ public class RaidInstance extends AbstractRaidSession {
 
     private boolean failedToStart;
 
-    protected ServerBossEvent bossEvent;
-    protected final ServerBossEvent timerEvent;
-    protected final List<PokemonBattle> battles;
-    protected final Map<UUID, Float> damageTracker;
+    private final ServerBossEvent bossEvent;
+    private final ServerBossEvent timerEvent;
+    private final List<PokemonBattle> battles;
 
-    protected int time;
-    protected int maxTime;
+    private int time;
+    private int maxTime;
 
-    protected final Map<UUID, RaidPlayer> playerMap;
+    private final Map<UUID, RaidPlayer> playerMap;
 
-    protected RaidState raidState;
-    protected final RaidBattleState battleState;
+    private RaidState raidState;
+    private final RaidBattleState battleState;
 
-    public RaidInstance(PokemonEntity entity, @Nullable UUID host, boolean isInDen) {
-        super(host, ((IRaidAccessor) entity).crd_getRaidId(), isInDen);
-        this.failedToStart = false;
+    public RaidInstance(RaidSession session, PokemonEntity entity, boolean isBoss, boolean canCatch) {
+        this.session = session;
         this.bossEntity = entity;
+        this.isBoss = isBoss;
+        this.canCatch = canCatch;
+        this.failedToStart = false;
 
         RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         if (boss == null) boss = CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(((IRaidAccessor) entity).crd_getRaidBossId()).resultNow().orElseThrow();
-        this.raidBoss = boss;
+        this.boss = boss;
 
         this.bossEvent = new ServerBossEvent(
-            this.bossBarText(entity, this.raidBoss),
+            this.bossBarText(entity, this.boss),
             BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10
         );
         this.timerEvent = new ServerBossEvent(
@@ -102,12 +101,11 @@ public class RaidInstance extends AbstractRaidSession {
         this.timerEvent.setVisible(false);
 
         this.battles = new ArrayList<>();
-        this.damageTracker = new HashMap<>();
 
-        this.maxHealth = this.raidBoss.getHealthMulti() * this.bossEntity.getPokemon().getMaxHealth();
+        this.maxHealth = this.boss.getHealthMulti() * this.bossEntity.getPokemon().getMaxHealth();
         this.currentHealth = this.maxHealth;
         this.initMaxHealth = this.maxHealth;
-        this.sharedLives = this.raidBoss.getLives();
+        this.applyHealthMulti();
 
         this.time = 0;
         this.maxTime = 0;
@@ -122,7 +120,7 @@ public class RaidInstance extends AbstractRaidSession {
         this.raidState = RaidState.NOT_STARTED;
         this.battleState = new RaidBattleState();
 
-        this.raidBoss.getScript().forEach((key, scripts) -> {
+        this.boss.getScript().forEach((key, scripts) -> {
             List<AbstractEvent> functions;
             try {
                 functions = scripts.stream()
@@ -131,7 +129,7 @@ public class RaidInstance extends AbstractRaidSession {
                     .toList();
             }
             catch (Exception e) {
-                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.raidBoss.getId(), e);
+                CobblemonRaidDens.LOGGER.error("Failed to parse script {} for raid boss {}: ", scripts, this.boss.getId(), e);
                 this.failedToStart = true;
                 return;
             }
@@ -143,12 +141,12 @@ public class RaidInstance extends AbstractRaidSession {
                 this.triggers.computeIfAbsent(trigger.type(), type -> new ArrayList<>()).add(trigger);
             }
             catch (Exception e) {
-                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.raidBoss.getId(), e);
+                CobblemonRaidDens.LOGGER.error("Failed to parse trigger {} for raid boss {}: ", key, this.boss.getId(), e);
                 this.failedToStart = true;
             }
         });
         if (this.failedToStart) {
-            this.closeRaid(this.bossEntity.getServer(), true);
+            this.closeInstance();
             return;
         }
 
@@ -158,87 +156,78 @@ public class RaidInstance extends AbstractRaidSession {
         });
     }
 
-    public RaidInstance(PokemonEntity entity, UUID host) {
-        this(entity, host, true);
-    }
-
-    public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
-        this.addPlayer(player);
-        if (this.raidBoss.getBattleFormat().format() != AsymmetricBattleFormats.GEN_9_RAID) this.addBattle(battle);
-    }
-
-    @Override
     public void addPlayer(ServerPlayer player) {
         this.addToBossEvent(player);
-
-        this.damageTracker.put(player.getUUID(), 0F);
-        if (!this.activePlayers.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0F) {
-            this.applyHealthMulti();
-        }
-
-        this.playerLives.putIfAbsent(player.getUUID(), this.raidBoss.getLives());
-        this.playerMap.put(player.getUUID(), new RaidPlayer(this.raidBoss));
-        super.addPlayer(player);
+        if (this.boss.getMultiplayerHealthMulti() > 1.0F) this.applyHealthMulti();
+        this.playerMap.put(player.getUUID(), new RaidPlayer(this.boss));
     }
 
-    @Override
-    public void addBattle(PokemonBattle battle) {
-        ((IRaidBattle) battle).crd_setRaidBattle(this);
+    public void addBattle(ServerPlayer player, PokemonBattle battle) {
         this.sendHealthPacket(battle);
 
-        if (!this.battles.isEmpty() && this.raidBoss.getMultiplayerHealthMulti() > 1.0F) {
-            this.playerJoin(battle.getPlayers().getFirst().getName().getString());
+        if (!this.battles.isEmpty() && this.boss.getMultiplayerHealthMulti() > 1.0F) {
+            this.playerJoin(player.getName().getString());
         }
 
-        this.battles.add(battle);
-        this.sendEvent(new StartRaidShowdownEvent(
-            this.battleState,
-            this.raidBoss.getForceDynamax(),
-            this.raidBoss.getFeature().equalsIgnoreCase("tera")
-        ), battle);
-        this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
+        if (this.boss.getBattleFormat().format() != AsymmetricBattleFormats.GEN_9_RAID) {
+            ((IRaidBattle) battle).crd_setRaidSession(this.session);
+            this.battles.add(battle);
+            this.sendEvent(new StartRaidShowdownEvent(
+                this.battleState,
+                this.boss.getForceDynamax(),
+                this.boss.getFeature().equalsIgnoreCase("tera")
+            ), battle);
+            this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
+        }
+
         this.runScripts(RaidTriggerType.JOIN, battle, this.battles::size);
         if (this.raidState == RaidState.NOT_STARTED) this.raidState = RaidState.IN_PROGRESS;
 
         List<Integer> entityIds = this.getEntityIds(this.battles);
-        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, true));
+        this.session.activePlayers().forEach(p -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(p, entityIds, true));
     }
 
     private void applyHealthMulti() {
-        float bonusHealth = this.initMaxHealth * (this.raidBoss.getMultiplayerHealthMulti() - 1F) * this.activePlayers.size();
+        float bonusHealth = this.initMaxHealth * (this.boss.getMultiplayerHealthMulti() - 1F) * this.session.activePlayers().size();
         float currentRatio = this.currentHealth / this.maxHealth;
         this.maxHealth = this.initMaxHealth + bonusHealth;
         this.currentHealth = this.maxHealth * currentRatio;
     }
 
-    protected void playerJoin(String newPlayer) {
+    public RaidSession session() {
+        return this.session;
+    }
+
+    public RaidBoss boss() {
+        return this.boss;
+    }
+
+    private void playerJoin(String newPlayer) {
         this.sendEvent(new ShowdownEvents.PlayerJoinShowdownEvent(newPlayer), null);
     }
 
-    @Override
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
         if (battle != null) {
             this.battles.remove(battle);
-            ((IRaidBattle) battle).crd_setRaidBattle(null);
+            ((IRaidBattle) battle).crd_setRaidSession(null);
         }
 
         if (this.raidState != RaidState.NOT_STARTED) {
-            if (ignoreLives || this.loseLife(player.getUUID())) this.failedPlayers.add(player.getUUID());
-            if (this.failedPlayers.size() >= this.playerMap.size()) this.stopRaid(false);
-            else if (this.activePlayers.stream().allMatch(p -> p.level() != this.bossEntity.level())) this.stopRaid(false);
+            if (ignoreLives || this.session.loseLife(player.getUUID())) this.session.failedPlayers().add(player.getUUID());
+            if (this.session.failedPlayers().size() >= this.playerMap.size()) this.stopInstance(false);
+            else if (this.session.activePlayers().stream().allMatch(p -> p.level() != this.bossEntity.level())) this.stopInstance(false);
             if (!this.isFinished()) this.runScripts(RaidTriggerType.FAINT, battle);
         }
     }
 
-    @Override
     public boolean playersShareLives() {
-        return this.raidBoss != null && this.raidBoss.getPlayersShareLives();
+        return this.boss != null && this.boss.getPlayersShareLives();
     }
 
     public void syncHealth(ServerPlayer player, PokemonBattle battle, float damage) {
-        if (!this.activePlayers.contains(player) && ((IRaidBattle) battle).crd_isRaidBattle()) this.addPlayerAndBattle(player, battle);
-        this.damageTracker.computeIfPresent(player.getUUID(), (uuid, totalDamage) -> totalDamage + (Math.max(damage, 0F) / this.maxHealth));
-        this.runScripts(RaidTriggerType.DAMAGE, battle, () -> new Pair<>(this.getDamage(player), player.getUUID()));
+        if (!this.session.activePlayers().contains(player) && ((IRaidBattle) battle).crd_isRaid()) this.session.addPlayerAndBattle(player, battle);
+        this.session().getDamageRecord(player, this.maxHealth).addDamage(damage);
+        this.runScripts(RaidTriggerType.DAMAGE, battle, () -> new Pair<>(this.session().getDamage(player, this.maxHealth), player.getUUID()));
 
         this.currentHealth = Math.clamp(this.currentHealth - damage, 0F, this.maxHealth);
         this.battles.forEach(this::sendHealthPacket);
@@ -246,15 +235,15 @@ public class RaidInstance extends AbstractRaidSession {
         this.runScripts(RaidTriggerType.HP, battle, () -> this.currentHealth / this.maxHealth);
 
         if (this.currentHealth <= 0F) {
-            this.bossEvent.setProgress(this.currentHealth / this.maxHealth);
-            this.queueStopRaid();
+            this.bossEvent.setProgress(0F);
+            this.queueStopInstance();
         }
         else {
             this.schedule(() -> this.bossEvent.setProgress(this.currentHealth / this.maxHealth), 20, false);
         }
     }
 
-    protected void checkFlee() {
+    private void checkFlee() {
         if (this.bossEntity.isDeadOrDying()) return;
         List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
         for (PokemonBattle battle : battleCache) {
@@ -262,7 +251,7 @@ public class RaidInstance extends AbstractRaidSession {
         }
     }
 
-    protected void updateHealthBars() {
+    private void updateHealthBars() {
         List<Integer> entityIds = new ArrayList<>();
         List<Float> health = new ArrayList<>();
         for (PokemonBattle battle : this.battles) {
@@ -273,10 +262,10 @@ public class RaidInstance extends AbstractRaidSession {
             float maxHealth = battlePokemon.getEffectedPokemon().getMaxHealth();
             health.add(currentHealth / maxHealth);
         }
-        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_UPDATE.accept(player, entityIds, health));
+        this.session.activePlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_UPDATE.accept(player, entityIds, health));
     }
 
-    protected List<Integer> getEntityIds(List<PokemonBattle> battles) {
+    private List<Integer> getEntityIds(List<PokemonBattle> battles) {
         List<Integer> entityIds = new ArrayList<>();
         for (PokemonBattle battle : battles) {
             BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
@@ -313,66 +302,84 @@ public class RaidInstance extends AbstractRaidSession {
         return this.failedToStart;
     }
 
-    @Override
     public void tick() {
-        super.tick();
         this.actuallyAddTriggers();
     }
 
-    @Override
-    public void stopRaid(boolean raidSuccess) {
+    public void schedule(Runnable runnable, int delay, boolean repeat) {
+        if (this.isFinished()) return;
+        this.session.schedule(runnable, delay, repeat);
+    }
+
+    public void queueStopInstance() {
+        this.queueStopInstance(true);
+    }
+
+    public void queueStopInstance(boolean raidSuccess) {
+        this.schedule(() -> this.stopInstance(raidSuccess), 60, false);
+    }
+
+    public void stopInstance(boolean raidSuccess) {
         this.bossEvent.setVisible(false);
         this.bossEvent.removeAllPlayers();
         this.timerEvent.setVisible(false);
         this.timerEvent.removeAllPlayers();
 
         List<Integer> entityIds = this.getEntityIds(this.battles);
-        this.activePlayers.forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, false));
+        this.session.activePlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, entityIds, false));
 
         if (raidSuccess) this.bossEntity.setHealth(0F);
-        if (this.raidBoss == null) return;
+        if (this.boss == null) return;
 
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
+    }
 
-        if (!this.isAdventure()) this.closeRaid(this.bossEntity.getServer());
+    public void closeInstance() {
+        if (!this.bossEntity.isRemoved()) {
+            ((ServerLevel) this.bossEntity.level()).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
+            this.bossEntity.discard();
+        }
+
+        if (this.bossEvent != null) this.bossEvent.removeAllPlayers();
+        if (this.timerEvent != null) this.timerEvent.removeAllPlayers();
     }
 
     private void handleSuccess() {
         this.raidState = RaidState.SUCCESS;
         ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.SUCCESS);
 
-        int catches = this.raidBoss.getMaxCatches();
+        int catches = this.boss.getMaxCatches();
         List<ServerPlayer> success;
         List<ServerPlayer> failed;
         List<ServerPlayer> noItems = new ArrayList<>();
 
-        List<ServerPlayer> players = new ArrayList<>(this.activePlayers);
-        if (this.raidBoss.getRequiredDamage() > 0F) {
+        List<ServerPlayer> players = new ArrayList<>(this.session().activePlayers());
+        if (this.boss.getRequiredDamage() > 0F) {
             Iterator<ServerPlayer> iter = players.iterator();
             while (iter.hasNext()) {
                 ServerPlayer p = iter.next();
-                if (this.getDamage(p) < this.raidBoss.getRequiredDamage()) {
+                if (this.session().getDamage(p) < this.boss.getRequiredDamage()) {
                     noItems.add(p);
                     iter.remove();
                 }
             }
         }
 
-        if (catches == 0) {
+        if (catches == 0 || !this.canCatch) {
             success = List.of();
             failed = players;
         }
         else {
-            RewardDistributionContext context = new RewardDistributionContext(players, this);
+            RewardDistributionContext context = new RewardDistributionContext(players, this.session());
             success = context.success();
             failed = context.fail();
         }
 
         Pokemon cachedReward;
         if (CobblemonRaidDens.CONFIG.sync_rewards) {
-            cachedReward = this.raidBoss.getRewardPokemon(null);
-            PokemonProperties bossProperties = this.raidBoss.getBoss();
+            cachedReward = this.boss.getRewardPokemon(null);
+            PokemonProperties bossProperties = this.boss.getBoss();
 
             cachedReward.setShiny(this.bossEntity.getPokemon().getShiny());
             cachedReward.setGender((bossProperties.getGender() == null ? this.bossEntity.getPokemon() : cachedReward).getGender());
@@ -397,14 +404,14 @@ public class RaidInstance extends AbstractRaidSession {
         }
 
         success.forEach(player -> {
-            Pokemon reward = cachedReward == null ? this.raidBoss.getRewardPokemon(player) : cachedReward.clone(true, null);
+            Pokemon reward = cachedReward == null ? this.boss.getRewardPokemon(player) : cachedReward.clone(true, null);
             float catchRate = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer()).catchRate();
             ModifyCatchRateEvent event = new ModifyCatchRateEvent(player, reward, catchRate);
             RaidEvents.MODIFY_CATCH_RATE.emit(event);
-            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.raidBoss, reward, event.catchRate(), true));
+            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.boss, reward, this.isBoss, event.catchRate(), true));
         });
         failed.forEach(player ->
-            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.raidBoss, null, 0F, true))
+            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.boss, null, this.isBoss, 0F, true))
         );
         noItems.forEach(player -> player.displayClientMessage(Component.translatable("message.cobblemonraiddens.raid.not_enough_damage"), true));
     }
@@ -414,18 +421,14 @@ public class RaidInstance extends AbstractRaidSession {
         ((IRaidAccessor) this.bossEntity).crd_setRaidState(RaidState.FAILED);
 
         Component component = ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.raid_fail");
-        this.activePlayers.forEach(player -> {
+        this.session().activePlayers().forEach(player -> {
             player.displayClientMessage(component, true);
-            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.raidBoss, this.bossEntity.getPokemon(), 0F, false));
+            RaidEvents.RAID_BATTLE_END.emit(new RaidBattleEndEvent(player, this.boss, this.bossEntity.getPokemon(), false, 0F, false));
         });
     }
 
     public PokemonEntity getBossEntity() {
         return this.bossEntity;
-    }
-
-    public RaidBoss getRaidBoss() {
-        return this.raidBoss;
     }
 
     private List<RaidTrigger<?>> getTriggers(RaidTriggerType type) {
@@ -447,23 +450,8 @@ public class RaidInstance extends AbstractRaidSession {
         event.execute(context);
     }
 
-    @Override
-    public void closeRaid(MinecraftServer server, boolean wasCancelled) {
-        if (!this.bossEntity.isRemoved()) {
-            ((ServerLevel) this.bossEntity.level()).sendParticles(ParticleTypes.EXPLOSION, this.bossEntity.getX(), this.bossEntity.getY(), this.bossEntity.getZ(), 1, 1.0, 0.0, 0.0, 0.0);
-            this.bossEntity.discard();
-        }
-
-        if (this.bossEvent != null) this.bossEvent.removeAllPlayers();
-        if (this.timerEvent != null) this.timerEvent.removeAllPlayers();
-
-        super.closeRaid(server, wasCancelled);
-
-        RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.raidBoss, this.raidState == RaidState.SUCCESS));
-    }
-
-    private Component bossBarText(PokemonEntity entity, RaidBoss raidBoss) {
-        if (raidBoss.getBossBarText() != null) return raidBoss.getBossBarText();
+    private Component bossBarText(PokemonEntity entity, RaidBoss boss) {
+        if (boss.getBossBarText() != null) return boss.getBossBarText();
 
         MutableComponent entityName = (MutableComponent) entity.getName();
         return ComponentUtils.getRaidBossDefault(entityName);
@@ -504,7 +492,6 @@ public class RaidInstance extends AbstractRaidSession {
         }
     }
 
-    @Override
     public RaidState getRaidState() {
         return this.raidState;
     }
@@ -513,25 +500,16 @@ public class RaidInstance extends AbstractRaidSession {
         return this.battleState;
     }
 
-    @Override
     public boolean isFinished() {
         return this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
-    @Override
     public RaidInstance getActive() {
         return this;
     }
 
-    @Override
-    public void start(MinecraftServer server) {}
-
     public List<PokemonBattle> getBattles() {
         return this.battles;
-    }
-
-    public float getDamage(ServerPlayer player) {
-        return this.damageTracker.getOrDefault(player.getUUID(), 0F);
     }
 
     public boolean runCheer(ServerPlayer player, PokemonBattle oBattle, CheerBagItem bagItem, String origin) {
@@ -565,7 +543,7 @@ public class RaidInstance extends AbstractRaidSession {
         this.sendAction(side1, side2, new BagItemActionResponse(bagItem, target.getFirst().getBattlePokemon(), origin), skipEnemyAction);
     }
 
-    protected void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
+    private void sendAction(BattleActor side1, BattleActor side2, ShowdownActionResponse response, boolean skipEnemyAction) {
         side1.getResponses().add(response);
         side1.setMustChoose(false);
         if (skipEnemyAction) {
@@ -577,7 +555,7 @@ public class RaidInstance extends AbstractRaidSession {
     }
 
     public boolean canSync() {
-        return this.raidBoss.getBattleFormat() != RaidBattleFormat.RAID && CobblemonRaidDens.CONFIG.max_players_for_support >= this.activePlayers.size();
+        return this.boss.getBattleFormat() != RaidBattleFormat.RAID && CobblemonRaidDens.CONFIG.max_players_for_support >= this.session.activePlayers().size();
     }
 
     public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {
@@ -616,7 +594,7 @@ public class RaidInstance extends AbstractRaidSession {
         this.time = this.maxTime;
 
         this.timerEvent.setVisible(true);
-        this.runQueue.add(new TimerRunnable());
+        this.session.schedule(new TimerRunnable());
     }
 
     public void reduceTimer(float ratio) {
@@ -633,7 +611,7 @@ public class RaidInstance extends AbstractRaidSession {
         if (p != null) p.mulCatchRate(mod);
     }
 
-    public class TimerRunnable extends DelayedRunnable {
+    public class TimerRunnable extends RaidSession.RaidRunnable {
         public TimerRunnable() {
             super(() -> {}, 20, true);
         }
@@ -643,7 +621,7 @@ public class RaidInstance extends AbstractRaidSession {
             if (++this.tick < this.delay) return false;
             else if (RaidInstance.this.isFinished()) return false;
             else if (--RaidInstance.this.time <= 0) {
-                RaidInstance.this.stopRaid(false);
+                RaidInstance.this.stopInstance(false);
                 return false;
             }
             RaidInstance.this.timerEvent.setProgress((float) RaidInstance.this.time / RaidInstance.this.maxTime);

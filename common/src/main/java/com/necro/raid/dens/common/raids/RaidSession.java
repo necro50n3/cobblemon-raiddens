@@ -1,15 +1,22 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.data.dimension.RaidRegion;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.data.raid.RaidSyncContext;
+import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.raids.adventure.AdventureNode;
 import com.necro.raid.dens.common.raids.adventure.BossNode;
 import com.necro.raid.dens.common.raids.adventure.RaidNode;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
+import com.necro.raid.dens.common.raids.helpers.RaidRegionHelper;
+import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -18,35 +25,60 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class RaidSession extends AbstractRaidSession {
-    private final RaidBoss raidBoss;
+public class RaidSession {
+    private final @Nullable UUID host;
+    private final UUID raid;
+    private final RaidBoss boss;
+    private final boolean isInDen;
+
+    private final List<ServerPlayer> activePlayers;
+    private final Set<UUID> failedPlayers;
+    private int sharedLives;
+    private final Map<UUID, Integer> playerLives;
+    private final Map<UUID, DamageRecord> damageTracker;
+    private final ConcurrentLinkedQueue<RaidRunnable> runQueue;
+
     private final List<AdventureNode> nodes;
     private int currentNodeIndex;
     private @Nullable RaidInstance activeRaid;
+
     private RaidState raidState;
     private final Vec3 startPos;
     private final ServerLevel startDimension;
     private boolean started;
     private boolean finished;
+
     private boolean noAI;
     private boolean isInvulnerable;
     private boolean isPersistent;
 
-    private RaidSession(@Nullable UUID host, UUID raid, RaidBoss raidBoss, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
-        super(host, raid, isInDen);
-        this.raidBoss = raidBoss;
-        this.nodes = raidBoss.copyNodes();
+    private RaidSession(@Nullable UUID host, UUID raid, RaidBoss boss, boolean isInDen, @Nullable Vec3 startPos, @Nullable ServerLevel startDimension) {
+        this.host = host;
+        this.raid = raid;
+        this.boss = boss;
+        this.isInDen = isInDen;
+
+        this.activePlayers = new ArrayList<>();
+        this.failedPlayers = new HashSet<>();
+        this.sharedLives = this.boss.getLives();
+        this.playerLives = new HashMap<>();
+        this.damageTracker = new HashMap<>();
+        this.runQueue = new ConcurrentLinkedQueue<>();
+
+        this.nodes = this.boss.copyNodes();
         this.nodes.add(new BossNode());
         this.currentNodeIndex = -1;
         this.activeRaid = null;
+
         this.raidState = RaidState.NOT_STARTED;
         this.startPos = startPos;
         this.startDimension = startDimension;
         this.started = false;
         this.finished = false;
+
         this.noAI = true;
         this.isInvulnerable = true;
         this.isPersistent = false;
@@ -78,28 +110,28 @@ public class RaidSession extends AbstractRaidSession {
         return this.isPersistent;
     }
 
-    @Override
-    public void addPlayer(ServerPlayer player) {
-        super.addPlayer(player);
-        if (this.activeRaid != null) this.activeRaid.addPlayer(player);
-        if (this.currentNode() != null) this.currentNode().onPlayerJoin(player, this);
+    public @Nullable UUID getHost() {
+        return this.host;
     }
 
-    @Override
-    public void addBattle(PokemonBattle battle) {
-        super.addBattle(battle);
-        if (this.activeRaid != null) this.activeRaid.addBattle(battle);
-    }
-
-    @Override
-    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
-        super.removePlayer(player, battle, ignoreLives);
-        if (this.activeRaid != null) this.activeRaid.removePlayer(player, battle, ignoreLives);
-        if (this.currentNode() != null) this.currentNode().onPlayerLeave(player, this);
+    public UUID getRaid() {
+        return this.raid;
     }
 
     public RaidBoss boss() {
-        return this.raidBoss;
+        return this.boss;
+    }
+
+    public boolean isAdventure() {
+        return this.boss.isAdventure();
+    }
+
+    public List<ServerPlayer> activePlayers() {
+        return this.activePlayers;
+    }
+
+    public Set<UUID> failedPlayers() {
+        return this.failedPlayers;
     }
 
     public List<AdventureNode> nodes() {
@@ -121,8 +153,70 @@ public class RaidSession extends AbstractRaidSession {
         return null;
     }
 
-    public void setActiveRaid(@Nullable RaidInstance activeRaid) {
+    public void addPlayer(ServerPlayer player) {
+        this.activePlayers.add(player);
+        this.playerLives.putIfAbsent(player.getUUID(), this.boss().getLives());
+        this.damageTracker.put(player.getUUID(), new DamageRecord(0F, 0F));
+        if (this.activeRaid != null) this.activeRaid.addPlayer(player);
+        if (this.currentNode() != null) this.currentNode().onPlayerJoin(player, this);
+    }
+
+    public void addBattle(ServerPlayer player, PokemonBattle battle) {
+        if (this.activeRaid != null) this.activeRaid.addBattle(player, battle);
+    }
+
+    public void addPlayerAndBattle(ServerPlayer player, PokemonBattle battle) {
+        this.addPlayer(player);
+        this.addBattle(player, battle);
+    }
+
+    public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
+        if (this.activeRaid != null) this.activeRaid.removePlayer(player, battle, ignoreLives);
+        if (this.currentNode() != null) this.currentNode().onPlayerLeave(player, this);
+    }
+
+    public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
+        List<ServerPlayer> players = battle.getPlayers();
+        if (players.isEmpty()) return;
+        if (this.activeRaid != null) this.activeRaid.removePlayer(players.getFirst(),battle, ignoreLives);
+        if (this.currentNode() != null) this.currentNode().onPlayerLeave(players.getFirst(), this);
+    }
+
+    public void removePlayer(ServerPlayer player) {
+        PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
+        this.removePlayer(player, battle, true);
+    }
+
+    public boolean isPlayerIn(ServerPlayer player) {
+        return this.activePlayers.contains(player);
+    }
+
+    public void setActiveRaid(@NotNull RaidInstance activeRaid) {
         this.activeRaid = activeRaid;
+        this.addTotalHealth(activeRaid.getMaxHealth());
+    }
+
+    public List<ServerPlayer> getPlayers() {
+        return this.activePlayers;
+    }
+
+    public int getPlayerCount() {
+        return this.activePlayers.size();
+    }
+
+    public boolean hasFailed(ServerPlayer player) {
+        return this.failedPlayers.contains(player.getUUID());
+    }
+
+    public boolean playersShareLives() {
+        return this.boss.getPlayersShareLives();
+    }
+
+    public boolean loseLife(UUID player) {
+        if (this.playersShareLives()) return --this.sharedLives <= 0;
+        else if (!this.playerLives.containsKey(player)) return true;
+        int lives = this.playerLives.compute(player, (uuid, l) -> l == null ? 0 : l - 1);
+        return lives <= 0;
     }
 
     public @Nullable ServerPlayer getSelectingPlayer(MinecraftServer server) {
@@ -153,7 +247,6 @@ public class RaidSession extends AbstractRaidSession {
         return null;
     }
 
-    @Override
     public void start(MinecraftServer server) {
         if (this.started || this.isFinished()) return;
         this.started = true;
@@ -181,10 +274,21 @@ public class RaidSession extends AbstractRaidSession {
         }
     }
 
-    @Override
-    public void tick() {
-        super.tick();
+    public void schedule(Runnable runnable, int delay, boolean repeat) {
         if (this.isFinished()) return;
+        this.runQueue.add(new DelayedRunnable(runnable, delay, repeat));
+    }
+
+    public void schedule(RaidRunnable runnable) {
+        if (this.isFinished()) return;
+        this.runQueue.add(runnable);
+    }
+
+    public void tick() {
+        if (this.isFinished()) return;
+
+        try { this.runQueue.removeIf(RaidRunnable::tick); }
+        catch (ConcurrentModificationException ignored) {}
 
         MinecraftServer server = this.getServer();
         if (server == null) return;
@@ -197,6 +301,7 @@ public class RaidSession extends AbstractRaidSession {
         if (this.activeRaid != null) {
             this.activeRaid.tick();
             if (this.activeRaid.isFinished()) {
+                this.activeRaid.closeInstance();
                 if (this.activeRaid.getRaidState() == RaidState.SUCCESS) {
                     this.activeRaid = null;
                     this.advanceToNextNode(server);
@@ -206,31 +311,43 @@ public class RaidSession extends AbstractRaidSession {
         }
         else {
             AdventureNode current = this.currentNode();
-            if (current != null) {
-                current.tick(this, server);
-                if (current.isCompleted()) {
-                    this.advanceToNextNode(server);
-                }
+            if (current != null && current.isCompleted()) {
+                this.advanceToNextNode(server);
             }
         }
     }
 
-    @Override
     public void stopRaid(boolean raidSuccess) {
         this.raidState = raidSuccess ? RaidState.SUCCESS : RaidState.FAILED;
         this.finished = true;
-        if (this.activeRaid != null && !this.activeRaid.isFinished()) this.activeRaid.stopRaid(raidSuccess);
+        if (this.activeRaid != null && !this.activeRaid.isFinished()) this.activeRaid.stopInstance(raidSuccess);
         MinecraftServer server = this.getServer();
         if (server != null) this.closeRaid(server);
     }
 
-    @Override
-    public void closeRaid(MinecraftServer server, boolean wasCancelled) {
-        super.closeRaid(server, wasCancelled);
-        RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.raidBoss, this.raidState == RaidState.SUCCESS));
+    public void closeRaid(MinecraftServer server) {
+        this.closeRaid(server, false);
     }
 
-    @Override
+    public void closeRaid(MinecraftServer server, boolean wasCancelled) {
+        if (this.shouldClearRaid() && this.isInDen) RaidHelper.clearRaid(this.raid, this.activePlayers);
+
+        RaidRegion region = RaidRegionHelper.getRegion(this.raid);
+        if (region != null) server.execute(() -> region.removeRegionTicket(ModDimensions.getRaidDimension(server)));
+
+        if (this.isInDen) RaidHelper.closeRaid(this.raid, wasCancelled ? RaidState.CANCELLED : this.getRaidState(), ModDimensions.getRaidDimension(server));
+        else RaidHelper.ACTIVE_RAIDS.remove(this.raid);
+        if (this.host != null) RaidHelper.removeRequests(this.host);
+        RaidJoinHelper.removeParticipants(this.activePlayers);
+        this.activePlayers.forEach(RaidUtils::removePlayerParty);
+        RaidEvents.RAID_END.emit(new RaidEndEvent(this.activePlayers, this.boss, this.raidState == RaidState.SUCCESS));
+    }
+
+    public boolean shouldClearRaid() {
+        if (this.getRaidState() == RaidState.SUCCESS) return true;
+        else return this.getRaidState() == RaidState.FAILED && !CobblemonRaidDens.CONFIG.retry_failed_raids;
+    }
+
     public RaidState getRaidState() {
         return this.raidState;
     }
@@ -252,21 +369,87 @@ public class RaidSession extends AbstractRaidSession {
         return PlayerExtensionsKt.party(player).toGappyList().stream().allMatch(pokemon -> pokemon == null || pokemon.isFainted());
     }
 
-    @Override
     public boolean isFinished() {
         return this.finished || this.raidState == RaidState.SUCCESS || this.raidState == RaidState.FAILED || this.raidState == RaidState.CANCELLED;
     }
 
-    @Override
+    public void addTotalHealth(float health) {
+        for (ServerPlayer player : this.activePlayers) {
+            this.damageTracker.computeIfAbsent(player.getUUID(), uuid -> new DamageRecord(0F, 0F)).addTotalHealth(health);
+        }
+    }
+
+    public DamageRecord getDamageRecord(ServerPlayer player, float maxHealthFallback) {
+        return this.damageTracker.computeIfAbsent(player.getUUID(), uuid -> new DamageRecord(0F, maxHealthFallback));
+    }
+
+    public float getDamage(ServerPlayer player, float maxHealthFallback) {
+        return this.getDamageRecord(player, maxHealthFallback).ratio();
+    }
+
+    public float getDamage(ServerPlayer player) {
+        if (this.damageTracker.containsKey(player.getUUID())) return 0;
+        return this.getDamage(player, 0F);
+    }
+
     public @Nullable RaidInstance getActive() {
         return this.activeRaid;
     }
 
-    public boolean isAdventure() {
-        return this.raidBoss.isAdventure();
+    public RaidSyncContext raidSync() {
+        return RaidHelper.getRaidSync(this.raid, this.boss.getId());
     }
 
-    public RaidSyncContext raidSync() {
-        return RaidHelper.getRaidSync(this.raid, this.raidBoss.getId());
+    public abstract static class RaidRunnable {
+        protected final Runnable runnable;
+        protected final int delay;
+        protected int tick;
+        protected final boolean repeat;
+
+        public RaidRunnable(Runnable runnable, int delay, boolean repeat) {
+            this.runnable = runnable;
+            this.delay = delay;
+            this.tick = 0;
+            this.repeat = repeat;
+        }
+
+        public abstract boolean tick();
+    }
+
+    public class DelayedRunnable extends RaidRunnable {
+        public DelayedRunnable(Runnable runnable, int delay, boolean repeat) {
+            super(runnable, delay, repeat);
+        }
+
+        @Override
+        public boolean tick() {
+            if (++this.tick < this.delay) return false;
+            else if (RaidSession.this.isFinished()) return false;
+            this.runnable.run();
+            this.tick = 0;
+            return !this.repeat;
+        }
+    }
+
+    public static class DamageRecord {
+        private float damage;
+        private float totalHealth;
+
+        public DamageRecord(float damage, float totalHealth) {
+            this.damage = damage;
+            this.totalHealth = totalHealth;
+        }
+
+        public void addDamage(float damage) {
+            this.damage += damage;
+        }
+
+        public void addTotalHealth(float totalHealth) {
+            this.totalHealth += totalHealth;
+        }
+
+        public float ratio() {
+            return Math.clamp(this.damage / this.totalHealth, 0F, 1F);
+        }
     }
 }

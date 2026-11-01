@@ -108,8 +108,9 @@ public class RaidBoostInstruction implements ActionEffectInstruction {
         String severity = Stats.Companion.getSeverity(this.stages);
         String rootKey = this.isBoost ? "boost" : "unboost";
 
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
+        if (raid == null) return;
 
         battle.dispatch(() -> {
             Component lang;

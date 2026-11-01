@@ -16,7 +16,7 @@ public class RaidContext {
 
     public RaidContext(RaidInstance raid, @Nullable PokemonBattle battle) {
         this.raid = raid;
-        this.allPlayers = raid.getPlayers();
+        this.allPlayers = raid.session().activePlayers();
         this.allBattles = raid.getBattles();
 
         this.sourcePlayer = battle == null || battle.getPlayers().isEmpty() ? null : battle.getPlayers().getFirst();

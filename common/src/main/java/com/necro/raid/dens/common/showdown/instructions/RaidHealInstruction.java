@@ -21,10 +21,10 @@ import java.util.Locale;
 public record RaidHealInstruction(BattleActor actor, BattleMessage publicMessage, BattleMessage privateMessage) implements InterpreterInstruction {
     @Override
     public void invoke(@NotNull PokemonBattle battle) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raidInstance = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
+        RaidInstance raidInstance = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         BattlePokemon battlePokemon = this.publicMessage.battlePokemon(0, this.actor.battle);
-        if (battlePokemon == null || battlePokemon.getEntity() == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raidInstance == null) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         String args = this.privateMessage.argumentAt(1);

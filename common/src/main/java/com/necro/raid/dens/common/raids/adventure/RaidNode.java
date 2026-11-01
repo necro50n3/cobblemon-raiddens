@@ -38,6 +38,8 @@ public class RaidNode implements AdventureNode {
     public static final String ID = "raid";
 
     private final List<String> references;
+    private final boolean canCatch;
+
     private transient @Nullable RaidInstance activeRaid;
     private transient boolean waitingForChoice;
     private transient boolean choiceMade;
@@ -46,8 +48,9 @@ public class RaidNode implements AdventureNode {
     private transient @Nullable UUID choosingPlayerUuid;
     private boolean isFinished;
 
-    public RaidNode(Collection<String> references) {
+    public RaidNode(Collection<String> references, boolean canCatch) {
         this.references = new ArrayList<>(references);
+        this.canCatch = canCatch;
         this.activeRaid = null;
         this.waitingForChoice = false;
         this.choiceMade = false;
@@ -59,7 +62,7 @@ public class RaidNode implements AdventureNode {
 
     @Override
     public RaidNode copy() {
-        return new RaidNode(List.copyOf(this.references));
+        return new RaidNode(List.copyOf(this.references), this.canCatch);
     }
 
     @Override
@@ -191,8 +194,7 @@ public class RaidNode implements AdventureNode {
             if (adventure.isPersistent()) pokemonEntity.setPersistenceRequired();
             ((IRaidAccessor) pokemonEntity).crd_setRaidId(adventure.getRaid());
 
-            this.activeRaid = new RaidInstance(pokemonEntity, adventure.getHost(), adventure.isInDen());
-            this.activeRaid.setAdventure(true);
+            this.activeRaid = new RaidInstance(adventure, pokemonEntity, false, canCatch);
             adventure.setActiveRaid(this.activeRaid);
 
             if (this.activeRaid.failedToStart()) {
@@ -206,7 +208,6 @@ public class RaidNode implements AdventureNode {
 
             for (ServerPlayer player : adventure.getPlayers()) {
                 this.activeRaid.addPlayer(player);
-                this.activeRaid.addToBossEvent(player);
                 player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", pokemonEntity.getDisplayName())), true);
             }
         }, server);

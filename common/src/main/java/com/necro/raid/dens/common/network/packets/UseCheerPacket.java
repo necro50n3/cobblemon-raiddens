@@ -38,7 +38,7 @@ public record UseCheerPacket(CheerBagItem.CheerType cheerType) implements Custom
     public void handleServer(ServerPlayer player) {
         PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
         if (battle == null) return;
-        else if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        else if (!((IRaidBattle) battle).crd_isRaid()) return;
         CheerItem cheerItem = (CheerItem) switch (this.cheerType()) {
             case ATTACK -> ModItems.ATTACK_CHEER.value();
             case DEFENSE -> ModItems.DEFENSE_CHEER.value();

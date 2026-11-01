@@ -19,8 +19,8 @@ import com.necro.raid.dens.common.data.raid.Script;
 import com.necro.raid.dens.common.events.ModifyShinyRateEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
-import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.data.raid.RaidTier;
+import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.battle.RaidConditions;
 import com.necro.raid.dens.common.raids.moves.RaidMoveSelector;
 import com.necro.raid.dens.common.raids.status.ShieldStatus;
@@ -132,7 +132,7 @@ public class CobblemonRaidDens {
 
         if (ModCompat.COBBLEMON.isNewerThanOrEqual("1.8.2")) {
             CobblemonEvents.BATTLE_ENDED.subscribe(Priority.NORMAL, event -> {
-                if (!((IRaidBattle) event.getBattle()).crd_isRaidBattle()) return Unit.INSTANCE;
+                if (!((IRaidBattle) event.getBattle()).crd_isRaid()) return Unit.INSTANCE;
                 if (event.getResult() == BattleEndResult.VICTORY && event.getBattle().getWinners().stream().anyMatch(actor -> actor.getType() == ActorType.PLAYER)) return Unit.INSTANCE;
                 raidFailEvent(null, event.getBattle(), false);
                 return Unit.INSTANCE;
@@ -151,7 +151,7 @@ public class CobblemonRaidDens {
 
     private static void raidFailEvent(@Nullable ServerPlayer player, PokemonBattle battle, boolean ignoreLives) {
         try {
-            RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+            RaidSession raid = ((IRaidBattle) battle).crd_getRaidSession();
             if (raid == null || raid.isFinished()) return;
             if (player == null) raid.removePlayer(battle, ignoreLives);
             else raid.removePlayer(player, battle, ignoreLives);
@@ -187,8 +187,8 @@ public class CobblemonRaidDens {
         PokemonEntity pokemonEntity = event.getPokemonEntity();
         if (pokemonEntity == null) return;
         PokemonBattle battle = pokemonEntity.getBattle();
-        if (battle == null || !((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-        raid.getPlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, List.of(pokemonEntity.getId()), true));
+        if (battle == null || !((IRaidBattle) battle).crd_isRaid()) return;
+        RaidSession raid = ((IRaidBattle) battle).crd_getRaidSession();
+        raid.activePlayers().forEach(player -> RaidDenNetworkMessages.RAID_HEALTH_BAR.accept(player, List.of(pokemonEntity.getId()), true));
     }
 }

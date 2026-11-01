@@ -17,7 +17,7 @@ public class CobbleEventsMixin {
     @Inject(method = "terrastallizationUsed", at = @At("HEAD"), remap = false, cancellable = true)
     private static void terrastallizationUsedInject(TerastallizationEvent event, CallbackInfo ci) {
         PokemonBattle battle = event.getBattle();
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         PokemonEntity pokemon = event.getPokemon().getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
@@ -26,7 +26,7 @@ public class CobbleEventsMixin {
 
     @Inject(method = "dynamaxStarted", at = @At("HEAD"), remap = false, cancellable = true)
     private static void dynamaxStartedInject(PokemonBattle battle, BattlePokemon battlePokemon, Boolean gmax, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         PokemonEntity pokemon = battlePokemon.getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;

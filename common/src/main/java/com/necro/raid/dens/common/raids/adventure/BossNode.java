@@ -43,37 +43,37 @@ public class BossNode implements AdventureNode {
     }
 
     @Override
-    public void run(RaidSession adventure, MinecraftServer server) {
-        adventure.schedule(() -> this.startRaid(adventure, server), this.delay(), false);
+    public void run(RaidSession session, MinecraftServer server) {
+        session.schedule(() -> this.startRaid(session, server), this.delay(), false);
     }
 
-    private void startRaid(RaidSession adventure, MinecraftServer server) {
-        RaidBoss boss = adventure.boss();
+    private void startRaid(RaidSession session, MinecraftServer server) {
+        RaidBoss boss = session.boss();
         Vec3 vec3;
         ServerLevel level;
-        RaidRegion region = RaidRegionHelper.getRegion(adventure.getRaid());
+        RaidRegion region = RaidRegionHelper.getRegion(session.getRaid());
         if (region != null) {
             vec3 = region.getBossPos();
             level = ModDimensions.getRaidDimension(server);
         }
         else {
-            vec3 = adventure.startPos();
-            level = adventure.startDimension();
+            vec3 = session.startPos();
+            level = session.startDimension();
         }
 
-        PokemonEntity pokemonEntity = boss.getBossEntity(level, adventure.raidSync());
+        PokemonEntity pokemonEntity = boss.getBossEntity(level, session.raidSync());
         double scaleMod = region != null ? CustomRaidRegistries.RAID_DEN_REGISTRY.getScaleModifier(region.structure()) : 1.0;
         pokemonEntity.getPokemon().setScaleModifier((float) (pokemonEntity.getPokemon().getScaleModifier() * scaleMod));
-        if (boss.getNoAi() && adventure.noAI()) pokemonEntity.setNoAi(true);
-        pokemonEntity.setInvulnerable(adventure.isInvulnerable());
-        if (adventure.isPersistent()) pokemonEntity.setPersistenceRequired();
-        ((IRaidAccessor) pokemonEntity).crd_setRaidId(adventure.getRaid());
+        if (boss.getNoAi() && session.noAI()) pokemonEntity.setNoAi(true);
+        pokemonEntity.setInvulnerable(session.isInvulnerable());
+        if (session.isPersistent()) pokemonEntity.setPersistenceRequired();
+        ((IRaidAccessor) pokemonEntity).crd_setRaidId(session.getRaid());
 
-        this.activeRaid = new RaidInstance(pokemonEntity, adventure.getHost(), adventure.isInDen());
-        adventure.setActiveRaid(this.activeRaid);
+        this.activeRaid = new RaidInstance(session, pokemonEntity, true, true);
+        session.setActiveRaid(this.activeRaid);
 
         if (this.activeRaid.failedToStart()) {
-            adventure.stopRaid(false);
+            session.stopRaid(false);
             return;
         }
 
@@ -81,9 +81,8 @@ public class BossNode implements AdventureNode {
         else if (vec3 != null) pokemonEntity.moveTo(vec3);
         level.addFreshEntity(pokemonEntity);
 
-        for (ServerPlayer player : adventure.getPlayers()) {
+        for (ServerPlayer player : session.activePlayers()) {
             this.activeRaid.addPlayer(player);
-            this.activeRaid.addToBossEvent(player);
             player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.raid_start", pokemonEntity.getDisplayName())), true);
         }
     }

@@ -20,9 +20,9 @@ public record RaidEnergyInstruction(PokemonBattle battle, BattleMessage message)
             boolean broadcast = Boolean.parseBoolean(this.message.argumentAt(1));
 
             battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.raid_energy", origin.getName()));
-            if (broadcast && ((IRaidBattle) battle).crd_isRaidBattle()) {
-                RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
-                raid.updateBattleContext(battle, b -> b.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.raid_energy", origin.getName())));
+            if (broadcast && ((IRaidBattle) battle).crd_isRaid()) {
+                RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
+                if (raid != null) raid.updateBattleContext(battle, b -> b.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.raid_energy", origin.getName())));
             }
 
             origin.getEntity().cry();

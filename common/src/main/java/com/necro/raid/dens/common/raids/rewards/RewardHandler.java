@@ -42,25 +42,30 @@ public class RewardHandler {
     private RaidBoss raidBoss;
     private final UUID playerUUID;
     private @Nullable Pokemon pokemonReward;
+    private final boolean itemReward;
     private final float catchRate;
 
-    public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, float catchRate) {
+    public RewardHandler(RaidBoss raidBoss, UUID playerUUID, @Nullable Pokemon pokemonReward, boolean itemReward, float catchRate) {
         this.raidBossId = raidBoss.getId();
         this.serializedPokemonReward = null;
         this.raidBoss = raidBoss;
         this.playerUUID = playerUUID;
         this.pokemonReward = pokemonReward;
+        this.itemReward = itemReward;
         this.catchRate = catchRate;
     }
 
-    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable CompoundTag pokemonReward, float catchRate) {
+    public RewardHandler(ResourceLocation raidBossId, UUID playerUUID, @Nullable CompoundTag pokemonReward, boolean itemReward, float catchRate) {
         this.raidBossId = raidBossId;
         this.serializedPokemonReward = pokemonReward;
         this.raidBoss = null;
         this.playerUUID = playerUUID;
         this.pokemonReward = null;
+        this.itemReward = itemReward;
         this.catchRate = catchRate;
     }
+
+    public boolean itemReward() { return this.itemReward; }
 
     public void sendRewardMessage(ServerPlayer player) {
         this.raidBoss(boss -> {
@@ -99,7 +104,8 @@ public class RewardHandler {
                 }
             }
 
-            return this.giveItemToPlayer(player, !success).join();
+            if (this.itemReward) return this.giveItemToPlayer(player, !success).resultNow();
+            else return true;
         }, player.getServer());
     }
 
@@ -117,6 +123,7 @@ public class RewardHandler {
     }
 
     public CompletableFuture<Boolean> giveItemToPlayer(ServerPlayer player, boolean applyBonus) {
+        if (!this.itemReward) return CompletableFuture.completedFuture(true);
         return this.raidBoss(boss -> {
             ItemStack raidPouch = this.buildRaidPouch(boss, applyBonus);
             if (raidPouch == null) {
@@ -157,6 +164,7 @@ public class RewardHandler {
         else if (this.pokemonReward != null) {
             tag.put("pokemon_reward", this.pokemonReward.saveToNBT((RegistryAccess) provider, new CompoundTag()));
         }
+        tag.putBoolean("item_reward", this.itemReward);
         tag.putFloat("catch_rate", this.catchRate);
         return tag;
     }
@@ -166,9 +174,10 @@ public class RewardHandler {
         ResourceLocation raidBossId = ResourceLocation.parse(tag.getString("raid_boss"));
         UUID playerUUID = tag.getUUID("player");
         CompoundTag pokemonReward = null;
-        if (tag.contains("pokemon_reward")) pokemonReward = tag.getCompound("cached_reward");
+        if (tag.contains("pokemon_reward")) pokemonReward = tag.getCompound("pokemon_reward");
+        boolean itemReward = tag.getBoolean("item_reward");
         float catchRate = tag.getFloat("catch_rate");
-        return new RewardHandler(raidBossId, playerUUID, pokemonReward, catchRate);
+        return new RewardHandler(raidBossId, playerUUID, pokemonReward, itemReward, catchRate);
     }
 
     public <T> CompletableFuture<T> raidBoss(Function<RaidBoss, T> function, MinecraftServer server) {

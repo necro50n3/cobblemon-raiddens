@@ -37,20 +37,21 @@ public abstract class MoveInstructionMixin implements InterpreterInstruction {
 
     @Inject(method = "invoke", at = @At("RETURN"), remap = false)
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         if (this.userPokemon == null || this.userPokemon.getEntity() == null) return;
         else if (((IRaidAccessor) this.userPokemon.getEntity()).crd_isRaidBoss()) return;
 
         ServerPlayer player = this.userPokemon.getEffectedPokemon().getOwnerPlayer();
         if (player == null) return;
 
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
+        if (raid == null) return;
 
         battle.dispatchGo(() -> {
             ComponentContents pokemonContents = this.userPokemon.getEffectedPokemon().getDisplayName(false).getContents();
             ComponentContents moveContents = this.move.getDisplayName().getContents();
 
-            raid.getPlayers().forEach(p ->
+            raid.session().activePlayers().forEach(p ->
                 RaidDenNetworkMessages.RAID_LOG.accept(
                     p,
                     this.crd_resolveContents(pokemonContents),

@@ -77,7 +77,7 @@ public class CustomRaidRegistries {
 
     private static void registerRewardDistributors() {
         REWARD_DIST_REGISTRY.register("random", (players, raid) -> {
-            int maxCatches = raid.getRaidBoss().getMaxCatches();
+            int maxCatches = raid.boss().getMaxCatches();
             if (maxCatches < 0 || players.size() < maxCatches) return new Pair<>(players, List.of());
 
             Collections.shuffle(players);
@@ -86,7 +86,7 @@ public class CustomRaidRegistries {
             return new Pair<>(success, failed);
         });
         REWARD_DIST_REGISTRY.register("damage", (players, raid) -> {
-            int maxCatches = raid.getRaidBoss().getMaxCatches();
+            int maxCatches = raid.boss().getMaxCatches();
             if (maxCatches < 0 || players.size() < maxCatches) return new Pair<>(players, List.of());
 
             players.sort((a, b) -> Float.compare(raid.getDamage(b), raid.getDamage(a)));
@@ -95,7 +95,7 @@ public class CustomRaidRegistries {
             return new Pair<>(success, failed);
         });
         REWARD_DIST_REGISTRY.register("survivor", (players, raid) -> {
-            int maxCatches = raid.getRaidBoss().getMaxCatches();
+            int maxCatches = raid.boss().getMaxCatches();
             List<ServerPlayer> success = new ArrayList<>();
             List<ServerPlayer> failed = new ArrayList<>();
             for (ServerPlayer player : players) {
@@ -225,7 +225,8 @@ public class CustomRaidRegistries {
     private static void registerNodes() {
         NODE_REGISTRY.register(RaidNode.ID, node -> {
             List<String> bosses = NODE_REGISTRY.parseList(node, "bosses", String.class);
-            return new RaidNode(bosses);
+            boolean canCatch = NODE_REGISTRY.parse(node, "can_catch", Boolean.class, true);
+            return new RaidNode(bosses, canCatch);
         });
         NODE_REGISTRY.register(RecoverNode.ID, node -> new RecoverNode());
         NODE_REGISTRY.register(BossNode.ID, node -> new BossNode());

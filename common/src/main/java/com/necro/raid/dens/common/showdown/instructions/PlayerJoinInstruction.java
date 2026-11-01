@@ -73,7 +73,7 @@ public class PlayerJoinInstruction implements ActionEffectInstruction {
     @Override
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         if (raid == null) return;
 
         battle.dispatch(() -> {
@@ -98,7 +98,7 @@ public class PlayerJoinInstruction implements ActionEffectInstruction {
     public void postActionEffect(@NotNull PokemonBattle battle) {
         String player = message.argumentAt(1);
         if (this.pokemon == null || player == null || this.pokemon.getEntity() == null) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         if (raid == null) return;
 
         battle.dispatch(() -> {

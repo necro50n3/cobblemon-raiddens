@@ -81,7 +81,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         RaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         RaidInstance active = raid == null ? null : raid.getActive();
         if (active == null) return;
-        else if (active.hasFailed(player)) {
+        else if (raid.hasFailed(player)) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
@@ -113,12 +113,12 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         if (!PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) || !pokemonEntity.canBattle(player)) {}
         else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getActive().getBattles().isEmpty()) {
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, active.getRaidBoss())
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, active.boss())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     if (!raid.isPlayerIn(player)) raid.addPlayer(player);
-                    active.addBattle(battle);
-                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, active.getRaidBoss(), battle));
+                    active.addBattle(player, battle);
+                    RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, active.boss(), battle));
 
                     if (pokemonEntity.getPokemon().getAbility().getName().equalsIgnoreCase("imposter")) {
                         this.setTransformTarget(pokemonEntity, pokemon);

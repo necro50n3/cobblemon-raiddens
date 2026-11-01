@@ -45,7 +45,7 @@ public class RaidEvents {
 
         RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
             if (!event.isWin()) return;
-            new RewardHandler(event.raidBoss(), event.player().getUUID(), event.pokemon(), event.catchRate()).sendRewardMessage(event.player());
+            new RewardHandler(event.raidBoss(), event.player().getUUID(), event.pokemon(), event.itemReward(), event.catchRate()).sendRewardMessage(event.player());
         });
 
         RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {

@@ -20,7 +20,7 @@ public class CobbleEventsMixin {
     @Inject(method = "terrastallizationUsed", at = @At("HEAD"), remap = false, cancellable = true)
     private static void terrastallizationUsedInject(TerastallizationEvent event, CallbackInfo ci) {
         PokemonBattle battle = event.getBattle();
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         PokemonEntity pokemon = event.getPokemon().getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
@@ -29,7 +29,7 @@ public class CobbleEventsMixin {
 
     @Inject(method = "dynamaxStarted", at = @At("HEAD"), remap = false, cancellable = true)
     private static void dynamaxStartedInject(PokemonBattle battle, BattlePokemon battlePokemon, Boolean gmax, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         PokemonEntity pokemon = battlePokemon.getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
@@ -38,7 +38,7 @@ public class CobbleEventsMixin {
 
     @Inject(method = "megaEvolution", at = @At("HEAD"), remap = false, cancellable = true)
     private static void megaEvolutionInject(MegaEvolutionEvent event, CallbackInfo ci) {
-        if (!((IRaidBattle) event.getBattle()).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) event.getBattle()).crd_isRaid()) return;
         PokemonEntity pokemon = event.getPokemon().getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;
@@ -48,7 +48,7 @@ public class CobbleEventsMixin {
 
     @Inject(method = "formChanged", at = @At("HEAD"), remap = false, cancellable = true)
     private static void formChangedInject(FormeChangeEvent event, CallbackInfo ci) {
-        if (!((IRaidBattle) event.getBattle()).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) event.getBattle()).crd_isRaid()) return;
         PokemonEntity pokemon = event.getPokemon().getEntity();
         if (pokemon == null) return;
         else if (!((IRaidAccessor) pokemon).crd_isRaidBoss()) return;

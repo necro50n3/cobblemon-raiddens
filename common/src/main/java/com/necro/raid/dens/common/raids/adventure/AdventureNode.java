@@ -14,8 +14,6 @@ public interface AdventureNode extends JsonSerializer<AdventureNode> {
 
     boolean isCompleted();
 
-    default void tick(RaidSession adventure, MinecraftServer server) {}
-
     default void onPlayerJoin(ServerPlayer player, RaidSession adventure) {}
 
     default void onPlayerLeave(ServerPlayer player, RaidSession adventure) {}

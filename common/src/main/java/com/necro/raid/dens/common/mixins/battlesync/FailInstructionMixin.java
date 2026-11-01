@@ -21,7 +21,7 @@ public abstract class FailInstructionMixin {
 
     @Inject(method = "invoke$lambda$0", at = @At("HEAD"), remap = false, cancellable = true)
     private static void invokeInject2(FailInstruction this0, PokemonBattle battle, CallbackInfoReturnable<Unit> cir) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
         BattlePokemon battlePokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
         if (battlePokemon == null || battlePokemon.getEntity() == null) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
