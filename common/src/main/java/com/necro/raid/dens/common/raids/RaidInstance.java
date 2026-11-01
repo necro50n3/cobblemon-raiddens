@@ -357,7 +357,7 @@ public class RaidInstance {
         List<ServerPlayer> noItems = new ArrayList<>();
 
         List<ServerPlayer> players = new ArrayList<>(this.session().activePlayers());
-        if (this.boss.getRequiredDamage() > 0F) {
+        if (this.isBoss && this.boss.getRequiredDamage() > 0F) {
             Iterator<ServerPlayer> iter = players.iterator();
             while (iter.hasNext()) {
                 ServerPlayer p = iter.next();

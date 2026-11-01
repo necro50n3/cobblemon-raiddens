@@ -113,7 +113,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
 
         if (!PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) || !pokemonEntity.canBattle(player)) {}
         else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getActive().getBattles().isEmpty()) {
-            RaidBuilder.build(player, pokemonEntity, leadingPokemon, active.boss())
+            RaidBuilder.build(player, pokemonEntity, leadingPokemon, raid.boss(), active.boss())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
                     if (!raid.isPlayerIn(player)) raid.addPlayer(player);

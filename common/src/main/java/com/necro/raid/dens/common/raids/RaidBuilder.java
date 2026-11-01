@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class RaidBuilder {
-    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss) {
+    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss, RaidBoss active) {
         PlayerPartyStore party;
         if (!RaidStoreFactory.hasPlayerParty(player.getUUID())) {
             List<Pokemon> playerTeam = PlayerExtensionsKt.party(player).toGappyList().stream()
@@ -70,7 +70,7 @@ public class RaidBuilder {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
 
-        playerActor.setBattleTheme(boss.getMusic());
+        playerActor.setBattleTheme(active.getMusic());
 
         if (errors.isEmpty()) {
             BattleSide side1;
