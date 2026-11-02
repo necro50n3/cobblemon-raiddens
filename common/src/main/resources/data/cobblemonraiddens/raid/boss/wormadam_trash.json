@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "wormadam",
+        "moves": [
+            "infestation",
+            "psybeam",
+            "razorleaf",
+            ["tm_coverage", "offensive_tm", "move_any"]
+        ],
+        "custom_properties": [
+            {
+                "name": "bagworm_cloak",
+                "value": "trash"
+            }
+        ]
+    },
+    "raid_tier": "TIER_THREE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

@@ -1,0 +1,17 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "#cobblemonraiddens:burmy_plant",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:burmy_sandy",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:burmy_trash",
+            "required": false
+        }
+    ]
+}

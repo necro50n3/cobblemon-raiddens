@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "cobblemonraiddens:wormadam_sandy",
+            "required": false
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "greavard",
+        "moves": [
+            "dig",
+            "headbutt",
+            "bite",
+            "lick"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "GHOST",
+    "weight": 20.0
+}
