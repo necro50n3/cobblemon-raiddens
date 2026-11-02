@@ -1,6 +1,5 @@
 package com.necro.raid.dens.common.party;
 
-import com.cobblemon.mod.common.CobblemonNetwork;
 import com.cobblemon.mod.common.api.storage.PokemonStore;
 import com.cobblemon.mod.common.api.storage.StorePosition;
 import com.cobblemon.mod.common.api.storage.factory.PokemonStoreFactory;
@@ -9,7 +8,6 @@ import com.cobblemon.mod.common.api.storage.pc.PCStore;
 import com.cobblemon.mod.common.net.messages.client.storage.party.SetPartyReferencePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
-import com.necro.raid.dens.common.CobblemonRaidDens;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +26,6 @@ public class RaidStoreFactory implements PokemonStoreFactory {
     }
 
     public static void addPlayerParty(ServerPlayer player, List<Pokemon> party) {
-        CobblemonRaidDens.LOGGER.info("Adding!");
         RaidPartyStore partyStore = RaidPartyStore.fromParty(player.getUUID(), party);
         PARTY_STORES.put(player.getUUID(), partyStore);
         partyStore.initialize();
@@ -36,12 +33,11 @@ public class RaidStoreFactory implements PokemonStoreFactory {
     }
 
     public static void removePlayerParty(ServerPlayer player) {
-        CobblemonRaidDens.LOGGER.info("Removing!");
         RaidPartyStore removed = PARTY_STORES.remove(player.getUUID());
         if (removed != null) {
             PlayerPartyStore realParty = PlayerExtensionsKt.party(player);
             realParty.sendTo(player);
-            CobblemonNetwork.sendPacketToPlayers(List.of(player), new SetPartyReferencePacket(realParty.getUuid()));
+            new SetPartyReferencePacket(realParty.getUuid()).sendToPlayer(player);
         }
     }
 

@@ -2,20 +2,28 @@ package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.CobblemonSounds;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.AIBattleActor;
 import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
+import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
+import com.cobblemon.mod.common.battles.ai.StrongBattleAI;
 import com.cobblemon.mod.common.battles.dispatch.DispatchResultKt;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.item.battle.BagItem;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleApplyPassResponsePacket;
+import com.cobblemon.mod.common.net.messages.client.battle.BattleEndPacket;
 import com.cobblemon.mod.common.net.messages.client.battle.BattleHealthChangePacket;
+import com.cobblemon.mod.common.net.messages.client.storage.party.SetPartyReferencePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import com.necro.asymmetric.battles.common.api.AsymmetricBattleFormats;
+import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.asymmetric.battles.common.api.AsymmetricAPI;
+import com.necro.asymmetric.battles.common.api.BattleParticipant;
+import com.necro.asymmetric.battles.common.mixin.battle.StrongBattleAIAccessor;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
@@ -23,6 +31,7 @@ import com.necro.raid.dens.common.events.ModifyCatchRateEvent;
 import com.necro.raid.dens.common.events.RaidBattleEndEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.raids.battle.RaidBattleState;
 import com.necro.raid.dens.common.raids.rewards.RewardDistributionContext;
 import com.necro.raid.dens.common.raids.scripts.RaidTriggerType;
@@ -169,13 +178,13 @@ public class RaidInstance {
             this.playerJoin(player.getName().getString());
         }
 
-        if (this.boss.getBattleFormat().format() != AsymmetricBattleFormats.GEN_9_RAID) {
+        if (this.session().boss().getBattleFormat()!= RaidBattleFormat.RAID || this.battles.isEmpty()) {
             ((IRaidBattle) battle).crd_setRaidSession(this.session);
             this.battles.add(battle);
             this.sendEvent(new StartRaidShowdownEvent(
                 this.battleState,
-                this.boss.getForceDynamax(),
-                this.boss.getFeature().equalsIgnoreCase("tera")
+                this.session().boss().getForceDynamax(),
+                this.session().boss().getFeature().equalsIgnoreCase("tera")
             ), battle);
             this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
         }
@@ -207,9 +216,73 @@ public class RaidInstance {
     }
 
     public void removePlayer(ServerPlayer player, @Nullable PokemonBattle battle, boolean ignoreLives) {
+        this.removeFromBossEvent(player);
+
         if (battle != null) {
-            this.battles.remove(battle);
-            ((IRaidBattle) battle).crd_setRaidSession(null);
+            if (this.session().boss().getBattleFormat() != RaidBattleFormat.RAID) {
+                this.battles.remove(battle);
+                ((IRaidBattle) battle).crd_setRaidSession(null);
+                if (!battle.getEnded()) battle.stop();
+            }
+            else {
+                BattleActor[] actors = battle.getSide1().getActors();
+                int playerSlot = -1;
+
+                for (int i = 0; i < actors.length; i++) {
+                    if (actors[i] instanceof PlayerBattleActor playerActor && playerActor.getEntity() == player) {
+                        playerSlot = i;
+                        break;
+                    }
+                }
+
+                if (playerSlot != -1) {
+                    BattleActor leavingActor = actors[playerSlot];
+                    boolean hasRemainingPlayers = Arrays.stream(actors).anyMatch(a -> a instanceof PlayerBattleActor p
+                        && p.getEntity() != null
+                        && p.getEntity() != player
+                        && !p.getEntity().hasDisconnected()
+                    );
+
+                    if (hasRemainingPlayers) {
+                        for (ActiveBattlePokemon activePokemon : leavingActor.getActivePokemon()) {
+                            if (activePokemon.getBattlePokemon() != null && activePokemon.getBattlePokemon().getEntity() != null) {
+                                PokemonEntity entity = activePokemon.getBattlePokemon().getEntity();
+                                if (entity.isAlive()) entity.discard();
+                            }
+                        }
+
+                        if (leavingActor instanceof PlayerBattleActor playerActor && playerActor.getEntity() != null) {
+                            new BattleEndPacket().sendToPlayer(playerActor.getEntity());
+                        }
+
+                        AsymmetricAPI.setRaidBattleActor(BattleParticipant.dummy().toActor(), battle, playerSlot);
+
+                        for (BattleActor actor : battle.getActors()) {
+                            if (!(actor instanceof AIBattleActor aiActor)) continue;
+                            aiActor.getResponses().clear();
+                            if (aiActor.getBattleAI() instanceof StrongBattleAI strongAi) {
+                                ((StrongBattleAIAccessor) (Object) strongAi).getActiveTracker().initialize(actor.getSide());
+                            }
+                            if (aiActor.getRequest() != null && !aiActor.getActivePokemon().isEmpty()) {
+                                aiActor.setMustChoose(true);
+                                aiActor.onChoiceRequested();
+                            }
+                        }
+
+                        battle.checkForInputDispatch();
+                    }
+                    else {
+                        ((IRaidBattle) battle).crd_setRaidSession(null);
+                        this.battles.remove(battle);
+                        if (!battle.getEnded()) battle.stop();
+                    }
+                }
+            }
+        }
+
+        if (RaidStoreFactory.hasPlayerParty(player.getUUID())) {
+            RaidStoreFactory.removePlayerParty(player);
+            new SetPartyReferencePacket(PlayerExtensionsKt.party(player).getUuid()).sendToPlayer(player);
         }
 
         if (this.raidState != RaidState.NOT_STARTED) {
@@ -245,6 +318,7 @@ public class RaidInstance {
 
     private void checkFlee() {
         if (this.bossEntity.isDeadOrDying()) return;
+        else if (this.battles.stream().allMatch(battle -> battle.getPlayers().isEmpty())) return;
         List<PokemonBattle> battleCache = new ArrayList<>(this.battles);
         for (PokemonBattle battle : battleCache) {
             if (!battle.getEnded()) battle.checkFlee();
@@ -278,9 +352,9 @@ public class RaidInstance {
     }
 
     private void sendHealthPacket(PokemonBattle battle) {
-        Set<String> players = new HashSet<>();
-        battle.getSide2().getActivePokemon().forEach(pokemon -> players.add(pokemon.getPNX()));
-        players.forEach(pnx ->
+        Set<String> bosses = new HashSet<>();
+        battle.getSide2().getActivePokemon().forEach(pokemon -> bosses.add(pokemon.getPNX()));
+        bosses.forEach(pnx ->
             battle.sendSidedUpdate(
                 battle.getActorAndActiveSlotFromPNX(pnx).getFirst(),
                 new BattleHealthChangePacket(pnx, this.getCurrentHealth(), null),
@@ -331,6 +405,13 @@ public class RaidInstance {
 
         if (raidSuccess) this.bossEntity.setHealth(0F);
         if (this.boss == null) return;
+
+        List<PokemonBattle> battleCopy = new ArrayList<>(this.battles);
+        this.battles.clear();
+        for (PokemonBattle battle : battleCopy) {
+            ((IRaidBattle) battle).crd_setRaidSession(null);
+            if (!battle.getEnded()) battle.stop();
+        }
 
         if (raidSuccess) this.handleSuccess();
         else this.handleFailed();
@@ -401,9 +482,8 @@ public class RaidInstance {
 
             StringSpeciesFeature radiant = new StringSpeciesFeature("radiant", "radiant");
             if (radiant.matches(this.bossEntity.getPokemon())) radiant.apply(cachedReward);
-        } else {
-            cachedReward = null;
         }
+        else cachedReward = null;
 
         success.forEach(player -> {
             Pokemon reward = cachedReward == null ? this.boss.getRewardPokemon(player) : cachedReward.clone(true, null);

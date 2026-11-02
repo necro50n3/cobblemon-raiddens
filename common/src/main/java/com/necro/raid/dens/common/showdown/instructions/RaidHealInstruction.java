@@ -35,7 +35,6 @@ public record RaidHealInstruction(BattleActor actor, BattleMessage publicMessage
         battle.dispatchWaiting(1f, () -> {
             ServerPlayer player = battle.getPlayers().getFirst();
             raidInstance.syncHealth(player, battle, -healing);
-            battlePokemon.getEffectedPokemon().setCurrentHealth((int) raidInstance.getCurrentHealth());
 
             if (!this.privateMessage.hasOptionalArgument("silent")) {
                 Component lang = null;

@@ -45,24 +45,29 @@ public class RaidPouchItem extends Item {
         String feature = itemStack.get(ModComponents.FEATURE_COMPONENT.value());
         RaidType type = itemStack.get(ModComponents.TYPE_COMPONENT.value());
         ResourceLocation bossId = itemStack.get(ModComponents.BOSS_COMPONENT.value());
-        if (tier == null || feature == null || type == null || bossId == null) return InteractionResultHolder.fail(itemStack);
+        if (tier == null || feature == null || type == null) return InteractionResultHolder.fail(itemStack);
         if (level.isClientSide) return InteractionResultHolder.sidedSuccess(itemStack, true);
 
         ItemStack snapshot = itemStack.copyWithCount(1);
         boolean applyBonus = Boolean.TRUE.equals(itemStack.get(ModComponents.BONUS_LOOT_COMPONENT.value()));
         player.getCooldowns().addCooldown(this, 2);
 
-        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(
-            bossId,
-            boss -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, boss, tier, applyBonus),
-            (id, error) -> this.onFailed((ServerPlayer) player),
-            player.getServer()
-        );
+        if (bossId == null || !CustomRaidRegistries.RAID_REGISTRY.exists(bossId)) {
+            this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, null, tier, applyBonus);
+        }
+        else {
+            CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(
+                bossId,
+                boss -> this.openPouch((ServerLevel) level, (ServerPlayer) player, interactionHand, snapshot, boss, tier, applyBonus),
+                (id, error) -> this.onFailed((ServerPlayer) player),
+                player.getServer()
+            );
+        }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
     }
 
-    private void openPouch(ServerLevel level, ServerPlayer player, InteractionHand hand, ItemStack snapshot, RaidBoss boss, RaidTier tier, boolean applyBonus) {
+    private void openPouch(ServerLevel level, ServerPlayer player, InteractionHand hand, ItemStack snapshot, @Nullable RaidBoss boss, RaidTier tier, boolean applyBonus) {
         player.getCooldowns().removeCooldown(this);
         if (player.isRemoved() || !player.isAlive()) return;
 

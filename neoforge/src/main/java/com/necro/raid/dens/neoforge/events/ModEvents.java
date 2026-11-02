@@ -15,7 +15,6 @@ import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -122,7 +121,7 @@ public class ModEvents {
 
     private static boolean cancelUseItem(PlayerInteractEvent event) {
         ItemStack stack = event.getEntity().getItemInHand(event.getHand());
-        if (event.getEntity() instanceof LocalPlayer) return false;
+        if (event.getLevel().isClientSide()) return false;
         if (!(stack.getItem() instanceof PokemonSelectingItem)) return false;
         RaidJoinHelper.Participant participant = RaidJoinHelper.getParticipant(event.getEntity());
         if (participant == null) return false;

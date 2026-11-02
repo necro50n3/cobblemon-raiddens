@@ -175,13 +175,6 @@ public class RaidSession {
         if (this.currentNode() != null) this.currentNode().onPlayerLeave(player, this);
     }
 
-    public void removePlayer(PokemonBattle battle, boolean ignoreLives) {
-        List<ServerPlayer> players = battle.getPlayers();
-        if (players.isEmpty()) return;
-        if (this.activeRaid != null) this.activeRaid.removePlayer(players.getFirst(),battle, ignoreLives);
-        if (this.currentNode() != null) this.currentNode().onPlayerLeave(players.getFirst(), this);
-    }
-
     public void removePlayer(ServerPlayer player) {
         PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
         this.removePlayer(player, battle, true);
@@ -354,7 +347,7 @@ public class RaidSession {
     public boolean isInProgress() {
         if (this.currentNodeIndex == -1) return false;
         else if (this.currentNodeIndex > 0) return true;
-        else if (this.activeRaid == null) return true;
+        else if (this.activeRaid == null) return false;
         else return this.activeRaid.getRaidState() != RaidState.NOT_STARTED;
     }
 

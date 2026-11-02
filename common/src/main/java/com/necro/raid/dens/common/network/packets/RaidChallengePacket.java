@@ -4,17 +4,19 @@ import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.api.events.pokemon.PokemonSeenEvent;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.BattleFormat;
+import com.cobblemon.mod.common.battles.BattleRegistry;
+import com.cobblemon.mod.common.battles.BattleStartError;
+import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.asymmetric.battles.common.api.AsymmetricAPI;
-import com.necro.asymmetric.battles.common.api.BattleParticipant;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
-import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.events.RaidBattleStartEvent;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.network.ServerPacket;
@@ -30,6 +32,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +40,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,7 +80,6 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             return;
         }
 
-        RaidBoss boss = ((IRaidAccessor) entity).crd_getRaidBoss();
         UUID raidId = ((IRaidAccessor) pokemonEntity).crd_getRaidId();
         RaidSession raid = RaidHelper.ACTIVE_RAIDS.getOrDefault(raidId, null);
         RaidInstance active = raid == null ? null : raid.getActive();
@@ -85,7 +88,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.has_fainted"), true);
             return;
         }
-        else if (boss.getMaxPlayers() != -1 && active.getBattles().size() >= boss.getMaxPlayers()) {
+        else if (raid.boss().getMaxPlayers() != -1 && active.getBattles().size() >= raid.boss().getMaxPlayers()) {
             player.displayClientMessage(ComponentUtils.getErrorMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
@@ -112,7 +115,7 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
         UUID leadingPokemon = pokemon.getUuid();
 
         if (!PlayerExtensionsKt.canInteractWith(player, pokemonEntity, Cobblemon.config.getBattleWildMaxDistance() * 4.0f) || !pokemonEntity.canBattle(player)) {}
-        else if (boss.getBattleFormat() != RaidBattleFormat.RAID || raid.getActive().getBattles().isEmpty()) {
+        else if (raid.boss().getBattleFormat() != RaidBattleFormat.RAID || raid.getActive().getBattles().isEmpty()) {
             RaidBuilder.build(player, pokemonEntity, leadingPokemon, raid.boss(), active.boss())
                 .ifSuccessful(battle -> {
                     this.flagAsSeen(battle, pokemonEntity);
@@ -132,11 +135,32 @@ public record RaidChallengePacket(int targetedEntityId, UUID selectedPokemonId, 
                 });
         }
         else {
+            PlayerPartyStore party = RaidBuilder.getRaidParty(player, leadingPokemon, raid.boss());
+            List<BattlePokemon> battleTeam = !party.isEmpty() ? PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon) : List.of();
+            PlayerBattleActor actor = new PlayerBattleActor(player.getUUID(), battleTeam);
+
+            MutableComponent error = null;
+            if (!battleTeam.isEmpty() && battleTeam.getFirst().getHealth() <= 0) {
+                error = BattleStartError.Companion.insufficientPokemon(player, this.battleFormat.getBattleType().getSlotsPerActor(), actor.getPokemonList().size()).getMessageFor(player);
+            }
+            else if (actor.getPokemonList().stream().anyMatch(battlePokemon -> battlePokemon.getEntity() != null && battlePokemon.getEntity().isBusy())) {
+                error = BattleStartError.Companion.targetIsBusy(player.getDisplayName()).getMessageFor(player);
+            }
+            else if (BattleRegistry.getBattleByParticipatingPlayer(player) != null) {
+                error = BattleStartError.Companion.alreadyInBattle(actor).getMessageFor(player);
+            }
+            if (error != null) {
+                player.displayClientMessage(error, true);
+                return;
+            }
+
             PokemonBattle battle = raid.getActive().getBattles().getFirst();
-            AsymmetricAPI.setRaidBattleActor(BattleParticipant.player(player, leadingPokemon).toActor(), battle);
+            AsymmetricAPI.setRaidBattleActor(actor, battle);
             this.flagAsSeen(battle, pokemonEntity);
             if (!raid.isPlayerIn(player)) raid.addPlayer(player);
-            RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, boss, battle));
+            raid.addBattle(player, battle);
+            actor.setBattleTheme(active.boss().getMusic());
+            RaidEvents.RAID_BATTLE_START.emit(new RaidBattleStartEvent(player, active.boss(), battle));
         }
     }
 
