@@ -32,7 +32,7 @@ public abstract class SideStartInstructionMixin {
         if (!((IRaidBattle) battle).crd_isRaid()) return;
         RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         BattlePokemon battlePokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
-        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null || !raid.canSync()) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         String sideString = this.getMessage().argumentAt(0);

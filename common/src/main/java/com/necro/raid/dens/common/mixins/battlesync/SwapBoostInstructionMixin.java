@@ -27,7 +27,7 @@ public abstract class SwapBoostInstructionMixin {
         RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
 
         BattlePokemon battlePokemon = this.getMessage().battlePokemon(0, battle);
-        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null || !raid.canSync()) return;
         BattlePokemon target = this.getMessage().battlePokemon(1, battle);
         if (target == null) return;
 

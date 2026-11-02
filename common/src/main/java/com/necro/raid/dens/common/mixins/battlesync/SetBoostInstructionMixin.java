@@ -28,7 +28,7 @@ public abstract class SetBoostInstructionMixin {
         if (!((IRaidBattle) battle).crd_isRaid()) return;
         RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         BattlePokemon battlePokemon = this.getMessage().battlePokemon(0, battle);
-        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null || !raid.canSync()) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         String statKey = this.getMessage().argumentAt(1);

@@ -637,7 +637,7 @@ public class RaidInstance {
     }
 
     public boolean canSync() {
-        return this.boss.getBattleFormat() != RaidBattleFormat.RAID && CobblemonRaidDens.CONFIG.max_players_for_support >= this.session.activePlayers().size();
+        return this.session.boss().getBattleFormat() != RaidBattleFormat.RAID && CobblemonRaidDens.CONFIG.max_players_for_support >= this.session.activePlayers().size();
     }
 
     public void broadcastToOthers(ShowdownEvent event, @Nullable PokemonBattle battle) {

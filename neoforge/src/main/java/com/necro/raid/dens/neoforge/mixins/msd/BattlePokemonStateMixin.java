@@ -27,11 +27,11 @@ public class BattlePokemonStateMixin {
     private static void modifyStatChanges(BattlePokemon pokemon, boolean includeProperties, boolean includeAbility, boolean includeMoves, boolean includeItem, CallbackInfoReturnable<BattlePokemonState> cir, @Local Map<String, Integer> statChanges) {
         if (pokemon.getEntity() == null) return;
         else if (!((IRaidAccessor) pokemon.getEntity()).crd_isRaidBoss()) return;
-        statChanges.clear();
         RaidSession session = RaidHelper.ACTIVE_RAIDS.get(((IRaidAccessor) pokemon.getEntity()).crd_getRaidId());
         if (session == null) return;
         RaidInstance raid = session.getActive();
-        if (raid == null) return;
+        if (raid == null || !raid.canSync()) return;
+        statChanges.clear();
         RaidBattleState battleState = raid.getBattleState();
         battleState.bossSide.pokemon.boosts.forEach((stat, boost) ->
             statChanges.put(stat.getShowdownId(), boost)
