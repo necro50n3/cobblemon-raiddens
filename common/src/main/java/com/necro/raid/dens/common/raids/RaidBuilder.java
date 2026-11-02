@@ -89,7 +89,7 @@ public class RaidBuilder {
                     && !RaidUtils.isAbilityBlacklisted(p.getAbility())
                     && !RaidUtils.isHeldItemBlacklisted(p.heldItem()))
                 .toList();
-            playerTeam = playerTeam.subList(0, Math.min(playerTeam.size(), boss.actualPartySize()));
+            playerTeam = playerTeam.subList(0, Math.min(playerTeam.size(), boss.getRaidPartySize()));
             RaidStoreFactory.addPlayerParty(player, playerTeam);
 
             party = PlayerExtensionsKt.party(player);

@@ -536,10 +536,6 @@ public class RaidBoss {
         return this.raidPartySize;
     }
 
-    public int actualPartySize() {
-        return this.getBattleFormat() == RaidBattleFormat.RAID ? 4 : this.getRaidPartySize();
-    }
-
     public Integer getHealthMulti() {
         return this.healthMulti;
     }
