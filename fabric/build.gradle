@@ -59,6 +59,8 @@ dependencies {
     modRuntimeOnly "maven.modrinth:supermartijn642s-config-lib:1.1.8-fabric-mc1.21"
     modRuntimeOnly "dev.architectury:architectury-fabric:13.0.8"
 
+    modCompileOnly "curse.maven:cobblemon-genesis-forms-1291013:8858912"
+
     modCompileOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577271"
     modCompileOnly "curse.maven:special-model-loader-782421:5744313"
     modCompileOnly "curse.maven:forge-config-api-port-547434:7213608"

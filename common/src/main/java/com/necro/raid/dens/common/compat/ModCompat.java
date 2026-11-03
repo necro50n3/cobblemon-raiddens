@@ -6,6 +6,7 @@ public enum ModCompat {
     COBBLEMON("cobblemon"),
     COBBLEDOLLARS("cobbledollars"),
     MEGA_SHOWDOWN("mega_showdown"),
+    GENESISFORMS("genesisforms"),
     RCT_API("rctapi"),
     SIZE_VARIATIONS("cobblemonsizevariation"),
     IRIS("iris"),
