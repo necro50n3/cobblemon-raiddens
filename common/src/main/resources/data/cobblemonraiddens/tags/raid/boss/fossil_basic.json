@@ -1,0 +1,45 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "cobblemonraiddens:omanyte",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:kabuto",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:lileep",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:anorith",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:cranidos",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:shieldon",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:tirtouga",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:archen",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:tyrunt",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:amaura",
+            "required": false
+        }
+    ]
+}

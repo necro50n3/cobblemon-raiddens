@@ -16,6 +16,18 @@ allprojects {
     version = rootProject.mod_version
 }
 
+Properties dotenv = new Properties()
+File envFile = file(".env")
+
+if (envFile.exists()) {
+    envFile.withInputStream { stream -> dotenv.load(stream) }
+}
+
+def resolveEnv = { String key ->
+    String value = dotenv.getProperty(key)
+    return value != null ? value : System.getenv(key)
+}
+
 subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'
@@ -77,6 +89,18 @@ subprojects {
             create("mavenJava", MavenPublication) {
                 groupId = rootProject.maven_group
                 artifactId = "${rootProject.archives_name}-${project.name}"
+                version = rootProject.mod_version
+                from components["java"]
+
+                pom.withXml {
+                    def root = asNode()
+                    root.get("dependencies").each { root.remove(it as Node) }
+                }
+            }
+
+            create("mavenJavaSnapshot", MavenPublication) {
+                groupId = rootProject.maven_group
+                artifactId = "${rootProject.archives_name}-${project.name}"
                 version = "${rootProject.mod_version}-SNAPSHOT"
                 from components["java"]
 
@@ -85,6 +109,35 @@ subprojects {
                     root.get("dependencies").each { root.remove(it as Node) }
                 }
             }
+        }
+
+        repositories {
+            maven {
+                name = "ReleasesCCMaven"
+                url = uri("https://maven.cobbled-creators.org/releases")
+
+                credentials {
+                    username = resolveEnv("CCM_USER")
+                    password = resolveEnv("CCM_TOKEN")
+                }
+            }
+            maven {
+                name = "SnapshotsCCMaven"
+                url = uri("https://maven.cobbled-creators.org/snapshots")
+
+                credentials {
+                    username = resolveEnv("CCM_USER")
+                    password = resolveEnv("CCM_TOKEN")
+                }
+            }
+        }
+    }
+
+    tasks.withType(PublishToMavenRepository).configureEach {
+        onlyIf {
+            def isSnapshot = it.publication.version.endsWith("-SNAPSHOT")
+            def isSnapshotRepository = it.repository.name == "SnapshotsCCMaven"
+            isSnapshot == isSnapshotRepository
         }
     }
 
@@ -95,18 +148,6 @@ subprojects {
     tasks.withType(GenerateModuleMetadata).configureEach {
         enabled = false
     }
-}
-
-Properties dotenv = new Properties()
-File envFile = file(".env")
-
-if (envFile.exists()) {
-    envFile.withInputStream { stream -> dotenv.load(stream) }
-}
-
-def resolveEnv = { String key ->
-    String value = dotenv.getProperty(key)
-    return value != null ? value : System.getenv(key)
 }
 
 publishMods {

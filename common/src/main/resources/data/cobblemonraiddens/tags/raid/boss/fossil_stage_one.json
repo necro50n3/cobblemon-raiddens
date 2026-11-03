@@ -1,0 +1,45 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "cobblemonraiddens:omastar",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:kabutops",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:cradily",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:armaldo",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:rampardos",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:bastiodon",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:carracosta",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:archeops",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:tyrantrum",
+            "required": false
+        },
+        {
+            "id": "cobblemonraiddens:aurorus",
+            "required": false
+        }
+    ]
+}
