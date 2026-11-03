@@ -133,6 +133,16 @@ subprojects {
         }
     }
 
+    if (name == "fabricdatagen") {
+        tasks.withType(PublishToMavenRepository).configureEach {
+            enabled = false
+        }
+
+        tasks.withType(PublishToMavenLocal).configureEach {
+            enabled = false
+        }
+    }
+
     tasks.withType(PublishToMavenRepository).configureEach {
         onlyIf {
             def isSnapshot = it.publication.version.endsWith("-SNAPSHOT")
@@ -177,6 +187,7 @@ publishMods {
         modLoaders.add("fabric")
         requires("cobblemon")
         requires("geckolib")
+        requires("asymmetric-battles-api")
         optional("cobblemon-mega-showdown")
         optional("jade")
         optional("cobbledollars")
@@ -189,6 +200,7 @@ publishMods {
         modLoaders.add("neoforge")
         requires("cobblemon")
         requires("geckolib")
+        requires("asymmetric-battles-api")
         optional("cobblemon-mega-showdown")
         optional("jade")
         optional("cobbledollars")
@@ -201,6 +213,7 @@ publishMods {
         requires("fabric-api")
         requires("cobblemon")
         requires("geckolib")
+        requires("asymmetric-battles-api")
         optional("cobblemon-mega-showdown")
         optional("jade")
         optional("cobbledollars")
@@ -212,6 +225,7 @@ publishMods {
         modLoaders.add("neoforge")
         requires("cobblemon")
         requires("geckolib")
+        requires("asymmetric-battles-api")
         optional("cobblemon-mega-showdown")
         optional("jade")
         optional("cobbledollars")
