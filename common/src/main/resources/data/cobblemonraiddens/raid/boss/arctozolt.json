@@ -8,7 +8,7 @@
             ["move_primary", "move_any"]
         ]
     },
-    "raid_tier": "TIER_FOUR",
+    "raid_tier": "TIER_FIVE",
     "raid_type": "ELECTRIC",
     "weight": 20.0,
     "adventure": [
