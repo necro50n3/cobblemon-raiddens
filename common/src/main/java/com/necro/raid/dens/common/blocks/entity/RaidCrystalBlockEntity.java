@@ -174,11 +174,11 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(bossLocation).whenCompleteAsync((optional, error) -> {
             this.isGenerating = false;
             if (error != null || optional.isEmpty() || this.isRemoved()) return;
-            this.generateRaid(optional.get(), level, blockPos, blockState);
+            this.generateRaidBoss(optional.get(), level, blockPos, blockState, false);
         }, level.getServer());
     }
 
-    private void generateRaid(RaidBoss boss, Level level, BlockPos blockPos, BlockState blockState) {
+    public void generateRaidBoss(RaidBoss boss, Level level, BlockPos blockPos, BlockState blockState, boolean wishUsed) {
         SetRaidEvent event = new SetRaidEvent(boss);
         RaidEvents.SET_RAID.emit(event);
         boss = event.getRaid();
@@ -194,7 +194,8 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
             .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier())
             .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
             .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure()), 2);
+            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure())
+            .setValue(RaidCrystalBlock.WISH_USED, wishUsed), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
     }

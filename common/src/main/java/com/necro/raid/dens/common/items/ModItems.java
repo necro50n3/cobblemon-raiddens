@@ -11,4 +11,5 @@ public class ModItems {
     public static Holder<Item> RAID_SHARD;
     public static Holder<Item> CATCHING_CHARM;
     public static Holder<Item> RAIDITE;
+    public static Holder<Item> WISHING_PIECE;
 }

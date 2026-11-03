@@ -20,4 +20,7 @@ public class ModComponents {
 
     public static Holder<DataComponentType<Integer>> RAID_ENERGY;
     public static Holder<DataComponentType<Float>> CATCH_BOOST;
+
+    public static Holder<DataComponentType<RaidTier>> MIN_TIER;
+    public static Holder<DataComponentType<RaidTier>> MAX_TIER;
 }

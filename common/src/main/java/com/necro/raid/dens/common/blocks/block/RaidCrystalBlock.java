@@ -9,6 +9,7 @@ import com.necro.raid.dens.common.data.raid.*;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.events.RaidEvents;
 import com.necro.raid.dens.common.events.RaidJoinEvent;
+import com.necro.raid.dens.common.events.UseItemOnRaidCrystalEvent;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.RaidInstance;
 import com.necro.raid.dens.common.raids.RaidSession;
@@ -24,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -68,6 +70,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidCycleMode> CYCLE_MODE = EnumProperty.create("cycle_mode", RaidCycleMode.class);
     public static final BooleanProperty IS_NATURAL = BooleanProperty.create("is_natural");
     public static final BooleanProperty IS_ADVENTURE = BooleanProperty.create("is_adventure");
+    public static final BooleanProperty WISH_USED = BooleanProperty.create("wish_used");
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.9375, 1);
 
@@ -81,6 +84,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
             .setValue(IS_NATURAL, true)
             .setValue(IS_ADVENTURE, false)
+            .setValue(WISH_USED, false)
         );
     }
 
@@ -112,6 +116,9 @@ public class RaidCrystalBlock extends BaseEntityBlock {
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack itemStack, @NotNull BlockState blockState, Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull InteractionHand interactionHand, @NotNull BlockHitResult blockHitResult) {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
+
+        UseItemOnRaidCrystalEvent event = new UseItemOnRaidCrystalEvent(itemStack, blockState, (ServerLevel) level, blockPos, (ServerPlayer) player, interactionHand, blockHitResult);
+        if (!RaidEvents.USE_ITEM_ON_RAID.postWithResult(event)) return ItemInteractionResult.SUCCESS;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return ItemInteractionResult.FAIL;
@@ -310,6 +317,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         builder.add(CYCLE_MODE);
         builder.add(IS_NATURAL);
         builder.add(IS_ADVENTURE);
+        builder.add(WISH_USED);
     }
 
     @Override

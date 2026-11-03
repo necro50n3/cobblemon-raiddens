@@ -2,10 +2,7 @@ package com.necro.raid.dens.neoforge.items;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
-import com.necro.raid.dens.common.items.item.CatchingCharmItem;
-import com.necro.raid.dens.common.items.item.CheerItem;
-import com.necro.raid.dens.common.items.item.RaidPouchItem;
-import com.necro.raid.dens.common.items.item.RaidShardItem;
+import com.necro.raid.dens.common.items.item.*;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -21,5 +18,6 @@ public class NeoForgeItems {
         ModItems.RAID_SHARD = ITEMS.register("raid_shard", RaidShardItem::new);
         ModItems.CATCHING_CHARM = ITEMS.register("catching_charm", CatchingCharmItem::new);
         ModItems.RAIDITE = ITEMS.register("raidite", () -> new Item(new Item.Properties()));
+        ModItems.WISHING_PIECE = ITEMS.register("wishing_piece", WishingPieceItem::new);
     }
 }

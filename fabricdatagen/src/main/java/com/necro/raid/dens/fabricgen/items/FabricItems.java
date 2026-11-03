@@ -2,10 +2,7 @@ package com.necro.raid.dens.fabricgen.items;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.items.ModItems;
-import com.necro.raid.dens.common.items.item.CatchingCharmItem;
-import com.necro.raid.dens.common.items.item.CheerItem;
-import com.necro.raid.dens.common.items.item.RaidPouchItem;
-import com.necro.raid.dens.common.items.item.RaidShardItem;
+import com.necro.raid.dens.common.items.item.*;
 import com.necro.raid.dens.common.showdown.bagitems.CheerBagItem;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -22,6 +19,7 @@ public class FabricItems {
         ModItems.RAID_SHARD = registerItem("raid_shard", new RaidShardItem());
         ModItems.CATCHING_CHARM = registerItem("catching_charm", new CatchingCharmItem());
         ModItems.RAIDITE = registerItem("raidite", new Item(new Item.Properties()));
+        ModItems.WISHING_PIECE = registerItem("wishing_piece", new WishingPieceItem());
     }
 
     private static Holder<Item> registerItem(String name, Item item) {

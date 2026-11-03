@@ -28,6 +28,7 @@ public class RaidDenTab {
                 entries.accept(ModBlocks.RAIDITE_ORE.value());
                 entries.accept(ModBlocks.DEEPSLATE_RAIDITE_ORE.value());
                 entries.accept(ModItems.RAIDITE.value());
+                entries.accept(ModItems.WISHING_PIECE.value());
             }).build()
     );
 

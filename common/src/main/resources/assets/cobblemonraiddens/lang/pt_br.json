@@ -86,6 +86,11 @@
     "item.cobblemonraiddens.raid_pouch": "Bolsa de Invasão",
     "item.cobblemonraiddens.raid_shard": "Fragmento de Invasão",
     "item.cobblemonraiddens.raid_shard.tooltip": "Conclua invasões para ganhar energia de invasão",
+
+
+
+
+
     "itemgroup.cobblemonraiddens.raid_den_tab": "Raid Dens",
     "jade.cobblemonraiddens.player_count": "%s dentro",
     "jade.cobblemonraiddens.max_catches": "Máx capturável: %s",

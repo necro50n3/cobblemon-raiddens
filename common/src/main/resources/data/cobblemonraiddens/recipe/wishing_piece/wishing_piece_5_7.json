@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#@#",
+        "@$@",
+        "#@#"
+    ],
+    "key": {
+        "@": {
+            "item": "cobblemonraiddens:raidite"
+        },
+        "#": {
+            "tag": "minecraft:stone_crafting_materials"
+        },
+        "$": {
+            "item": "minecraft:nether_star"
+        }
+    },
+    "result": {
+        "count": 1,
+        "id": "cobblemonraiddens:wishing_piece",
+        "components": {
+            "cobblemonraiddens:min_tier": "TIER_FIVE",
+            "cobblemonraiddens:max_tier": "TIER_SEVEN"
+        }
+    }
+}

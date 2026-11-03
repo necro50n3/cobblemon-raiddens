@@ -10,9 +10,9 @@ import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.items.ModItems;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.rewards.RewardHandler;
-import kotlin.Unit;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 
 public class RaidEvents {
     // Raid Generation
@@ -36,11 +36,11 @@ public class RaidEvents {
     // Misc
     public static final ResultCancelableObservable<OpenPouchEvent> OPEN_POUCH = new ResultCancelableObservable<>();
     public static final ResultCancelableObservable<UseRaidShardEvent> USE_RAID_SHARD = new ResultCancelableObservable<>();
+    public static final ResultCancelableObservable<UseItemOnRaidCrystalEvent> USE_ITEM_ON_RAID = new ResultCancelableObservable<>();
 
     public static void registerEvents() {
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
             RaidDenNetworkMessages.JOIN_RAID.accept(event.getPlayer(), true);
-            return Unit.INSTANCE;
         });
 
         RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
@@ -49,7 +49,7 @@ public class RaidEvents {
         });
 
         RaidEvents.RAID_BATTLE_END.subscribe(Priority.LOWEST, event -> {
-            if (!event.isWin()) return Unit.INSTANCE;
+            if (!event.isWin()) return;
 
             Inventory inventory = event.player().getInventory();
             ItemStack raidShard = null;
@@ -60,21 +60,25 @@ public class RaidEvents {
                     break;
                 }
             }
-            if (raidShard == null) return Unit.INSTANCE;
+            if (raidShard == null) return;
 
             TierConfig config = CobblemonRaidDens.TIER_CONFIG.get(event.raidBoss().getTier());
             raidShard.set(
                 ModComponents.RAID_ENERGY.value(),
                 Math.min(raidShard.getOrDefault(ModComponents.RAID_ENERGY.value(), 0) + config.energy(), CobblemonRaidDens.CONFIG.required_energy)
             );
-
-            return Unit.INSTANCE;
         });
 
         RaidEvents.RAID_REWARD_POST.subscribe(Priority.LOWEST, event -> {
             if (!ModCompat.COBBLEDOLLARS.isLoaded()) return;
             else if (event.raidBoss().getCurrency() <= 0) return;
             RaidDensCobbleDollarsCompat.addCurrency(event.player(), event.raidBoss().getCurrency());
+        });
+
+        RaidEvents.USE_ITEM_ON_RAID.subscribe(Priority.NORMAL, event -> {
+            if (!event.itemStack().is(ModItems.WISHING_PIECE)) return;
+            event.itemStack().useOn(new UseOnContext(event.player(), event.interactionHand(), event.blockHitResult()));
+            event.cancel();
         });
     }
 }

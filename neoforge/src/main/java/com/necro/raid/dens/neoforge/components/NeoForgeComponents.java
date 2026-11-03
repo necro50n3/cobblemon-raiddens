@@ -31,6 +31,9 @@ public class NeoForgeComponents {
 
         ModComponents.RAID_ENERGY = registerComponent("raid_energy", Codec.INT);
         ModComponents.CATCH_BOOST = registerComponent("catch_boost", Codec.floatRange(0F, Float.POSITIVE_INFINITY));
+
+        ModComponents.MIN_TIER = registerComponent("min_tier", RaidTier.codec());
+        ModComponents.MAX_TIER = registerComponent("max_tier", RaidTier.codec());
     }
 
     @SuppressWarnings("unchecked")

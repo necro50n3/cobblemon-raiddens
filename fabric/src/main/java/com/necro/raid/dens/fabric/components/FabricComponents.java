@@ -28,6 +28,9 @@ public class FabricComponents {
 
         ModComponents.RAID_ENERGY = Holder.direct(registerComponent("raid_energy", builder -> builder.persistent(Codec.INT)));
         ModComponents.CATCH_BOOST = Holder.direct(registerComponent("catch_boost", builder -> builder.persistent(Codec.floatRange(0F, Float.POSITIVE_INFINITY))));
+
+        ModComponents.MIN_TIER = Holder.direct(registerComponent("min_tier", builder -> builder.persistent(RaidTier.codec())));
+        ModComponents.MAX_TIER = Holder.direct(registerComponent("max_tier", builder -> builder.persistent(RaidTier.codec())));
     }
 
     private static <T> DataComponentType<T> registerComponent(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {

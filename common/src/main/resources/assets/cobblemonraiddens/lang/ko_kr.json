@@ -86,6 +86,11 @@
   "item.cobblemonraiddens.raid_pouch": "레이드 파우치",
   "item.cobblemonraiddens.raid_shard": "레이드 샤드",
   "item.cobblemonraiddens.raid_shard.tooltip": "레이드를 클리어해 레이드 에너지를 모으세요",
+
+
+
+
+
   "itemgroup.cobblemonraiddens.raid_den_tab": "레이드 굴",
   "jade.cobblemonraiddens.player_count": "%s명 입장 중",
   "jade.cobblemonraiddens.max_catches": "최대 포획 가능 수: %s",
