@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
+import com.necro.raid.dens.common.registry.generator.RaidGenerator;
 import net.minecraft.resources.ResourceLocation;
 
 public class RaidBossReloadImpl extends AbstractReloadImpl {
@@ -19,10 +20,11 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        RaidBoss raidBoss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
-        raidBoss.setId(key);
-        raidBoss.applyDefaults();
-        CustomRaidRegistries.RAID_REGISTRY.register(raidBoss);
+        RaidBoss boss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
+        boss.setId(key);
+        boss.applyDefaults();
+        CustomRaidRegistries.RAID_REGISTRY.register(boss);
+        RaidGenerator.INSTANCE.add(boss.getReward().getSpecies());
     }
 
     @Override

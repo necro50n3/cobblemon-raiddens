@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.data.raid;
 
+import com.cobblemon.mod.common.api.types.ElementalType;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -8,6 +9,7 @@ import org.joml.Vector4f;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public enum RaidType implements StringRepresentable {
     NONE("none", 4079166),
@@ -79,6 +81,10 @@ public enum RaidType implements StringRepresentable {
         List<RaidType> types = Arrays.stream(RaidType.values()).filter(RaidType::isPresent).toList();
         if (types.isEmpty()) return NONE;
         return types.get(random.nextInt(types.size()));
+    }
+
+    public static RaidType fromType(ElementalType type) {
+        return fromString(type.getName().toUpperCase(Locale.ROOT));
     }
 
     public static RaidType fromString(String name) {

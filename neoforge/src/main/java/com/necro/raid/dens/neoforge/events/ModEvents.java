@@ -12,6 +12,7 @@ import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
+import com.necro.raid.dens.common.registry.generator.RaidGenerator;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import com.necro.raid.dens.common.util.RaidUtils;
 import com.necro.raid.dens.neoforge.events.reloader.*;
@@ -82,6 +83,7 @@ public class ModEvents {
         CustomRaidRegistries.freeze();
         CustomRaidRegistries.RAID_REGISTRY.init(event.getServer());
         Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
+        RaidGenerator.INSTANCE.generate();
     }
 
     @SubscribeEvent
@@ -152,8 +154,8 @@ public class ModEvents {
 
     @SubscribeEvent
     private static void onDataPackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) return;
-        RaidDenNetworkMessages.SYNC_REGISTRY.accept(event.getPlayer());
+        if (event.getPlayer() == null) RaidGenerator.INSTANCE.generate();
+        else RaidDenNetworkMessages.SYNC_REGISTRY.accept(event.getPlayer());
     }
 
     @SubscribeEvent

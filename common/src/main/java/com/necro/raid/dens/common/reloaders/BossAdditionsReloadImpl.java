@@ -3,37 +3,24 @@ package com.necro.raid.dens.common.reloaders;
 import com.google.gson.JsonObject;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBossAdditions;
-import com.necro.raid.dens.common.data.raid.RaidTier;
-import com.necro.raid.dens.common.registry.CustomRaidRegistries;
+import com.necro.raid.dens.common.registry.generator.RaidGenerator;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 public class BossAdditionsReloadImpl extends AbstractReloadImpl {
-    private List<ResourceLocation> registry;
-    private final List<RaidBossAdditions> additionsList;
-
     public BossAdditionsReloadImpl() {
         super("raid/boss_additions", DataType.JSON);
-        this.registry = null;
-        this.additionsList = new ArrayList<>();
     }
 
     @Override
     protected void preLoad() {
         CobblemonRaidDens.LOGGER.info("Registering boss additions");
-        this.registry = null;
-        this.additionsList.clear();
     }
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
-        if (this.registry == null) this.registry = new ArrayList<>(CustomRaidRegistries.RAID_REGISTRY.getAll());
         RaidBossAdditions additions = RaidBossAdditions.GSON.fromJson(object, RaidBossAdditions.class);
         additions.applyDefaults();
-        this.additionsList.add(additions);
+        RaidGenerator.INSTANCE.add(additions);
     }
 
     @Override
@@ -43,15 +30,6 @@ public class BossAdditionsReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void postLoad() {
-        this.additionsList.sort(Comparator.comparingInt(RaidBossAdditions::priority).reversed());
-        this.additionsList.forEach(additions -> {
-            if (additions.replace() || additions.forceApply()) additions.apply(CustomRaidRegistries.RAID_REGISTRY.getAll());
-            else additions.apply(this.registry);
-        });
-        CobblemonRaidDens.LOGGER.info("Registered {} boss additions", this.additionsList.size());
-
-        CustomRaidRegistries.RAID_REGISTRY.registerAll();
-        RaidTier.updateRandom();
-        CustomRaidRegistries.RAID_REGISTRY.clearReverseLookup();
+        CobblemonRaidDens.LOGGER.info("Registered {} boss additions", RaidGenerator.INSTANCE.additionsSize());
     }
 }

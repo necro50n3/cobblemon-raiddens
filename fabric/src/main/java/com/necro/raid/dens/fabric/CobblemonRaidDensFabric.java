@@ -7,6 +7,7 @@ import com.necro.raid.dens.common.commands.RaidSpawnCommands;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.common.dimensions.ModDimensions;
 import com.necro.raid.dens.common.network.*;
+import com.necro.raid.dens.common.registry.generator.RaidGenerator;
 import com.necro.raid.dens.common.util.*;
 import com.necro.raid.dens.fabric.advancements.FabricCriteriaTriggers;
 import com.necro.raid.dens.fabric.blocks.FabricBlocks;
@@ -87,6 +88,10 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         UseBlockCallback.EVENT.register(RaidUtils::canPlace);
         UseItemCallback.EVENT.register(ModEvents::onUseItem);
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) -> RaidDenNetworkMessages.SYNC_REGISTRY.accept(player)));
+
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, manager, success) -> {
+            if (success) RaidGenerator.INSTANCE.generate();
+        });
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBucketReloadListener());

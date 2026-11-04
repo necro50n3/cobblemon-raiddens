@@ -10,6 +10,7 @@ import com.necro.raid.dens.common.raids.RaidSession;
 import com.necro.raid.dens.common.raids.helpers.RaidHelper;
 import com.necro.raid.dens.common.raids.helpers.RaidJoinHelper;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
+import com.necro.raid.dens.common.registry.generator.RaidGenerator;
 import com.necro.raid.dens.common.showdown.events.RaidEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.Minecraft;
@@ -56,6 +57,7 @@ public class ModEvents {
         CustomRaidRegistries.freeze();
         CustomRaidRegistries.RAID_REGISTRY.init(server);
         Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
+        RaidGenerator.INSTANCE.generate();
     }
 
     public static void onServerStarted(MinecraftServer server) {
