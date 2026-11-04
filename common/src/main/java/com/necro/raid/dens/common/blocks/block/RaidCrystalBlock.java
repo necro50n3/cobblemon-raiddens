@@ -118,7 +118,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         if (level.isClientSide()) return ItemInteractionResult.SUCCESS;
 
         UseItemOnRaidCrystalEvent event = new UseItemOnRaidCrystalEvent(itemStack, blockState, (ServerLevel) level, blockPos, (ServerPlayer) player, interactionHand, blockHitResult);
-        if (!RaidEvents.USE_ITEM_ON_RAID.postWithResult(event)) return ItemInteractionResult.SUCCESS;
+        if (!RaidEvents.USE_ITEM_ON_CRYSTAL.postWithResult(event)) return ItemInteractionResult.SUCCESS;
 
         BlockEntity blockEntity = level.getBlockEntity(blockPos);
         if (!(blockEntity instanceof RaidCrystalBlockEntity raidCrystal)) return ItemInteractionResult.FAIL;

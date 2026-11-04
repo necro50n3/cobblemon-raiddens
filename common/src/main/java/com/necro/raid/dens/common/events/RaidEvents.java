@@ -36,7 +36,7 @@ public class RaidEvents {
     // Misc
     public static final ResultCancelableObservable<OpenPouchEvent> OPEN_POUCH = new ResultCancelableObservable<>();
     public static final ResultCancelableObservable<UseRaidShardEvent> USE_RAID_SHARD = new ResultCancelableObservable<>();
-    public static final ResultCancelableObservable<UseItemOnRaidCrystalEvent> USE_ITEM_ON_RAID = new ResultCancelableObservable<>();
+    public static final ResultCancelableObservable<UseItemOnRaidCrystalEvent> USE_ITEM_ON_CRYSTAL = new ResultCancelableObservable<>();
 
     public static void registerEvents() {
         RaidEvents.RAID_JOIN.subscribe(Priority.NORMAL, event -> {
@@ -75,7 +75,7 @@ public class RaidEvents {
             RaidDensCobbleDollarsCompat.addCurrency(event.player(), event.raidBoss().getCurrency());
         });
 
-        RaidEvents.USE_ITEM_ON_RAID.subscribe(Priority.NORMAL, event -> {
+        RaidEvents.USE_ITEM_ON_CRYSTAL.subscribe(Priority.NORMAL, event -> {
             if (!event.itemStack().is(ModItems.WISHING_PIECE)) return;
             event.itemStack().useOn(new UseOnContext(event.player(), event.interactionHand(), event.blockHitResult()));
             event.cancel();
