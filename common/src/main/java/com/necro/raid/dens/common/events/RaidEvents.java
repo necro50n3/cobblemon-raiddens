@@ -8,6 +8,8 @@ import com.necro.raid.dens.common.compat.cobbledollars.RaidDensCobbleDollarsComp
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.config.TierConfig;
 import com.necro.raid.dens.common.items.ModItems;
+import com.necro.raid.dens.common.items.item.RaidPouchItem;
+import com.necro.raid.dens.common.items.item.RaidShardItem;
 import com.necro.raid.dens.common.network.RaidDenNetworkMessages;
 import com.necro.raid.dens.common.raids.rewards.RewardHandler;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,26 +18,86 @@ import net.minecraft.world.item.context.UseOnContext;
 
 public class RaidEvents {
     // Raid Generation
+    /**
+     * An event that is fired when a raid boss is assigned to a raid den.
+     */
     public static final SimpleObservable<SetRaidEvent> SET_RAID = new SimpleObservable<>();
+    /**
+     * An event that is fired when a raid den spawns.
+     */
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SPAWN = new SimpleObservable<>();
+    /**
+     * An event that is fired when a raid den is loaded into the world.
+     */
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_LOAD = new SimpleObservable<>();
+    /**
+     * An event that is fired when a raid den is unloaded or saved from the world.
+     */
     public static final SimpleObservable<RaidDenSpawnEvent> RAID_DEN_SAVE = new SimpleObservable<>();
 
     // Raid Battling
+    /**
+     * An event that is fired when a player joins a raid battle.
+     */
     public static final ResultCancelableObservable<RaidJoinEvent> RAID_JOIN = new ResultCancelableObservable<>();
+    /**
+     * An event that is fired when a raid battle starts for a specific player.
+     */
     public static final SimpleObservable<RaidBattleStartEvent> RAID_BATTLE_START = new SimpleObservable<>();
+    /**
+     * An event that is fired when a raid battle ends for a specific player.
+     * <p>
+     * Refer to the relevant events to modify or cancel specific events.
+     * @see ModifyCatchRateEvent
+     * @see ModifyShinyRateEvent
+     * @see OpenPouchEvent
+     * @see RaidRewardPostEvent
+     * @see RewardPokemonEvent
+     */
     public static final SimpleObservable<RaidBattleEndEvent> RAID_BATTLE_END = new SimpleObservable<>();
+    /**
+     * An event that is fired when a raid or raid adventure ends.
+     */
     public static final SimpleObservable<RaidEndEvent> RAID_END = new SimpleObservable<>();
 
     // Raid Rewards
+    /**
+     * An event to modify the catch rate for a specific player when catching the raid boss.
+     */
     public static final SimpleObservable<ModifyCatchRateEvent> MODIFY_CATCH_RATE = new SimpleObservable<>();
+    /**
+     * An event to modify the shiny rate for a specific player when catching the raid boss.
+     */
     public static final SimpleObservable<ModifyShinyRateEvent> MODIFY_SHINY_RATE = new SimpleObservable<>();
+    /**
+     * An event that is fired when a player receives the reward Pokémon from the raid battle.
+     */
     public static final ResultCancelableObservable<RewardPokemonEvent> REWARD_POKEMON = new ResultCancelableObservable<>();
+    /**
+     * An event that is fired after a player has received their rewards for a raid battle.
+     */
     public static final SimpleObservable<RaidRewardPostEvent> RAID_REWARD_POST = new SimpleObservable<>();
 
     // Misc
+    /**
+     * An event to modify or cancel a player opening a raid pouch and receiving the rewards.
+     *
+     * @see RaidPouchItem
+     */
     public static final ResultCancelableObservable<OpenPouchEvent> OPEN_POUCH = new ResultCancelableObservable<>();
+    /**
+     * An event that is fired when a player uses a raid shard with sufficient raid energy.
+     * <p>
+     * @see RaidShardItem
+     */
     public static final ResultCancelableObservable<UseRaidShardEvent> USE_RAID_SHARD = new ResultCancelableObservable<>();
+    /**
+     * An event for when a player uses an item on a raid crystal.
+     * <p>
+     * Custom item interactions can be defined by subscribing to the event.
+     * <p>
+     * The event can then be canceled to prevent subsequent hooks and the default right-click behavior.
+     */
     public static final ResultCancelableObservable<UseItemOnRaidCrystalEvent> USE_ITEM_ON_CRYSTAL = new ResultCancelableObservable<>();
 
     public static void registerEvents() {

@@ -10,6 +10,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+ /**
+  * An event for when a player uses an item on a raid crystal.
+  * <p>
+  * Custom item interactions can be defined by subscribing to the event.
+  * <p>
+  * The event can then be canceled to prevent subsequent hooks and the default right-click behavior.
+  */
 public class UseItemOnRaidCrystalEvent extends Cancelable {
     private final ItemStack itemStack;
     private final BlockState blockState;

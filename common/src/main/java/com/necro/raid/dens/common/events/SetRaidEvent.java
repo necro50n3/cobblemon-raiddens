@@ -2,6 +2,9 @@ package com.necro.raid.dens.common.events;
 
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 
+/**
+ * An event that is fired when a raid boss is assigned to a raid den.
+ */
 public class SetRaidEvent {
     private RaidBoss raid;
 

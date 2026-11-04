@@ -5,6 +5,9 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An event that is fired when a player joins a raid battle.
+ */
 public class RaidJoinEvent extends Cancelable {
     private final ServerPlayer player;
     private final boolean isHost;

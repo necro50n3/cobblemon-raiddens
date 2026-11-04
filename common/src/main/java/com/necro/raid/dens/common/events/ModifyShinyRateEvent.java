@@ -3,6 +3,9 @@ package com.necro.raid.dens.common.events;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.server.level.ServerPlayer;
 
+/**
+ * An event to modify the shiny rate for a specific player when catching the raid boss.
+ */
 public class ModifyShinyRateEvent {
     private final ServerPlayer player;
     private final Pokemon reward;

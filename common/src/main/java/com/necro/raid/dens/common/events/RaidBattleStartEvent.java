@@ -5,6 +5,9 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An event that is fired when a raid battle starts for a specific player.
+ */
 public class RaidBattleStartEvent {
     private final ServerPlayer player;
     private final RaidBoss raidBoss;

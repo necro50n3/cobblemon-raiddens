@@ -5,6 +5,9 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * An event that is fired when a player receives the reward Pokémon from the raid battle.
+ */
 public class RewardPokemonEvent extends Cancelable {
     private final ServerPlayer player;
     private final Pokemon pokemon;

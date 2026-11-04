@@ -4,6 +4,9 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 
+/**
+ * An event to modify the catch rate for a specific player when catching the raid boss.
+ */
 public class ModifyCatchRateEvent {
     private final ServerPlayer player;
     private final Pokemon reward;
