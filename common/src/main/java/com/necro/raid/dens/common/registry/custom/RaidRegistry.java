@@ -332,9 +332,6 @@ public class RaidRegistry {
                 if (!this.isClosed()) RaidDenNetworkMessages.REMOVE_SYNCED_BOSS.accept(server, id);
             }
         );
-
-        Map<ResourceLocation, RaidBoss> unsaved = this.pending.get();
-        if (!unsaved.isEmpty()) this.persist(newStore, unsaved);
     }
 
     private CompletableFuture<Optional<RaidBoss>> loadRaidBoss(BinaryRecordStore<ResourceLocation, RaidBoss> source, ResourceLocation id, MinecraftServer server) {

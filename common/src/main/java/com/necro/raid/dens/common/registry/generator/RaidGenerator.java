@@ -41,13 +41,16 @@ public class RaidGenerator {
 
     public void generate() {
         if (!CobblemonRaidDens.GENERATOR_CONFIG.enabled) return;
+        GeneratorHelper.init();
+
+        boolean isWhitelistEmpty = GeneratorHelper.WHITELIST.isEmpty();
 
         int count = 0;
         for (Species species : PokemonSpecies.getImplemented()) {
             String name = species.getResourceIdentifier().getPath().toLowerCase(Locale.ROOT);
 
             if (this.registered.contains(name)) continue;
-            else if (GeneratorHelper.WHITELIST.isEmpty()) {
+            else if (isWhitelistEmpty) {
                 if (GeneratorHelper.BLACKLIST.contains(name.toLowerCase(Locale.ROOT))) continue;
                 else if (GeneratorHelper.LABELS.stream().anyMatch(label -> species.getLabels().contains(label))) continue;
             }
