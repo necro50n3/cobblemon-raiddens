@@ -84,6 +84,7 @@ public class ModEvents {
         CustomRaidRegistries.RAID_REGISTRY.init(event.getServer());
         Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
         RaidGenerator.INSTANCE.generate();
+        RaidGenerator.INSTANCE.registerRaids();
     }
 
     @SubscribeEvent
@@ -154,7 +155,10 @@ public class ModEvents {
 
     @SubscribeEvent
     private static void onDataPackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() == null) RaidGenerator.INSTANCE.generate();
+        if (event.getPlayer() == null) {
+            RaidGenerator.INSTANCE.generate();
+            RaidGenerator.INSTANCE.registerRaids();
+        }
         else RaidDenNetworkMessages.SYNC_REGISTRY.accept(event.getPlayer());
     }
 

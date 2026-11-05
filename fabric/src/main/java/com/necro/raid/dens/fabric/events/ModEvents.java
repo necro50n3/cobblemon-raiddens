@@ -58,6 +58,7 @@ public class ModEvents {
         CustomRaidRegistries.RAID_REGISTRY.init(server);
         Cobblemon.INSTANCE.getStorage().registerFactory(Priority.NORMAL, new RaidStoreFactory());
         RaidGenerator.INSTANCE.generate();
+        RaidGenerator.INSTANCE.registerRaids();
     }
 
     public static void onServerStarted(MinecraftServer server) {

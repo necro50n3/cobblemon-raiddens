@@ -53,6 +53,7 @@ public class CobblemonRaidDens {
     public static RaidConfig CONFIG;
     public static BlacklistConfig BLACKLIST_CONFIG;
     public static ConditionsConfig CONDITIONS_CONFIG;
+    public static GeneratorConfig GENERATOR_CONFIG;
     public static final Map<RaidTier, TierConfig> TIER_CONFIG = new EnumMap<>(RaidTier.class);
 
     public static void init() {
@@ -74,6 +75,8 @@ public class CobblemonRaidDens {
         BLACKLIST_CONFIG = AutoConfig.getConfigHolder(BlacklistConfig.class).getConfig();
         AutoConfig.register(ConditionsConfig.class, JanksonConfigSerializer::new);
         CONDITIONS_CONFIG = AutoConfig.getConfigHolder(ConditionsConfig.class).getConfig();
+        AutoConfig.register(GeneratorConfig.class, JanksonConfigSerializer::new);
+        GENERATOR_CONFIG = AutoConfig.getConfigHolder(GeneratorConfig.class).getConfig();
 
         Jankson jankson = Jankson.builder()
             .registerDeserializer(JsonElement.class, Script.class, (script, marshaller) -> Script.deserialize(script))

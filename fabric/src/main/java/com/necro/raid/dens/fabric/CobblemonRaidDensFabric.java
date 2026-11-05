@@ -90,7 +90,10 @@ public class CobblemonRaidDensFabric implements ModInitializer {
         ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register(((player, joined) -> RaidDenNetworkMessages.SYNC_REGISTRY.accept(player)));
 
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, manager, success) -> {
-            if (success) RaidGenerator.INSTANCE.generate();
+            if (success) {
+                RaidGenerator.INSTANCE.generate();
+                RaidGenerator.INSTANCE.registerRaids();
+            }
         });
 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new RaidBossReloadListener());
