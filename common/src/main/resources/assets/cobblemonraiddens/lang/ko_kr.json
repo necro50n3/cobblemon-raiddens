@@ -170,6 +170,7 @@
   "stat.cobblemonraiddens.tier_seven_completed": "클리어한 7성 레이드 수",
 
   "tag.item.cobblemonraiddens.raid_den_keys": "레이드 굴 키",
+
   "text.autoconfig.cobblemonraiddens/client.title": "코블몬 레이드 굴 설정",
   "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "비콘 빔",
   "text.autoconfig.cobblemonraiddens/client.category.gui": "GUI",
