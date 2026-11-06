@@ -1,7 +1,6 @@
 package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
-import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.advancements.RaidFeatureTrigger;
 import com.necro.raid.dens.common.advancements.RaidTierTrigger;
@@ -166,7 +165,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         AdvancementHolder teraRaidAchievement = Advancement.Builder.advancement()
             .display(
-                MegaShowdownItems.TERA_ORB.get(),
+                display.copy(),
                 Component.translatable("advancement.cobblemonraiddens.raid_tera.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_tera.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -179,7 +178,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         AdvancementHolder dynamaxRaidAchievement = Advancement.Builder.advancement()
             .display(
-                MegaShowdownItems.DYNAMAX_BAND.get(),
+                display.copy(),
                 Component.translatable("advancement.cobblemonraiddens.raid_dynamax.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_dynamax.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
@@ -192,7 +191,7 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
 
         Advancement.Builder.advancement()
             .display(
-                MegaShowdownItems.MEGA_STONE.get(),
+                display.copy(),
                 Component.translatable("advancement.cobblemonraiddens.raid_mega.title"),
                 Component.translatable("advancement.cobblemonraiddens.raid_mega.description"),
                 ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
