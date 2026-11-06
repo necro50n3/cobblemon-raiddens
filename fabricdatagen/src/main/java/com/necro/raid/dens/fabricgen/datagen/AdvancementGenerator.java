@@ -1,13 +1,11 @@
 package com.necro.raid.dens.fabricgen.datagen;
 
 import com.cobblemon.mod.common.CobblemonItems;
-import com.github.yajatkaul.mega_showdown.item.MegaShowdownItems;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.advancements.*;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.components.ModComponents;
 import com.necro.raid.dens.common.items.ModItems;
-import com.necro.raid.dens.common.data.raid.RaidFeature;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -173,45 +171,6 @@ public class AdvancementGenerator extends FabricAdvancementProvider {
             .parent(tierSixAdvancement)
             .addCriterion("completed_tier_seven", RaidTierTrigger.TriggerInstance.tier(RaidTier.TIER_SEVEN))
             .save(consumer, CobblemonRaidDens.MOD_ID + ":tier_seven");
-
-        AdvancementHolder teraRaidAchievement = Advancement.Builder.advancement()
-            .display(
-                MegaShowdownItems.TERA_ORB.get(),
-                Component.translatable("advancement.cobblemonraiddens.raid_tera.title"),
-                Component.translatable("advancement.cobblemonraiddens.raid_tera.description"),
-                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
-                AdvancementType.GOAL,
-                true, false, true
-            )
-            .parent(joinRaidDenAdvancement)
-            .addCriterion("completed_tera", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.TERA.getId()))
-            .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_tera");
-
-        AdvancementHolder dynamaxRaidAchievement = Advancement.Builder.advancement()
-            .display(
-                MegaShowdownItems.DYNAMAX_BAND.get(),
-                Component.translatable("advancement.cobblemonraiddens.raid_dynamax.title"),
-                Component.translatable("advancement.cobblemonraiddens.raid_dynamax.description"),
-                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
-                AdvancementType.GOAL,
-                true, false, true
-            )
-            .parent(teraRaidAchievement)
-            .addCriterion("completed_dynamax", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.DYNAMAX.getId()))
-            .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_dynamax");
-
-        Advancement.Builder.advancement()
-            .display(
-                MegaShowdownItems.MEGA_STONE.get(),
-                Component.translatable("advancement.cobblemonraiddens.raid_mega.title"),
-                Component.translatable("advancement.cobblemonraiddens.raid_mega.description"),
-                ResourceLocation.withDefaultNamespace("textures/gui/advancements/backgrounds/adventure.png"),
-                AdvancementType.GOAL,
-                true, false, true
-            )
-            .parent(dynamaxRaidAchievement)
-            .addCriterion("completed_mega", RaidFeatureTrigger.TriggerInstance.feature(RaidFeature.Base.MEGA.getId()))
-            .save(consumer, CobblemonRaidDens.MOD_ID + ":raid_mega");
 
         Advancement.Builder.advancement()
             .display(

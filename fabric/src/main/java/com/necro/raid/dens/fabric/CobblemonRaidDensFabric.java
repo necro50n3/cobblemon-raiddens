@@ -101,6 +101,7 @@ public class CobblemonRaidDensFabric implements ModInitializer {
 
         if (ModCompat.CREATE.isLoaded()) this.registerDatapack("raiddenscreatecompat", "Raid Dens Create Compat");
         if (ModCompat.MEKANISM.isLoaded()) this.registerDatapack("raiddensmekanismcompat", "Raid Dens Mekanism Compat");
+        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) this.registerDatapack("msdadvancements", "Raid Dens MSD Advancements");
     }
 
     @SuppressWarnings("all")

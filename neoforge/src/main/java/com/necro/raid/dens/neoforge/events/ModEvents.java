@@ -160,6 +160,7 @@ public class ModEvents {
     private static void onAddPackFinders(AddPackFindersEvent event) {
         if (ModCompat.CREATE.isLoaded()) registerDatapack(event, "raiddenscreatecompat", "Raid Dens Create Compat");
         if (ModCompat.MEKANISM.isLoaded()) registerDatapack(event, "raiddensmekanismcompat", "Raid Dens Mekanism Compat");
+        if (ModCompat.MEGA_SHOWDOWN.isLoaded()) registerDatapack(event, "msdadvancements", "Raid Dens MSD Advancements");
     }
 
     private static void registerDatapack(AddPackFindersEvent event, String path, String name) {
