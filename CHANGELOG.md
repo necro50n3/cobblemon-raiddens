@@ -13,7 +13,7 @@ This update makes some sweeping changes that may affect mod compatibilities. Dat
 - More uses for Raidite will be added in future updates.
 
 ### Raid Adventures
-- Added Raid Adventures, a type of multiphase raid battles inspired by Dynamax Adventures.
+- Added Raid Adventures, a type of multiphase raid battle inspired by Dynamax Adventures.
 - Raid Adventures can be identified by an especially powerful beam emitting from the Raid Crystal.
 - Raid Adventures can be defined by the `adventure` keyword when adding Raid Bosses. Refer to the WIki for formatting.
 - When entering a Raid Adventure, the host is presented with two choices to select for each phase before reaching the final boss. All raid bosses must be defeated to clear the Raid Adventure.
@@ -23,8 +23,11 @@ This update makes some sweeping changes that may affect mod compatibilities. Dat
 ### Other Changes
 - Added raids for the new Pokemon added in Cobblemon 1.8.2.
 - Added limited Genesis Forms compatibility.
+- Mega Showdown compat advancements will now only load if MSD is installed.
+- Changed the raid boss aspect to a global `raid-boss`.
+- Reward Pokemon are now marked by the global aspect `raid-reward`.
 - To balance raid adventures, certain changes to raid battles were made:
   - Players can no longer access their PC or using a Healing Machine once the raid has started.
   - Players can only use healing items when their entire team is fainted once the raid has started.
   - Players are now restricted to their raid party once the raid has started.
-  - The reward Pokemon from raids are now added to the player's PC instead of party.
+  - The reward Pokemon from raids is now added to the player's PC instead of party.
