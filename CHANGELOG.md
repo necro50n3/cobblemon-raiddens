@@ -23,9 +23,9 @@ This update makes some sweeping changes that may affect mod compatibilities. Dat
 ### Other Changes
 - Added raids for the new Pokemon added in Cobblemon 1.8.2.
 - Added limited Genesis Forms compatibility.
-- Mega Showdown compat advancements will now only load if MSD is installed.
 - Changed the raid boss aspect to a global `raid-boss`.
 - Reward Pokemon are now marked by the global aspect `raid-reward`.
+- Mega Showdown compat advancements will now only load if MSD is installed.
 - To balance raid adventures, certain changes to raid battles were made:
   - Players can no longer access their PC or using a Healing Machine once the raid has started.
   - Players can only use healing items when their entire team is fainted once the raid has started.
