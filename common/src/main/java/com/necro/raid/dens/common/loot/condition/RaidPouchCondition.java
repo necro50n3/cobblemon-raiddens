@@ -51,6 +51,6 @@ public record RaidPouchCondition(Optional<RaidTierPredicate> tier, Optional<Raid
     }
 
     public static LootItemCondition.Builder matches(@Nullable String feature) {
-        return matches(null, null, feature, false);
+        return matches(null, null, feature, null);
     }
 }
