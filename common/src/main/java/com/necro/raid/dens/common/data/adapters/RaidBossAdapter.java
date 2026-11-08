@@ -6,6 +6,8 @@ import com.necro.raid.dens.common.data.raid.RaidBoss;
 import java.lang.reflect.Type;
 
 public class RaidBossAdapter implements JsonSerializer<RaidBoss>, JsonDeserializer<RaidBoss> {
+    public static final RaidBossAdapter INSTANCE = new RaidBossAdapter();
+
     @Override
     public RaidBoss deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         return RaidBoss.GSON.fromJson(json, RaidBoss.class);

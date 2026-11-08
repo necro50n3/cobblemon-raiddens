@@ -1,0 +1,14 @@
+{
+    "pokemon": {
+        "species": "tympole",
+        "moves": [
+            "bubblebeam",
+            "round",
+            "mudshot",
+            "acid"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "WATER",
+    "weight": 20.0
+}

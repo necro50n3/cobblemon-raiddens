@@ -1,35 +1,33 @@
 package com.necro.raid.dens.common.raids;
 
 import com.cobblemon.mod.common.Cobblemon;
+import com.cobblemon.mod.common.api.storage.party.PlayerPartyStore;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
 import com.cobblemon.mod.common.battles.actor.PokemonBattleActor;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.cobblemon.mod.common.net.messages.client.storage.party.SetPartyReferencePacket;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
+import com.necro.asymmetric.battles.common.api.BattleParticipant;
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
+import com.necro.raid.dens.common.party.RaidStoreFactory;
 import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.ITransformer;
 import com.necro.raid.dens.common.util.RaidUtils;
 import kotlin.Unit;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class RaidBuilder {
-    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss) {
-        List<BattlePokemon> battleTeam = PlayerExtensionsKt.party(player)
-            .toBattleTeam(false, false, leadingPokemon)
-            .stream().filter(p ->
-                !p.getEffectedPokemon().isFainted()
-                && !RaidUtils.isPokemonBlacklisted(p.getEffectedPokemon())
-                && !RaidUtils.isAbilityBlacklisted(p.getEffectedPokemon().getAbility())
-                && !RaidUtils.isHeldItemBlacklisted(p.getEffectedPokemon().getHeldItem$common())
-            ).toList();
-        if (!battleTeam.isEmpty()) battleTeam = battleTeam.subList(0, Mth.clamp(battleTeam.size(), 1, boss.getRaidPartySize()));
+    public static BattleStartResult build(ServerPlayer player, PokemonEntity pokemonEntity, @Nullable UUID leadingPokemon, RaidBoss boss, RaidBoss active) {
+        PlayerPartyStore party = getRaidParty(player, leadingPokemon, boss);
+        List<BattlePokemon> battleTeam = !party.isEmpty() ? PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon) : List.of();
+
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
         PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
             new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
@@ -37,7 +35,7 @@ public class RaidBuilder {
         );
         setTransformTarget(pokemonEntity, wildActor);
 
-        BattleFormat battleFormat = BattleFormat.Companion.getGEN_9_SINGLES();
+        BattleFormat battleFormat = boss.getBattleFormat().format();
         ErroredBattleStart errors = new ErroredBattleStart();
 
         if (!battleTeam.isEmpty() && battleTeam.getFirst().getHealth() <= 0) {
@@ -56,12 +54,49 @@ public class RaidBuilder {
             errors.getParticipantErrors().get(playerActor).add(BattleStartError.Companion.alreadyInBattle(playerActor));
         }
 
-        playerActor.setBattleTheme(boss.getMusic());
+        playerActor.setBattleTheme(active.getMusic());
 
         if (errors.isEmpty()) {
-            return BattleRegistry.startBattle(battleFormat, new BattleSide(playerActor), new BattleSide(wildActor), true);
+            BattleSide side1;
+            BattleSide side2;
+            if (boss.getBattleFormat() == RaidBattleFormat.RAID) {
+                side1 = new BattleSide(playerActor, BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor());
+                side2 = new BattleSide(wildActor, BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor());
+            }
+            else {
+                side1 = new BattleSide(playerActor);
+                side2 = new BattleSide(wildActor);
+            }
+
+            return BattleRegistry.startBattle(battleFormat, side1, side2, true);
         }
         else return errors;
+    }
+
+    public static PlayerPartyStore getRaidParty(ServerPlayer player, @Nullable UUID leadingPokemon, RaidBoss boss) {
+        PlayerPartyStore party;
+        if (!RaidStoreFactory.hasPlayerParty(player.getUUID())) {
+            PlayerPartyStore original = PlayerExtensionsKt.party(player);
+            List<Pokemon> playerTeam = new ArrayList<>(original.toGappyList());
+            Pokemon lead = leadingPokemon != null ? original.get(leadingPokemon) : null;
+            if (lead != null && !playerTeam.isEmpty()) {
+                playerTeam.remove(lead);
+                playerTeam.addFirst(lead);
+            }
+            playerTeam = playerTeam.stream()
+                .filter(p -> p != null
+                    && !RaidUtils.isPokemonBlacklisted(p)
+                    && !RaidUtils.isAbilityBlacklisted(p.getAbility())
+                    && !RaidUtils.isHeldItemBlacklisted(p.heldItem()))
+                .toList();
+            playerTeam = playerTeam.subList(0, Math.min(playerTeam.size(), boss.getRaidPartySize()));
+            RaidStoreFactory.addPlayerParty(player, playerTeam);
+
+            party = PlayerExtensionsKt.party(player);
+            new SetPartyReferencePacket(party.getUuid()).sendToPlayer(player);
+        }
+        else party = PlayerExtensionsKt.party(player);
+        return party;
     }
 
     private static void setTransformTarget(PokemonEntity pokemonEntity, PokemonBattleActor wildActor) {

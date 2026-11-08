@@ -1,0 +1,7 @@
+{
+    "include": {
+        "tier": [ "TIER_ONE" ]
+    },
+    "biome": [],
+    "weight": 0
+}

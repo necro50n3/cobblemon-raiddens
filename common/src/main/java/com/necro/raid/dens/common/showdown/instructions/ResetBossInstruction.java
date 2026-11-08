@@ -27,8 +27,9 @@ public class ResetBossInstruction implements InterpreterInstruction {
     @Override
     public void invoke(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.origin == null) return;
-        else if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        else if (!((IRaidBattle) battle).crd_isRaid()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
+        if (raid == null) return;
 
         battle.dispatchGo(() -> {
             battle.broadcastChatMessage(Component.translatable("battle.cobblemonraiddens.reset.boss", origin.getName()));

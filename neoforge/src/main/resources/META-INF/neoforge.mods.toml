@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "${display_name}"
 authors = "NecroSo1"
 description = "${description}"
-logoFile = "assets/cobblemonraiddens/icon.png"
+logoFile = "assets/${archives_name}/icon.png"
 displayURL = "https://github.com/necro50n3/cobblemon-raiddens"
 
 [[dependencies.cobblemonraiddens]]
@@ -41,10 +41,16 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.cobblemonraiddens]]
+modId = "asymmetricbattles"
+mandatory = true
+versionRange = "[${asymmetricbattles_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.cobblemonraiddens]]
 modId = "mega_showdown"
 mandatory = false
 type = "optional"
-versionRange = "[1.3.3+1.8.4+1.21.1,)"
 
 [[dependencies.cobblemonraiddens]]
 modId = "cobbledollars"

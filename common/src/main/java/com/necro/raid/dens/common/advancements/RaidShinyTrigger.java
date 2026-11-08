@@ -32,7 +32,7 @@ public class RaidShinyTrigger extends SimpleCriterionTrigger<RaidShinyTrigger.Tr
         }
 
         public static Criterion<TriggerInstance> shiny(boolean shiny) {
-            return ((RaidShinyTrigger) RaidDenCriteriaTriggers.RAID_SHINY.value()).createCriterion(new RaidShinyTrigger.TriggerInstance(Optional.empty(), Optional.of(shiny)));
+            return RaidDenCriteriaTriggers.RAID_SHINY.value().createCriterion(new RaidShinyTrigger.TriggerInstance(Optional.empty(), Optional.of(shiny)));
         }
     }
 }

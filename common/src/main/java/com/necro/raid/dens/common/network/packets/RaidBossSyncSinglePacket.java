@@ -43,6 +43,7 @@ public record RaidBossSyncSinglePacket(RaidBoss boss) implements CustomPacketPay
         buf.writeFloat(boss.getShinyRate());
         buf.writeInt(boss.getMaxCatches());
         buf.writeFloat(boss.getCatchRate());
+        buf.writeBoolean(boss.isAdventure());
 
         buf.writeResourceLocation(boss.getDisplaySpeciesIdentifier());
         buf.writeCollection(boss.getDisplayAspects(), FriendlyByteBuf::writeUtf);
@@ -57,6 +58,7 @@ public record RaidBossSyncSinglePacket(RaidBoss boss) implements CustomPacketPay
         boss.setShinyRate(buf.readFloat());
         boss.setMaxCatches(buf.readInt());
         boss.setCatchRate(buf.readFloat());
+        boss.setIsAdventure(buf.readBoolean());
 
         boss.setDisplaySpecies(buf.readResourceLocation());
         boss.setDisplayAspects(buf.readCollection(HashSet::new, FriendlyByteBuf::readUtf));

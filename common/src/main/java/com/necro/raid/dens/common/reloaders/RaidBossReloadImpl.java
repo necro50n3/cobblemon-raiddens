@@ -3,7 +3,7 @@ package com.necro.raid.dens.common.reloaders;
 import com.google.gson.JsonObject;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
-import com.necro.raid.dens.common.registry.RaidRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class RaidBossReloadImpl extends AbstractReloadImpl {
@@ -14,7 +14,7 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
     @Override
     protected void preLoad() {
         CobblemonRaidDens.LOGGER.info("Registering raid bosses");
-        RaidRegistry.clear();
+        CustomRaidRegistries.RAID_REGISTRY.clear();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
         RaidBoss raidBoss = RaidBoss.GSON.fromJson(object, RaidBoss.class);
         raidBoss.setId(key);
         raidBoss.applyDefaults();
-        RaidRegistry.register(raidBoss);
+        CustomRaidRegistries.RAID_REGISTRY.register(raidBoss);
     }
 
     @Override

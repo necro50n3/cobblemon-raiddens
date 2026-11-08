@@ -4,7 +4,7 @@
     "aspect_conditions": {
         "apply": {
             "aspect": {
-                "required_aspects": [["raid"]]
+                "required_aspects": [["raid-boss"]]
             },
             "aspects": ["djinn_state=confined"]
         }

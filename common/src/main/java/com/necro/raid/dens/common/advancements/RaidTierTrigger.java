@@ -33,7 +33,7 @@ public class RaidTierTrigger extends SimpleCriterionTrigger<RaidTierTrigger.Trig
         }
 
         public static Criterion<TriggerInstance> tier(RaidTier tier) {
-            return ((RaidTierTrigger) RaidDenCriteriaTriggers.RAID_TIER.value()).createCriterion(new RaidTierTrigger.TriggerInstance(Optional.empty(), Optional.of(tier)));
+            return RaidDenCriteriaTriggers.RAID_TIER.value().createCriterion(new RaidTierTrigger.TriggerInstance(Optional.empty(), Optional.of(tier)));
         }
     }
 }

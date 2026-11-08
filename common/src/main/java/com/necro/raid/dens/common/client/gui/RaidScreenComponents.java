@@ -10,4 +10,7 @@ public class RaidScreenComponents {
     public static AbstractRaidButton ACCEPT_REWARD_BUTTON;
     public static AbstractRaidButton DENY_REWARD_BUTTON;
     public static AbstractRaidButton DENY_WIDE_REWARD_BUTTON;
+
+    public static AbstractRaidButton LEFT_ADVENTURE_BUTTON;
+    public static AbstractRaidButton RIGHT_ADVENTURE_BUTTON;
 }

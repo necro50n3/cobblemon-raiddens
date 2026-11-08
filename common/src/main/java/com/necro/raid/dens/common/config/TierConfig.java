@@ -1,5 +1,6 @@
 package com.necro.raid.dens.common.config;
 
+import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.Script;
 
 import java.util.Map;
@@ -28,4 +29,5 @@ public interface TierConfig {
     int energy();
     float requiredDamage();
     float catchRate();
+    RaidBattleFormat battleFormat();
 }

@@ -3,6 +3,8 @@
   "advancement.cobblemonraiddens.great_friend.description": "각 응원을 하나씩 모두 사용하세요.",
   "advancement.cobblemonraiddens.join_raid.title": "코블몬 레이드 굴",
   "advancement.cobblemonraiddens.join_raid.description": "첫 레이드에 참가하세요.",
+
+
   "advancement.cobblemonraiddens.raid_dynamax.title": "다이맥스 어드벤처",
   "advancement.cobblemonraiddens.raid_dynamax.description": "다이맥스 레이드를 클리어하세요.",
   "advancement.cobblemonraiddens.raid_mega.title": "넘쳐흐르는 힘",
@@ -37,6 +39,8 @@
   "battle.cobblemonraiddens.reset.boss": "%1$s의 나쁜 상태 변화가 사라졌다!",
   "battle.cobblemonraiddens.reset.player": "%1$s에 걸린 능력 상승 효과가 사라졌다!",
   "biome.cobblemonraiddens.raid_den": "크리스탈 동굴",
+
+
   "block.cobblemonraiddens.raid_crystal_block": "레이드 굴 크리스탈",
   "block.cobblemonraiddens.raid_home_block": "레이드 굴 크리스탈",
   "category.cobblemonraiddens.raid_dens": "레이드 굴",
@@ -54,6 +58,7 @@
   "error.cobblemonraiddens.players_in_dimension": "해당 차원에 아직 플레이어가 남아 있습니다.",
   "error.cobblemonraiddens.player_in_raid": "레이드 도중인 플레이어는 새로고침할 수 없습니다.",
   "error.cobblemonraiddens.raid_boss_not_found": "레이드 보스가 없어 레이드 파우치를 생성하지 못했습니다.",
+
 
 
   "feature.cobblemonraiddens.default": "일반",
@@ -77,6 +82,7 @@
   "item.cobblemonraiddens.cheer_defense.tooltip": "아군의 방어와 특수방어를 50% 올립니다",
   "item.cobblemonraiddens.cheer_heal": "회복 응원",
   "item.cobblemonraiddens.cheer_heal.tooltip": "아군의 HP를 50% 회복합니다",
+
   "item.cobblemonraiddens.raid_pouch": "레이드 파우치",
   "item.cobblemonraiddens.raid_shard": "레이드 샤드",
   "item.cobblemonraiddens.raid_shard.tooltip": "레이드를 클리어해 레이드 에너지를 모으세요",
@@ -103,6 +109,7 @@
 
   "message.cobblemonraiddens.command.remove_dimension": "레이드 차원이 제거되었습니다.",
   "message.cobblemonraiddens.raid.accepted_request": "요청이 수락되었습니다.",
+
   "message.cobblemonraiddens.raid.already_hosting": "이미 다른 레이드를 호스팅하고 있습니다.",
   "message.cobblemonraiddens.raid.already_in_queue": "이미 레이드 참가 대기 중입니다.",
   "message.cobblemonraiddens.raid.already_participating": "이미 다른 레이드에 참가 중입니다.",
@@ -135,6 +142,7 @@
   "message.cobblemonraiddens.reward.reward_item": "보상을 받았습니다!",
   "message.cobblemonraiddens.reward.reward_not_pokeball": "포켓몬을 받으려면 몬스터볼을 손에 들어야 합니다.",
   "message.cobblemonraiddens.reward.reward_pokemon": "포켓몬을 받았습니다!",
+
   "screen.cobblemonraiddens.raid.title": "레이드 진행 중",
   "screen.cobblemonraiddens.raid.title.1": "레이드",
   "screen.cobblemonraiddens.raid.title.2": "진행 중",
@@ -160,7 +168,9 @@
   "stat.cobblemonraiddens.tier_five_completed": "클리어한 5성 레이드 수",
   "stat.cobblemonraiddens.tier_six_completed": "클리어한 6성 레이드 수",
   "stat.cobblemonraiddens.tier_seven_completed": "클리어한 7성 레이드 수",
+
   "tag.item.cobblemonraiddens.raid_den_keys": "레이드 굴 키",
+
   "text.autoconfig.cobblemonraiddens/client.title": "코블몬 레이드 굴 설정",
   "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "비콘 빔",
   "text.autoconfig.cobblemonraiddens/client.category.gui": "GUI",
@@ -172,6 +182,7 @@
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five": "5성 비콘",
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six": "6성 비콘",
   "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven": "7성 비콘",
+
   "text.autoconfig.cobblemonraiddens/client.option.show_legacy_beacon": "기존 비콘 효과를 표시합니다",
   "text.autoconfig.cobblemonraiddens/client.option.show_particles": "레이드 크리스탈 파티클 효과를 표시합니다",
   "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "참가 요청 자동 수락",

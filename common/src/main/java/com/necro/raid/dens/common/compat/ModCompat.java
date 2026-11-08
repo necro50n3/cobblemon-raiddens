@@ -6,11 +6,14 @@ public enum ModCompat {
     COBBLEMON("cobblemon"),
     COBBLEDOLLARS("cobbledollars"),
     MEGA_SHOWDOWN("mega_showdown"),
+    GENESISFORMS("genesisforms"),
     RCT_API("rctapi"),
     SIZE_VARIATIONS("cobblemonsizevariation"),
     IRIS("iris"),
     VOCALIZED("cobblemon_vocalized"),
-    SHADOWED_HEARTS("shadowedhearts");
+    SHADOWED_HEARTS("shadowedhearts"),
+    CREATE("create"),
+    MEKANISM("mekanism");
 
     private static Function2<String, String, Integer> VERSION_COMPARATOR = null;
 

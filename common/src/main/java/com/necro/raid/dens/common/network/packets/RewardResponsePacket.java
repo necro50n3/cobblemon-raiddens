@@ -51,16 +51,16 @@ public record RewardResponsePacket(boolean catchPokemon) implements CustomPacket
         handler.givePokemonToPlayer(player).whenCompleteAsync((result, error) -> {
             if (error != null || !result) return;
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, handler.itemReward(), player)), player.getServer());
         });
     }
 
     private void getItems(RewardHandler handler, ServerPlayer player) {
         handler.giveItemToPlayer(player, false).whenCompleteAsync((result, error) -> {
             if (error != null || !result) return;
-            player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
+            if (handler.itemReward()) player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_item"), true);
             RaidHelper.REWARD_QUEUE.remove(player.getUUID());
-            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, player)), player.getServer());
+            handler.raidBoss((Consumer<RaidBoss>) boss -> RaidEvents.RAID_REWARD_POST.emit(new RaidRewardPostEvent(boss, handler.itemReward(), player)), player.getServer());
         });
     }
 }

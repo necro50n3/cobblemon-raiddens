@@ -1,0 +1,17 @@
+{
+    "pokemon": {
+        "species": "burmy",
+        "moves": [
+            "tackle"
+        ],
+        "custom_properties": [
+            {
+                "name": "bagworm_cloak",
+                "value": "sandy"
+            }
+        ]
+    },
+    "raid_tier": "TIER_ONE",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

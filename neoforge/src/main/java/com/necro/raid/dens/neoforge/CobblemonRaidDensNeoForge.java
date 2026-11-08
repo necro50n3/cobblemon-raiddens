@@ -3,7 +3,6 @@ package com.necro.raid.dens.neoforge;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.compat.ModCompat;
 import com.necro.raid.dens.neoforge.advancements.NeoForgeCriteriaTriggers;
-import com.necro.raid.dens.neoforge.blocks.NeoForgeBlockEntities;
 import com.necro.raid.dens.neoforge.blocks.NeoForgeBlocks;
 import com.necro.raid.dens.neoforge.components.NeoForgeComponents;
 import com.necro.raid.dens.neoforge.dimensions.NeoForgeDimensions;
@@ -36,9 +35,9 @@ public class CobblemonRaidDensNeoForge {
 
         CobblemonRaidDens.init();
 
-        NeoForgeBlocks.registerModBlocks();
+        NeoForgeBlocks.registerBlocks();
         NeoForgeBlocks.BLOCKS.register(modBus);
-        NeoForgeBlockEntities.BLOCK_ENTITIES.register(modBus);
+        NeoForgeBlocks.BLOCK_ENTITIES.register(modBus);
         NeoForgeComponents.registerDataComponents();
         NeoForgeComponents.DATA_COMPONENT_TYPES.register(modBus);
         NeoForgeItems.registerItems();

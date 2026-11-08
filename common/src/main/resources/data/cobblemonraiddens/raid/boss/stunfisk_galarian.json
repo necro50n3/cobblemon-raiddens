@@ -1,0 +1,20 @@
+{
+    "pokemon": {
+        "species": "stunfisk",
+        "moves": [
+            "snaptrap",
+            "muddywater",
+            "suckerpunch",
+            ["tm_coverage", "offensive_tm", "move_any"]
+        ],
+        "custom_properties": [
+            {
+                "name": "galarian",
+                "value": true
+            }
+        ]
+    },
+    "raid_tier": "TIER_FOUR",
+    "raid_type": "GROUND",
+    "weight": 20.0
+}

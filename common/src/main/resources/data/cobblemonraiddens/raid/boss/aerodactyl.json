@@ -10,5 +10,19 @@
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "ROCK",
-    "weight": 20.0
+    "weight": 20.0,
+    "adventure": [
+        {
+            "type": "raid",
+            "bosses": [ "#cobblemonraiddens:fossil_basic" ]
+        },
+        {
+            "type": "raid",
+            "bosses": [ "#cobblemonraiddens:fossil_stage_one" ]
+        },
+        {
+            "type": "recover"
+        }
+    ],
+    "key": "cobblemonraiddens:raidite"
 }

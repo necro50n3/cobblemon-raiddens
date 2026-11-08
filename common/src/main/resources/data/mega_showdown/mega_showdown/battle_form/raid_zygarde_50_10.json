@@ -4,7 +4,7 @@
     "aspect_conditions": {
         "apply": {
             "aspect": {
-                "required_aspects": [["10-percent", "raid"]]
+                "required_aspects": [["10-percent", "raid-boss"]]
             },
             "aspects": ["percent_cells=50"]
         },

@@ -9,10 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ScriptRegistry extends StringRegistry<ScriptDeserializer> {
+public class ScriptRegistry extends JsonRegistry<ScriptDeserializer> {
     public ScriptRegistry() {
         super(null);
     }
@@ -39,32 +38,5 @@ public class ScriptRegistry extends StringRegistry<ScriptDeserializer> {
         List<AbstractEvent> events = ((List<?>) scripts).stream().map(this::decode).filter(Objects::nonNull).toList();
         if (events.isEmpty()) throw new JsonSyntaxException("Failed to parse field \"scripts\"");
         return events;
-    }
-
-    public <T, R> R transform(Map<String, Object> script, String key, Class<T> clazz, Function<T, R> transform) {
-        return transform.apply(this.parse(script, key, clazz));
-    }
-
-    public <T, R> R transform(Map<String, Object> script, String key, Class<T> clazz, Function<T, R> transform, R defaultValue) {
-        Object value = script.get(key);
-        if (value == null) return defaultValue;
-        return transform.apply(this.parseCommon(value, key, clazz));
-    }
-
-    public <T> T parse(Map<String, Object> script, String key, Class<T> clazz) {
-        Object value = script.get(key);
-        return this.parseCommon(value, key, clazz);
-    }
-
-    public <T> T parse(Map<String, Object> script, String key, Class<T> clazz, T defaultValue) {
-        Object value = script.get(key);
-        if (value == null) return defaultValue;
-        return this.parseCommon(value, key, clazz);
-    }
-
-    private <T> T parseCommon(Object value, String key, Class<T> clazz) throws JsonSyntaxException {
-        if (value == null) throw new JsonSyntaxException("Missing field \"" + key + "\"");
-        else if (!clazz.isInstance(value)) throw new JsonSyntaxException("Failed to parse field \"" + key + "\"");
-        return clazz.cast(value);
     }
 }

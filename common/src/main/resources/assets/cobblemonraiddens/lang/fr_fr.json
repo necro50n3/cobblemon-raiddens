@@ -3,6 +3,8 @@
     "advancement.cobblemonraiddens.great_friend.description": "Utilisez une fois chaque encouragement.",
     "advancement.cobblemonraiddens.join_raid.title": "Antres de Raid Cobblemon",
     "advancement.cobblemonraiddens.join_raid.description": "Rejoignez votre premier raid.",
+
+
     "advancement.cobblemonraiddens.raid_dynamax.title": "Une Aventure Dynamax",
     "advancement.cobblemonraiddens.raid_dynamax.description": "Vainquez un raid Dynamax.",
     "advancement.cobblemonraiddens.raid_mega.title": "Débordant de Puissance",
@@ -37,6 +39,8 @@
     "battle.cobblemonraiddens.reset.boss": "%1$s a annulé ses effets négatifs !",
     "battle.cobblemonraiddens.reset.player": "%1$s a annulé vos améliorations de statistiques !",
     "biome.cobblemonraiddens.raid_den": "Caverne de Cristal",
+
+
     "block.cobblemonraiddens.raid_crystal_block": "Cristal d’Antre de Raid",
     "block.cobblemonraiddens.raid_home_block": "Cristal d’Antre de Raid",
     "category.cobblemonraiddens.raid_dens": "Antres de Raid",
@@ -53,6 +57,7 @@
 
     "error.cobblemonraiddens.players_in_dimension": "Il y a encore des joueurs dans cette dimension.",
     "error.cobblemonraiddens.player_in_raid": "Vous ne pouvez pas actualiser un joueur en plein raid.",
+
 
 
 
@@ -76,6 +81,7 @@
     "item.cobblemonraiddens.cheer_defense.tooltip": "Augmente la Défense et la Défense Spéciale du groupe de 50 %",
     "item.cobblemonraiddens.cheer_heal": "Encouragement de Soin",
     "item.cobblemonraiddens.cheer_heal.tooltip": "Restaure 50 % des PV du groupe",
+
     "item.cobblemonraiddens.raid_pouch": "Sac de Raid",
 
 
@@ -102,6 +108,7 @@
 
     "message.cobblemonraiddens.command.remove_dimension": "La dimension du raid a été supprimée.",
     "message.cobblemonraiddens.raid.accepted_request": "Votre demande a été acceptée.",
+
     "message.cobblemonraiddens.raid.already_hosting": "Vous hébergez déjà un autre raid.",
     "message.cobblemonraiddens.raid.already_in_queue": "Vous êtes déjà en attente pour rejoindre un raid.",
     "message.cobblemonraiddens.raid.already_participating": "Vous participez déjà à un autre raid.",
@@ -134,6 +141,7 @@
     "message.cobblemonraiddens.reward.reward_item": "Vous avez reçu la récompense !",
     "message.cobblemonraiddens.reward.reward_not_pokeball": "Vous devez tenir une Poké Ball pour récupérer le Pokémon.",
     "message.cobblemonraiddens.reward.reward_pokemon": "Vous avez reçu le Pokémon !",
+
     "screen.cobblemonraiddens.raid.title": "Raid en cours",
     "screen.cobblemonraiddens.raid.title.1": "Raid",
     "screen.cobblemonraiddens.raid.title.2": "en cours",
@@ -159,7 +167,9 @@
     "stat.cobblemonraiddens.tier_five_completed": "Raids de niveau cinq terminés",
     "stat.cobblemonraiddens.tier_six_completed": "Raids de niveau six terminés",
     "stat.cobblemonraiddens.tier_seven_completed": "Raids de niveau sept terminés",
+
     "tag.item.cobblemonraiddens.raid_den_keys": "Clé d’Antre de Raid",
+
     "text.autoconfig.cobblemonraiddens/client.title": "Configuration de Cobblemon Raid Dens",
     "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "Rayons de balise",
     "text.autoconfig.cobblemonraiddens/client.category.gui": "Interface",
@@ -171,6 +181,7 @@
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_five": "Balise niveau cinq",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_six": "Balise niveau six",
     "text.autoconfig.cobblemonraiddens/client.option.beam_strength_tier_seven": "Balise niveau sept",
+
 
 
     "text.autoconfig.cobblemonraiddens/client.option.auto_accept_requests": "Acceptation automatique des demandes",

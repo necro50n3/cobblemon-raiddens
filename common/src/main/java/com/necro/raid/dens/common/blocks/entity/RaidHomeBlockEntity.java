@@ -9,7 +9,7 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class RaidHomeBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class RaidHomeBlockEntity extends BlockEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public RaidHomeBlockEntity(BlockEntityType<? extends RaidHomeBlockEntity> blockEntityType, BlockPos blockPos, BlockState blockState) {

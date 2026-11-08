@@ -1,7 +1,7 @@
 package com.necro.raid.dens.common.reloaders;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
-import com.necro.raid.dens.common.registry.RaidDenRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -13,13 +13,13 @@ public class RaidTemplateReloadImpl extends AbstractReloadImpl {
     @Override
     protected void preLoad() {
         CobblemonRaidDens.LOGGER.info("Registering raid den structures");
-        RaidDenRegistry.clear();
+        CustomRaidRegistries.RAID_DEN_REGISTRY.clear();
     }
 
     @Override
     protected void onLoad(ResourceLocation key, CompoundTag nbt) {
         if (!nbt.contains("raid_pois")) return;
-        RaidDenRegistry.register(key, nbt.getCompound("raid_pois"));
+        CustomRaidRegistries.RAID_DEN_REGISTRY.register(key, nbt.getCompound("raid_pois"));
     }
 
     @Override

@@ -72,7 +72,8 @@ public enum RaidCrystalComponents implements IBlockComponentProvider, IServerDat
         RaidType type = blockState.getValue(RaidCrystalBlock.RAID_TYPE);
 
         MutableComponent component = raidBoss.getDisplaySpecies().getTranslatedName();
-        component.append(" | ").append(Component.translatable(RaidFeature.getTranslatable(raidBoss.getFeature())));
+        Component feature = Component.translatable(RaidFeature.getTranslatable(raidBoss.getFeature()));
+        component.append(" | ").append(feature);
         component.append(" | ").append(tier.getStars());
         tooltip.add(component, this.getUid());
 

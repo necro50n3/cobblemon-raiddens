@@ -24,9 +24,10 @@ repositories {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-    modImplementation "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
-    modImplementation "com.cobblemon:mod:$rootProject.cobblemon_version"
+    modCompileOnly "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+    modCompileOnly "com.cobblemon:mod:$rootProject.cobblemon_version"
+    modCompileOnly "software.bernie.geckolib:geckolib-common-$rootProject.geckolib_version"
+    modCompileOnly "com.necro.asymmetric.battles:asymmetricbattles-common:$rootProject.asymmetricbattles_version"
     modApi "com.bedrockk:molang:1.1.20"
     modCompileOnly(libs.graal.core)
 
@@ -43,6 +44,8 @@ dependencies {
     modRuntimeOnly "io.wispforest:accessories-common:1.1.0-beta.52+1.21.1"
     modCompileOnly "curse.maven:cobblemon-mega-showdown-1189523:9343426"
     modCompileOnly "dev.architectury:architectury:13.0.8"
+
+    modCompileOnly "curse.maven:cobblemon-genesis-forms-1291013:8858912"
 
     modCompileOnly "curse.maven:cobblemon-shadowed-hearts-1438842:7577271"
 

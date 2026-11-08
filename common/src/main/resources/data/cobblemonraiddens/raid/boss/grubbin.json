@@ -1,0 +1,13 @@
+{
+    "pokemon": {
+        "species": "grubbin",
+        "moves": [
+            "bite",
+            "bugbite",
+            "mudslap"
+        ]
+    },
+    "raid_tier": "TIER_TWO",
+    "raid_type": "BUG",
+    "weight": 20.0
+}

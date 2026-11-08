@@ -19,6 +19,7 @@ public class NeoForgeFeatures {
     public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE, CobblemonRaidDens.MOD_ID);
     public static final ResourceKey<BiomeModifier> ADD_RAID_DENS = registerKey("add_raid_dens");
     public static final ResourceKey<BiomeModifier> ADD_RAID_DENS_IGNORE_SKY = registerKey("add_raid_dens_ignore_sky");
+    public static final ResourceKey<BiomeModifier> ADD_RAIDITE_ORE = registerKey("add_raidite_ore");
 
     @SuppressWarnings("unchecked")
     public static void registerFeatures() {

@@ -8,6 +8,7 @@ import com.cobblemon.mod.common.api.properties.CustomPokemonProperty;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.necro.raid.dens.common.compat.ModCompat;
+import com.necro.raid.dens.common.compat.genesisforms.RaidDensGenesisCompat;
 import com.necro.raid.dens.common.compat.megashowdown.RaidDensMSDCompat;
 import com.necro.raid.dens.common.compat.shadowedhearts.RaidDensShadowedHeartsCompat;
 
@@ -80,6 +81,7 @@ public interface RaidFeature {
             @Override
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {
                 if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupTera(pokemon);
+                else if (ModCompat.GENESISFORMS.isLoaded()) RaidDensGenesisCompat.setupTera(pokemonEntity, pokemon);
             }
 
             @Override
@@ -102,6 +104,7 @@ public interface RaidFeature {
             @Override
             public void applyToBoss(Pokemon pokemon, PokemonEntity pokemonEntity) {
                 if (ModCompat.MEGA_SHOWDOWN.isLoaded()) RaidDensMSDCompat.setupDmax(pokemonEntity, pokemon);
+                else if (ModCompat.GENESISFORMS.isLoaded()) RaidDensGenesisCompat.setupDmax(pokemonEntity, pokemon);
             }
 
             @Override

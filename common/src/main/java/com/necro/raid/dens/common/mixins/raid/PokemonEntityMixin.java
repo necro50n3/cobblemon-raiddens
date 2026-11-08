@@ -1,14 +1,15 @@
 package com.necro.raid.dens.common.mixins.raid;
 
+import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.DataKeys;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.raids.RaidState;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import com.necro.raid.dens.common.util.IRaidAccessor;
 import com.necro.raid.dens.common.util.IShinyRate;
-import com.necro.raid.dens.common.registry.RaidRegistry;
 import com.necro.raid.dens.common.util.ITransformer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +26,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Mixin(PokemonEntity.class)
@@ -68,14 +67,12 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Override
     public boolean crd_isRaidBoss() {
-        return this.getPokemon().getAspects().contains("raid")
-            || this.getPokemon().getForcedAspects().contains("raid")
-            || this.crd_raidBoss != null;
+        return this.crd_raidBoss != null || this.getPokemon().getAspects().contains("raid-boss");
     }
 
     @Override
     public RaidBoss crd_getRaidBoss() {
-        return RaidRegistry.getRaidBoss(this.crd_raidBoss);
+        return CustomRaidRegistries.RAID_REGISTRY.getRaidBoss(this.crd_raidBoss);
     }
 
     @Override
@@ -84,9 +81,9 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
     }
 
     @Override
-    public void crd_setRaidBoss(ResourceLocation raidBoss) {
-        this.crd_raidBoss = raidBoss;
-        RaidRegistry.requestRaidBoss(this.crd_raidBoss);
+    public void crd_setRaidBoss(ResourceLocation raid) {
+        this.crd_raidBoss = raid;
+        CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.crd_raidBoss);
     }
 
     @Override
@@ -121,9 +118,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
         this.crd_transformTarget.setUuid(this.getPokemon().getUuid());
         this.crd_transformTarget.setTetheringId(null);
 
-        Set<String> aspects = new HashSet<>(this.getPokemon().getAspects());
-        aspects.add("raid");
-        this.getPokemon().setForcedAspects(aspects);
+        new StringSpeciesFeature("raid", "boss").apply(this.getPokemon());
         this.getPokemon().onChange(null);
     }
 
@@ -139,7 +134,7 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
             ci.cancel();
         }
 
-        if (this.level() instanceof ServerLevel && this.crd_isRaidBoss() && this.level().getGameTime() % 400 == 0) RaidRegistry.requestRaidBoss(this.crd_raidBoss);
+        if (this.level() instanceof ServerLevel && this.crd_raidBoss != null && this.level().getGameTime() % 400 == 0) CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(this.crd_raidBoss);
     }
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)

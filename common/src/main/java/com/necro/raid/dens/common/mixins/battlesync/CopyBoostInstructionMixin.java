@@ -23,10 +23,10 @@ public abstract class CopyBoostInstructionMixin {
 
     @Inject(method = "invoke", at = @At("HEAD"), remap = false)
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         BattlePokemon battlePokemon = this.getMessage().battlePokemon(0, battle);
-        if (battlePokemon == null || battlePokemon.getEntity() == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null || !raid.canSync()) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         BattlePokemon target = this.getMessage().battlePokemon(1, battle);

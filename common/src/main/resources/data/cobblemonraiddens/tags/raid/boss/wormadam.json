@@ -1,0 +1,17 @@
+{
+    "replace": false,
+    "values": [
+        {
+            "id": "#cobblemonraiddens:wormadam_plant",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:wormadam_sandy",
+            "required": false
+        },
+        {
+            "id": "#cobblemonraiddens:wormadam_trash",
+            "required": false
+        }
+    ]
+}

@@ -19,6 +19,8 @@ public class RaidDenPlacedFeatures {
     public static final ResourceKey<PlacedFeature> RAID_DEN_PLACED_KEY = registerKey("raid_den_placed");
     public static final ResourceKey<PlacedFeature> RAID_DEN_PLACED_IGNORE_SKY_KEY = registerKey("raid_den_placed_ignore_sky");
 
+    public static final ResourceKey<PlacedFeature> RAIDITE_PLACED_KEY = registerKey("raidite_ore_placed");
+
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         var configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
@@ -32,6 +34,14 @@ public class RaidDenPlacedFeatures {
         register(context, RAID_DEN_PLACED_IGNORE_SKY_KEY,
             configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAID_DEN_IGNORE_SKY_KEY),
             HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(30), VerticalAnchor.belowTop(30)),
+            BiomeFilter.biome()
+        );
+
+        register(context, RAIDITE_PLACED_KEY,
+            configuredFeatures.getOrThrow(RaidDenConfiguredFeatures.RAIDITE_KEY),
+            CountPlacement.of(12),
+            InSquarePlacement.spread(),
+            HeightRangePlacement.triangle(VerticalAnchor.aboveBottom(-80), VerticalAnchor.aboveBottom(80)),
             BiomeFilter.biome()
         );
     }

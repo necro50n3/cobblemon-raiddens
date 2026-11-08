@@ -21,6 +21,7 @@ public class BattleRegistryMixin {
         )
     )
     private String packTeamInject(BattleRegistry instance, List<BattlePokemon> pokemonList, Operation<String> original) {
+        if (pokemonList.isEmpty()) return original.call(instance, pokemonList);
         BattleActor actor = pokemonList.getFirst().getActor();
         BattlePokemon transformTarget = ((ITransformer) actor).crd_getTransformBattlePokemon();
         return original.call(instance, transformTarget == null ? pokemonList : List.of(transformTarget));

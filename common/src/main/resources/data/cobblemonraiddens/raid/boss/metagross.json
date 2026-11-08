@@ -10,5 +10,16 @@
     },
     "raid_tier": "TIER_FIVE",
     "raid_type": "STEEL",
-    "weight": 20.0
+    "weight": 20.0,
+    "adventure": [
+        {
+            "type": "raid",
+            "bosses": [ "@cobblemonraiddens:tier_three" ]
+        },
+        {
+            "type": "raid",
+            "bosses": [ "@cobblemonraiddens:tier_four" ]
+        }
+    ],
+    "key": "cobblemonraiddens:raidite"
 }

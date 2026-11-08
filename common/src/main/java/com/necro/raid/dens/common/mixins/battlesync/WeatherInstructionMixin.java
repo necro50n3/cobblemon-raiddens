@@ -31,10 +31,10 @@ public abstract class WeatherInstructionMixin {
 
     @Inject(method = "invoke", at = @At("HEAD"), remap = false, cancellable = true)
     private void invokeInject(PokemonBattle battle, CallbackInfo ci) {
-        if (!((IRaidBattle) battle).crd_isRaidBattle()) return;
-        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidBattle();
+        if (!((IRaidBattle) battle).crd_isRaid()) return;
+        RaidInstance raid = ((IRaidBattle) battle).crd_getRaidSession().getActive();
         BattlePokemon battlePokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
-        if (battlePokemon == null || battlePokemon.getEntity() == null) return;
+        if (battlePokemon == null || battlePokemon.getEntity() == null || raid == null || !raid.canSync()) return;
         else if (!((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
 
         if (this.getMessage().hasOptionalArgument("upkeep")) return;
@@ -50,7 +50,7 @@ public abstract class WeatherInstructionMixin {
                 raid.updateBattleState(battle, battleState -> battleState.addWeather(weather));
                 raid.updateBattleContext(battle, b -> {
                     b.getContextManager().add(new BasicContext(weather, b.getTurn(), BattleContext.Type.WEATHER, null));
-                    b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.start", weather)));
+                    b.broadcastChatMessage(LocalizationUtilsKt.battleLang(String.format("weather.%s.run", weather)));
                 });
             }
             else {
@@ -73,7 +73,7 @@ public abstract class WeatherInstructionMixin {
             }
             else if (!weather.equals("none")) {
                 battle.getContextManager().add(ShowdownInterpreter.INSTANCE.getContextFromAction(this.getMessage(), BattleContext.Type.WEATHER, battle));
-                lang = LocalizationUtilsKt.battleLang(String.format("weather.%s.start", weather));
+                lang = LocalizationUtilsKt.battleLang(String.format("weather.%s.run", weather));
             }
             else {
                 Collection<BattleContext> context = battle.getContextManager().get(BattleContext.Type.WEATHER);

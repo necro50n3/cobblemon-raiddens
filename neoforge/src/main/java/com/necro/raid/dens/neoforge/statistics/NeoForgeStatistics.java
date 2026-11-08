@@ -21,5 +21,6 @@ public class NeoForgeStatistics {
         CUSTOM_STATS.register(RaidStatistics.TIER_FIVE_COMPLETED.getPath(), () -> RaidStatistics.TIER_FIVE_COMPLETED);
         CUSTOM_STATS.register(RaidStatistics.TIER_SIX_COMPLETED.getPath(), () -> RaidStatistics.TIER_SIX_COMPLETED);
         CUSTOM_STATS.register(RaidStatistics.TIER_SEVEN_COMPLETED.getPath(), () -> RaidStatistics.TIER_SEVEN_COMPLETED);
+        CUSTOM_STATS.register(RaidStatistics.ADVENTURE_COMPLETED.getPath(), () -> RaidStatistics.ADVENTURE_COMPLETED);
     }
 }

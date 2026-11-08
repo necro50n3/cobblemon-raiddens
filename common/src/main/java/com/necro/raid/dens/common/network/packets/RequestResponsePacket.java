@@ -56,6 +56,10 @@ public record RequestResponsePacket(boolean accept, String player) implements Cu
             host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.lobby_is_full"), true);
             return;
         }
+        else if (blockEntity.hasStartedAdventure()) {
+            host.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.raid.adventure_started"), true);
+            return;
+        }
 
         boolean success = RaidEvents.RAID_JOIN.postWithResult(new RaidJoinEvent((ServerPlayer) player, false, blockEntity.getRaidBoss()));
         if (!success) return;

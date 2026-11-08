@@ -9,7 +9,7 @@ import com.cobblemon.mod.common.api.pokemon.moves.Learnset;
 import com.cobblemon.mod.common.api.pokemon.stats.Stats;
 import com.cobblemon.mod.common.api.types.ElementalType;
 import com.cobblemon.mod.common.pokemon.FormData;
-import com.necro.raid.dens.common.util.DoubleWeightedRandomMap;
+import com.necro.asymmetric.battles.common.util.DoubleWeightedRandomMap;
 
 import java.util.Comparator;
 import java.util.Set;

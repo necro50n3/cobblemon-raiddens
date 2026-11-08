@@ -21,6 +21,7 @@ public class FabricItems {
         ModItems.HEAL_CHEER = registerItem("cheer_heal", new CheerItem(CheerBagItem.CheerType.HEAL));
         ModItems.RAID_SHARD = registerItem("raid_shard", new RaidShardItem());
         ModItems.CATCHING_CHARM = registerItem("catching_charm", new CatchingCharmItem());
+        ModItems.RAIDITE = registerItem("raidite", new Item(new Item.Properties()));
     }
 
     private static Holder<Item> registerItem(String name, Item item) {

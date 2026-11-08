@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.support.RaidSupport;
-import com.necro.raid.dens.common.registry.RaidSupportRegistry;
+import com.necro.raid.dens.common.registry.CustomRaidRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class RaidSupportReloadImpl extends AbstractReloadImpl {
@@ -14,13 +14,13 @@ public class RaidSupportReloadImpl extends AbstractReloadImpl {
 
     @Override
     protected void preLoad() {
-        RaidSupportRegistry.clear();
+        CustomRaidRegistries.RAID_SUPPORT_REGISTRY.clear();
     }
 
     @Override
     protected void onLoad(ResourceLocation key, JsonObject object) {
         RaidSupport raidSupport = RaidSupport.codec().decode(JsonOps.INSTANCE, object).getOrThrow().getFirst();
-        RaidSupportRegistry.register(raidSupport);
+        CustomRaidRegistries.RAID_SUPPORT_REGISTRY.register(raidSupport.move(), raidSupport);
     }
 
     @Override

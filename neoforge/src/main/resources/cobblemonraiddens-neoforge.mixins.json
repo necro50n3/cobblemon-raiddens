@@ -8,8 +8,7 @@
         "den.LevelChunkMixin",
         "den.LevelMixin",
         "msd.BattlePokemonStateMixin",
-        "msd.CobbleEventsMixin",
-        "showdown.GraalShowdownUnbundlerMixin"
+        "msd.CobbleEventsMixin"
     ],
     "injectors": {
         "defaultRequire": 1

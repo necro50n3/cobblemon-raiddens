@@ -16,6 +16,7 @@ public class ModFeatures {
     public static final TagKey<Biome> RAID_SPAWNABLE = TagKey.create(
         Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_spawnable")
     );
+
     public static final TagKey<Biome> RAID_SPAWNABLE_IGNORE_SKY = TagKey.create(
         Registries.BIOME, ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, "raid_spawnable_ignore_sky")
     );

@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 public record RaidTierPredicate(RaidTier tier) implements ItemSubPredicate {
     public static final Codec<RaidTierPredicate> CODEC;
 
+    @Override
     public boolean matches(ItemStack itemStack) {
         RaidTier tier = itemStack.get(ModComponents.TIER_COMPONENT.value());
         if (tier == null) return false;
