@@ -13,7 +13,7 @@ public class GeneratorConfig implements ConfigData {
         Pokemon with no valid attacking moves in their level learnset will be ignored.
         """
     )
-    public boolean enabled = true;
+    public boolean enabled = false;
 
     @Comment(
         """
