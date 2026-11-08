@@ -1,2 +1,4 @@
 - Fixed issue with Player Join scripts not working.
+- Fixed issue with certain showdown instructions spamming error logs.
 - Fixed issue with Accept/Deny shortcut keybinds not working.
+- Fixed issue with cheers not working properly in the RAID battle format.

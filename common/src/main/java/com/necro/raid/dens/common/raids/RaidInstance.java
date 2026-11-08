@@ -598,7 +598,7 @@ public class RaidInstance {
         RaidPlayer raidPlayer = this.playerMap.getOrDefault(player.getUUID(), new RaidPlayer());
         if (!raidPlayer.useCheer()) return false;
 
-        this.cheer(oBattle, bagItem, origin, false);
+        this.cheer(player, oBattle, bagItem, origin, false);
 
         Consumer<PokemonBattle> cheer = switch (bagItem.cheerType()) {
             case CheerBagItem.CheerType.ATTACK -> battle -> new ShowdownEvents.CheerAttackShowdownEvent(origin).send(battle);
@@ -614,8 +614,9 @@ public class RaidInstance {
         return true;
     }
 
-    public void cheer(PokemonBattle battle, BagItem bagItem, String origin, boolean skipEnemyAction) {
-        BattleActor side1 = battle.getSide1().getActors()[0];
+    public void cheer(ServerPlayer player, PokemonBattle battle, BagItem bagItem, String origin, boolean skipEnemyAction) {
+        BattleActor side1 = battle.getActor(player);
+        if (side1 == null) return;
         BattleActor side2 = battle.getSide2().getActors()[0];
         List<ActiveBattlePokemon> target = side1.getActivePokemon();
         if (side1.getRequest() == null || side2.getRequest() == null || target.isEmpty() || target.getFirst().getBattlePokemon() == null) return;

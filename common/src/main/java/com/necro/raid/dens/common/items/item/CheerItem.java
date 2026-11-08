@@ -1,6 +1,7 @@
 package com.necro.raid.dens.common.items.item;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
+import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.battles.BattleRegistry;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
 import com.cobblemon.mod.common.item.battle.BagItem;
@@ -87,7 +88,9 @@ public class CheerItem extends Item implements SimpleBagItemLike {
     public InteractionResultHolder<ItemStack> cheer(ServerPlayer player, ItemStack itemStack) {
         PokemonBattle battle = BattleRegistry.getBattleByParticipatingPlayer(player);
         if (battle == null) return InteractionResultHolder.fail(itemStack);
-        BattlePokemon battlePokemon = battle.getSide1().getActivePokemon().getFirst().getBattlePokemon();
+        BattleActor actor = battle.getActor(player);
+        if (actor == null) return InteractionResultHolder.fail(itemStack);
+        BattlePokemon battlePokemon = actor.getActivePokemon().getFirst().getBattlePokemon();
         BattlePokemon raidPokemon = battle.getSide2().getActivePokemon().getFirst().getBattlePokemon();
         if (battlePokemon == null || raidPokemon == null) return InteractionResultHolder.fail(itemStack);
         else if (raidPokemon.getEntity() == null || !((IRaidAccessor) raidPokemon.getEntity()).crd_isRaidBoss()) {

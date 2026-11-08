@@ -69,6 +69,7 @@ public class ShieldAddInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
         battle.dispatch(() -> {
+            if (this.pokemon.getEntity() == null || this.pokemon.getEntity().isDeadOrDying()) return DispatchResultKt.getGO();
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getEffectWithBattleContext(cobblemonResource("protect"), this.pokemon);
             if (actionEffect == null) actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("generic_move"));
             List<Object> providers = new ArrayList<>(List.of(battle));

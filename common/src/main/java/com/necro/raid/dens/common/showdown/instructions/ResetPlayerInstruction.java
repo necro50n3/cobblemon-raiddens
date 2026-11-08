@@ -75,6 +75,7 @@ public class ResetPlayerInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null || this.origin == null) return;
         battle.dispatch(() -> {
+            if (this.pokemon.getEntity() == null || this.pokemon.getEntity().isDeadOrDying()) return DispatchResultKt.getGO();
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("unboost"));
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
