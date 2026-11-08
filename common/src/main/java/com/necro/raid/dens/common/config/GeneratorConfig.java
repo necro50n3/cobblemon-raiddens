@@ -9,7 +9,7 @@ public class GeneratorConfig implements ConfigData {
     @Comment(
         """
         Whether the auto raid generator is enabled.
-        All raids generated this way will be registered under the namespace "cobblemonraiddens:<species>_<form>".
+        All raids generated this way will be registered under the namespace "cobblemonraiddens:<species>".
         Pokemon with no valid attacking moves in their level learnset will be ignored.
         """
     )
@@ -17,16 +17,12 @@ public class GeneratorConfig implements ConfigData {
 
     @Comment(
         """
-        A list of Pokémon properties to whitelist from encounters.
+        A list of Pokémon species to whitelist from encounters.
         If this list is not empty, all other config filters are ignored.
         """
     )
     public String[] pokemon_whitelist = {};
-    @Comment(
-        """
-        A list of Pokémon properties to blacklist from encounters.
-        """
-    )
+    @Comment("A list of Pokémon species to blacklist from encounters.")
     public String[] pokemon_blacklist = {};
     @Comment("A list of Pokémon labels to blacklist from encounters.")
     public String[] label_blacklist = { "legendary", "mythical", "ultra_beast", "paradox" };
