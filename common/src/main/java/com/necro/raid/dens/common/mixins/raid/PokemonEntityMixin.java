@@ -139,10 +139,12 @@ public abstract class PokemonEntityMixin extends TamableAnimal implements IRaidA
 
     @Inject(method = "canBattle", at = @At("HEAD"), cancellable = true, remap = false)
     private void canBattleInject(Player player, CallbackInfoReturnable<Boolean> cir) {
+        if (!this.crd_isRaidBoss()) return;
+        else if (this.getHealth() <= 0F || this.isDeadOrDying()) return;
+
         if (this.level().isClientSide() && this.getOwner() == null) cir.setReturnValue(true);
-        if (this.crd_getRaidId() == null) return;
-        else if (this.getHealth() <= 0F || this.isDeadOrDying() || PlayerExtensionsKt.isPartyBusy(player)) cir.setReturnValue(false);
-        cir.setReturnValue(true);
+        else if (PlayerExtensionsKt.isPartyBusy(player)) cir.setReturnValue(false);
+        else cir.setReturnValue(true);
     }
 
     @Inject(method = "isBattling", at = @At("HEAD"), cancellable = true, remap = false)

@@ -32,7 +32,7 @@ public class RaidDenKeybinds {
             Minecraft.getInstance().setScreen(ClickHandler.SCREEN);
         }
 
-        if (!RaidDenGuiManager.hasOverlayQueue()) return;
+        if (!RaidDenGuiManager.hasQueue()) return;
 
         if (ACCEPT_SHORTCUT.isDown() && !wasPressed) {
             ACCEPT_SHORTCUT.consumeClick();
