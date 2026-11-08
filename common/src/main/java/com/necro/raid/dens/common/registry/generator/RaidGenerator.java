@@ -60,11 +60,13 @@ public class RaidGenerator {
 
             RaidType type = RaidType.fromType(species.getPrimaryType());
             RaidTier tier;
-            if (bst > CobblemonRaidDens.GENERATOR_CONFIG.tier_five_bst_threshold) tier = RaidTier.TIER_FIVE;
-            else if (bst > CobblemonRaidDens.GENERATOR_CONFIG.tier_four_bst_threshold) tier = RaidTier.TIER_FOUR;
-            else if (bst > CobblemonRaidDens.GENERATOR_CONFIG.tier_three_bst_threshold) tier = RaidTier.TIER_THREE;
-            else if (bst > CobblemonRaidDens.GENERATOR_CONFIG.tier_two_bst_threshold) tier = RaidTier.TIER_TWO;
-            else if (bst > CobblemonRaidDens.GENERATOR_CONFIG.tier_one_bst_threshold) tier = RaidTier.TIER_ONE;
+            if (species.getLabels().contains("legendary") || species.getLabels().contains("mythical")) tier = RaidTier.TIER_SEVEN;
+            else if (species.getLabels().contains("ultra_beast") || species.getLabels().contains("paradox")) tier = RaidTier.TIER_SIX;
+            else if (bst >= CobblemonRaidDens.GENERATOR_CONFIG.tier_five_bst_threshold) tier = RaidTier.TIER_FIVE;
+            else if (bst >= CobblemonRaidDens.GENERATOR_CONFIG.tier_four_bst_threshold) tier = RaidTier.TIER_FOUR;
+            else if (bst >= CobblemonRaidDens.GENERATOR_CONFIG.tier_three_bst_threshold) tier = RaidTier.TIER_THREE;
+            else if (bst >= CobblemonRaidDens.GENERATOR_CONFIG.tier_two_bst_threshold) tier = RaidTier.TIER_TWO;
+            else if (bst >= CobblemonRaidDens.GENERATOR_CONFIG.tier_one_bst_threshold) tier = RaidTier.TIER_ONE;
             else continue;
 
             int level = CobblemonRaidDens.TIER_CONFIG.get(tier).bossLevel();
@@ -79,6 +81,7 @@ public class RaidGenerator {
             boss.setTier(tier);
             boss.setId(ResourceLocation.fromNamespaceAndPath(CobblemonRaidDens.MOD_ID, name));
             boss.applyDefaults();
+            CustomRaidRegistries.RAID_REGISTRY.addTags(boss.getId(), Set.of(boss.getId()));
             CustomRaidRegistries.RAID_REGISTRY.register(boss);
 
             CobblemonRaidDens.LOGGER.info("Generated {}", boss.getId());
