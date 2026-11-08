@@ -792,8 +792,7 @@
       "conditions": [
         {
           "condition": "cobblemonraiddens:raid_pouch_condition",
-          "feature": "shadow",
-          "is_adventure": false
+          "feature": "shadow"
         }
       ],
       "entries": [

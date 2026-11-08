@@ -345,10 +345,7 @@ public class RaidSession {
     }
 
     public boolean isInProgress() {
-        if (this.currentNodeIndex == -1) return false;
-        else if (this.currentNodeIndex > 0) return true;
-        else if (this.activeRaid == null) return false;
-        else return this.activeRaid.getRaidState() != RaidState.NOT_STARTED;
+        return this.isFinished() || this.currentNodeIndex > 1;
     }
 
     public boolean canUsePC(ServerPlayer player) {

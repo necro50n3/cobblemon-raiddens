@@ -98,3 +98,9 @@ remapJar {
     injectAccessWidener = true
     inputFile.set shadowJar.archiveFile
 }
+
+sourceSets {
+    main {
+        resources.srcDir project(":common").file("src/main/resources")
+    }
+}

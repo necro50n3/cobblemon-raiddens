@@ -175,6 +175,7 @@
     "stat.cobblemonraiddens.tier_seven_completed": "Tier Seven Raids Completed",
     "stat.cobblemonraiddens.adventure_completed": "Raid Adventures Completed",
     "tag.item.cobblemonraiddens.raid_den_keys": "Raid Den Key",
+    "tag.item.cobblemonraiddens.raidite_ores": "Raidite Ores",
     "text.autoconfig.cobblemonraiddens/client.title": "Cobblemon Raid Dens Config",
     "text.autoconfig.cobblemonraiddens/client.category.beacon_beam": "Beacon Beams",
     "text.autoconfig.cobblemonraiddens/client.category.gui": "Gui",
