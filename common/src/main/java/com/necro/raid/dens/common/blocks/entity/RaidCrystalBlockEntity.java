@@ -195,7 +195,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
             .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
             .setValue(RaidCrystalBlock.ACTIVE, true)
             .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure())
-            .setValue(RaidCrystalBlock.WISH_USED, wishUsed), 2);
+            .setValue(RaidCrystalBlock.WISH_USED, wishUsed && !CobblemonRaidDens.CONFIG.infinite_wishes), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
     }
