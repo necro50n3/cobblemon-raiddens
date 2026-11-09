@@ -20,8 +20,10 @@ import com.necro.raid.dens.common.util.ComponentUtils;
 import com.necro.raid.dens.common.util.RaidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +33,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -223,7 +226,9 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         if (!key.isEmpty()) {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {
-                player.displayClientMessage(ComponentUtils.getSystemMessage(Component.translatable("message.cobblemonraiddens.raid.no_unique_key", key.item().split(":")[1])), true);
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key.item()));
+                MutableComponent component = Component.translatable(key.id().isEmpty() ? "message.cobblemonraiddens.raid.no_unique_key" : "message.cobblemonraiddens.raid.no_unique_key_with_components", item.getDefaultInstance().getDisplayName());
+                player.displayClientMessage(ComponentUtils.getSystemMessage(component), true);
                 return false;
             }
             else if (!CobblemonRaidDens.TIER_CONFIG.get(boss.getTier()).allRequireUniqueKey()) blockEntity.setOpen();

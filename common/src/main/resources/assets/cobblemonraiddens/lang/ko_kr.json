@@ -127,7 +127,8 @@
   "message.cobblemonraiddens.raid.lobby_is_full": "이 로비는 이미 가득 찼습니다!",
   "message.cobblemonraiddens.raid.no_host": "호스트에게 연결할 수 없습니다...",
   "message.cobblemonraiddens.raid.no_key": "레이드 굴 키가 없습니다!",
-  "message.cobblemonraiddens.raid.no_unique_key": "이 레이드에 참가하려면 특수 아이템이 필요합니다!",
+
+
   "message.cobblemonraiddens.raid.not_enough_damage": "가한 대미지가 부족합니다!",
   "message.cobblemonraiddens.raid.not_participating": "레이드에 등록되어 있지 않습니다. 나갔다가 로비에 다시 들어오세요.",
   "message.cobblemonraiddens.raid.pending_removal": "다른 레이드를 호스팅하기 전에 잠시 기다려 주세요.",

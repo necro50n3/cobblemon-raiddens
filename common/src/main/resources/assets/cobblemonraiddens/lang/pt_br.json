@@ -127,7 +127,8 @@
     "message.cobblemonraiddens.raid.lobby_is_full": "Este lobby já está cheio!",
     "message.cobblemonraiddens.raid.no_host": "O anfitrião não pôde ser alcançado...",
     "message.cobblemonraiddens.raid.no_key": "Você não tem uma Chave da Toca de Invasão!",
-    "message.cobblemonraiddens.raid.no_unique_key": "Você precisa de um item especial para entrar nesta invasão!",
+
+
     "message.cobblemonraiddens.raid.not_enough_damage": "Você não causou dano suficiente!",
     "message.cobblemonraiddens.raid.not_participating": "Você não se registrou para a invasão. Saia e entre novamente no lobby.",
     "message.cobblemonraiddens.raid.pending_removal": "Por favor, aguarde antes de hospedar outra invasão.",
