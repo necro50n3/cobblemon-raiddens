@@ -1,11 +1,14 @@
 package com.necro.raid.dens.common.worldgen;
 
 import com.necro.raid.dens.common.CobblemonRaidDens;
+import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
+import com.necro.raid.dens.common.data.raid.RaidCycleMode;
 import com.necro.raid.dens.common.data.raid.RaidTier;
 import com.necro.raid.dens.common.data.raid.RaidType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
@@ -33,7 +36,17 @@ public class RaidDenFeature extends Feature<BlockStateConfiguration> {
         if (level.getRandom().nextInt(chance) != 0) return false;
 
         BlockPos blockPos = this.checkAdditionalRequirements(level, context.origin());
-        return blockPos != null;
+        if (blockPos == null) return false;
+
+        BlockState blockState = context.config().state;
+        RaidCycleMode cycleMode = CobblemonRaidDens.CONFIG.cycle_mode;
+        // ensure raid tier is random if it can't be cycled.
+        if (!cycleMode.canCycleTier()) blockState = blockState.setValue(RaidCrystalBlock.RAID_TIER, RaidTier.getWeightedRandom(level.getRandom(), level.getLevel()));
+        // ensure raid type is random if it can't be cycled.
+        if (!cycleMode.canCycleType()) blockState = blockState.setValue(RaidCrystalBlock.RAID_TYPE, RaidType.getRandom(level.getRandom()));
+
+        level.setBlock(blockPos, blockState, 2);
+        return true;
     }
 
     protected BlockPos checkAdditionalRequirements(WorldGenLevel level, BlockPos blockPos) {
