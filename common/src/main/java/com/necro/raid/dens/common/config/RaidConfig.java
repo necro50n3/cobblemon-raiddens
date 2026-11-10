@@ -55,6 +55,6 @@ public class RaidConfig implements ConfigData {
         """
     )
     public boolean player_invulnerability = true;
-    @Comment("Allows Wishing Pieces to be repeatedly used on a single raid crystal. Default: false")
-    public boolean infinite_wishes = false;
+    @Comment("How many times a Wishing Piece can be used on a Raid Crystal before next reset (Set to -1 for no limit). Default: 1")
+    public int wish_uses = 1;
 }

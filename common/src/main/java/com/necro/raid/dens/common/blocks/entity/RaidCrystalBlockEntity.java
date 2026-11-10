@@ -50,6 +50,7 @@ import java.util.function.Consumer;
 
 public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntity {
     private int clears;
+    private int wishesLeft;
     private int inactiveTicks;
     private int soundTicks;
 
@@ -71,6 +72,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
 
     public RaidCrystalBlockEntity(BlockEntityType<? extends RaidCrystalBlockEntity> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
+        this.wishesLeft = CobblemonRaidDens.CONFIG.wish_uses;
         this.soundTicks = 0;
         this.beamHeight = 0;
         this.lastCheckedY = -1;
@@ -190,12 +192,15 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
 
         this.setRaidBoss(boss.getId(), level.getGameTime());
 
+        if (!wishUsed) this.wishesLeft = CobblemonRaidDens.CONFIG.wish_uses;
+        else if (this.wishesLeft > 0) this.wishesLeft--;
+        else if (this.wishesLeft == -1) this.wishesLeft = CobblemonRaidDens.CONFIG.wish_uses;
+
         level.setBlock(blockPos, blockState
             .setValue(RaidCrystalBlock.RAID_TIER, boss.getTier())
             .setValue(RaidCrystalBlock.RAID_TYPE, boss.getType())
             .setValue(RaidCrystalBlock.ACTIVE, true)
-            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure())
-            .setValue(RaidCrystalBlock.WISH_USED, wishUsed && !CobblemonRaidDens.CONFIG.infinite_wishes), 2);
+            .setValue(RaidCrystalBlock.IS_ADVENTURE, boss.isAdventure()), 2);
 
         RaidEvents.RAID_DEN_SPAWN.emit(new RaidDenSpawnEvent((ServerLevel) level, blockPos, boss));
     }
@@ -306,6 +311,10 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         return this.raidBoss;
     }
 
+    public int wishesLeft() {
+        return this.wishesLeft;
+    }
+
     public int getClears() {
         return this.clears;
     }
@@ -345,6 +354,10 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
         RaidHelper.clearRaidSync(this.getUuid());
         this.setChanged();
         if (this.getLevel() != null) this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    public void setWishesLeft(int wishesLeft) {
+        this.wishesLeft = wishesLeft;
     }
 
     public void setClears(int clears) {
@@ -421,6 +434,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     @Override
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         this.clears = compoundTag.getInt("raid_cleared");
+        this.wishesLeft = compoundTag.contains("wishes_left") ? compoundTag.getInt("wishes_left") : CobblemonRaidDens.CONFIG.wish_uses;
         this.lastReset = RaidResetContext.load(compoundTag.getCompound("reset_context"));
 
         if (compoundTag.contains("uuid")) this.uuid = UUID.fromString(compoundTag.getString("uuid"));
@@ -443,6 +457,7 @@ public class RaidCrystalBlockEntity extends BlockEntity implements GeoBlockEntit
     @Override
     protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
         compoundTag.putInt("raid_cleared", this.clears);
+        compoundTag.putInt("wishes_left", this.wishesLeft);
         if (this.lastReset != null) compoundTag.put("reset_context", this.lastReset.save(new CompoundTag()));
 
         if (this.uuid != null) compoundTag.putString("uuid", this.uuid.toString());

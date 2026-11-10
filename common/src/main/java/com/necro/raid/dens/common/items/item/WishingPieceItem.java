@@ -36,7 +36,7 @@ public class WishingPieceItem extends Item {
         BlockEntity blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
         if (player == null || !(blockEntity instanceof RaidCrystalBlockEntity raidCrystal) || !blockState.is(ModBlocks.RAID_CRYSTAL_BLOCK.value())) return InteractionResult.PASS;
-        if (!blockState.getValue(RaidCrystalBlock.CAN_RESET) || blockState.getValue(RaidCrystalBlock.WISH_USED)) {
+        if (!blockState.getValue(RaidCrystalBlock.CAN_RESET) || raidCrystal.wishesLeft() == 0) {
             player.displayClientMessage(Component.translatable("item.cobblemonraiddens.wishing_piece.cannot").withStyle(ChatFormatting.RED), true);
             return InteractionResult.PASS;
         }

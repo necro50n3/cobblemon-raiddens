@@ -70,7 +70,6 @@ public class RaidCrystalBlock extends BaseEntityBlock {
     public static final EnumProperty<RaidCycleMode> CYCLE_MODE = EnumProperty.create("cycle_mode", RaidCycleMode.class);
     public static final BooleanProperty IS_NATURAL = BooleanProperty.create("is_natural");
     public static final BooleanProperty IS_ADVENTURE = BooleanProperty.create("is_adventure");
-    public static final BooleanProperty WISH_USED = BooleanProperty.create("wish_used");
 
     private static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.9375, 1);
 
@@ -84,7 +83,6 @@ public class RaidCrystalBlock extends BaseEntityBlock {
             .setValue(CYCLE_MODE, RaidCycleMode.CONFIG)
             .setValue(IS_NATURAL, true)
             .setValue(IS_ADVENTURE, false)
-            .setValue(WISH_USED, false)
         );
     }
 
@@ -317,7 +315,6 @@ public class RaidCrystalBlock extends BaseEntityBlock {
         builder.add(CYCLE_MODE);
         builder.add(IS_NATURAL);
         builder.add(IS_ADVENTURE);
-        builder.add(WISH_USED);
     }
 
     @Override

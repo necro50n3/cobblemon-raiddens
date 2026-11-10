@@ -10,6 +10,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.blocks.ModBlocks;
 import com.necro.raid.dens.common.blocks.block.RaidCrystalBlock;
 import com.necro.raid.dens.common.blocks.entity.RaidCrystalBlockEntity;
@@ -221,6 +222,7 @@ public class RaidDenCommands {
 
             if (level.getBlockEntity(blockPos) instanceof RaidCrystalBlockEntity raidCrystal) {
                 raidCrystal.setRaidBoss(location, level.getGameTime());
+                raidCrystal.setWishesLeft(CobblemonRaidDens.CONFIG.wish_uses);
                 if (bucket != null) raidCrystal.setRaidBucket(bucket);
             }
 
