@@ -1,4 +1,2 @@
-- Fixed issue with Player Join scripts not working.
-- Fixed issue with certain showdown instructions spamming error logs.
-- Fixed issue with Accept/Deny shortcut keybinds not working.
-- Fixed issue with cheers not working properly in the RAID battle format.
+- Fixed issue with raid dens not generating in the world.
+- Updated the `missing unique key` message to include the actual item required.
