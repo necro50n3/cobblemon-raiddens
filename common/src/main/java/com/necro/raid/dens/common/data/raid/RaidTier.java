@@ -23,7 +23,7 @@ public enum RaidTier implements StringRepresentable {
     private final String id;
     private boolean isPresent;
 
-    private static final Map<String, DoubleWeightedRandomMap<RaidTier>> RANDOM_MAP = new HashMap<>();
+    private static final double[] DEFAULT = new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0};
 
     RaidTier(String id) {
         this.id = id;
@@ -75,58 +75,25 @@ public enum RaidTier implements StringRepresentable {
         return this.id;
     }
 
-    public static void updateRandom() {
-        RANDOM_MAP.clear();
-
-        for (Map.Entry<String, double[]> entry : CobblemonRaidDens.CONFIG.dimension_tier_weights.entrySet()) {
-            RaidTier.addWeightedMap(entry.getKey(), entry.getValue());
+    public static RaidTier getWeightedRandom(RandomSource random, String dimension, List<RaidTier> tiers) {
+        double[] weights = CobblemonRaidDens.CONFIG.dimension_tier_weights.getOrDefault(dimension, DEFAULT);
+        if (weights.length == 0) weights = DEFAULT;
+        DoubleWeightedRandomMap<RaidTier> map = new DoubleWeightedRandomMap<>();
+        for (RaidTier tier : tiers) {
+            int ordinal = tier.ordinal();
+            if (ordinal >= weights.length) ordinal = weights.length - 1;
+            map.add(tier, weights[ordinal]);
         }
-
-        if (!RANDOM_MAP.containsKey("minecraft:overworld")) {
-            double[] weights;
-            if (!CobblemonRaidDens.CONFIG.dimension_tier_weights.isEmpty()) {
-                weights = CobblemonRaidDens.CONFIG.dimension_tier_weights.values().iterator().next();
-            } else {
-                weights = new double[]{9.0, 15.0, 25.0, 25.0, 20.0, 5.0, 1.0};
-            }
-            RaidTier.addWeightedMap("minecraft:overworld", weights);
-        }
+        return map.getRandom(random).orElse(RaidTier.TIER_ONE);
     }
 
-    private static void addWeightedMap(String dimension, double[] tierWeights) {
-        DoubleWeightedRandomMap<RaidTier> weightedMap = new DoubleWeightedRandomMap<>();
-
-        List<Double> weights = new ArrayList<>(Arrays.stream(tierWeights).boxed().toList());
-        while (weights.size() < RaidTier.values().length) {
-            weights.add(tierWeights[tierWeights.length - 1]);
-        }
-
-        for (int i = 0; i < weights.size(); i++) {
-            RaidTier tier = RaidTier.values()[i];
-            if (!tier.isPresent()) continue;
-            weightedMap.add(RaidTier.values()[i], weights.get(i));
-        }
-
-        RANDOM_MAP.put(dimension, weightedMap);
-    }
-
-    public static RaidTier getWeightedRandom(RandomSource random, String dimension) {
-        if (RANDOM_MAP.isEmpty()) RaidTier.updateRandom();
-        if (RANDOM_MAP.isEmpty()) return RaidTier.TIER_ONE;
-        else if (!RANDOM_MAP.containsKey(dimension)) dimension = "minecraft:overworld";
-        Optional<RaidTier> raidTier = RANDOM_MAP.get(dimension).getRandom(random);
-        return raidTier.orElse(RaidTier.TIER_ONE);
+    public static RaidTier getWeightedRandom(RandomSource random, Level level, List<RaidTier> tiers) {
+        String levelKey = level.dimension().location().toString();
+        return RaidTier.getWeightedRandom(random, levelKey, tiers);
     }
 
     public static RaidTier getWeightedRandom(RandomSource random, Level level) {
-        String levelKey = level.dimension().location().toString();
-        return RaidTier.getWeightedRandom(random, levelKey);
-    }
-
-    public double getWeight(Level level) {
-        String levelKey = level.dimension().location().toString();
-        if (!RANDOM_MAP.containsKey(levelKey)) levelKey = "minecraft:overworld";
-        return RANDOM_MAP.get(levelKey).getWeight(this);
+        return RaidTier.getWeightedRandom(random, level, List.of(RaidTier.values()));
     }
 
     public static RaidTier fromString(String name) {

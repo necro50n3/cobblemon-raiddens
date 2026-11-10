@@ -100,7 +100,7 @@ public class RaidBucket {
     public ResourceLocation getRandomRaidBoss(RandomSource random, Level level) {
         String key = level.dimension().location() + ":" + this.getId().toString();
         float[] weights = CustomRaidRegistries.RAID_REGISTRY.getWeights(key);
-        if (weights == null) return CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(random, level, this.getCompiled(), key);
+        if (weights == null) return CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(random, this.getCompiled(), key);
         else return CustomRaidRegistries.RAID_REGISTRY.roll(random, weights, CustomRaidRegistries.RAID_REGISTRY.getIndices(key));
     }
 

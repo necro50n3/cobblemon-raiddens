@@ -45,7 +45,8 @@ public class WishingPieceItem extends Item {
         RaidTier min = itemStack.getOrDefault(ModComponents.MIN_TIER.value(), RaidTier.TIER_ONE);
         RaidTier max = itemStack.getOrDefault(ModComponents.MAX_TIER.value(), RaidTier.TIER_SEVEN);
         List<RaidTier> tiers = List.of(Arrays.copyOfRange(RaidTier.values(), min.ordinal(), max.ordinal() + 1));
-        ResourceLocation bossRoll = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(player.getRandom(), context.getLevel(), tiers, null, null, null);
+        RaidTier tier = RaidTier.getWeightedRandom(player.getRandom(), player.level(), tiers);
+        ResourceLocation bossRoll = CustomRaidRegistries.RAID_REGISTRY.getRandomRaidBoss(player.getRandom(), context.getLevel(), tier, null, null, null);
 
         CustomRaidRegistries.RAID_REGISTRY.requestRaidBoss(bossRoll, boss -> {
             if (raidCrystal.isRemoved()) return;

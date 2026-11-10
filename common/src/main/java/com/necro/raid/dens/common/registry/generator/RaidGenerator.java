@@ -101,7 +101,6 @@ public class RaidGenerator {
         });
 
         CustomRaidRegistries.RAID_REGISTRY.registerAll();
-        RaidTier.updateRandom();
         CustomRaidRegistries.RAID_REGISTRY.clearReverseLookup();
 
         this.additions.clear();

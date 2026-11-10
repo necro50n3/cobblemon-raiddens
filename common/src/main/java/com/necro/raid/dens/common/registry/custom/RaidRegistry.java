@@ -40,7 +40,6 @@ public class RaidRegistry {
     private final Map<String, float[]> weightsCache = new HashMap<>();
     private final Map<String, int[]> indexCache = new HashMap<>();
     private double[] weightsByIndex = new double[0];
-    private RaidTier[] tierByIndex = new RaidTier[0];
 
     public void register(RaidBoss boss) {
         if (this.loading.put(boss.getId(), boss) == null) {
@@ -53,7 +52,6 @@ public class RaidRegistry {
     public void registerAll() {
         int size = this.raidList.size();
         this.weightsByIndex = new double[size];
-        this.tierByIndex = new RaidTier[size];
 
         for (int index = 0; index < raidList.size(); index++) {
             RaidBoss boss = loading.get(raidList.get(index));
@@ -64,7 +62,6 @@ public class RaidRegistry {
             if (boss.isAdventure()) this.byAdventure.set(index);
 
             this.weightsByIndex[index] = boss.getWeight();
-            this.tierByIndex[index] = boss.getTier();
 
             if (boss.getWeight() > 0.0) {
                 boss.getTier().setPresent();
@@ -198,12 +195,12 @@ public class RaidRegistry {
         return this.indexCache.get(key);
     }
 
-    private float[] buildWeights(int[] matches, Level level) {
+    private float[] buildWeights(int[] matches) {
         float[] weights = new float[matches.length];
         float sum = 0f;
         for (int i = 0; i < matches.length; i++) {
             int index = matches[i];
-            sum += (float) (this.weightsByIndex[index] * this.tierByIndex[index].getWeight(level));
+            sum += (float) this.weightsByIndex[index];
             weights[i] = sum;
         }
         return weights;
@@ -217,7 +214,7 @@ public class RaidRegistry {
         return this.raidList.get(indexes[idx]);
     }
 
-    public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, BitSet bitSet, @Nullable String cacheKey) {
+    public ResourceLocation getRandomRaidBoss(RandomSource random, BitSet bitSet, @Nullable String cacheKey) {
         int size = bitSet.cardinality();
         if (size == 0) return null;
         int[] matches = new int[size];
@@ -225,7 +222,7 @@ public class RaidRegistry {
             matches[idx] = i;
         }
 
-        float[] cachedWeights = buildWeights(matches, level);
+        float[] cachedWeights = buildWeights(matches);
 
         if (cacheKey != null) {
             this.weightsCache.put(cacheKey, cachedWeights);
@@ -272,7 +269,7 @@ public class RaidRegistry {
             else result.andNot(this.byAdventure);
         }
 
-        return getRandomRaidBoss(random, level, result, cacheable ? key : null);
+        return getRandomRaidBoss(random, result, cacheable ? key : null);
     }
 
     public ResourceLocation getRandomRaidBoss(RandomSource random, Level level, RaidTier tier, RaidType type, String feature, Boolean isAdventure) {
@@ -300,7 +297,6 @@ public class RaidRegistry {
         if (current != null) current.invalidateAll();
 
         this.weightsByIndex = new double[0];
-        this.tierByIndex = new RaidTier[0];
 
         this.weightsCache.clear();
         this.indexCache.clear();
