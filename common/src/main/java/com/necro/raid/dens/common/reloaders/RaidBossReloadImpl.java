@@ -33,5 +33,7 @@ public class RaidBossReloadImpl extends AbstractReloadImpl {
     }
 
     @Override
-    protected void postLoad() {}
+    protected void postLoad() {
+        CobblemonRaidDens.LOGGER.info("Loaded {} raid bosses", CustomRaidRegistries.RAID_REGISTRY.getAll().size());
+    }
 }
