@@ -1,2 +1,13 @@
-- Fixed issue with raid dens not generating in the world.
-- Updated the `missing unique key` message to include the actual item required.
+- Added a new Wishing Piece item.
+  - Right-click a raid den with a Wishing Piece will reroll the raid boss.
+  - Wishing Pieces can be restricted to a range of tiers it can roll.
+  - Added recipes for various tier ranges for Wishing Pieces.
+  - Added a configuration to limit how many times a raid den can be rerolled with a Wishing Piece before a natural reset (default: 1).
+  - Added a new `USE_ITEM_ON_CRYSTAL` developer event to configure custom item interactions with raid dens.
+- Added a new Raid Generator feature.
+  - You can now auto-generate raids for missing Pokemon by enabling the generator in the `cobblemonraiddens/generator.json5` config.
+  - Legendaries and Mythicals (which are disabled by default) will automatically generate as Tier 7 raids.
+  - Ultra Beasts and Paradox Pokemon (which are disabled by default) will automatically generate as Tier 6 raids.
+- Lowered the minimum Cobblemon version requirement to 1.8.2.
+- Fixed an issue with the reward Pokemon missing an OT.
+- Fixed an issue with the `/crd forceclear` command not working properly in raid adventures.
