@@ -90,10 +90,13 @@ public class RewardHandler {
                 }
                 success = this.checkCatchingCharm(player);
                 if (success) {
-                    this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
                     if (!RaidEvents.REWARD_POKEMON.postWithResult(new RewardPokemonEvent(player, this.pokemonReward))) return false;
 
+                    this.pokemonReward.setCaughtBall(pokeBallItem.getPokeBall());
+                    this.pokemonReward.setOriginalTrainer(this.playerUUID);
+                    this.pokemonReward.refreshOriginalTrainer();
                     PlayerExtensionsKt.pc(player).add(this.pokemonReward);
+
                     player.getMainHandItem().consume(1, player);
                     RaidDenCriteriaTriggers.triggerRaidShiny(player, this.pokemonReward);
                     player.displayClientMessage(ComponentUtils.getSystemMessage("message.cobblemonraiddens.reward.reward_pokemon"), true);
