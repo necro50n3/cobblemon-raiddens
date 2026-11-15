@@ -1,0 +1,20 @@
+{
+    "timeline": [
+        {
+            "type": "add_holds",
+            "holds": ["effects"]
+        },
+        {
+            "type": "pause",
+            "pause": 1.0
+        },
+        {
+            "type": "remove_holds",
+            "holds": ["effects"]
+        },
+        {
+            "type": "pause",
+            "pause": 2.0
+        }
+    ]
+}

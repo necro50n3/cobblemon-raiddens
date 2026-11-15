@@ -84,6 +84,7 @@ public class RaidBoostInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null || this.stages == 0) return;
         battle.dispatch(() -> {
+            if (this.pokemon.getEntity() == null || this.pokemon.getEntity().isDeadOrDying()) return DispatchResultKt.getGO();
             ActionEffectTimeline actionEffect = this.isBoost ? BoostInstruction.Companion.getBOOST_EFFECT() : BoostInstruction.Companion.getUNBOOST_EFFECT();
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));

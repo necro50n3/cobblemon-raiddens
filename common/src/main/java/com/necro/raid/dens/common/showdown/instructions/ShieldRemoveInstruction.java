@@ -74,6 +74,7 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
     public void runActionEffect(@NotNull PokemonBattle battle, @NotNull MoLangRuntime runtime) {
         if (this.pokemon == null) return;
         battle.dispatch(() -> {
+            if (this.pokemon.getEntity() == null || this.pokemon.getEntity().isDeadOrDying()) return DispatchResultKt.getGO();
             ActionEffectTimeline actionEffect = ActionEffects.INSTANCE.getActionEffects().get(cobblemonResource("hurt"));
             List<Object> providers = new ArrayList<>(List.of(battle));
             providers.add(new UsersProvider(this.pokemon.getEffectedPokemon().getEntity()));
@@ -97,6 +98,7 @@ public class ShieldRemoveInstruction implements ActionEffectInstruction {
     public void postActionEffect(@NotNull PokemonBattle battle) {
         if (this.pokemon == null || this.pokemon.getEntity() == null) return;
         battle.dispatch(() -> {
+            if (this.pokemon.getEntity() == null || this.pokemon.getEntity().isDeadOrDying()) return DispatchResultKt.getGO();
             PlayPosableAnimationPacket packet = new PlayPosableAnimationPacket(this.pokemon.getEntity().getId(), Set.of("recoil"), List.of());
             Level level = this.pokemon.getEntity().level();
             level.getEntitiesOfClass(ServerPlayer.class, AABB.ofSize(this.pokemon.getEntity().position(), 64.0, 64.0, 64.0))
