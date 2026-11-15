@@ -96,6 +96,15 @@ public enum RaidTier implements StringRepresentable {
         return RaidTier.getWeightedRandom(random, level, List.of(RaidTier.values()));
     }
 
+    public double getWeight(Level level) {
+        String levelKey = level.dimension().location().toString();
+        double[] weights = CobblemonRaidDens.CONFIG.dimension_tier_weights.getOrDefault(levelKey, DEFAULT);
+        if (weights.length == 0) weights = DEFAULT;
+        int ordinal = this.ordinal();
+        if (ordinal >= weights.length) ordinal = weights.length - 1;
+        return weights[ordinal];
+    }
+
     public static RaidTier fromString(String name) {
         try { return valueOf(name); }
         catch (IllegalArgumentException e) { return null; }
