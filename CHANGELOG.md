@@ -1,0 +1,3 @@
+- Updated to Asymmetric Battles API 1.5.0.
+- Added the ability to set the `attacks_per_turn` for Raid Bosses.
+- By default, raid bosses will now scale how many attacks they can perform per turn based on the number of active Pokemon per battle.

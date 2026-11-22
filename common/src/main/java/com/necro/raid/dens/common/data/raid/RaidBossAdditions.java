@@ -106,6 +106,7 @@ public class RaidBossAdditions {
             getOptional(this.additions()::getRequiredDamage).ifPresent(boss::setRequiredDamage);
             getOptional(this.additions()::getCatchRate).ifPresent(boss::setCatchRate);
             getOptional(this.additions()::getBattleFormat).ifPresent(boss::setBattleFormat);
+            getOptional(this.additions()::getAttacksPerTurn).ifPresent(boss::setAttacksPerTurn);
 
             boss.clearCaches();
             boss.applyAspects();

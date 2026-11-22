@@ -11,6 +11,7 @@ import com.cobblemon.mod.common.net.messages.client.storage.party.SetPartyRefere
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.asymmetric.battles.common.api.BattleParticipant;
+import com.necro.asymmetric.battles.common.api.actor.multi.MultiAttackPokemonBattleActor;
 import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
 import com.necro.raid.dens.common.data.raid.RaidBoss;
 import com.necro.raid.dens.common.party.RaidStoreFactory;
@@ -29,10 +30,16 @@ public class RaidBuilder {
         List<BattlePokemon> battleTeam = !party.isEmpty() ? PlayerExtensionsKt.party(player).toBattleTeam(false, false, leadingPokemon) : List.of();
 
         PlayerBattleActor playerActor = new PlayerBattleActor(player.getUUID(), battleTeam);
-        PokemonBattleActor wildActor = new PokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
-            new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
-            Cobblemon.config.getDefaultFleeDistance() * 5, CustomRaidRegistries.AI_REGISTRY.get(boss.getRaidAI()).get()
-        );
+        PokemonBattleActor wildActor;
+        if (boss.getBattleFormat() == RaidBattleFormat.RAID) {
+            wildActor = new MultiAttackPokemonBattleActor(pokemonEntity.getPokemon().getUuid(),
+                new BattlePokemon(pokemonEntity.getPokemon(), pokemonEntity.getPokemon(), p -> Unit.INSTANCE),
+                Cobblemon.config.getDefaultFleeDistance() * 5, CustomRaidRegistries.AI_REGISTRY.get(boss.getRaidAI()).get()
+            );
+        }
+        else {
+            wildActor = BattleParticipant.wild(pokemonEntity, Cobblemon.config.getDefaultFleeDistance() * 5, CustomRaidRegistries.AI_REGISTRY.get(boss.getRaidAI()).get()).toActor();
+        }
         setTransformTarget(pokemonEntity, wildActor);
 
         BattleFormat battleFormat = boss.getBattleFormat().format();

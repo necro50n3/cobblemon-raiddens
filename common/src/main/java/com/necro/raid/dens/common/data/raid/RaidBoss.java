@@ -106,6 +106,8 @@ public class RaidBoss {
     private Float catchRate;
     @SerializedName("battle_format")
     private RaidBattleFormat battleFormat;
+    @SerializedName("attacks_per_turn")
+    private Integer attacksPerTurn;
 
     private transient PokemonProperties cachedBossProperties;
     private transient List<ResourceLocation> densActual;
@@ -122,7 +124,7 @@ public class RaidBoss {
                     Integer maxPlayers, Integer maxClears, Double haRate, Integer maxCheers, Integer raidPartySize, Integer healthMulti,
                     Float multiplayerHealthMulti, Float shinyRate, Integer currency, Integer maxCatches, Map<String, Script> script,
                     String raidAI, List<String> marks, Integer lives, Boolean playersShareLives, Integer energy, Float requiredDamage,
-                    Float catchRate, RaidBattleFormat battleFormat) {
+                    Float catchRate, RaidBattleFormat battleFormat, Integer attacksPerTurn) {
         this.reward = reward;
         this.boss = boss;
         this.raidTier = raidTier;
@@ -158,6 +160,7 @@ public class RaidBoss {
         this.requiredDamage = requiredDamage;
         this.catchRate = catchRate;
         this.battleFormat = battleFormat;
+        this.attacksPerTurn = attacksPerTurn;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -203,6 +206,7 @@ public class RaidBoss {
         this.requiredDamage = null;
         this.catchRate = null;
         this.battleFormat = null;
+        this.attacksPerTurn = null;
 
         this.cachedBossProperties = null;
         this.densActual = new ArrayList<>();
@@ -267,6 +271,7 @@ public class RaidBoss {
         if (this.requiredDamage == null) this.requiredDamage = tierConfig.requiredDamage();
         if (this.catchRate == null) this.catchRate = tierConfig.catchRate();
         if (this.battleFormat == null) this.battleFormat = tierConfig.battleFormat();
+        if (this.attacksPerTurn == null) this.attacksPerTurn = tierConfig.attacksPerTurn();
 
         if (this.boss == null) this.boss = new PokemonProperties();
         this.applyAspects();
@@ -334,6 +339,19 @@ public class RaidBoss {
         this.setMoveSet(properties, pokemon, true);
         pokemon.getPersistentData().putBoolean("raid", true);
         new StringSpeciesFeature("raid", "boss").apply(pokemon);
+        int attacksPerTurn;
+        if (this.attacksPerTurn != null && this.attacksPerTurn > 1) attacksPerTurn = this.attacksPerTurn;
+        else {
+            attacksPerTurn = switch (this.battleFormat) {
+                case RaidBattleFormat.DOUBLES -> 2;
+                case RaidBattleFormat.TRIPLES -> 3;
+                case RaidBattleFormat.QUADRUPLES -> 4;
+                case RaidBattleFormat.PENTUPLES -> 5;
+                case RaidBattleFormat.SEXTUPLES -> 6;
+                default -> 1;
+            };
+        }
+        new IntSpeciesFeature("attacks_per_turn", attacksPerTurn).apply(pokemon);
 
         PokemonEntity pokemonEntity = new PokemonEntity(level, pokemon, CobblemonEntities.POKEMON);
         pokemonEntity.setDrops(new DropTable());
@@ -605,6 +623,10 @@ public class RaidBoss {
     public RaidBattleFormat getBattleFormat() {
         return this.battleFormat;
     }
+    
+    public Integer getAttacksPerTurn() {
+        return this.attacksPerTurn;
+    }
 
     public Species getDisplaySpecies() {
         if (this.displaySpecies == null) return null;
@@ -786,6 +808,10 @@ public class RaidBoss {
     public void setBattleFormat(RaidBattleFormat battleFormat) {
         this.battleFormat = battleFormat;
     }
+    
+    public void setAttacksPerTurn(Integer attacksPerTurn) {
+        this.attacksPerTurn = attacksPerTurn;
+    }
 
     public void clearCaches() {
         this.cachedBossProperties = null;
@@ -843,7 +869,8 @@ public class RaidBoss {
             this.energy,
             this.requiredDamage,
             this.catchRate,
-            this.battleFormat
+            this.battleFormat,
+            this.attacksPerTurn
         );
     }
 

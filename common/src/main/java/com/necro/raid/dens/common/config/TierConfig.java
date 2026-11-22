@@ -30,4 +30,5 @@ public interface TierConfig {
     float requiredDamage();
     float catchRate();
     RaidBattleFormat battleFormat();
+    int attacksPerTurn();
 }

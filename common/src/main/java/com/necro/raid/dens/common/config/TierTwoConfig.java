@@ -58,6 +58,8 @@ public class TierTwoConfig implements ConfigData, TierConfig {
     public float catch_rate = 1.0f;
     @Comment("The battle format for the raid. (Options: SINGLES, DOUBLES, TRIPLES, QUADRUPLES, PENTUPLES, SEXTUPLES, RAID). Default: SINGLES")
     public RaidBattleFormat battle_format = RaidBattleFormat.SINGLES;
+    @Comment("The number of attacks a raid boss can make per turn. Set to -1 to dynamically calculate based on the number of active Pokemon per-battle. Default: -1")
+    public int attacks_per_turn = -1;
 
     public boolean requiresKey() {
         return this.requires_key;
@@ -131,5 +133,8 @@ public class TierTwoConfig implements ConfigData, TierConfig {
     }
     public RaidBattleFormat battleFormat() {
         return this.battle_format;
+    }
+    public int attacksPerTurn() {
+        return this.attacks_per_turn;
     }
 }

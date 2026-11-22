@@ -7,6 +7,7 @@ import com.cobblemon.mod.common.api.battles.model.actor.BattleActor;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.api.moves.MoveSet;
 import com.cobblemon.mod.common.api.pokemon.PokemonProperties;
+import com.cobblemon.mod.common.api.pokemon.feature.IntSpeciesFeature;
 import com.cobblemon.mod.common.api.pokemon.feature.StringSpeciesFeature;
 import com.cobblemon.mod.common.battles.*;
 import com.cobblemon.mod.common.battles.actor.PlayerBattleActor;
@@ -23,6 +24,7 @@ import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.cobblemon.mod.common.util.PlayerExtensionsKt;
 import com.necro.asymmetric.battles.common.api.AsymmetricAPI;
 import com.necro.asymmetric.battles.common.api.BattleParticipant;
+import com.necro.asymmetric.battles.common.api.actor.DummyBattleActor;
 import com.necro.asymmetric.battles.common.mixin.battle.StrongBattleAIAccessor;
 import com.necro.raid.dens.common.CobblemonRaidDens;
 import com.necro.raid.dens.common.data.raid.RaidBattleFormat;
@@ -178,7 +180,7 @@ public class RaidInstance {
             this.playerJoin(player.getName().getString());
         }
 
-        if (this.session().boss().getBattleFormat()!= RaidBattleFormat.RAID || this.battles.isEmpty()) {
+        if (this.session().boss().getBattleFormat() != RaidBattleFormat.RAID || this.battles.isEmpty()) {
             ((IRaidBattle) battle).crd_setRaidSession(this.session);
             this.battles.add(battle);
             this.sendEvent(new StartRaidShowdownEvent(
@@ -187,6 +189,16 @@ public class RaidInstance {
                 this.session().boss().getFeature().equalsIgnoreCase("tera")
             ), battle);
             this.sendEvent(new ShowdownEvents.DoNothingShowdownEvent(), battle);
+        }
+
+        if (this.session().boss().getBattleFormat() == RaidBattleFormat.RAID) {
+            int attacks = (int) Arrays.stream(battle.getSide1().getActors()).filter(actor -> !(actor instanceof DummyBattleActor)).count();
+            IntSpeciesFeature feature = this.bossEntity.getPokemon().getFeature("attacks_per_turn");
+            if (feature != null) {
+                feature.setValue(attacks);
+                this.bossEntity.getPokemon().markFeatureDirty(feature);
+                this.bossEntity.getPokemon().updateAspects();
+            }
         }
 
         this.runScripts(RaidTriggerType.JOIN, battle, this.battles::size);
