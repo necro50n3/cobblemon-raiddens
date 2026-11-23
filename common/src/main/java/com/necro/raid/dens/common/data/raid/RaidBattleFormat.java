@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 
 public enum RaidBattleFormat implements StringRepresentable {
-    SINGLES(BattleFormat.Companion.getGEN_9_SINGLES()),
-    DOUBLES(BattleFormat.Companion.getGEN_9_DOUBLES()),
-    TRIPLES(BattleFormat.Companion.getGEN_9_TRIPLES()),
-    QUADRUPLES(AsymmetricBattleFormats.GEN_9_QUADRUPLES),
-    PENTUPLES(AsymmetricBattleFormats.GEN_9_PENTUPLES),
-    SEXTUPLES(AsymmetricBattleFormats.GEN_9_SEXTUPLES),
+    SINGLES(AsymmetricBattleFormats.GEN_9_RAID_SINGLES),
+    DOUBLES(AsymmetricBattleFormats.GEN_9_RAID_DOUBLES),
+    TRIPLES(AsymmetricBattleFormats.GEN_9_RAID_TRIPLES),
+    QUADRUPLES(AsymmetricBattleFormats.GEN_9_RAID_QUADRUPLES),
+    PENTUPLES(AsymmetricBattleFormats.GEN_9_RAID_PENTUPLES),
+    SEXTUPLES(AsymmetricBattleFormats.GEN_9_RAID_SEXTUPLES),
     RAID(AsymmetricBattleFormats.GEN_9_RAID);
 
     private final BattleFormat format;

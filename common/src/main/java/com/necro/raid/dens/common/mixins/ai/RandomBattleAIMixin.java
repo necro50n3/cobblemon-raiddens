@@ -59,6 +59,8 @@ public abstract class RandomBattleAIMixin {
         if (target == null || target.isEmpty()) {
             cir.setReturnValue(new MoveActionResponse(bestMove.id, null, null));
         } else {
+            List<Targetable> opponents = new ArrayList<>(target.stream().filter(t -> !t.isAllied(pokemon)).toList());
+            if (!opponents.isEmpty()) target = opponents;
             Collections.shuffle(target);
             ActiveBattlePokemon chosenTarget = (ActiveBattlePokemon) target.getFirst();
             cir.setReturnValue(new MoveActionResponse(bestMove.id, chosenTarget.getPNX(), null));

@@ -13,6 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ShowdownEvents {
+    public record ForceSOSShowdownEvent(String properties) implements ShowdownEvent {
+        public String build(PokemonBattle battle) {
+            return ">forcesos " + this.properties;
+        }
+    }
+
     public record CheerAttackShowdownEvent(String origin) implements ShowdownEvent {
         public String build(PokemonBattle battle) {
             return ">cheerattack " + this.origin;

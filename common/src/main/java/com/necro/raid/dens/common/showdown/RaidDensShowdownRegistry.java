@@ -5,10 +5,12 @@ import com.necro.raid.dens.common.showdown.instructions.*;
 
 public class RaidDensShowdownRegistry {
     public static void registerInstructions() {
+        ShowdownInterpreter.registerUpdateInstructionParser("-forcesos", (battle, instruction, message, messageIterator) ->
+            new ForceSOSInstruction(message)
+        );
         ShowdownInterpreter.registerUpdateInstructionParser("cheer", (battle, instruction, message, messageIterator) ->
             new CheerInstruction(message)
         );
-
         ShowdownInterpreter.registerUpdateInstructionParser("cheerboost", (battle, instruction, message, messageIterator) ->
             new CheerBoostInstruction(battle, message)
         );

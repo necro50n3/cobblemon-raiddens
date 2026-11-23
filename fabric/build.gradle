@@ -44,6 +44,7 @@ dependencies {
     modImplementation "com.cobblemon:fabric:$rootProject.cobblemon_version"
     modImplementation "software.bernie.geckolib:geckolib-fabric-$rootProject.geckolib_version"
     modImplementation "com.necro.asymmetric.battles:asymmetricbattles-fabric:$rootProject.asymmetricbattles_version"
+    modRuntimeOnly "com.necro.sos.encounters:sosencounters-fabric:$rootProject.sosencounters_version"
     include(modApi "me.shedaniel.cloth:cloth-config-fabric:$rootProject.cloth_config_version")
 
     modImplementation "com.terraformersmc:modmenu:11.0.3"

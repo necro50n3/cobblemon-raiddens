@@ -220,6 +220,10 @@ public class CustomRaidRegistries {
             else if ("boss".equals(target)) return new ShowdownEvents.ClearBoostShowdownEvent(2, false);
             else throw new JsonSyntaxException("Field \"target\" must be  \"player\" or \"boss\"");
         });
+        SCRIPT_REGISTRY.register("sos", script -> {
+            String properties = SCRIPT_REGISTRY.parse(script, "properties", String.class);
+            return new ShowdownEvents.ForceSOSShowdownEvent(properties);
+        });
     }
 
     private static void registerNodes() {

@@ -13,7 +13,8 @@ public enum ModCompat {
     VOCALIZED("cobblemon_vocalized"),
     SHADOWED_HEARTS("shadowedhearts"),
     CREATE("create"),
-    MEKANISM("mekanism");
+    MEKANISM("mekanism"),
+    SOS_ENCOUNTERS("sosencounters");
 
     private static Function2<String, String, Integer> VERSION_COMPARATOR = null;
 

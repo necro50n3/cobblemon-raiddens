@@ -49,6 +49,7 @@ dependencies {
     }
     modImplementation "software.bernie.geckolib:geckolib-neoforge-$rootProject.geckolib_version"
     modImplementation "com.necro.asymmetric.battles:asymmetricbattles-neoforge:$rootProject.asymmetricbattles_version"
+    modRuntimeOnly "com.necro.sos.encounters:sosencounters-neoforge:$rootProject.sosencounters_version"
     include(modApi "me.shedaniel.cloth:cloth-config-neoforge:$rootProject.cloth_config_version")
 
     modRuntimeOnly "maven.modrinth:jade:$rootProject.jade_version+neoforge"

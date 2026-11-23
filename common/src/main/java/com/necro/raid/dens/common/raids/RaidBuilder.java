@@ -71,8 +71,8 @@ public class RaidBuilder {
                 side2 = new BattleSide(wildActor, BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor(), BattleParticipant.dummy().toActor());
             }
             else {
-                side1 = new BattleSide(playerActor);
-                side2 = new BattleSide(wildActor);
+                side1 = new BattleSide(playerActor, BattleParticipant.dummy().toActor());
+                side2 = new BattleSide(wildActor, BattleParticipant.dummy().toActor());
             }
 
             return BattleRegistry.startBattle(battleFormat, side1, side2, true);

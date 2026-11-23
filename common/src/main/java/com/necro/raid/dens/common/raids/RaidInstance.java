@@ -365,7 +365,11 @@ public class RaidInstance {
 
     private void sendHealthPacket(PokemonBattle battle) {
         Set<String> bosses = new HashSet<>();
-        battle.getSide2().getActivePokemon().forEach(pokemon -> bosses.add(pokemon.getPNX()));
+        battle.getSide2().getActivePokemon().forEach(pokemon -> {
+            BattlePokemon battlePokemon = pokemon.getBattlePokemon();
+            if (battlePokemon != null && battlePokemon.getEntity() != null && !((IRaidAccessor) battlePokemon.getEntity()).crd_isRaidBoss()) return;
+            bosses.add(pokemon.getPNX());
+        });
         bosses.forEach(pnx ->
             battle.sendSidedUpdate(
                 battle.getActorAndActiveSlotFromPNX(pnx).getFirst(),
