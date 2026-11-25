@@ -340,7 +340,7 @@ public class RaidBoss {
         pokemon.getPersistentData().putBoolean("raid", true);
         new StringSpeciesFeature("raid", "boss").apply(pokemon);
         int attacksPerTurn;
-        if (this.attacksPerTurn != null && this.attacksPerTurn > 1) attacksPerTurn = this.attacksPerTurn;
+        if (this.attacksPerTurn != null && this.attacksPerTurn > 0) attacksPerTurn = this.attacksPerTurn;
         else {
             attacksPerTurn = switch (this.battleFormat) {
                 case RaidBattleFormat.DOUBLES -> 2;
