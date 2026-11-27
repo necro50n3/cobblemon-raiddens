@@ -1,6 +1,1 @@
-- Updated to Asymmetric Battles API 1.5.0.
-- Added a new `sos` script to allow the Raid Boss to summon an ally Pokémon. Must have `SOS Encounters` installed.
-- Added the ability to set the `attacks_per_turn` for Raid Bosses.
-- By default, raid bosses will now scale how many attacks they can perform per turn based on the number of active Pokémon per battle.
-  - 1 for Singles, 2 for Doubles, and 3 for Triples, etc.
-  - The number of active players in the Raid battle format.
+- Fixed a translation key.

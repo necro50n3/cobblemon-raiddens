@@ -232,7 +232,7 @@ public class RaidCrystalBlock extends BaseEntityBlock {
             if (blockEntity.isOpen()) return true;
             else if (!key.matches(itemStack)) {
                 Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(key.item()));
-                MutableComponent component = Component.translatable(key.id().isEmpty() ? "message.cobblemonraiddens.raid.no_unique_key" : "message.cobblemonraiddens.raid.no_unique_key_with_components", item.getDefaultInstance().getDisplayName());
+                MutableComponent component = Component.translatable(key.id().isEmpty() ? "message.cobblemonraiddens.raid.no_unique_key" : "message.cobblemonraiddens.raid.no_unique_key_with_component", item.getDefaultInstance().getDisplayName());
                 player.displayClientMessage(ComponentUtils.getSystemMessage(component), true);
                 return false;
             }
